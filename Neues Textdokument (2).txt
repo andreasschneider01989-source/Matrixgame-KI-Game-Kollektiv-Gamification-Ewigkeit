@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATRIXGAME ∞ — Kollektive Suche nach Vereinheitlichung</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --bg: #020408;
+    --grid: rgba(0,255,180,0.04);
+    --accent: #00ffb3;
+    --accent2: #ff6b35;
+    --accent3: #7c3aed;
+    --glow: 0 0 20px rgba(0,255,179,0.5);
+    --panel: rgba(0,20,15,0.85);
+    --border: rgba(0,255,179,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--accent);
+    font-family: 'Share Tech Mono', monospace;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  #bgGrid {
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #canvas {
+    position: absolute;
+    top: 0; left: 0;
+    z-index: 1;
+  }
+
+  /* ── HUD ── */
+  #hud {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  /* Title bar */
+  #titleBar {
+    position: absolute;
+    top: 12px; left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    pointer-events: none;
+  }
+  #titleBar h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    text-shadow: var(--glow);
+  }
+  #titleBar .sub {
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    color: rgba(0,255,179,0.5);
+    margin-top: 2px;
+  }
+
+  /* Stats panel left */
+  #statsLeft {
+    position: absolute;
+    top: 16px; left: 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 16px;
+    min-width: 200px;
+    pointer-events: none;
+    backdrop-filter: blur(8px);
+  }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    font-size: 0.65rem;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(0,255,179,0.06);
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-label { color: rgba(0,255,179,0.5); }
+  .stat-val { color: var(--accent); font-weight: bold; }
+
+  /* Formula panel right */
+  #formulaPanel {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 16px;
+    width: 240px;
+    pointer-events: none;
+    backdrop-filter: blur(8px);
+    font-size: 0.6rem;
+    line-height: 1.8;
+  }
+  #formulaPanel .ftitle {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    color: var(--accent2);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+    text-shadow: 0 0 10px var(--accent2);
+  }
+  .formula { color: rgba(0,255,179,0.7); }
+  .formula .highlight { color: var(--accent); }
+  .formula .dim { color: rgba(0,255,179,0.35); }
+
+  /* Bottom entropy bar */
+  #entropyBar {
+    position: absolute;
+    bottom: 80px; left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    pointer-events: none;
+  }
+  #entropyLabel {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: rgba(0,255,179,0.5);
+    margin-bottom: 4px;
+    text-align: center;
+  }
+  #entropyTrack {
+    height: 6px;
+    background: rgba(0,255,179,0.1);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  #entropyFill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent3), var(--accent), var(--accent2));
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  /* Controls */
+  #controls {
+    position: absolute;
+    bottom: 16px; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    pointer-events: all;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn {
+    background: rgba(0,20,15,0.9);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    padding: 7px 14px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .btn:hover {
+    background: rgba(0,255,179,0.1);
+    border-color: var(--accent);
+    box-shadow: var(--glow);
+    color: #fff;
+  }
+  .btn.active {
+    background: rgba(0,255,179,0.15);
+    border-color: var(--accent);
+    box-shadow: var(--glow);
+  }
+  .btn.danger {
+    border-color: rgba(255,107,53,0.4);
+    color: var(--accent2);
+  }
+  .btn.danger:hover {
+    background: rgba(255,107,53,0.1);
+    border-color: var(--accent2);
+    box-shadow: 0 0 20px rgba(255,107,53,0.4);
+  }
+
+  /* Mode selector */
+  #modeBar {
+    position: absolute;
+    bottom: 56px; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+    pointer-events: all;
+  }
+  .modeBtn {
+    background: rgba(0,20,15,0.9);
+    border: 1px solid rgba(0,255,179,0.15);
+    color: rgba(0,255,179,0.4);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    padding: 4px 10px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .modeBtn.active {
+    background: rgba(124,58,237,0.2);
+    border-color: var(--accent3);
+    color: #c4b5fd;
+    box-shadow: 0 0 12px rgba(124,58,237,0.4);
+  }
+
+  /* Event log */
+  #eventLog {
+    position: absolute;
+    bottom: 110px; left: 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 14px;
+    width: 220px;
+    height: 100px;
+    overflow: hidden;
+    pointer-events: none;
+    backdrop-filter: blur(8px);
+  }
+  .log-entry {
+    font-size: 0.55rem;
+    padding: 1px 0;
+    opacity: 1;
+    transition: opacity 2s;
+    color: rgba(0,255,179,0.6);
+  }
+  .log-entry.new { color: var(--accent); }
+  .log-entry.event-collision { color: var(--accent2); }
+  .log-entry.event-spawn { color: #60a5fa; }
+  .log-entry.event-decay { color: #f472b6; }
+
+  /* Bayesian confidence */
+  #bayesPanel {
+    position: absolute;
+    bottom: 110px; right: 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 14px;
+    width: 240px;
+    pointer-events: none;
+    backdrop-filter: blur(8px);
+  }
+  .bayes-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    color: var(--accent3);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+    text-shadow: 0 0 10px var(--accent3);
+  }
+  .bayes-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0;
+    font-size: 0.58rem;
+  }
+  .bayes-name { color: rgba(0,255,179,0.5); width: 100px; }
+  .bayes-track {
+    flex: 1;
+    height: 4px;
+    background: rgba(0,255,179,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bayes-fill { height: 100%; border-radius: 2px; }
+  .bayes-pct { color: var(--accent); font-size: 0.55rem; width: 35px; text-align: right; }
+
+  /* Splash */
+  #splash {
+    position: fixed; inset: 0;
+    background: #020408;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: opacity 1s;
+  }
+  #splash h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: 0.4em;
+    color: var(--accent);
+    text-shadow: var(--glow);
+    margin-bottom: 0.3em;
+  }
+  #splash .tagline {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: rgba(0,255,179,0.5);
+    margin-bottom: 2.5em;
+  }
+  #splash .axioms {
+    font-size: 0.65rem;
+    color: rgba(0,255,179,0.4);
+    line-height: 2;
+    margin-bottom: 2em;
+  }
+  #splash .axioms span { color: var(--accent); }
+  #startBtn {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    padding: 14px 40px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: var(--glow);
+    animation: pulse 2s infinite;
+    transition: all 0.3s;
+  }
+  #startBtn:hover {
+    background: rgba(0,255,179,0.1);
+    box-shadow: 0 0 40px rgba(0,255,179,0.6);
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 20px rgba(0,255,179,0.4); }
+    50%      { box-shadow: 0 0 40px rgba(0,255,179,0.8); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Splash Screen -->
+<div id="splash">
+  <h1>MATRIXGAME</h1>
+  <div class="tagline">∞ Kollektive Suche nach Vereinheitlichung ∞</div>
+  <div class="axioms">
+    <span>Axiom I:</span> Ohne Existenz kann nichts existieren.<br>
+    <span>Axiom II:</span> Zufall + Angleichung = Entropie<br>
+    <span>Axiom III:</span> Fraktale Strukturen emergieren aus Komplexität.<br>
+    <span>Axiom IV:</span> Bewusstsein gestaltet den Schöpfungsprozess mit.
+  </div>
+  <button id="startBtn">⬢ START SIMULATION ⬢</button>
+</div>
+
+<!-- Background Grid -->
+<div id="bgGrid"></div>
+
+<!-- Simulation Canvas -->
+<canvas id="canvas"></canvas>
+
+<!-- HUD Layer -->
+<div id="hud">
+
+  <!-- Title -->
+  <div id="titleBar">
+    <h1>MATRIXGAME ∞</h1>
+    <div class="sub">3D UNIVERSUM MOD · PHYSIK SIMULATION · v3.0</div>
+  </div>
+
+  <!-- Stats Left -->
+  <div id="statsLeft">
+    <div class="stat-row"><span class="stat-label">KÖRPER</span><span class="stat-val" id="sBodies">0</span></div>
+    <div class="stat-row"><span class="stat-label">ZEITSCHRITT Δt</span><span class="stat-val" id="sDt">0.016s</span></div>
+    <div class="stat-row"><span class="stat-label">GES. ENERGIE</span><span class="stat-val" id="sEnergy">0 J</span></div>
+    <div class="stat-row"><span class="stat-label">DIMENSION n</span><span class="stat-val">3D</span></div>
+    <div class="stat-row"><span class="stat-label">ENTROPIE-LINKS</span><span class="stat-val">2·n = 6</span></div>
+    <div class="stat-row"><span class="stat-label">TICK</span><span class="stat-val" id="sTick">0</span></div>
+    <div class="stat-row"><span class="stat-label">KOLLISIONEN</span><span class="stat-val" id="sCollide">0</span></div>
+    <div class="stat-row"><span class="stat-label">ZERFÄLLE</span><span class="stat-val" id="sDecay">0</span></div>
+  </div>
+
+  <!-- Formula Panel Right -->
+  <div id="formulaPanel">
+    <div class="ftitle">⬡ FORMELSAMMLUNG</div>
+    <div class="formula">F = G · <span class="highlight">m₁·m₂</span> / r²</div>
+    <div class="formula">a² + b² = <span class="highlight">c²</span> <span class="dim">(Pythagoras)</span></div>
+    <div class="formula">ΔE = <span class="highlight">½mv²</span> + mgh</div>
+    <div class="formula">S = <span class="highlight">-Σ pᵢ·ln(pᵢ)</span> <span class="dim">(Entropie)</span></div>
+    <div class="formula">r = √(dx² + dy² + dz²)</div>
+    <div class="formula">P_neu = <span class="highlight">P·L(E|H)</span> / P(E)</div>
+    <div class="formula"><span class="dim">Intensität ∝ 1/r²</span></div>
+  </div>
+
+  <!-- Entropy Bar -->
+  <div id="entropyBar">
+    <div id="entropyLabel">ENTROPIE — ZUFALL + ANGLEICHUNG</div>
+    <div id="entropyTrack"><div id="entropyFill" style="width:30%"></div></div>
+  </div>
+
+  <!-- Controls -->
+  <div id="modeBar">
+    <button class="modeBtn active" onclick="setMode('gravity')" id="m-gravity">GRAVITATION</button>
+    <button class="modeBtn" onclick="setMode('repulse')" id="m-repulse">ABSTOSSUNG</button>
+    <button class="modeBtn" onclick="setMode('chaos')" id="m-chaos">CHAOS</button>
+    <button class="modeBtn" onclick="setMode('fractal')" id="m-fractal">FRAKTAL</button>
+  </div>
+
+  <div id="controls">
+    <button class="btn" onclick="addBody()">+ KÖRPER</button>
+    <button class="btn" onclick="addCluster()">+ CLUSTER</button>
+    <button class="btn" onclick="bigBang()">BIG BANG</button>
+    <button class="btn" onclick="togglePause()" id="pauseBtn">⏸ PAUSE</button>
+    <button class="btn" onclick="zoomIn()">🔍+</button>
+    <button class="btn" onclick="zoomOut()">🔍−</button>
+    <button class="btn danger" onclick="resetSim()">⟳ RESET</button>
+  </div>
+
+  <!-- Event Log -->
+  <div id="eventLog"></div>
+
+  <!-- Bayesian Panel -->
+  <div id="bayesPanel">
+    <div class="bayes-title">⬡ PAL — KONFIDENZ</div>
+    <div class="bayes-row">
+      <span class="bayes-name">Entropie=Z+A</span>
+      <div class="bayes-track"><div class="bayes-fill" id="b0" style="width:85%;background:var(--accent)"></div></div>
+      <span class="bayes-pct" id="bp0">85%</span>
+    </div>
+    <div class="bayes-row">
+      <span class="bayes-name">Fraktale</span>
+      <div class="bayes-track"><div class="bayes-fill" id="b1" style="width:78%;background:#60a5fa"></div></div>
+      <span class="bayes-pct" id="bp1">78%</span>
+    </div>
+    <div class="bayes-row">
+      <span class="bayes-name">Energieerh.</span>
+      <div class="bayes-track"><div class="bayes-fill" id="b2" style="width:99%;background:var(--accent2)"></div></div>
+      <span class="bayes-pct" id="bp2">99%</span>
+    </div>
+    <div class="bayes-row">
+      <span class="bayes-name">3D-Raum</span>
+      <div class="bayes-track"><div class="bayes-fill" id="b3" style="width:99%;background:#f472b6"></div></div>
+      <span class="bayes-pct" id="bp3">99%</span>
+    </div>
+    <div class="bayes-row">
+      <span class="bayes-name">Bewusstsein</span>
+      <div class="bayes-track"><div class="bayes-fill" id="b4" style="width:42%;background:#c4b5fd"></div></div>
+      <span class="bayes-pct" id="bp4">42%</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+//  MATRIXGAME — Enhanced Browser Edition v3.0
+//  Inspired by Andreas Schneider's Formelsammlung
+// ════════════════════════════════════════════════
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ── Physics Constants ──────────────────────────
+const G    = 300;        // Gravitationskonstante (skaliert)
+const DT   = 0.016;      // Zeitschritt
+const MIN_DIST = 8;      // Mindestabstand für Kraftberechnung
+const DECAY_PROB = 0.0005; // Zerfallswahrscheinlichkeit pro Tick
+
+// ── State ──────────────────────────────────────
+let bodies   = [];
+let tick     = 0;
+let paused   = false;
+let zoom     = 1;
+let panX     = 0;
+let panY     = 0;
+let mode     = 'gravity';
+let collideCount = 0;
+let decayCount   = 0;
+let entropy  = 0.3;
+
+// Colour palettes
+const PALETTES = {
+  gravity: ['#00ffb3','#00e5a0','#00cc8f','#60a5fa','#93c5fd'],
+  repulse: ['#ff6b35','#ff8c42','#ffa726','#ffcc02','#ffe066'],
+  chaos:   ['#f472b6','#e879f9','#c084fc','#818cf8','#60a5fa'],
+  fractal: ['#7c3aed','#8b5cf6','#a78bfa','#c4b5fd','#ddd6fe'],
+};
+
+// ── Body Class ─────────────────────────────────
+class Body {
+  constructor(x, y, z, vx, vy, vz, mass, color, movable=true) {
+    this.x = x; this.y = y; this.z = z;
+    this.vx = vx; this.vy = vy; this.vz = vz;
+    this.mass = mass;
+    this.color = color;
+    this.movable = movable;
+    this.radius = Math.max(2, Math.cbrt(mass) * 1.5);
+    this.trail = [];
+    this.age = 0;
+    this.alive = true;
+  }
+
+  // Screen projection: simple isometric-ish for 3D feel
+  screenX() { return this.x * zoom + panX + W/2; }
+  screenY() { return (this.y - this.z * 0.4) * zoom + panY + H/2; }
+
+  addTrail() {
+    this.trail.push({ x: this.screenX(), y: this.screenY() });
+    if (this.trail.length > 30) this.trail.shift();
+  }
+}
+
+// ── Initialise Simulation ──────────────────────
+function initDefault() {
+  bodies = [];
+  collideCount = 0;
+  decayCount   = 0;
+  tick = 0;
+
+  // Central star
+  bodies.push(new Body(0, 0, 0,  0, 0, 0,  50000, '#ffe066', false));
+
+  // Orbiting planets
+  const pal = PALETTES['gravity'];
+  const orbitData = [
+    {r:120, m:200,  v:1.8},
+    {r:200, m:80,   v:1.4},
+    {r:290, m:350,  v:1.1},
+    {r:380, m:50,   v:0.95},
+    {r:460, m:150,  v:0.82},
+  ];
+  orbitData.forEach((od, i) => {
+    const angle = Math.random() * Math.PI * 2;
+    const z     = (Math.random()-0.5) * 40;
+    const vOrbit = Math.sqrt(G * bodies[0].mass / od.r);
+    bodies.push(new Body(
+      Math.cos(angle)*od.r, Math.sin(angle)*od.r, z,
+      -Math.sin(angle)*vOrbit, Math.cos(angle)*vOrbit, 0,
+      od.m, pal[i % pal.length]
+    ));
+  });
+}
+
+// ── Spawn functions ────────────────────────────
+function addBody() {
+  const pal = PALETTES[mode];
+  const angle = Math.random()*Math.PI*2;
+  const r     = 100 + Math.random()*300;
+  const z     = (Math.random()-0.5)*80;
+  const star  = bodies.find(b => !b.movable) || bodies[0];
+  const vO    = Math.sqrt(G * (star ? star.mass : 10000) / r) * (0.8 + Math.random()*0.4);
+  const mass  = 10 + Math.random()*200;
+  const c = pal[Math.floor(Math.random()*pal.length)];
+  bodies.push(new Body(
+    Math.cos(angle)*r, Math.sin(angle)*r, z,
+    -Math.sin(angle)*vO, Math.cos(angle)*vO, (Math.random()-0.5)*0.5,
+    mass, c
+  ));
+  logEvent(`+ Körper hinzugefügt (M=${Math.round(mass)})`, 'event-spawn');
+}
+
+function addCluster() {
+  for(let i=0;i<8;i++) addBody();
+  logEvent('+ Cluster (8 Körper) gespawnt', 'event-spawn');
+}
+
+function bigBang() {
+  bodies = [];
+  tick = 0;
+  const n = 60 + Math.floor(Math.random()*40);
+  const pal = PALETTES[mode];
+  for(let i=0;i<n;i++) {
+    const angle = Math.random()*Math.PI*2;
+    const elev  = (Math.random()-0.5)*Math.PI;
+    const r     = Math.random()*30;
+    const speed = 50 + Math.random()*300;
+    const mass  = 5 + Math.random()*500;
+    bodies.push(new Body(
+      Math.cos(angle)*r, Math.sin(angle)*r, Math.sin(elev)*r,
+      Math.cos(angle)*speed*(Math.random()-0.5)*2,
+      Math.sin(angle)*speed*(Math.random()-0.5)*2,
+      (Math.random()-0.5)*speed,
+      mass, pal[Math.floor(Math.random()*pal.length)]
+    ));
+  }
+  logEvent(`⚡ BIG BANG! ${n} Körper`, 'event-collision');
+}
+
+function resetSim() {
+  initDefault();
+  zoom = 1; panX = 0; panY = 0;
+  logEvent('⟳ Simulation zurückgesetzt', '');
+}
+
+// ── Physics Step ───────────────────────────────
+function physicsStep() {
+  const n = bodies.length;
+  const ax = new Float64Array(n);
+  const ay = new Float64Array(n);
+  const az = new Float64Array(n);
+
+  for(let i=0;i<n;i++) {
+    const bi = bodies[i];
+    if(!bi.movable || !bi.alive) continue;
+    for(let j=0;j<n;j++) {
+      if(i===j) continue;
+      const bj = bodies[j];
+      if(!bj.alive) continue;
+      const dx = bj.x - bi.x;
+      const dy = bj.y - bi.y;
+      const dz = bj.z - bi.z;
+      const r2 = Math.max(dx*dx + dy*dy + dz*dz, MIN_DIST*MIN_DIST);
+      const r  = Math.sqrt(r2);
+
+      // Collision check
+      if(r < (bi.radius + bj.radius) * 0.8 && bi.mass > 1 && bj.mass > 1) {
+        handleCollision(i, j);
+        continue;
+      }
+
+      let force = 0;
+      if(mode === 'gravity') {
+        force = G * bj.mass / r2;
+      } else if(mode === 'repulse') {
+        force = -G * bj.mass / r2 * 0.5;
+      } else if(mode === 'chaos') {
+        force = G * bj.mass / r2 * (Math.random() > 0.5 ? 1 : -1);
+      } else if(mode === 'fractal') {
+        // Self-similar: force modulated by Mandelbrot-inspired factor
+        const s = Math.sin(r * 0.05) * 0.5 + 0.5;
+        force = G * bj.mass / r2 * (0.3 + s * 1.4);
+      }
+
+      ax[i] += force * dx / r;
+      ay[i] += force * dy / r;
+      az[i] += force * dz / r;
+    }
+  }
+
+  let totalKE = 0;
+  for(let i=0;i<n;i++) {
+    const b = bodies[i];
+    if(!b.alive) continue;
+    if(b.movable) {
+      b.vx += ax[i] * DT;
+      b.vy += ay[i] * DT;
+      b.vz += az[i] * DT;
+      // Velocity cap to prevent instability
+      const speed = Math.sqrt(b.vx*b.vx + b.vy*b.vy + b.vz*b.vz);
+      if(speed > 800) { const s=800/speed; b.vx*=s; b.vy*=s; b.vz*=s; }
+      b.x += b.vx * DT;
+      b.y += b.vy * DT;
+      b.z += b.vz * DT;
+    }
+    b.addTrail();
+    b.age++;
+    totalKE += 0.5 * b.mass * (b.vx*b.vx + b.vy*b.vy + b.vz*b.vz);
+
+    // Random decay (Formelsammlung: stochastic decay event)
+    if(b.movable && Math.random() < DECAY_PROB && b.mass > 50) {
+      decay(i);
+    }
+  }
+
+  // Clean dead bodies
+  bodies = bodies.filter(b => b.alive);
+
+  // Update entropy (normalised KE variance)
+  const speeds = bodies.map(b => Math.sqrt(b.vx*b.vx+b.vy*b.vy+b.vz*b.vz));
+  const mean = speeds.reduce((a,v)=>a+v,0) / (speeds.length||1);
+  const variance = speeds.reduce((a,v)=>a+(v-mean)*(v-mean),0) / (speeds.length||1);
+  entropy = Math.min(1, Math.sqrt(variance) / 200);
+
+  // Update Bayesian confidences dynamically
+  updateBayes(totalKE);
+
+  tick++;
+}
+
+// ── Collision ──────────────────────────────────
+const collisionSet = new Set();
+function handleCollision(i, j) {
+  const key = Math.min(i,j)+'-'+Math.max(i,j);
+  if(collisionSet.has(key)) return;
+  collisionSet.add(key);
+  setTimeout(()=>collisionSet.delete(key), 200);
+
+  const bi = bodies[i], bj = bodies[j];
+  if(!bi || !bj || !bi.alive || !bj.alive) return;
+
+  // Perfectly inelastic merge if one is big
+  if(bi.mass > 500 || bj.mass > 500) {
+    const total = bi.mass + bj.mass;
+    if(!bi.movable) { bj.alive=false; }
+    else if(!bj.movable) { bi.alive=false; }
+    else {
+      bi.vx=(bi.vx*bi.mass+bj.vx*bj.mass)/total;
+      bi.vy=(bi.vy*bi.mass+bj.vy*bj.mass)/total;
+      bi.vz=(bi.vz*bi.mass+bj.vz*bj.mass)/total;
+      bi.mass=total;
+      bi.radius=Math.max(3, Math.cbrt(total)*1.5);
+      bj.alive=false;
+    }
+    collideCount++;
+    logEvent(`💥 Kollision! Verschmelzung`, 'event-collision');
+  }
+}
+
+// ── Decay ──────────────────────────────────────
+function decay(i) {
+  const b = bodies[i];
+  if(!b || !b.alive) return;
+  const pal = PALETTES[mode];
+  const fragments = Math.min(5, Math.floor(b.mass/20));
+  for(let k=0;k<fragments;k++) {
+    const c = pal[Math.floor(Math.random()*pal.length)];
+    const frag = new Body(
+      b.x+(Math.random()-0.5)*20,
+      b.y+(Math.random()-0.5)*20,
+      b.z+(Math.random()-0.5)*20,
+      b.vx+(Math.random()-0.5)*30,
+      b.vy+(Math.random()-0.5)*30,
+      b.vz+(Math.random()-0.5)*10,
+      b.mass/fragments, c
+    );
+    bodies.push(frag);
+  }
+  b.alive = false;
+  decayCount++;
+  logEvent(`☢ Zerfall! → ${fragments} Fragmente`, 'event-decay');
+}
+
+// ── Render ─────────────────────────────────────
+function render() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Sort by z for painter's algorithm
+  const sorted = [...bodies].sort((a,b) => a.z - b.z);
+
+  for(const b of sorted) {
+    if(!b.alive) continue;
+    const sx = b.screenX();
+    const sy = b.screenY();
+
+    // Draw trail
+    if(b.trail.length > 1) {
+      ctx.beginPath();
+      ctx.moveTo(b.trail[0].x, b.trail[0].y);
+      for(let k=1;k<b.trail.length;k++) {
+        ctx.lineTo(b.trail[k].x, b.trail[k].y);
+      }
+      ctx.strokeStyle = b.color + '40';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // 3D depth cue: z affects brightness
+    const depthFactor = 0.7 + (b.z / 200 + 0.5) * 0.3;
+    const r = Math.max(2, b.radius * zoom * depthFactor);
+
+    // Glow
+    const grd = ctx.createRadialGradient(sx, sy, 0, sx, sy, r*3);
+    grd.addColorStop(0, b.color + 'cc');
+    grd.addColorStop(0.4, b.color + '55');
+    grd.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.arc(sx, sy, r*3, 0, Math.PI*2);
+    ctx.fillStyle = grd;
+    ctx.fill();
+
+    // Core
+    ctx.beginPath();
+    ctx.arc(sx, sy, r, 0, Math.PI*2);
+    ctx.fillStyle = b.color;
+    ctx.fill();
+
+    // White specular highlight
+    const hl = ctx.createRadialGradient(sx-r*0.3, sy-r*0.3, 0, sx, sy, r);
+    hl.addColorStop(0, 'rgba(255,255,255,0.4)');
+    hl.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.arc(sx, sy, r, 0, Math.PI*2);
+    ctx.fillStyle = hl;
+    ctx.fill();
+  }
+
+  // Gravity field lines (when in gravity mode)
+  if(mode === 'gravity' && bodies.length > 0) {
+    const star = bodies.find(b => !b.movable);
+    if(star) {
+      const sx = star.screenX(), sy = star.screenY();
+      for(let angle=0; angle<Math.PI*2; angle+=Math.PI/6) {
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(sx + Math.cos(angle)*500*zoom, sy + Math.sin(angle)*500*zoom);
+        ctx.strokeStyle = 'rgba(255,230,2,0.03)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+// ── HUD Updates ────────────────────────────────
+function updateHUD() {
+  document.getElementById('sBodies').textContent   = bodies.length;
+  document.getElementById('sTick').textContent     = tick;
+  document.getElementById('sCollide').textContent  = collideCount;
+  document.getElementById('sDecay').textContent    = decayCount;
+
+  const ke = bodies.reduce((a,b)=>a+0.5*b.mass*(b.vx*b.vx+b.vy*b.vy+b.vz*b.vz),0);
+  document.getElementById('sEnergy').textContent   = ke > 1e6 ? (ke/1e6).toFixed(2)+'MJ' : Math.round(ke)+'J';
+
+  document.getElementById('entropyFill').style.width = (entropy*100).toFixed(1)+'%';
+}
+
+let lastBayesUpdate = 0;
+const bayesPct = [85, 78, 99, 99, 42];
+
+function updateBayes(ke) {
+  if(tick - lastBayesUpdate < 60) return;
+  lastBayesUpdate = tick;
+
+  // Bayesian updates based on simulation events
+  if(collideCount > 5) {
+    bayesPct[0] = Math.min(99, bayesPct[0] + 0.5); // more evidence for entropy
+  }
+  if(bodies.length > 20) {
+    bayesPct[1] = Math.min(98, bayesPct[1] + 0.3); // fractal structures
+  }
+  // Energy conservation fluctuates in chaos mode
+  if(mode === 'chaos') {
+    bayesPct[2] = Math.max(70, bayesPct[2] - 0.2);
+  } else {
+    bayesPct[2] = Math.min(99, bayesPct[2] + 0.05);
+  }
+
+  const ids = ['b0','b1','b2','b3','b4'];
+  const pids = ['bp0','bp1','bp2','bp3','bp4'];
+  ids.forEach((id,i) => {
+    document.getElementById(id).style.width = bayesPct[i]+'%';
+    document.getElementById(pids[i]).textContent = Math.round(bayesPct[i])+'%';
+  });
+}
+
+// ── Event Log ──────────────────────────────────
+const logEntries = [];
+function logEvent(msg, cls) {
+  const div = document.getElementById('eventLog');
+  const el = document.createElement('div');
+  el.className = 'log-entry new ' + cls;
+  el.textContent = '▸ ' + msg;
+  div.prepend(el);
+  setTimeout(()=>el.classList.remove('new'), 100);
+  while(div.children.length > 8) div.removeChild(div.lastChild);
+}
+
+// ── Controls ───────────────────────────────────
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.modeBtn').forEach(b => b.classList.remove('active'));
+  document.getElementById('m-'+m).classList.add('active');
+  logEvent('Modus: '+m.toUpperCase(), '');
+}
+
+function togglePause() {
+  paused = !paused;
+  document.getElementById('pauseBtn').textContent = paused ? '▶ PLAY' : '⏸ PAUSE';
+}
+function zoomIn()  { zoom = Math.min(zoom*1.2, 10); }
+function zoomOut() { zoom = Math.max(zoom/1.2, 0.1); }
+
+// Mouse pan
+let dragging=false, lastMX=0, lastMY=0;
+canvas.addEventListener('mousedown', e => { dragging=true; lastMX=e.clientX; lastMY=e.clientY; });
+canvas.addEventListener('mousemove', e => {
+  if(dragging) { panX+=e.clientX-lastMX; panY+=e.clientY-lastMY; lastMX=e.clientX; lastMY=e.clientY; }
+});
+canvas.addEventListener('mouseup', ()=>dragging=false);
+canvas.addEventListener('wheel',   e => {
+  e.preventDefault();
+  if(e.deltaY < 0) zoomIn(); else zoomOut();
+}, {passive:false});
+
+// Touch support
+let lastTouchDist = null;
+canvas.addEventListener('touchstart', e => {
+  if(e.touches.length===1) { dragging=true; lastMX=e.touches[0].clientX; lastMY=e.touches[0].clientY; }
+  if(e.touches.length===2) { const dx=e.touches[0].clientX-e.touches[1].clientX; const dy=e.touches[0].clientY-e.touches[1].clientY; lastTouchDist=Math.sqrt(dx*dx+dy*dy); }
+});
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if(e.touches.length===1 && dragging) { panX+=e.touches[0].clientX-lastMX; panY+=e.touches[0].clientY-lastMY; lastMX=e.touches[0].clientX; lastMY=e.touches[0].clientY; }
+  if(e.touches.length===2 && lastTouchDist) { const dx=e.touches[0].clientX-e.touches[1].clientX; const dy=e.touches[0].clientY-e.touches[1].clientY; const d=Math.sqrt(dx*dx+dy*dy); if(d>lastTouchDist) zoomIn(); else zoomOut(); lastTouchDist=d; }
+}, {passive:false});
+canvas.addEventListener('touchend', ()=>{ dragging=false; lastTouchDist=null; });
+
+// Click to add body at position
+canvas.addEventListener('dblclick', e => {
+  const wx = (e.clientX - W/2 - panX) / zoom;
+  const wy = (e.clientY - H/2 - panY) / zoom;
+  const pal = PALETTES[mode];
+  const c = pal[Math.floor(Math.random()*pal.length)];
+  const mass = 20 + Math.random()*100;
+  const star = bodies.find(b => !b.movable);
+  const vO = star ? Math.sqrt(G * star.mass / Math.max(50, Math.sqrt(wx*wx+wy*wy))) * 0.5 : 10;
+  bodies.push(new Body(wx, wy, (Math.random()-0.5)*30, -wy/200*vO, wx/200*vO, 0, mass, c));
+  logEvent(`+ Körper bei (${Math.round(wx)}, ${Math.round(wy)})`, 'event-spawn');
+});
+
+// ── Main Loop ──────────────────────────────────
+let lastTime = 0;
+function loop(ts) {
+  requestAnimationFrame(loop);
+  const dt = ts - lastTime;
+  lastTime = ts;
+
+  if(!paused) {
+    // Multiple physics sub-steps for stability
+    for(let s=0;s<2;s++) physicsStep();
+    updateHUD();
+  }
+  render();
+}
+
+// ── Start ──────────────────────────────────────
+document.getElementById('startBtn').addEventListener('click', () => {
+  const splash = document.getElementById('splash');
+  splash.style.opacity = '0';
+  setTimeout(() => splash.style.display='none', 1000);
+  initDefault();
+  logEvent('Simulation gestartet', 'event-spawn');
+  logEvent('Doppelklick = Körper platzieren', '');
+  requestAnimationFrame(loop);
+});
+</script>
+</body>
+</html>
