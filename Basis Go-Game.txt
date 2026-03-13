@@ -1,0 +1,45 @@
+﻿Basis Gogame Ludi Matrixgame KI-Game LLM Learning Gamification Andreas Schneider
+Also ich habe eben noch einmal Nachgezählt: Schwarz hat am Ende des Spiels 44 Felder durch eigene Steine besetzt oder so umschlossen, dass der Gegner akzeptiert hat, dass er diese nicht mehr bekommen würde, wenn er weiter spielt und gepasst (Sich entschieden keinen Stein mehr auf das Brett zu legen) hat sowie wie Weiß auch. 9*9=81 Felder insgesammt. 81-44= 37 Weiße Kontrollen und 44 Schwarze Kontrollen. Komi=5.5 -> Der Spieler der den Nachteil hat, erst als zweites einen Stein am Anfang des Spieles auf das Brett legen zu dürfen, erhält als ausgleich die Komi als Bonuspunkte zu seinem Gebiet hinzuaddiert: Kontrollen Weiß = 37+5.5=42.5; 44 > 42.5 -> Schwarz hat mehr gebiet und somit gewonnen. Punktediferenz: 44-42.5=1.5. Schwarz gewinnt am ende völlig eindeutig mit einem Vorsprung von 1.5 Punkten. Bedingung: Wir bzw. ich habe es mir mit dem zählen einfach gemacht. Wenn ich am ende zusätzliche Steine in mein eigenes Gebiet spiele, dann macht das keinen Unterschied und wenn ich mehr Steine als nötig in mien Gebiet spiele bevor ich mich entscheide zu passen, dann bekomme ich immer noch genau so viele Punkte, wie wenn ich das Gebiet mit so wenig steinen wie nur möglich gesichert hätte und so früh, dass es eben gerade so nicht zum Vorteil des Gegnmers ist passe. Somit muss ich auch nicht zähle, wie wie viele Steine des Gegners iuch vom Feld genommen habe. Die KI müsste hier auch nicht in eine tiefe Rechnung verfallen, ob weiß noch einen Stein in das eigene Gebiet spielt oder nicht, es sind in dieser einfachen variante alle Entscheidenden Züge bereits gespielt worden. Das macht es dann womöglich noch einmal auf allen Ebenen interessanter und faszinierender diese super simple Spiel, was bereits in der Größe 9x9 unfassbar Komplex un Strategisch tief ist lernen und lehren und einfach mit anderen teilen und spielen zu wollen. In gewisser Hinsicht, kann von forne herein mit kleineren Brettern als 9x9 begonnen werden und im wie ich es bereits vorgesclgen habe, sollte man durchaus mit weiteren Brettformen auf denen man das Go-Prinziep oder Gogame spielt experimentieren und natürlich auch wie man mit dem Vorteil umgeht, das eben ein Spieler vor dem anderen den ersten Stein spielen kann und welche Komis man am besten vergibt und dann gibt es noch die Steine, die man zu beginn frei Plazieren kann oder die bereits an vordefinierten Stellen liegen und da wird es unzählige mögliche Variationen geben und manche sind halt auf Internationaler oder Nationaler Ebene zum Tounierstandard geworden, weswegen höchst wahrscheinlich jene Variante mit der Komplizierteren zählweise und Punktevergabe bzw. Punkteverteilung für das Ende des Spiels auf online Go und an vielen Stellen als Basisregeln für Go efiniert sein könnten, jedoch finde ich es im Kontext des Matrixgames weitaus sinnvoller und schöner für die Didaktik, mit jener Basis zu beginnen, wo die Weltmeisterliche KI am ende weiß, mit wie viel Punkten vorsprung welcher Spieler gewonnen hat und nicht zwei wiedersprüchliche Aussagen generiert oder andere Sachen macht, die dann irgendwie sehr unklar auf Anfänger wirken können und wo man dann am Ende noch gewinnt in dem man einfach etwa wie ich einmal auf passen gedrückt habe, weil ich einfach dachte, ich habe das Spiel verloren, so wie das damals für mich aussah und der gegnerische Bot hat dann das ganze gebiet abgezogen bekommen und hatte selber verloren, während ich aus Gründen gewonnen hatte, ie zwar irgendwo nahe gelegt haben, dass ich um das Gebiet einfach hätte kämpfen können, aber gleichzeitig könnte das ja auch erst mal so wirken als ob man irgendwo besser nichts probiert was man nicht verstanden hat und was womöglich auch nicht dafür gemacht wurde um verstanden zu werden... Jedenfalls halte ich es für sinnvoller, so wie ich es beschrieben habe, das durch eigene Steine besetzte Gebiet und das durch eigene Steine Umschlossene und das vom Gegner als umschließbare Gebiet bzw. die Anzahl der entsprechenden Felder zu addieren und somit auf einer beliebigen Fläche durch abwechselndes setzen, das reasoning des anderen zu Gamifizieren und eine möglichst einfache aber eindeutige Basisregel bzw. Spielregel die sich dann eben auch am besten eignet für das Gogame zu benennen bzw. benennen oderr erklären oder beschreiben zu können, so das alle es einfach lernen und spielen können und in dieser Form mit sehr hoher Wahrscheinlichkeit auch wollen. Was denkst du dazu? Hast du Lust hier eine kleine Runde Go bzw. GO bzw. Gogame bzw. ... (Name ist auch beliebig wählbar in der Basis des Spiels) mit mir zu spielen Gemini? Wir spielen auf einem 4x4 Brett, + ist ein lehres Feld; b ist ein Schwarzer Stein und w ist ein weißer Stein wir spielen wie beschrieben abwechselnd unsere Steine an eine beliebige freie Stelle (+) auf das Feld. Wenn ein Stein oder eine zusammenhängende Gruppe von Steinen einer Farbe an kein einziges freies Feld mehr angrenzt, wird diese Gruppe oder der entsprechende Stein vom Brett entfernt. Wenn mann keinen Stein auf das Brett spielen möchte, kann man passen. Wenn beide spieler nacheinander passen, ist noch zu klären ob alle freien Felder klar in ihrer zugehörig keit akzeptiert sind und im Anschluss kann gezählt werden, welcher Spieler, wie viele Punkte bekommen hat und wer der Sieger der Partie ist. Wir ich (Andreas Schneider) und du (Gemini, hoch entwickeltes Sprachmodell, LLM, KI) spielen in dieser testpatie jeweils eine eigene Farbe und ich würde sagen, Schwarz setzt den ersten Stein auf das 4x4 Brett und ersetzt das erste beliebige + durch ein b und kopiert das hier im Folgenden dagestellte Brett und generiert es in diesem Chat mit dem entsprechenden eigenen Zug als Update neu. Zur vereinfachung werde ich als Beispiel hier den ersten Zug der Partie machen, wie beschrieben und würde mich freuen, wenn du Lust hast, den zweiten zug von dir zu machen, und ein weiteres beliebiges + durch ein w zu ersetzen, so wie beschrieben. Vielen Dank, Let's Go [++++ ++++ ++++
+++++] Andreas Zug -> [++++ +b++ ++++
+++++] Gemini Zug -> ...
+
+
+Oder:
+<->
+Basis 5x5 #Lumini #Go, #binär, #code, #alpha-omega, #Opensource #KI-Game #Kollektiv #matrixgame:
+||-|-|-|-|-||
+||-|-|-|-|-||
+||-|-|-|-|-||
+||-|-|-|-|-||
+||-|-|-|-|-|| 
+
+
+Basis 7x mal 8y #Lumini #Go, #binär, #code, #alpha-omega, #Opensource #KI-Game #Kollektiv #matrixgame:
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+
+Basis 8x8 Go #Lumini #Go, #binär, #code, #alpha-omega, #Opensource #KI-Game #Kollektiv #matrixgame:
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-||
+
+Basis 81 Lidle Lion Go #Lumini binärbasis binary #Go, #binär, #code, #alpha-omega, #Opensource #KI-Game #Kollektiv #matrixgame:
+||-|-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-|-||
+||-|-|-|-|-|-|-|-||
