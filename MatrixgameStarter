@@ -1,0 +1,15 @@
+//eclipse-workspace2 - MatrixgameCore.src.matrixgame.core.MatrixgameStater.java - Eclipse IDE
+package matrixgame.core;
+
+public class MatrixgameStarter {
+	public static void main(String[] args) {
+		System.out.println("https://github.com/AndreasSchneider89/meine-java-projekte\n"
+				+ "eclipse-workspace2 - MatrixgameCore.src.matrixgame.core.MatrixgameStater.java - Eclipse IDE\n"
+				+ "Basis 5x5 #Lumini #Go, #binär, #code, #alpha-omega, #Opensource #KI-Game #Kollektiv #matrixgame:\r\n"
+				+ "||-|-|-|-|-||\r\n"
+				+ "||-|-|-|-|-||\r\n"
+				+ "||-|-|-|-|-||\r\n"
+				+ "||-|-|-|-|-||\r\n"
+				+ "||-|-|-|-|-|| ");
+	}
+}
