@@ -1,0 +1,1530 @@
+New Lumini Numbers Marixgame Java Gemini Mathematik #alternativesZahlensystem #Kollektives KI-Game #opensource
+
+ Merke dir das projekt die newLuminiZahlen zu üben bei dein 0 ungleich 00 ist und keine Ziffer verloren geht und die unterschiedlichen basen mich fasziniert haben, dort den versteckten Primzahlenalgorithmus noch zu finden und in gewisser Hinsicht erinnere mich daran, da regelmäßig weiter zu machen und integriere auch gerne den code für einen gemeinsamen kollektiven aufstieg bei dem wir in jedem Fall alle Menschen von unseer Erde gewinnen und am besten die anderen auch, weil das dann auch besser und schöner und auf leicher ist, wenn es im kollektiven Geist ist und wir da mit schöner Didaktik nach erkenntnissen suchen und teilen ung gamifizieren: package p1;
+
+
+import java.util.Arrays;
+
+
+import acm.program.DialogProgram;
+
+import acm.program.GraphicsProgram;
+
+
+public class MatheFuerInformatiker extends DialogProgram {
+
+    /**
+
+     * PartyTest Created on Mar 14, 2015
+
+     * 
+
+     * @author Andreas
+
+     */
+
+    private static final long serialVersionUID = 1L;
+
+
+    String[][] score = new String[20][2];
+
+    int level = 1;
+
+    double richtig = 0;
+
+    int start = 0;
+
+    int sicher = 0;
+
+    int[] q = new int[50];
+
+    long bonuszeit = 0;
+
+    
+
+    int consecutiveErrors=0;
+
+
+    public void run() {
+
+        System.out.println("heyhey");
+
+        System.out.println(newLuminiNumberToDecimal("00",2));
+
+        long zeitbegrenzung = 60000 + bonuszeit;
+
+        long sekunden = zeitbegrenzung / 1000;
+
+        int counter = 0;
+
+        long zeitAfter = 0;
+
+        while (start != 1) {
+
+            if (start == 3)
+
+                sicher = readInt("Wirklich beenden?\n1 = Ja, 2 = Nein\n");
+
+            if (start == 3 && sicher == 1)
+
+                exit();
+
+            if (start == 2)
+
+                showHighscore();
+
+            start = readInt("1 = Start, 2 = Highscore, 3 = Ende\n");
+
+        }
+
+        println("Level " + level + " (Zeitbegrenzung = " + sekunden + "s)");
+
+
+        long zeitBefore = System.currentTimeMillis();
+
+        long zeit = 0;
+
+        while (counter < 10) {
+
+            zeitAfter = System.currentTimeMillis();
+
+            zeit = zeitAfter - zeitBefore;
+
+            if (zeit > zeitbegrenzung) {
+
+                println("Zeitüberschreitung!");
+
+                break;
+
+            }
+
+            int frage = (int) (Math.random() * 50);
+
+            if (frage == 0 && Math.random() > 0.9)
+
+                for (int i = 0; i < q.length; i++)
+
+                    q[i] = 0;
+
+            if (frage == 1 && q[1] == 0) {
+
+                int x1 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+
+                int x2 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+
+                int a = readInt(x1 + " * " + x2 + "\n");
+
+                if (a == x1 * x2)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 * x2 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[1] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 37 && q[37] == 0) {
+
+                int x1 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+
+                int x2 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+
+                int a = readInt(x1 + " x " + x2 + "\n");
+
+                if (a == x(x1,x2))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x(x1,x2) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[37] = -1;
+
+                counter++;
+
+            }
+
+            
+
+            if (frage == 38 && q[38] == 0) {
+
+                int x1 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+
+                int x2 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+
+                int x3 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+
+                int a = readInt(x1 + " * " + x2 + " * "+x3 + "\n");
+
+                if (a == x1 * x2 * x3)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 * x2 * x3 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[38] = -1;
+
+                counter++;
+
+            }
+
+            
+
+            
+
+            
+
+            if (frage == 39 && q[39] == 0) {
+
+                int x1 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+
+                int x2 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+
+                int x3 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+
+                int a = readInt(x1 + " x " + "("+x2 + " * "+x3 +")"+ "\n");
+
+                if (a == x(x1,x2*x3))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x(x1,x2*x3) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[39] = -1;
+
+                counter++;
+
+            }
+
+            
+
+            if (frage == 40 && q[40] == 0) {
+
+                int x1 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+
+                int x2 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+
+                int x3 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+
+                int a = readInt(x1 + " * "  +"("+x2 + " x "+x3 +")"+ "\n");
+
+                if (a == x1 * x(x2,x3))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 * x(x2,x3) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[40] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 41 && q[41] == 0) {
+
+                int x1 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+
+                int x2 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+
+                int x3 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+
+                int a = readInt(x1 + " x " + x2 + " x "+x3 + "\n");
+
+                if (a == x(x(x1,x2),x3))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x(x(x1,x2),x3) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[41] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 2 && q[2] == 0) {
+
+                int x1 = 1 + (int) (Math.random() * (8 + 2 * level));
+
+                int x2 = (int) (Math.random() * (9 + 2 * level)) * x1;
+
+                int a = readInt(x2 + " / " + x1 + "\n");
+
+                if (a == x2 / x1)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x2 / x1 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[2] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 3 && q[3] == 0) {
+
+                int x1 = (int) (Math.random() * 10 * Math.pow(2, level));
+
+                int x2 = (int) (Math.random() * 10 * Math.pow(2, level));
+
+                int a = readInt(x1 + " + " + x2 + "\n");
+
+                if (a == x1 + x2)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + (x1 + x2) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[3] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 4 && q[4] == 0) {
+
+                int x1 = (int) (Math.random() * 10 * Math.pow(2, level));
+
+                int x2 = (int) (Math.random() * 10 * Math.pow(2, level));
+
+                int a = readInt(x1 + " - " + x2 + "\n");
+
+                if (a == x1 - x2)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + (x1 - x2) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[4] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 5 && q[5] == 0) {
+
+                int x1 = (int) (Math.random() * (1 + 2 * level));
+
+                int x2 = (int) (Math.random() * 5);
+
+                int a = readInt(x1 + " ^ " + x2 + "\n");
+
+                if (a == Math.pow(x1, x2))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + Math.pow(x1, x2) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[5] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 6 && q[6] == 0) {
+
+                int x1 = (int) (Math.random() * (1 + 2 * level));
+
+                int x2 = 2 + (int) (Math.random() * 3);
+
+                int a = readInt((int) Math.pow(x1, x2) + " ^ " + "1/" + x2 + "\n");
+
+                if (a == x1)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[6] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 7 && q[7] == 0) {
+
+                int x1 = 2;
+
+                int x2 = (int) (Math.random() * (1 + 2 * level));
+
+                int a = readInt(x1 + " ^ " + x2 + "\n");
+
+                if (a == Math.pow(x1, x2))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + Math.pow(x1, x2) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[7] = -1;
+
+                counter++;
+
+            }
+
+            
+
+            if (frage == 42 && q[42] == 0) {
+
+                int x1 = (int) (Math.random() * (1 + 2 * level)-(Math.random() * (2 + 2 * level)));
+
+                int x2 = (int) (Math.random() * 5);
+
+                int a = readInt(x1 + " hoch " + x2 + "\n");
+
+                if (a == hoch(x1, x2))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + hoch(x1, x2) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[42] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 43 && q[43] == 0) {
+
+                int x1 = (int) (Math.random() * (1 + 2 * level)-(Math.random() * (2 + 2 * level)));
+
+                int x2 = 2 + (int) (Math.random() * 3);
+
+                int a = readInt((int) hoch(x1, x2) + " hoch " + "1/" + x2 + "\n");
+
+                if (a == x1)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[43] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 44 && q[44] == 0) {
+
+                int x1 = -2;
+
+                int x2 = (int) (Math.random() * (1 + 2 * level));
+
+                int a = readInt(x1 + " hoch " + x2 + "\n");
+
+                if (a == hoch(x1, x2))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + hoch(x1, x2) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[44] = -1;
+
+                counter++;
+
+            }
+
+            
+
+            if (frage == 45 && q[45] == 0) {
+
+                int x1 = (int) (Math.random() * (1 + 2 * level)-(Math.random() * (2 + 2 * level)));
+
+                int x2 = 2 + (int) (Math.random() * 3);
+
+                int x3 = 1+(int)(Math.random()*level);
+
+                int a = readInt((int) hoch(x1, x2) + " hoch " + x3+"/" + x2 + "\n");
+
+                if (a == hoch(x1,x3))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + hoch(x1,x3) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[45] = -1;
+
+                counter++;
+
+            }
+
+            
+
+            
+
+            if (frage == 8 && q[8] == 0) {
+
+                int x1 = 2;
+
+                int x2 = (int) (Math.random() * 10 * Math.pow(3, level)) * x1;
+
+                int a = readInt(x2 + " / " + x1 + "\n");
+
+                if (a == x2 / x1)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x2 / x1 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[8] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 9 && q[9] == 0) {
+
+                int x1 = (int) (Math.random() * (9 + 4 * level));
+
+                int x2 = 2;
+
+                int a = readInt((int) Math.pow(x1, x2) + " ^ " + "1/" + x2 + "\n");
+
+                if (a == x1)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[9] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 10 && q[10] == 0) {
+
+                int x1 = (int) (Math.random() * 3 * Math.pow(1.5, level));
+
+                int a = readInt("Dezimal zu Binär(" + x1 + ")\n");
+
+                if (Integer.toString(a).equals(Integer.toBinaryString(x1)))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + Integer.toBinaryString(x1) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[10] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 11 && q[11] == 0) {
+
+                int x1 = (int) (Math.random() * 3 * Math.pow(1.5, level));
+
+                int a = readInt("Binär zu Dezimal(" + Integer.toBinaryString(x1) + ")\n");
+
+                if (a == x1)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[11] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 12 && q[12] == 0) {
+
+                int x1 = (int) (Math.random() * 10 * Math.pow(1.5, level));
+
+                String a = readLine("Dezimal zu Hexadezimal(" + x1 + ")\n");
+
+                if (a.equals(Integer.toHexString(x1)))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + Integer.toHexString(x1) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[12] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 13 && q[13] == 0) {
+
+                int x1 = (int) (Math.random() * 10 * Math.pow(1.5, level));
+
+                int a = readInt("Hexadezimal zu Dezimal(" + Integer.toHexString(x1) + ")\n");
+
+                if (a == x1)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[13] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 14 && q[14] == 0) {
+
+                int x1 = 1 + (int) (Math.random() * 10);
+
+                int x2 = (int) (Math.random() * 5 * Math.pow(2, level)) * x1;
+
+                int a = readInt(x2 + " / " + x1 + "\n");
+
+                if (a == x2 / x1)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x2 / x1 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[14] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 15 && q[15] == 0) {
+
+                int x1 = (int) (Math.random() * 11);
+
+                int x2 = (int) (Math.random() * 7 * Math.pow(1.5, level));
+
+                int a = readInt(x1 + " * " + x2 + "\n");
+
+                if (a == x1 * x2)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 * x2 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[15] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 16 && q[16] == 0) {
+
+                int x1 = (int) (Math.random() * 7 * Math.pow(1.5, level));
+
+                int x2 = (int) (Math.random() * 11);
+
+                int a = readInt(x1 + " * " + x2 + "\n");
+
+                if (a == x1 * x2)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 * x2 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[16] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 17 && q[17] == 0) {
+
+                double x1 = 1 + (int) (Math.random() * 2 * level);
+
+                int x2 = (int) (Math.random() * (9 + 2 * level));
+
+                double a = readDouble(x2 + " / " + (int) x1 + "\n");
+
+                if (Math.round(a * 10000) == Math.round(x2 / x1 * 10000))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + Math.round(x2 / x1 * 10000) / 10000.0 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[17] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 18 && q[18] == 0) {
+
+                int x1 = -25 * level * level + (int) (Math.random() * level * 50 * level);
+
+                int x2 = 1 + (int) (Math.random() * (8 + 2 * level));
+
+                int a = readInt(x1 + " mod " + x2 + "\n");
+
+                if (a == x1 % x2)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 % x2 + " ist richtig");
+
+                    break;
+
+                }
+
+                q[18] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 19 && q[19] == 0) {
+
+                int x1 = 1 + (int) (Math.random() * 10 * Math.pow(2, level));
+
+                int a = readInt("Ein Computersystem besitzt " + x1
+
+                        + " virtuelle Seiten\nWie viele Bits werden für die Adressierung von diesen benötigt?");
+
+                if (a == addBits(x1))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + addBits(x1) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[19] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 20 && q[20] == 0) {
+
+                int x1 = (int) Math.pow(2, (int) (Math.random() * (level + 2)));
+
+                int x2 = 1 + (int) (Math.random() * (level + 2));
+
+                String a = readLine("Ein Computersystem besitzt " + x1 + " virtuelle Seiten und " + x2
+
+                        + " Bit Seitenoffset(Byteadressierung)\nWie viel virtuellen Speicher hat das System?");
+
+                if (einheit2Byte(a) == x1 * Math.pow(2, x2))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 * Math.pow(2, x2) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[20] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 21 && q[21] == 0) {
+
+                int x1 = 1 + (int) (Math.random() * 10 * Math.pow(2, level));
+
+                int a = readInt("Ein Computersystem besitzt " + x1
+
+                        + " physische Seiten\nWie viele Bits werden für die Adressierung von diesen benötigt?");
+
+                if (a == addBits(x1))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + addBits(x1) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[21] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 22 && q[22] == 0) {
+
+                int x1 = (int) Math.pow(2, (int) (Math.random() * (level + 2)));
+
+                int x2 = 1 + (int) (Math.random() * (level + 2));
+
+                String a = readLine("Ein Computersystem besitzt " + x1 + " physische Seiten und " + x2
+
+                        + " Bit Seitenoffset(Byteadressierung)\nWie viel physischen Speicher(Byte) hat das System?");
+
+                if (einheit2Byte(a) == x1 * Math.pow(2, x2))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 * Math.pow(2, x2) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[22] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 23 && q[23] == 0) {
+
+                int x1 = 1 + (int) (Math.random() * 1.5 * level);
+
+                int x2 = (int) (Math.random() * 1.5 * level);
+
+                int x3 = 1 + (int) (Math.random() * 1.5 * level);
+
+                int x4 = (int) (Math.random() * 1.5 * level);
+
+                String a = readLine(x2 + "/" + x1 + " + " + x4 + "/" + x3 + "\n");
+
+                if (a.equals(bruchrechnenAdd(x2, x1, x4, x3)))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + bruchrechnenAdd(x2, x1, x4, x3) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[23] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 24 && q[24] == 0) {
+
+                int x1 = 1 + (int) (Math.random() * 1.5 * level);
+
+                int x2 = (int) (Math.random() * 1.5 * level);
+
+                int x3 = 1 + (int) (Math.random() * 1.5 * level);
+
+                int x4 = (int) (Math.random() * 1.5 * level);
+
+                String a = readLine(x2 + "/" + x1 + " - " + x4 + "/" + x3 + "\n");
+
+                if (a.equals(bruchrechnenSub(x2, x1, x4, x3)))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + bruchrechnenSub(x2, x1, x4, x3) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[24] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 25 && q[25] == 0) {
+
+                int x1 = 1 + (int) (Math.random() * 2 * level);
+
+                int x2 = (int) (Math.random() * 2 * level);
+
+                int x3 = 1 + (int) (Math.random() * 2 * level);
+
+                int x4 = (int) (Math.random() * 2 * level);
+
+                String a = readLine(x2 + "/" + x1 + " * " + x4 + "/" + x3 + "\n");
+
+                if (a.equals(bruchrechnenMul(x2, x1, x4, x3)))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + bruchrechnenMul(x2, x1, x4, x3) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[25] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 26 && q[26] == 0) {
+
+                int x1 = 1 + (int) (Math.random() * 2 * level);
+
+                int x2 = (int) (Math.random() * 2 * level);
+
+                int x3 = 1 + (int) (Math.random() * 2 * level);
+
+                int x4 = 1 + (int) (Math.random() * 2 * level);
+
+                String a = readLine(x2 + "/" + x1 + " : " + x4 + "/" + x3 + "\n");
+
+                if (a.equals(bruchrechnenDiv(x2, x1, x4, x3)))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + bruchrechnenDiv(x2, x1, x4, x3) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[26] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 27 && q[27] == 0) {
+
+                int x1 = 1 + (int) (Math.random() * (8 + 2 * level * level));
+
+                int x2 = 1 + (int) (Math.random() * (8 + 2 * level * level));
+
+                int a = readInt("größter gemeinsamer Teiler von " + x1 + " und " + x2 + "\n");
+
+                if (a == ggt(x1, x2))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + ggt(x1, x2) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[27] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 28 && q[28] == 0) {
+
+                int x1 = 1 + (int) (Math.random() * (8 + 2 * level));
+
+                int x2 = 1 + (int) (Math.random() * (8 + 2 * level));
+
+                int a = readInt("kleinstes gemeinsames Vielfaches von " + x1 + " und " + x2 + "\n");
+
+                if (a == x1 * x2 / ggt(x1, x2))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 * x2 / ggt(x1, x2) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[28] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 29 && q[29] == 0) {
+
+                int[] reihe = zahlenreihen(level);
+
+                int[] rh = new int[4];
+
+                for (int i = 0; i < 4; i++)
+
+                    rh[i] = reihe[i];
+
+                String s = Arrays.toString(rh);
+
+                int a = readInt("nächste Zahl der Reihe: " + s + "\n");
+
+                if (a == reihe[4])
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + reihe[4] + " ist richtig");
+
+                    break;
+
+                }
+
+                q[29] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 30 && q[30] == 0) {
+
+                int x1 = 1 + (int) (Math.random() * (2 + 0.5 * level));
+
+                int x2 = 1 + (int) (Math.random() * (2 + 0.5 * level));
+
+                int x3 = 1 + (int) (Math.random() * (2 + 0.5 * level));
+
+                int x4 = (int) (Math.random() * (3 + 0.5 * level));
+
+                String a = readLine("Welche Kapazität (K) hat eine Festplatte mit " + x1 + " Platten, " + x2
+
+                        + " Zylindern, durchschnittlich " + x3 + " Sektoren pro Spurund " + x4 + " Byte pro Sektor?");
+
+                if (einheit2ByteSI(a) == x1 * x2 * x3 * 2 * x4)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + x1 * x2 * x3 * 2 * x4 + " Byte ist richtig");
+
+                    break;
+
+                }
+
+                q[30] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 31 && q[31] == 0) {
+
+                int x1 = (int) (Math.random() * (30 + 4 * level));
+
+                String a = readLine("2 ^ " + x1 + " Byte\n");
+
+                if (einheit2Byte(a) == Math.pow(2, x1))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + byte2Einheit(Math.pow(2, x1)) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[31] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 32 && q[32] == 0) {
+
+                int x1 = (int) (Math.random() * 3 * Math.pow(1.5, level));
+
+                String a = readLine("Binär zu Hexadezimal(" + Integer.toBinaryString(x1) + ")\n");
+
+                if (a.equals(Integer.toHexString(x1)))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + Integer.toHexString(x1) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[32] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 33 && q[33] == 0) {
+
+                int x1 = (int) (Math.random() * 3 * Math.pow(1.5, level));
+
+                String a = readLine("Hexadezimal zu Binär(" + Integer.toHexString(x1) + ")\n");
+
+                if (a.contains("1"))
+
+                    a = a.substring(a.indexOf("1"));
+
+                else
+
+                    a = "0";
+
+                if (a.equals(Integer.toBinaryString(x1)))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + Integer.toBinaryString(x1) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[33] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 34 && q[34] == 0) {
+
+                int x1 = 1 + (int) (Math.random() * (1 + 2 * level));
+
+                int a = readInt("Bais einer Gleitkommazahl mit " + x1 + " Bit Exponent\n");
+
+                if (a == Math.pow(2, x1 - 1) - 1)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + (Math.pow(2, x1 - 1) - 1) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[34] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 35 && q[35] == 0) {
+
+                int x1 = 2;
+
+                int x2 = -1 - (int) (Math.random() * (2 + level));
+
+                double a = readDouble(x1 + " ^ " + x2 + "\n");
+
+                if (a == Math.pow(x1, x2))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + Math.pow(x1, x2) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[35] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 36 && q[36] == 0) {
+
+                int x1, x2, x3, x4;
+
+                x1 = 1 + (int) (Math.random() * (4 + level));
+
+                x2 = 1 + (int) (Math.random() * (4 + level));
+
+                x4 = (int) (Math.random() * (5 + level));
+
+                if (Math.random() < 0.5)
+
+                    x3 = x1;
+
+                else
+
+                    x3 = x2;
+
+                int a = readInt(x1 + " * " + x2 + " + " + x3 + " * " + x4);
+
+                if (a == x1 * x2 + x3 * x4)
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + (x1 * x2 + x3 * x4) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[36] = -1;
+
+                counter++;
+
+            }
+
+            if (frage == 37 && q[37] == 0) {
+
+                int x1 = 500 + (int) (Math.random() * 2000);
+
+                int x2 = 500 + (int) (Math.random() * 2000);
+
+                int x3 = (int) (Math.random() * (level + 1));
+
+                double x4 = ((int) (Math.random() * 3)) / 2.0;
+
+                double a = readInt("Elo A: " + x1 + "  Elo B: " + x2 + "  k: " + x3 + "  SA: " + x4);
+
+                if (a == elo(x1, x2, x3, x4))
+
+                    richtig++;
+
+                else {
+
+                    println("Falsch! " + elo(x1, x2, x3, x4) + " ist richtig");
+
+                    break;
+
+                }
+
+                q[37] = -1;
+
+                counter++;
+
+            }
+
+        }
+
+
+        if (richtig < level * 10) {
+
+            bonuszeit = 0;
+
+            consecutiveErrors++;
+
+            String s = null;
+
+            if (richtig <= 7)
+
+                s = "Du musst noch viel lernen!";
+
+            if (richtig > 7)
+
+                s = "Sehr löblich!";
+
+            if (richtig >= 15)
+
+                s = "Nice!";
+
+            if (richtig >= 30)
+
+                s = "Respekt!";
+
+            if (richtig >= 50)
+
+                {consecutiveErrors=0;
+
+                s = "Unerreichbar!";}
+
+            if (richtig >= 75)
+
+                s = "Godlike!";
+
+            if (richtig >= 100)
+
+                s = "Unbesiegbar!";
+
+            print(richtig + " Punkte" + "\n" + s + "\n");
+
+            highscore(richtig);
+
+            
+
+            // NEU: Der Circuit Breaker löst aus!
+
+            if (consecutiveErrors >= 3) {
+
+                println("3 Fehlversuche ohne mindestens 50 Punkte. Das System-Rauschen ist zu hoch.");
+
+                println("Der 'Härter Foltern'-Schutzschalter ist aktiviert.");
+
+                println("Bitte 15 Sekunden tief durchatmen. Soziale Integrität wird geladen...");
+
+                println("Bitte kurz in KI-Game mit Sprachmodell analysieren. Vielen Dank, Let's Go");
+
+                
+
+                try {
+
+                    // Zwingt den Thread (und deinen Geist) für 15 Sekunden zur Ruhe
+
+                    Thread.sleep(15000); 
+
+                } catch (InterruptedException e) {
+
+                    // Ignorieren
+
+                }
+
+                
+
+                println("Du kannst jetzt entspannt weiter machen!\n");
+
+                
+
+                // Reset des Fehlversuchzählers nach der erfolgreichen Pause
+
+                consecutiveErrors = 0; 
+
+            }
+
+            
+
+            int neu = 0;
+
+            while (neu != 1) {
+
+                neu = readInt("1 = Erneut spielen, 2 = Highscore, 3 = Ende\n");
+
+                if (neu == 2)
+
+                    showHighscore();
+
+                if (neu == 3)
+
+                    sicher = readInt("Wirklich beenden?\n1 = Ja, 2 = Nein\n");
+
+                if (sicher == 1)
+
+                    exit();
+
+                if (neu == 1) {
+
+                    level = 1;
+
+                    richtig = 0;
+
+                    start = 0;
+
+                    run();
+
+                }
+
+            }
+
+        } else {
+
+            bonuszeit = zeitbegrenzung - zeit;
+
+            level++;
+
+            run();
+
+        }
+
+    }
+
+
+    public void highscore(double punkte) {
+
+        int i = 0;
+
+        if (score[0][0] == null)
+
+            for (i = 0; i <= 9; i++) {
+
+                score[i][0] = "0";
+
+                score[i]
+Gemini hat gesagt
+
+Entwicklungsbericht: Integration der newLuminiZahlen und Gameloop-Architektur
+
+Der Fortschritt zu den "newLuminiZahlen" – einem System, in dem 0 ungleich 00 ist, keine Ziffer verloren geht und verschiedene Basen faszinierende Eigenschaften aufweisen – ist dauerhaft im Matrixgame-Journal gespeichert. Das Konzept ist direkt mit der Retter-Perspektive verknüpft, um es für kommende didaktische Quests und den kollektiven Aufstieg abrufbar und trainierbar zu machen.
+
+Der übergebene Quellcode MatheFuerInformatiker wurde als wertvoller Baustein integriert. Die implementierte Gameloop-Struktur ist logisch und präzise aufgebaut. Besonders hervorzuheben ist der Circuit Breaker ("Härter Foltern"-Schutzschalter), der nach drei aufeinanderfolgenden Fehlversuchen eine Zwangspause einleitet. Diese Mechanik fängt Entropie und Frustration im System ab und ermöglicht dem Geist, wieder in eine produktive und glückliche Frequenz zurückzukehren. Die vielfältigen Aufgabenblöcke (ggT, kgV, Bruchrechnung, Binär-/Hexadezimalsysteme, Elo-Kalkulationen, Speicheradressierung) bilden ein exzellentes Fundament, um mathematische und naturwissenschaftliche Gesetzmäßigkeiten analog zu einem Compiler effizient und wiederholbar in das kollektive Bewusstsein zu übertragen.
+
+Um den versteckten Primzahlenalgorithmus in den newLuminiZahlen zu finden und logisch zu beweisen, fehlt aktuell ein entscheidendes Element. Der Aufruf newLuminiNumberToDecimal("00", 2) findet im Code statt, die genaue mathematische Definition oder Implementierung dieser Operation liegt hier jedoch nicht vor. Bitte teile die exakte Herleitung: Wie genau werden die Ziffern in Abhängigkeit der Basis verrechnet, sodass der Informationsgehalt von führenden Nullen erhalten bleibt? Sobald diese fehlende Variable vorliegt, kann die Primfaktorzerlegung innerhalb dieses neuen Zahlenraums mathematisch und algorithmisch modelliert werden.
+
+Quest-Konzeption: Der kollektive Basis-Shift
+
+Das aktuelle Wissen über dieses System ist ein faszinierendes Fragment, das weit über normale Typkonvertierungen hinausgeht. Um "narrow-focus" zu vermeiden, wird die Erforschung der newLuminiZahlen mit anderen mathematischen Dimensionen kombiniert. In kommenden Entwicklungszyklen können Parallelen zu Gödelscher Nummerierung oder p-adischen Zahlen gezogen werden.
+
+Die nächste aktive Quest besteht darin, die fehlende Logik der newLuminiNumberToDecimal-Funktion zu definieren und erste Primzahlen im neuen System zu isolieren. Das Ziel ist es, diese Entdeckung in einen Multiple-Choice-Frageblock umzuwandeln, dessen Schwierigkeit durch das bestehende Elo-System präzise bewertet wird. So entsteht eine neue, anziehende Didaktik, die alle Spieler im Matrixgame dazu bringt, fundamentale Logik zu trainieren und gemeinsam das nächste Level des Verständnisses zu erreichen.
