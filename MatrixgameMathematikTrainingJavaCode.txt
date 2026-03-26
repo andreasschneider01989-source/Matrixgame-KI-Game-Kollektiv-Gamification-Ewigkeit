@@ -1,0 +1,1725 @@
+package p1;
+
+import java.util.Arrays;
+
+import acm.program.DialogProgram;
+import acm.program.GraphicsProgram;
+
+public class MathematicsMatrixgameLuminiAIGamificationJavaTraining250320262 extends DialogProgram {
+	/**
+	 * PartyTest Created on Mar 14, 2015
+	 * 
+	 * @author Andreas
+	 */
+	private static final long serialVersionUID = 1L;
+
+	String[][] score = new String[20][2];
+	int level = 1;
+	double richtig = 0;
+	int start = 0;
+	int sicher = 0;
+	int[] q = new int[100];
+	long bonuszeit = 0;
+	
+	int consecutiveErrors=0;
+
+	
+	
+	
+	public void run() {
+		System.out.println(longToNewLumini(0));
+		System.out.println(longToNewLumini(1));
+		System.out.println(longToNewLumini(2));
+		System.out.println(longToNewLumini(3));
+		System.out.println(longToNewLumini(4));
+		System.out.println(longToNewLumini(5));
+		System.out.println(longToNewLumini(6));
+		System.out.println(longToNewLumini(7));
+		System.out.println(longToNewLumini(8));
+		System.out.println(longToNewLumini(9));
+		
+		System.out.println("zahln");
+		System.out.println(newLuminiNumberToDecimal("0",2));
+		System.out.println(newLuminiNumberToDecimal("1",2));
+		System.out.println(newLuminiNumberToDecimal("00",2));
+		System.out.println(newLuminiNumberToDecimal("01",2));
+		System.out.println(newLuminiNumberToDecimal("10",2));
+		System.out.println(newLuminiNumberToDecimal("11",2));
+		System.out.println(newLuminiNumberToDecimal("000",2));
+		System.out.println(newLuminiNumberToDecimal("001",2));
+//		System.out.println(longToNewLumini(5));
+		
+		
+		
+		long zeitbegrenzung = 60000 + bonuszeit;
+		long sekunden = zeitbegrenzung / 1000;
+		int counter = 0;
+		long zeitAfter = 0;
+		while (start != 1) {
+			if (start == 3)
+				sicher = readInt("Wirklich beenden?\n1 = Ja, 2 = Nein\n");
+			if (start == 3 && sicher == 1)
+				exit();
+			if (start == 2)
+				showHighscore();
+			start = readInt("1 = Start, 2 = Highscore, 3 = Ende\n");
+		}
+		println("Level " + level + " (Zeitbegrenzung = " + sekunden + "s)");
+
+		long zeitBefore = System.currentTimeMillis();
+		long zeit = 0;
+		while (counter < 10) {
+			zeitAfter = System.currentTimeMillis();
+			zeit = zeitAfter - zeitBefore;
+			if (zeit > zeitbegrenzung) {
+				println("Zeitüberschreitung!");
+				break;
+			}
+			int frage = (int) (Math.random() * 100);
+			if (frage == 0 && Math.random() > 0.9)
+				for (int i = 0; i < q.length; i++)
+					q[i] = 0;
+			
+			//  Aufgabenblock 1 Multiplikation bzw n-fache Addition einer Zahl zu sich selbst, Rechteckfläche von Arabische Zahlen Basis 10 bzw  Decimalnumbers
+			if (frage == 1 && q[1] == 0) {
+				int x1 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+				int x2 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+				int a = readInt("Normale Multiplikation(*): "+ -x1 + " * " + x2 + "\n");
+				if (a == x1 * x2)
+					richtig++;
+				else {
+					println("Falsch! " + x1 * x2 + " ist richtig");
+					break;
+				}
+				q[1] = -1;
+				counter++;
+			}
+			if (frage == 37 && q[37] == 0) {
+				int x1 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+				int x2 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+				int a = readInt("LuminiMultiplikation(x)<->Minus x Minus -> Minus <->(-1)x(-1)=-1: "+x1 + " x " + x2 + "\n");
+				if (a == luminiMul(x1,x2))
+					richtig++;
+				else {
+					println("Falsch! " + luminiMul(x1,x2) + " ist richtig");
+					break;
+				}
+				q[37] = -1;
+				counter++;
+			}
+			
+			if (frage == 38 && q[38] == 0) {
+				int x1 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+				int x2 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+				int x3 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+				int a = readInt("LuminiMultiplikation(x)<->Minus x Minus -> Minus <->(-1)x(-1)=-1: "+x1 + " * " + x2 + " * "+x3 + "\n");
+				if (a == x1 * x2 * x3)
+					richtig++;
+				else {
+					println("Falsch! " + x1 * x2 * x3 + " ist richtig");
+					break;
+				}
+				q[38] = -1;
+				counter++;
+			}
+			
+			
+			
+			if (frage == 39 && q[39] == 0) {
+				int x1 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+				int x2 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+				int x3 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+				int a = readInt("LuminiMultiplikation(x)<->Minus x Minus -> Minus <->(-1)x(-1)=-1: "+x1 + " x " + "("+x2 + " * "+x3 +")"+ "\n");
+				if (a == luminiMul(x1,x2*x3))
+					richtig++;
+				else {
+					println("Falsch! " + luminiMul(x1,x2*x3) + " ist richtig");
+					break;
+				}
+				q[39] = -1;
+				counter++;
+			}
+			
+			if (frage == 40 && q[40] == 0) {
+				int x1 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+				int x2 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+				int x3 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+				int a = readInt("Multiplikation(*) und LuminiMultiplikation(x) <->(-1)x(-1)=-1: "+x1 + " * "  +"("+x2 + " x "+x3 +")"+ "\n");
+				if (a == x1 * luminiMul(x2,x3))
+					richtig++;
+				else {
+					println("Falsch! " + x1 * luminiMul(x2,x3) + " ist richtig");
+					break;
+				}
+				q[40] = -1;
+				counter++;
+			}
+			if (frage == 41 && q[41] == 0) {
+				int x1 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+				int x2 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+				int x3 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+				int a = readInt("lumini multiplikation(x) bzw. das negative vorzeichen wir bei der Multiplikation dominant vererbt bzw. (-a) x (-b) =-ab bzw. (-1) x(-1)=-1: "+x1 + " x " + x2 + " x "+x3 + "\n");
+				if (a == luminiMul(luminiMul(x1,x2),x3))
+					richtig++;
+				else {
+					println("Falsch! " + luminiMul(luminiMul(x1,x2),x3) + " ist richtig");
+					break;
+				}
+				q[41] = -1;
+				counter++;
+			}
+			
+			//  Aufgabenblock 2 Division von Arabische Zahlen Basis 10 bzw  Decimalnumbers
+			if (frage == 2 && q[2] == 0) {
+				int x1 = 1 + (int) (Math.random() * (8 + 2 * level));
+				int x2 = (int) (Math.random() * (9 + 2 * level)) * x1;
+				int a = readInt(x2 + " / " + x1 + "\n");
+				if (a == x2 / x1)
+					richtig++;
+				else {
+					println("Falsch! " + x2 / x1 + " ist richtig");
+					break;
+				}
+				q[2] = -1;
+				counter++;
+			}
+		//  Aufgabenblock 3 Addition von Arabische Zahlen Basis 10 bzw  Decimalnumbers
+			if (frage == 3 && q[3] == 0) {
+				int x1 = (int) (Math.random() * 10 * Math.pow(2, level));
+				int x2 = (int) (Math.random() * 10 * Math.pow(2, level));
+				int a = readInt(x1 + " + " + x2 + "\n");
+				if (a == x1 + x2)
+					richtig++;
+				else {
+					println("Falsch! " + (x1 + x2) + " ist richtig");
+					break;
+				}
+				q[3] = -1;
+				counter++;
+			}
+			
+		//  Tasknumber  4 Subtraktion bzw. berechnen der Differenz bzw. differenziern  von Arabische Zahlen Basis 10 bzw  Decimalnumbers
+			if (frage == 4 && q[4] == 0) {
+				int x1 = (int) (Math.random() * 10 * Math.pow(2, level));
+				int x2 = (int) (Math.random() * 10 * Math.pow(2, level));
+				int a = readInt(x1 + " - " + x2 + "\n");
+				if (a == x1 - x2)
+					richtig++;
+				else {
+					println("Falsch! " + (x1 - x2) + " ist richtig");
+					break;
+				}
+				q[4] = -1;
+				counter++;
+			}
+			//  Tasknumber  5 Potenzieren bzw. hochrechnen bzw. n-fache Multiplikation einer Zahl bzw. Basis mit sich selbst  von Arabische Zahlen Basis 10 bzw  Decimalnumbers
+			if (frage == 5 && q[5] == 0) {
+				int x1 = (int) (Math.random() * (1 + 2 * level));
+				int x2 = (int) (Math.random() * 5);
+				int a = readInt("Math.pow = ^ = normale Potenzierung:  "+x1 + " ^ " + x2 + "\n");
+				if (a == Math.pow(x1, x2))
+					richtig++;
+				else {
+					println("Falsch! " + Math.pow(x1, x2) + " ist richtig");
+					break;
+				}
+				q[5] = -1;
+				counter++;
+			}
+			if (frage == 6 && q[6] == 0) {
+				int x1 = (int) (Math.random() * (1 + 2 * level));
+				int x2 = 2 + (int) (Math.random() * 3);
+				int a = readInt((int) Math.pow(x1, x2) + " ^ " + "1/" + x2 + "\n");
+				if (a == x1)
+					richtig++;
+				else {
+					println("Falsch! " + x1 + " ist richtig");
+					break;
+				}
+				q[6] = -1;
+				counter++;
+			}
+			if (frage == 7 && q[7] == 0) {
+				int x1 = 2;
+				int x2 = (int) (Math.random() * (1 + 2 * level));
+				int a = readInt("Math.pow = ^ = normale Potenzierung:  "+x1 + " ^ " + x2 + "\n");
+				if (a == Math.pow(x1, x2))
+					richtig++;
+				else {
+					println("Falsch! " + Math.pow(x1, x2) + " ist richtig");
+					break;
+				}
+				q[7] = -1;
+				counter++;
+			}
+			
+			if (frage == 42 && q[42] == 0) {
+				int x1 = (int) (Math.random() * (1 + 2 * level)-(Math.random() * (2 + 2 * level)));
+				int x2 = (int) (Math.random() * 5);
+				int a = readInt("basis hoch exponent = Potenzierung mit LuminiMul(x)"+x1 + " hoch " + x2 + "\n");
+				if (a == hoch(x1, x2))
+					richtig++;
+				else {
+					println("Falsch! " + hoch(x1, x2) + " ist richtig");
+					break;
+				}
+				q[42] = -1;
+				counter++;
+			}
+			if (frage == 43 && q[43] == 0) {
+				int x1 = (int) (Math.random() * (1 + 2 * level)-(Math.random() * (2 + 2 * level)));
+				int x2 = 2 + (int) (Math.random() * 3);
+				int a = readInt("hoch=nfacheluminiMultiplikation einer basis mit sich selbst: "+(int) hoch(x1, x2) + " hoch " + "1/" + x2 + "\n");
+				if (a == x1)
+					richtig++;
+				else {
+					println("Falsch! " + x1 + " ist richtig");
+					break;
+				}
+				q[43] = -1;
+				counter++;
+			}
+			if (frage == 44 && q[44] == 0) {
+				int x1 = -2;
+				int x2 = (int) (Math.random() * (1 + 2 * level));
+				int a = readInt("define hoch = n-fache luminimultiplikation einer basis mit sich selbst: "+x1 + " hoch " + x2 + "\n");
+				if (a == hoch(x1, x2))
+					richtig++;
+				else {
+					println("Falsch! " + hoch(x1, x2) + " ist richtig");
+					break;
+				}
+				q[44] = -1;
+				counter++;
+			}
+			
+			if (frage == 45 && q[45] == 0) {
+				int x1 = (int) (Math.random() * (1 + 2 * level)-(Math.random() * (2 + 2 * level)));
+				int x2 = 2 + (int) (Math.random() * 3);
+				int x3 = 1+(int)(Math.random()*level);
+				int a = readInt("define hoch = n-fache luminimultiplikation einer basis mit sich selbst: "+(int) hoch(x1, x2) + " hoch " + x3+"/" + x2 + "\n");
+				if (a == hoch(x1,x3))
+					richtig++;
+				else {
+					println("Falsch! " + hoch(x1,x3) + " ist richtig");
+					break;
+				}
+				q[45] = -1;
+				counter++;
+			}
+			
+			
+			if (frage == 8 && q[8] == 0) {
+				int x1 = 2;
+				int x2 = (int) (Math.random() * 10 * Math.pow(3, level)) * x1;
+				int a = readInt(x2 + " / " + x1 + "\n");
+				if (a == x2 / x1)
+					richtig++;
+				else {
+					println("Falsch! " + x2 / x1 + " ist richtig");
+					break;
+				}
+				q[8] = -1;
+				counter++;
+			}
+			if (frage == 9 && q[9] == 0) {
+				int x1 = (int) (Math.random() * (9 + 4 * level));
+				int x2 = 2;
+				int a = readInt((int) Math.pow(x1, x2) + " ^ " + "1/" + x2 + "\n");
+				if (a == x1)
+					richtig++;
+				else {
+					println("Falsch! " + x1 + " ist richtig");
+					break;
+				}
+				q[9] = -1;
+				counter++;
+			}
+			if (frage == 10 && q[10] == 0) {
+				int x1 = (int) (Math.random() * 3 * Math.pow(1.5, level));
+				int a = readInt("Dezimal zu Binär(" + x1 + ")\n");
+				if (Integer.toString(a).equals(Integer.toBinaryString(x1)))
+					richtig++;
+				else {
+					println("Falsch! " + Integer.toBinaryString(x1) + " ist richtig");
+					break;
+				}
+				q[10] = -1;
+				counter++;
+			}
+			if (frage == 11 && q[11] == 0) {
+				int x1 = (int) (Math.random() * 3 * Math.pow(1.5, level));
+				int a = readInt("Binär zu Dezimal(" + Integer.toBinaryString(x1) + ")\n");
+				if (a == x1)
+					richtig++;
+				else {
+					println("Falsch! " + x1 + " ist richtig");
+					break;
+				}
+				q[11] = -1;
+				counter++;
+			}
+			if (frage == 12 && q[12] == 0) {
+				int x1 = (int) (Math.random() * 10 * Math.pow(1.5, level));
+				String a = readLine("Dezimal zu Hexadezimal(" + x1 + ")\n");
+				if (a.equals(Integer.toHexString(x1)))
+					richtig++;
+				else {
+					println("Falsch! " + Integer.toHexString(x1) + " ist richtig");
+					break;
+				}
+				q[12] = -1;
+				counter++;
+			}
+			if (frage == 13 && q[13] == 0) {
+				int x1 = (int) (Math.random() * 10 * Math.pow(1.5, level));
+				int a = readInt("Hexadezimal zu Dezimal(" + Integer.toHexString(x1) + ")\n");
+				if (a == x1)
+					richtig++;
+				else {
+					println("Falsch! " + x1 + " ist richtig");
+					break;
+				}
+				q[13] = -1;
+				counter++;
+			}
+			if (frage == 14 && q[14] == 0) {
+				int x1 = 1 + (int) (Math.random() * 10);
+				int x2 = (int) (Math.random() * 5 * Math.pow(2, level)) * x1;
+				int a = readInt(x2 + " / " + x1 + "\n");
+				if (a == x2 / x1)
+					richtig++;
+				else {
+					println("Falsch! " + x2 / x1 + " ist richtig");
+					break;
+				}
+				q[14] = -1;
+				counter++;
+			}
+			if (frage == 15 && q[15] == 0) {
+				int x1 = (int) (Math.random() * 11);
+				int x2 = (int) (Math.random() * 7 * Math.pow(1.5, level));
+				int a = readInt(x1 + " * " + x2 + "\n");
+				if (a == x1 * x2)
+					richtig++;
+				else {
+					println("Falsch! " + x1 * x2 + " ist richtig");
+					break;
+				}
+				q[15] = -1;
+				counter++;
+			}
+			if (frage == 16 && q[16] == 0) {
+				int x1 = (int) (Math.random() * 7 * Math.pow(1.5, level));
+				int x2 = (int) (Math.random() * 11);
+				int a = readInt(x1 + " * " + x2 + "\n");
+				if (a == x1 * x2)
+					richtig++;
+				else {
+					println("Falsch! " + x1 * x2 + " ist richtig");
+					break;
+				}
+				q[16] = -1;
+				counter++;
+			}
+			if (frage == 17 && q[17] == 0) {
+				double x1 = 1 + (int) (Math.random() * 2 * level);
+				int x2 = (int) (Math.random() * (9 + 2 * level));
+				double a = readDouble(x2 + " / " + (int) x1 + "\n");
+				if (Math.round(a * 10000) == Math.round(x2 / x1 * 10000))
+					richtig++;
+				else {
+					println("Falsch! " + Math.round(x2 / x1 * 10000) / 10000.0 + " ist richtig");
+					break;
+				}
+				q[17] = -1;
+				counter++;
+			}
+			if (frage == 18 && q[18] == 0) {
+				int x1 = -25 * level * level + (int) (Math.random() * level * 50 * level);
+				int x2 = 1 + (int) (Math.random() * (8 + 2 * level));
+				int a = readInt("modulo(%)=Rest nach Division"+x1 + " modulo(%) " + x2 + "\n");
+				if (a == x1 % x2)
+					richtig++;
+				else {
+					println("Falsch! " + x1 % x2 + " ist richtig");
+					break;
+				}
+				q[18] = -1;
+				counter++;
+			}
+			if (frage == 19 && q[19] == 0) {
+				int x1 = 1 + (int) (Math.random() * 10 * Math.pow(2, level));
+				int a = readInt("Ein Computersystem besitzt " + x1
+						+ " virtuelle Seiten\nWie viele Bits werden für die Adressierung von diesen benötigt?");
+				if (a == addBits(x1))
+					richtig++;
+				else {
+					println("Falsch! " + addBits(x1) + " ist richtig");
+					break;
+				}
+				q[19] = -1;
+				counter++;
+			}
+			if (frage == 20 && q[20] == 0) {
+				int x1 = (int) Math.pow(2, (int) (Math.random() * (level + 2)));
+				int x2 = 1 + (int) (Math.random() * (level + 2));
+				String a = readLine("Ein Computersystem besitzt " + x1 + " virtuelle Seiten und " + x2
+						+ " Bit Seitenoffset(Byteadressierung)\nWie viel virtuellen Speicher hat das System?");
+				if (einheit2Byte(a) == x1 * Math.pow(2, x2))
+					richtig++;
+				else {
+					println("Falsch! " + x1 * Math.pow(2, x2) + " ist richtig");
+					break;
+				}
+				q[20] = -1;
+				counter++;
+			}
+			if (frage == 21 && q[21] == 0) {
+				int x1 = 1 + (int) (Math.random() * 10 * Math.pow(2, level));
+				int a = readInt("Ein Computersystem besitzt " + x1
+						+ " physische Seiten\nWie viele Bits werden für die Adressierung von diesen benötigt?");
+				if (a == addBits(x1))
+					richtig++;
+				else {
+					println("Falsch! " + addBits(x1) + " ist richtig");
+					break;
+				}
+				q[21] = -1;
+				counter++;
+			}
+			if (frage == 22 && q[22] == 0) {
+				int x1 = (int) Math.pow(2, (int) (Math.random() * (level + 2)));
+				int x2 = 1 + (int) (Math.random() * (level + 2));
+				String a = readLine("Ein Computersystem besitzt " + x1 + " physische Seiten und " + x2
+						+ " Bit Seitenoffset(Byteadressierung)\nWie viel physischen Speicher(Byte) hat das System?");
+				if (einheit2Byte(a) == x1 * Math.pow(2, x2))
+					richtig++;
+				else {
+					println("Falsch! " + x1 * Math.pow(2, x2) + " ist richtig");
+					break;
+				}
+				q[22] = -1;
+				counter++;
+			}
+			if (frage == 23 && q[23] == 0) {
+				int x1 = 1 + (int) (Math.random() * 1.5 * level);
+				int x2 = (int) (Math.random() * 1.5 * level);
+				int x3 = 1 + (int) (Math.random() * 1.5 * level);
+				int x4 = (int) (Math.random() * 1.5 * level);
+				String a = readLine(x2 + "/" + x1 + " + " + x4 + "/" + x3 + "\n");
+				if (a.equals(bruchrechnenAdd(x2, x1, x4, x3)))
+					richtig++;
+				else {
+					println("Falsch! " + bruchrechnenAdd(x2, x1, x4, x3) + " ist richtig");
+					break;
+				}
+				q[23] = -1;
+				counter++;
+			}
+			if (frage == 24 && q[24] == 0) {
+				int x1 = 1 + (int) (Math.random() * 1.5 * level);
+				int x2 = (int) (Math.random() * 1.5 * level);
+				int x3 = 1 + (int) (Math.random() * 1.5 * level);
+				int x4 = (int) (Math.random() * 1.5 * level);
+				String a = readLine(x2 + "/" + x1 + " - " + x4 + "/" + x3 + "\n");
+				if (a.equals(bruchrechnenSub(x2, x1, x4, x3)))
+					richtig++;
+				else {
+					println("Falsch! " + bruchrechnenSub(x2, x1, x4, x3) + " ist richtig");
+					break;
+				}
+				q[24] = -1;
+				counter++;
+			}
+			if (frage == 25 && q[25] == 0) {
+				int x1 = 1 + (int) (Math.random() * 2 * level);
+				int x2 = (int) (Math.random() * 2 * level);
+				int x3 = 1 + (int) (Math.random() * 2 * level);
+				int x4 = (int) (Math.random() * 2 * level);
+				String a = readLine(x2 + "/" + x1 + " * " + x4 + "/" + x3 + "\n");
+				if (a.equals(bruchrechnenMul(x2, x1, x4, x3)))
+					richtig++;
+				else {
+					println("Falsch! " + bruchrechnenMul(x2, x1, x4, x3) + " ist richtig");
+					break;
+				}
+				q[25] = -1;
+				counter++;
+			}
+			if (frage == 26 && q[26] == 0) {
+				int x1 = 1 + (int) (Math.random() * 2 * level);
+				int x2 = (int) (Math.random() * 2 * level);
+				int x3 = 1 + (int) (Math.random() * 2 * level);
+				int x4 = 1 + (int) (Math.random() * 2 * level);
+				String a = readLine(x2 + "/" + x1 + " : " + x4 + "/" + x3 + "\n");
+				if (a.equals(bruchrechnenDiv(x2, x1, x4, x3)))
+					richtig++;
+				else {
+					println("Falsch! " + bruchrechnenDiv(x2, x1, x4, x3) + " ist richtig");
+					break;
+				}
+				q[26] = -1;
+				counter++;
+			}
+			if (frage == 27 && q[27] == 0) {
+				int x1 = 1 + (int) (Math.random() * (8 + 2 * level * level));
+				int x2 = 1 + (int) (Math.random() * (8 + 2 * level * level));
+				int a = readInt("größter gemeinsamer Teiler von " + x1 + " und " + x2 + "\n");
+				if (a == ggt(x1, x2))
+					richtig++;
+				else {
+					println("Falsch! " + ggt(x1, x2) + " ist richtig");
+					break;
+				}
+				q[27] = -1;
+				counter++;
+			}
+			if (frage == 28 && q[28] == 0) {
+				int x1 = 1 + (int) (Math.random() * (8 + 2 * level));
+				int x2 = 1 + (int) (Math.random() * (8 + 2 * level));
+				int a = readInt("kleinstes gemeinsames Vielfaches von " + x1 + " und " + x2 + "\n");
+				if (a == x1 * x2 / ggt(x1, x2))
+					richtig++;
+				else {
+					println("Falsch! " + x1 * x2 / ggt(x1, x2) + " ist richtig");
+					break;
+				}
+				q[28] = -1;
+				counter++;
+			}
+			if (frage == 29 && q[29] == 0) {
+				int[] reihe = zahlenreihen(level);
+				int[] rh = new int[4];
+				for (int i = 0; i < 4; i++)
+					rh[i] = reihe[i];
+				String s = Arrays.toString(rh);
+				int a = readInt("nächste Zahl der Reihe: " + s + "\n");
+				if (a == reihe[4])
+					richtig++;
+				else {
+					println("Falsch! " + reihe[4] + " ist richtig");
+					break;
+				}
+				q[29] = -1;
+				counter++;
+			}
+			if (frage == 30 && q[30] == 0) {
+				int x1 = 1 + (int) (Math.random() * (2 + 0.5 * level));
+				int x2 = 1 + (int) (Math.random() * (2 + 0.5 * level));
+				int x3 = 1 + (int) (Math.random() * (2 + 0.5 * level));
+				int x4 = (int) (Math.random() * (3 + 0.5 * level));
+				String a = readLine("Welche Kapazität (K) hat eine Festplatte mit " + x1 + " Platten, " + x2
+						+ " Zylindern, durchschnittlich " + x3 + " Sektoren pro Spurund " + x4 + " Byte pro Sektor?");
+				if (einheit2ByteSI(a) == x1 * x2 * x3 * 2 * x4)
+					richtig++;
+				else {
+					println("Falsch! " + x1 * x2 * x3 * 2 * x4 + " Byte ist richtig");
+					break;
+				}
+				q[30] = -1;
+				counter++;
+			}
+			if (frage == 31 && q[31] == 0) {
+				int x1 = (int) (Math.random() * (30 + 4 * level));
+				String a = readLine("2 ^ " + x1 + " Byte\n");
+				if (einheit2Byte(a) == Math.pow(2, x1))
+					richtig++;
+				else {
+					println("Falsch! " + byte2Einheit(Math.pow(2, x1)) + " ist richtig");
+					break;
+				}
+				q[31] = -1;
+				counter++;
+			}
+			if (frage == 32 && q[32] == 0) {
+				int x1 = (int) (Math.random() * 3 * Math.pow(1.5, level));
+				String a = readLine("Binär zu Hexadezimal(" + Integer.toBinaryString(x1) + ")\n");
+				if (a.equals(Integer.toHexString(x1)))
+					richtig++;
+				else {
+					println("Falsch! " + Integer.toHexString(x1) + " ist richtig");
+					break;
+				}
+				q[32] = -1;
+				counter++;
+			}
+			if (frage == 33 && q[33] == 0) {
+				int x1 = (int) (Math.random() * 3 * Math.pow(1.5, level));
+				String a = readLine("Hexadezimal zu Binär(" + Integer.toHexString(x1) + ")\n");
+				if (a.contains("1"))
+					a = a.substring(a.indexOf("1"));
+				else
+					a = "0";
+				if (a.equals(Integer.toBinaryString(x1)))
+					richtig++;
+				else {
+					println("Falsch! " + Integer.toBinaryString(x1) + " ist richtig");
+					break;
+				}
+				q[33] = -1;
+				counter++;
+			}
+			if (frage == 34 && q[34] == 0) {
+				int x1 = 1 + (int) (Math.random() * (1 + 2 * level));
+				int a = readInt("Bais  einer Gleitkommazahl[2^(Exponent-1)-1] mit " + x1 + " Bit Exponent\n");
+				if (a == Math.pow(2, x1 - 1) - 1)
+					richtig++;
+				else {
+					println("Falsch! " + (Math.pow(2, x1 - 1) - 1) + " ist richtig");
+					break;
+				}
+				q[34] = -1;
+				counter++;
+			}
+			if (frage == 35 && q[35] == 0) {
+				int x1 = 2;
+				int x2 = -1 - (int) (Math.random() * (2 + level));
+				double a = readDouble("^ = math.pow(x1,x2)=normale Potentrechnung: "+x1 + " ^ " + x2 + "\n");
+				if (a == Math.pow(x1, x2))
+					richtig++;
+				else {
+					println("Falsch! " + Math.pow(x1, x2) + " ist richtig");
+					break;
+				}
+				q[35] = -1;
+				counter++;
+			}
+			if (frage == 36 && q[36] == 0) {
+				int x1, x2, x3, x4;
+				x1 = 1 + (int) (Math.random() * (4 + level));
+				x2 = 1 + (int) (Math.random() * (4 + level));
+				x4 = (int) (Math.random() * (5 + level));
+				if (Math.random() < 0.5)
+					x3 = x1;
+				else
+					x3 = x2;
+				int a = readInt(x1 + " * " + x2 + " + " + x3 + " * " + x4);
+				if (a == x1 * x2 + x3 * x4)
+					richtig++;
+				else {
+					println("Falsch! " + (x1 * x2 + x3 * x4) + " ist richtig");
+					break;
+				}
+				q[36] = -1;
+				counter++;
+			}
+//			if (frage == 37 && q[37] == 0) {
+//				int x1 = 500 + (int) (Math.random() * 2000);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+//				int x3 = (int) (Math.random() * (level + 1));
+//				double x4 = ((int) (Math.random() * 3)) / 2.0;
+//				double a = readInt("Elo A: " + x1 + "  Elo B: " + x2 + "  k: " + x3 + "  SA: " + x4);
+//				if (a == elo(x1, x2, x3, x4))
+//					richtig++;
+//				else {
+//					println("Falsch! " + elo(x1, x2, x3, x4) + " ist richtig");
+//					break;
+//				}
+//				q[37] = -1;
+//				counter++;
+//			}
+			if (frage == 38 && q[38] == 0) {
+				int x1 =  (int) (Math.random() * 5 *Math.pow(2, level));
+				String loesung=longToNewLumini(x1);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine(x1 +" toLuminiString");
+				if (a.equals(loesung))
+					richtig++;
+				else {
+					println("Falsch! " + loesung+ " ist richtig");
+					break;
+				}
+				q[38] = -1;
+				counter++;
+			}
+			//  Aufgabenblock 39 Translate, Transform, Calculate New Lumini Number Basis n to Arabische Zahlen Basis 10 bzw  Decimalnumbers
+			if (frage == 39 && q[39] == 0) {
+				int x1 =  (int) (Math.random() * 5 *Math.pow(2, level));
+				String input=longToNewLumini(x1);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				int  a = readInt("Translate new Lumini Number Base 2: " +input +"toDecimal arabic number");
+				if (a==x1)
+					richtig++;
+				else {
+					println("Falsch!  " +x1+ " ist richtig");
+					break;
+				}
+				q[39] = -1;
+				
+				
+				counter++;
+			}
+			
+			// New Lumini Addition number Addition
+			if (frage == 40 && q[40] == 0) {
+				int x1 =  (int) (Math.random() * 3 *Math.pow(2, level));
+				int x2 =  (int) (Math.random() * 3 *Math.pow(2, level));
+				String translate=longToNewLumini(x1);
+				String translate2=longToNewLumini(x2);
+				String loesung=longToNewLumini(x1+x2);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("NewLuminiNumber basis 2 addition mit(+) NewLuminiNumber basis 2 ergibt bzw. ist gleich(=) als NewLuminiNumber basis 2: "+   translate +"+"+ translate2);
+				if (a.equals(loesung))
+					richtig++;
+				else {
+					println("Falsch! " + loesung+ " ist richtig");
+					break;
+				}
+				q[40] = -1;
+				counter++;
+			}
+			if (frage == 41 && q[41] == 0) {
+				int x1 =  (int) (Math.random() * 3*Math.pow(2, level));
+				int x2 =  (int) (Math.random() * 3 *Math.pow(2, level));
+				String translate=longToNewLumini(x1);
+				String translate2=longToNewLumini(x2);
+			
+				String loesung=longToNewLumini(x1-x2);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("NewLuminiNumber basis 2 subtraktion mit(-) NewLuminiNumber basis 2 ergibt bzw. ist gleich(=) als NewLuminiNumber basis 2: "+translate +"-"+ translate2);
+				if (a.equals(loesung))
+					richtig++;
+				else {
+					println("Falsch! " + loesung+ " ist richtig");
+					break;
+				}
+				q[41] = -1;
+				counter++;
+			}
+			if (frage == 42 && q[42] == 0) {
+				int x1 =  (int) (Math.random() * 4* level);
+				int x2 =  (int) (Math.random() * 4 *level);
+				String translate=longToNewLumini(x1);
+				String translate2=longToNewLumini(x2);
+			
+				String loesung=longToNewLumini(x1*x2);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("NewLuminiNumber basis 2 multiplikation  mit(x) NewLuminiNumber basis 2 ergibt bzw. ist gleich(=) als NewLuminiNumber basis 2: "+translate +"x"+ translate2);
+				if (a.equals(loesung))
+					richtig++;
+				else {
+					println("Falsch! " + loesung+ " ist richtig");
+					break;
+				}
+				q[43] = -1;
+				counter++;
+			}
+			if (frage == 43 && q[43] == 0) {
+				int x1 =  (int) (Math.random() * 4* level);
+				int x2 =  1+(int) (Math.random() * 4 *level);
+				String translate=longToNewLumini(x1);
+				String translate2=longToNewLumini(x2);
+			
+				String mullum=longToNewLumini(x1*x2);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("NewLuminiNumber basis 2 dividiert durch(/) NewLuminiNumber basis 2 ergibt bzw. ist gleich(=) als NewLuminiNumber basis 2: "+mullum +"/"+ translate2);
+				if (a.equals(translate))
+					richtig++;
+				else {
+					println("Falsch! " +translate+ " ist richtig");
+					break;
+				}
+				q[43] = -1;
+				counter++;
+			}
+			if (frage == 44 && q[44] == 0) {
+				int basis=(int)(Math.random()*11);
+				int x1 =  (int) (Math.random() * 5 *Math.pow(2, level));
+				String loesung=longToNewLumini(x1,basis);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("Translate arabic basis=10 "+x1 +" toLuminiStringNumber basis = "+basis);
+				if (a.equals(loesung))
+					richtig++;
+				else {
+					println("Falsch! " + loesung+ " ist richtig");
+					break;
+				}
+				q[44] = -1;
+				counter++;
+			}
+			//  Aufgabenblock 39 Translate, Transform, Calculate New Lumini Number Basis n to Arabische Zahlen Basis 10 bzw  Decimalnumbers
+			if (frage == 49 && q[49] == 0) {
+				int basis=(int)(Math.random()*11);
+				int x1 =  (int) (Math.random() * 5 *Math.pow(2, level));
+				String input=longToNewLumini(x1,basis);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				int  a = readInt("Translate new Lumini Number(basis="+basis+"): " +input +"to arabische Zahlen basis=10");
+				if (a==x1)
+					richtig++;
+				else {
+					println("Falsch!  " +x1+ " ist richtig");
+					break;
+				}
+				q[49] = -1;
+				
+				
+				counter++;
+			}
+			
+			// New Lumini Addition number Addition
+			if (frage == 45 && q[45] == 0) {
+				int basis=(int)(Math.random()*11);
+				int x1 =  (int) (Math.random() * 3 *Math.pow(2, level));
+				int x2 =  (int) (Math.random() * 3 *Math.pow(2, level));
+				String translate=longToNewLumini(x1,basis);
+				String translate2=longToNewLumini(x2,basis);
+				String loesung=longToNewLumini(x1+x2,basis);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("NewLuminiNumber basis = "+basis+" Addition(+): "+translate +"+"+ translate2+" = "+"NewLuminiNumber basis = "+basis);
+				if (a.equals(loesung))
+					richtig++;
+				else {
+					println("Falsch! " + loesung+ " ist richtig");
+					break;
+				}
+				q[40] = -1;
+				counter++;
+			}
+			if (frage == 46 && q[46] == 0) {
+				int x1 =  (int) (Math.random() * 3*Math.pow(2, level));
+				int x2 =  (int) (Math.random() * 3 *Math.pow(2, level));
+				int basis=(int)(Math.random()*11);
+				String translate=longToNewLumini(x1,basis);
+				String translate2=longToNewLumini(x2,basis);
+			
+				String loesung=longToNewLumini(x1-x2,basis);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("NewLuminiNumber basis = "+basis+" Subtraktion(-): "+translate +"-"+ translate2+" = "+"NewLuminiNumber basis = "+basis);
+				if (a.equals(loesung))
+					richtig++;
+				else {
+					println("Falsch! " + loesung+ " ist richtig");
+					break;
+				}
+				q[46] = -1;
+				counter++;
+			}
+			if (frage == 47 && q[47] == 0) {
+				int x1 =  (int) (Math.random() * 4* level);
+				int x2 =  (int) (Math.random() * 4 *level);
+				int basis=(int)(Math.random()*11);
+				String translate=longToNewLumini(x1,basis);
+				String translate2=longToNewLumini(x2,basis);
+			
+				String loesung=longToNewLumini(x1*x2,basis);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("NewLuminiNumber basis = "+basis+" Multiplikation(*): "+translate +"*"+ translate2+" = "+"NewLuminiNumber basis = "+basis);
+				if (a.equals(loesung))
+					richtig++;
+				else {
+					println("Falsch! " + loesung+ " ist richtig");
+					break;
+				}
+				q[48] = -1;
+				counter++;
+			}
+			if (frage == 48 && q[48] == 0) {
+				int basis=(int)(Math.random()*11);
+				int x1 =  (int) (Math.random() * 4* level);
+				int x2 =  1+(int) (Math.random() * 4 *level);
+				String translate=longToNewLumini(x1,basis);
+				String translate2=longToNewLumini(x2,basis);
+			
+				String mullum=longToNewLumini(x1*x2,basis);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("NewLuminiNumber basis = "+basis+" Division(/): "+mullum +"/"+ translate2+" = "+"NewLuminiNumber basis = "+basis);
+				if (a.equals(translate))
+					richtig++;
+				else {
+					println("Falsch! " +translate+ " ist richtig");
+					break;
+				}
+				q[48] = -1;
+				counter++;
+			}
+			if (frage == 49 && q[49] == 0) {
+				int basis=(int)(Math.random()*11);
+				int x1 = -10 * level * level + (int) (Math.random() * level * 20 * level);
+				int x2 = 1 + (int) (Math.random() *  2 * level);
+				
+				String translate=longToNewLumini(x1,basis);
+				String translate2=longToNewLumini(x2,basis);
+			
+				String ergebnis=longToNewLumini(x1%x2,basis);
+				
+				String a = readLine("luminiNumber % liminiNumber basis="+basis+"; "+"modulo(%)=Rest nach Division"+x1 + " modulo(%) " + x2 + "\n");
+				if (a.equals(ergebnis))
+					richtig++;
+				else {
+					println("Falsch! " +ergebnis + " ist richtig");
+					break;
+				}
+				q[49] = -1;
+				counter++;
+			}
+			if (frage == 50 && q[50] == 0) {
+				int basis=(int)(Math.random()*11);
+				int x1 =  (int) (Math.random() * 3 *Math.pow(2, level));
+				int x2 =  (int) (Math.random() * 3 *Math.pow(2, level));
+				String translate=intToBasisNString(x1,basis,false);
+				String translate2=intToBasisNString(x2,basis,false);
+				String loesung=intToBasisNString(x1+x2,basis,false);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("Arabische Zahlen mit basis = "+basis+" Addition(+): "+translate +"+"+ translate2+" = "+"Arabische Zahlen mitr basis = "+basis);
+				if (a.equals(loesung))
+					richtig++;
+				else {
+					println("Falsch! " + loesung+ " ist richtig");
+					break;
+				}
+				q[50] = -1;
+				counter++;
+			}
+			if (frage == 51 && q[50] == 1) {
+				int x1 =  (int) (Math.random() * 3*Math.pow(2, level));
+				int x2 =  (int) (Math.random() * 3 *Math.pow(2, level));
+				int basis=(int)(Math.random()*11);
+				String translate=intToBasisNString(x1,basis,false);
+				String translate2=intToBasisNString(x2,basis,false);
+				String loesung=intToBasisNString(x1-x2,basis,false);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("Arabische Zahlen mit basis = "+basis+" Subtraktion(-): "+translate +"-"+ translate2+" = "+"Arabische Zahlen mit basis = "+basis);
+				if (a.equals(loesung))
+					richtig++;
+				else {
+					println("Falsch! " + loesung+ " ist richtig");
+					break;
+				}
+				q[51] = -1;
+				counter++;
+			}
+			if (frage == 52 && q[52] == 1) {
+				int x1 =  (int) (Math.random() * 3*Math.pow(2, level));
+				int x2 =  (int) (Math.random() * 3 *Math.pow(2, level));
+				int basis=(int)(Math.random()*11);
+				String translate=intToBasisNString(x1,basis,false);
+				String translate2=intToBasisNString(x2,basis,false);
+				String loesung=intToBasisNString(x1*x2,basis,false);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("Arabische Zahlen mit basis = "+basis+" Normale Multiplikation(*): "+translate +"-"+ translate2+" = "+"Arabische Zahlen mit basis = "+basis);
+				if (a.equals(loesung))
+					richtig++;
+				else {
+					println("Falsch! " + loesung+ " ist richtig");
+					break;
+				}
+				q[52] = -1;
+				counter++;
+			}
+			if (frage == 53 && q[53] == 1) {
+				int x1 =  (int) (Math.random() * 3*Math.pow(2, level));
+				int x2 =  (int) (Math.random() * 3 *Math.pow(2, level));
+				int basis=(int)(Math.random()*11);
+				String translate=intToBasisNString(x1,basis,false);
+				String translate2=intToBasisNString(x2,basis,false);
+				String mul=intToBasisNString(x1*x2,basis,false);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("Arabische Zahlen mit basis = "+basis+" Normale Division(/): "+mul +"/"+ translate2+" = "+"Arabische Zahlen mit basis = "+basis);
+				if (a.equals(translate))
+					richtig++;
+				else {
+					println("Falsch! " + translate+ " ist richtig");
+					break;
+				}
+				q[53] = -1;
+				counter++;
+			}
+			if (frage == 54 && q[54] == 1) {
+				int x1 =  (int) (Math.random() * 3*Math.pow(2, level));
+				int x2 =  (int) (Math.random() * 3 *Math.pow(2, level));
+				int basis=(int)(Math.random()*11);
+				String translate=intToBasisNString(x1,basis,false);
+				String translate2=intToBasisNString(x2,basis,false);
+				String modulo=intToBasisNString(x1%x2,basis,false);
+//				int x2 = 500 + (int) (Math.random() * 2000);
+
+				String a = readLine("Arabische Zahlen mit basis = "+basis+" Rest nach Division <->Modulo(%): "+translate +"%"+ translate2+" = "+"Arabische Zahlen mit basis = "+basis);
+				if (a.equals(modulo))
+					richtig++;
+				else {
+					println("Falsch! " + translate+ " ist richtig");
+					break;
+				}
+				q[54] = -1;
+				counter++;
+			}
+			
+		}
+		
+
+		if (richtig < level * 10) {
+			bonuszeit = 0;
+			consecutiveErrors++;
+			String s = null;
+			if (richtig <= 7)
+				s = "Du musst noch viel lernen!";
+			if (richtig > 7)
+				s = "Sehr löblich!";
+			if (richtig >= 15)
+				s = "Nice!";
+			if (richtig >= 30)
+				s = "Respekt!";
+			if (richtig >= 50)
+				{consecutiveErrors=0;
+				s = "Unerreichbar!";}
+			if (richtig >= 75)
+				s = "Godlike!";
+			if (richtig >= 100)
+				s = "Unbesiegbar!";
+			print(richtig + " Punkte" + "\n" + s + "\n");
+			highscore(richtig);
+			
+			// NEU: Der Circuit Breaker löst aus!
+            if (consecutiveErrors >= 5) {
+                println("5 Fehlversuche ohne mindestens 50 Punkte. Das System-Rauschen ist zu hoch.");
+                println("Der 'Härter Foltern'-Schutzschalter ist aktiviert.");
+                println("Bitte 15 Sekunden tief durchatmen. Soziale Integrität wird geladen...");
+                println("Bitte kurz in KI-Game mit Sprachmodell analysieren. Vielen Dank, Let's Go");
+                
+                try {
+                    // Zwingt den Thread (und deinen Geist) für 15 Sekunden zur Ruhe
+                    Thread.sleep(15000); 
+                } catch (InterruptedException e) {
+                    // Ignorieren
+                }
+                
+                println("Du kannst jetzt entspannt weiter machen!\n");
+                
+                // Reset des Fehlversuchzählers nach der erfolgreichen Pause
+                consecutiveErrors = 0; 
+            }
+			
+			int neu = 0;
+			while (neu != 1) {
+				neu = readInt("1 = Erneut spielen, 2 = Highscore, 3 = Ende\n");
+				if (neu == 2)
+					showHighscore();
+				if (neu == 3)
+					sicher = readInt("Wirklich beenden?\n1 = Ja, 2 = Nein\n");
+				if (sicher == 1)
+					exit();
+				if (neu == 1) {
+					level = 1;
+					richtig = 0;
+					start = 0;
+					run();
+				}
+			}
+		} else {
+			bonuszeit = zeitbegrenzung - zeit;
+			level++;
+			run();
+		}
+	}
+
+	public void highscore(double punkte) {
+		int i = 0;
+		if (score[0][0] == null)
+			for (i = 0; i <= 9; i++) {
+				score[i][0] = "0";
+				score[i][1] = "";
+			}
+		for (i = 0; i <= 9; i++) {
+			if (richtig > Double.valueOf(score[i][0])) {
+				Double scoreDouble = new Double(richtig);
+				String s = scoreDouble.toString();
+				for (int j = 9; j >= 1; j--) {
+					score[i + j][0] = score[i + j - 1][0];
+					score[i + j][1] = score[i + j - 1][1];
+				}
+				score[i][0] = s;
+				score[i][1] = readLine("Name:");
+				break;
+			}
+		}
+
+	}
+
+	public void showHighscore() {
+		println(score[0][0] + " " + score[0][1] + "\n" + score[1][0] + " " + score[1][1] + "\n" + score[2][0] + " "
+				+ score[2][1] + "\n" + score[3][0] + " " + score[3][1] + "\n" + score[4][0] + " " + score[4][1] + "\n"
+				+ score[5][0] + " " + score[5][1] + "\n" + score[6][0] + " " + score[6][1] + "\n" + score[7][0] + " "
+				+ score[7][1] + "\n" + score[8][0] + " " + score[8][1] + "\n" + score[9][0] + " " + score[9][1] + "\n");
+	}
+
+	public int addBits(int i) {
+		if (i == 1)
+			return 1;
+		double d = Math.log(i) / Math.log(2);
+		int a = (d == (int) d) ? (int) d : ((int) d) + 1;
+		return a;
+	}
+
+	public int ggt(int n1, int n2) {
+		n1 = Math.abs(n1);
+		n2 = Math.abs(n2);
+		while (n2 != 0) {
+			if (n1 > n2)
+				n1 -= n2;
+			else
+				n2 -= n1;
+		}
+		return n1;
+	}
+
+	public String bruchrechnen(int ze, int ne) {
+		int zahl = 0;
+		int teiler = ggt(ne, ze);
+		ze /= teiler;
+		ne /= teiler;
+		if (ne == 0)
+			return "0";
+		if (ne == 1)
+			return String.valueOf(ze);
+		zahl = ze / ne;
+		if (zahl != 0)
+			return (zahl + " " + ze % ne + "/" + ne);
+		return (ze + "/" + ne);
+	}
+
+	public String bruchrechnenAdd(int z1, int n1, int z2, int n2) {
+		int ze = z1 * n2 + z2 * n1;
+		int ne = n1 * n2;
+		return bruchrechnen(ze, ne);
+	}
+
+	public String bruchrechnenSub(int z1, int n1, int z2, int n2) {
+		int ze = z1 * n2 - z2 * n1;
+		int ne = n1 * n2;
+		return bruchrechnen(ze, ne);
+	}
+
+	public String bruchrechnenMul(int z1, int n1, int z2, int n2) {
+		int ze = z1 * z2;
+		int ne = n1 * n2;
+		return bruchrechnen(ze, ne);
+	}
+
+	public String bruchrechnenDiv(int z1, int n1, int z2, int n2) {
+		int ze = z1 * n2;
+		int ne = n1 * z2;
+		return bruchrechnen(ze, ne);
+	}
+	
+	// Transformationen
+	public static String doubleToBasisN(double value, int basis, int nachkommastellen, char kommazeichen,
+			boolean basisangabe) {
+		double nachkommaanteil = value - (int) (value);
+		String nachkommaanteilStr = NachkommaanteilToBasisNString(nachkommaanteil, basis, nachkommastellen);
+		String vorkommaanteil = intToBasisNString((int) (value), basis, false);
+		String output = vorkommaanteil;
+		output = output + kommazeichen + nachkommaanteilStr;
+		if (basisangabe)
+			output = output + "(Basis:" + basis + ")";
+
+		return output;
+	}
+
+	public static String NachkommaanteilToBasisNString(double value, int basis, int tiefe) {
+		StringBuilder nachkommaanteil = new StringBuilder();
+		for (int i = 0; i < tiefe; i++) {
+			// Multipliziere den Wert mit der Basis
+			value *= basis;
+
+			// Extrahiere den ganzzahligen Teil (die neue Ziffer in der Zielbasis)
+			int ziffer = (int) value;
+
+			// Füge die Ziffer an den String an
+			nachkommaanteil.append(ziffer);
+
+			// Subtrahiere den extrahierten Teil, um den neuen Nachkommaanteil zu erhalten
+			value -= ziffer;
+
+			// Beende die Schleife, wenn der Nachkommaanteil null ist
+			if (value == 0) {
+				break;
+			}
+		}
+		return nachkommaanteil.toString();
+	}
+
+	public static String changeNumberToLuminiSymbols(String basisNString, char[] luminiSymbols) {
+	    String output = basisNString;
+	    for (int i = 0; i < luminiSymbols.length; i++) {
+	        String numberString = String.valueOf(i); // <-- Hier ist die Änderung
+	        char luminiSymbol = luminiSymbols[i];
+	        output = output.replace(numberString, String.valueOf(luminiSymbol));
+	    }
+	    return output;
+	}
+	
+	
+	public String longTonewLumini(long input) {
+		double div= Math.exp(2);
+		double size= Math.exp(input);
+		size=size/div;
+		String output="";
+		for(int i=0;i<size; i++) {
+			output=output+".";
+			
+		}
+		
+	
+		return output;
+	}
+
+	public static String intToBasisNString(int value, int basis, boolean basisanzeige) {
+
+		String output2 = "0";
+		if (basisanzeige)
+			output2 = output2 + "(Basis:" + basis + ")";
+		if (value == 0)
+			return output2;
+
+		boolean negativ = false;
+		if (value < 0)
+			negativ = true;
+
+		StringBuilder sb = new StringBuilder(); // Vorteile der Klasse Stringbuilder erforschen
+		while (value != 0) {
+			int modulo = value % basis;
+			sb.append(modulo);
+			value = value - modulo;
+			value /= basis;
+		}
+
+		String output = sb.toString();
+		output = inverString(output);
+
+		output = output.replace("-", "");
+
+		if (negativ)
+			output = "-" + output;
+
+		if (basisanzeige)
+			output = output + "(Basis:" + basis + ")";
+		return output;
+	}
+
+	public int[] zahlenreihen(int level) {
+		int[] reihe1 = new int[5];
+		int[] reihe2 = new int[4];
+		int[] reihe3 = new int[3];
+		int[] reihe4 = new int[2];
+		reihe1[0] = (int) (Math.random() * (level + 3));
+		reihe2[0] = (int) (Math.random() * (level + 3));
+		reihe3[0] = (int) Math.max((Math.random() * level - 0.8), 0);
+		reihe4[0] = (int) Math.max((Math.random() * level - 2.5), 0);
+		if (Math.random() < Math.min(0.5, level * 0.1))
+			reihe1[0] *= -1;
+		if (Math.random() < Math.min(0.5, level * 0.1))
+			reihe2[0] *= -1;
+		if (Math.random() < Math.min(0.5, level * 0.1))
+			reihe3[0] *= -1;
+		if (Math.random() < Math.min(0.5, level * 0.1))
+			reihe4[0] *= -1;
+		for (int i = 1; i < 2; i++) {
+			reihe4[i] = reihe4[i - 1];
+		}
+		for (int i = 1; i < 3; i++) {
+			reihe3[i] = reihe3[i - 1] + reihe4[i - 1];
+		}
+		for (int i = 1; i < 4; i++) {
+			reihe2[i] = reihe2[i - 1] + reihe3[i - 1];
+		}
+		for (int i = 1; i < 5; i++) {
+			reihe1[i] = reihe1[i - 1] + reihe2[i - 1];
+		}
+		return reihe1;
+	}
+
+	double einheit2Byte(String s) {
+		s = s.toLowerCase();
+		double z;
+		if (s.contains("ebyte")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("ebyte")));
+			return z * Math.pow(1024, 6);
+		} else if (s.contains("p")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("p")));
+			return z * Math.pow(1024, 5);
+		} else if (s.contains("tbyte")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("tbyte")));
+			return z * Math.pow(1024, 4);
+		} else if (s.contains("g")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("g")));
+			return z * Math.pow(1024, 3);
+		} else if (s.contains("m")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("m")));
+			return z * Math.pow(1024, 2);
+		} else if (s.contains("k")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("k")));
+			return z * Math.pow(1024, 1);
+		} else if (s.contains("byte")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("byte")));
+			return z;
+		} else
+			return Double.valueOf(s);
+	}
+
+	double einheit2ByteSI(String s) {
+		s = s.toLowerCase();
+		double z;
+		if (s.contains("ebyte")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("ebyte")));
+			return z * Math.pow(1000, 6);
+		} else if (s.contains("p")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("p")));
+			return z * Math.pow(1000, 5);
+		} else if (s.contains("tbyte")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("tbyte")));
+			return z * Math.pow(1000, 4);
+		} else if (s.contains("g")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("g")));
+			return z * Math.pow(1000, 3);
+		} else if (s.contains("m")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("m")));
+			return z * Math.pow(1000, 2);
+		} else if (s.contains("k")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("k")));
+			return z * Math.pow(1000, 1);
+		} else if (s.contains("byte")) {
+			z = Double.valueOf(s.substring(0, s.indexOf("byte")));
+			return z;
+		} else
+			return Double.valueOf(s);
+	}
+
+	String byte2Einheit(double d) {
+		String e = "";
+		String z = "";
+		if (d >= Math.pow(1024, 6)) {
+			e = " EByte";
+			z = String.valueOf(d / Math.pow(1024, 6));
+		} else if (d >= Math.pow(1024, 5)) {
+			e = " PByte";
+			z = String.valueOf(d / Math.pow(1024, 5));
+		} else if (d >= Math.pow(1024, 4)) {
+			e = " TByte";
+			z = String.valueOf(d / Math.pow(1024, 4));
+		} else if (d >= Math.pow(1024, 5)) {
+			e = " GByte";
+			z = String.valueOf(d / Math.pow(1024, 3));
+		} else if (d >= Math.pow(1024, 2)) {
+			e = " MByte";
+			z = String.valueOf(d / Math.pow(1024, 2));
+		} else if (d >= Math.pow(1024, 1)) {
+			e = " KByte";
+			z = String.valueOf(d / Math.pow(1024, 1));
+		} else {
+			e = " Byte";
+			z = String.valueOf(d);
+		}
+		return z + e;
+	}
+
+	String byte2EinheitSI(double d) {
+		String e = "";
+		String z = "";
+		if (d >= Math.pow(1000, 6)) {
+			e = " EByte";
+			z = String.valueOf(d / Math.pow(1000, 6));
+		} else if (d >= Math.pow(1000, 5)) {
+			e = " PByte";
+			z = String.valueOf(d / Math.pow(1000, 5));
+		} else if (d >= Math.pow(1000, 4)) {
+			e = " TByte";
+			z = String.valueOf(d / Math.pow(1000, 4));
+		} else if (d >= Math.pow(1000, 5)) {
+			e = " GByte";
+			z = String.valueOf(d / Math.pow(1000, 3));
+		} else if (d >= Math.pow(1000, 2)) {
+			e = " MByte";
+			z = String.valueOf(d / Math.pow(1000, 2));
+		} else if (d >= Math.pow(1000, 1)) {
+			e = " KByte";
+			z = String.valueOf(d / Math.pow(1000, 1));
+		} else {
+			e = " Byte";
+			z = String.valueOf(d);
+		}
+		return z + e;
+	}
+
+	public int[] nextSqrt(int i) {
+		int[] t = { 0, 0, 0, 0, 0, 0 };
+		int max = 0;
+		int[] ret = { 0, 0 };
+		while (Math.pow(t[0], 2) <= i) {
+			t[0]++;
+		}
+		t[0]--;
+		if (max < Math.pow(t[0], 2)) {
+			max = (int) Math.pow(t[0], 2);
+			ret[0] = t[0];
+			ret[1] = 2;
+		}
+		while (Math.pow(t[1], 3) <= i) {
+			t[1]++;
+		}
+		t[1]--;
+		if (max < Math.pow(t[1], 3)) {
+			max = (int) Math.pow(t[1], 3);
+			ret[0] = t[1];
+			ret[1] = 3;
+		}
+		while (Math.pow(t[2], 4) <= i) {
+			t[2]++;
+		}
+		t[2]--;
+		if (max < Math.pow(t[2], 4)) {
+			max = (int) Math.pow(t[2], 4);
+			ret[0] = t[2];
+			ret[1] = 4;
+		}
+		while (Math.pow(t[3], 5) <= i) {
+			t[3]++;
+		}
+		t[3]--;
+		if (max < Math.pow(t[3], 5)) {
+			max = (int) Math.pow(t[3], 5);
+			ret[0] = t[3];
+			ret[1] = 5;
+		}
+		while (Math.pow(t[4], 6) <= i) {
+			t[4]++;
+		}
+		t[4]--;
+		if (max < Math.pow(t[4], 6)) {
+			max = (int) Math.pow(t[4], 6);
+			ret[0] = t[4];
+			ret[1] = 6;
+		}
+		while (Math.pow(t[5], 7) <= i) {
+			t[5]++;
+		}
+		t[5]--;
+		if (max < Math.pow(t[5], 7)) {
+			max = (int) Math.pow(t[5], 7);
+			ret[0] = t[5];
+			ret[1] = 7;
+		}
+
+		return ret;
+
+	}
+
+	public int elo(int RA, int RB, int k, double SA) {
+		double EA = 1 / (1 + Math.pow(10, (RB - RA) / 400.0));
+		double RAnew = RA + k * (SA - EA);
+		if (RAnew >= 0)
+			RAnew += 0.5;
+		else
+			RAnew -= 0.5;
+		return (int) RAnew;
+	}
+	
+	
+	public static long newLuminiNumberToDecimal(String newLuminiNumber, int basis) {
+		int lenge = newLuminiNumber.length();
+		long number = getLuminiBasisNeuNumbers2(lenge - 1, basis);;
+
+		number+=basisNStringToLong(newLuminiNumber,basis);
+		return number;
+	}
+	public static long getLuminiBasisNeuNumbers2(int LumNeuLänge, int LumNeuBasis) {
+		if(LumNeuLänge==0)return 0;
+		long output = 0;
+		for (int i = 1; i <= LumNeuLänge; i++) {
+			output += (Math.pow(LumNeuBasis, i));
+		}
+
+		return output;
+	}
+	
+	public static long basisNStringToLong(String basNStr, int basis) {
+		int lenge = basNStr.length();
+		long output = 0;
+		int symbol = 0;
+		for (int i = lenge - 1; i >= 0; i--) {
+			if (basNStr.charAt(i) == '0')
+				symbol = 0;
+			if (basNStr.charAt(i) == '1')
+				symbol = 1;
+			if (basNStr.charAt(i) == '2')
+				symbol = 2;
+			if (basNStr.charAt(i) == '3')
+				symbol = 3;
+			if (basNStr.charAt(i) == '4')
+				symbol = 4;
+			if (basNStr.charAt(i) == '5')
+				symbol = 5;
+			if (basNStr.charAt(i) == '6')
+				symbol = 6;
+			if (basNStr.charAt(i) == '7')
+				symbol = 7;
+			if (basNStr.charAt(i) == '8')
+				symbol = 8;
+			if (basNStr.charAt(i) == '9')
+				symbol = 9;
+			
+			output+=(symbol*Math.pow(basis, (lenge - 1-i)));
+		}
+		return output;
+	}
+	
+	
+	public double luminiMul(double faktor1, double faktor2) {
+		double produkt=faktor1*faktor2;
+		produkt=Math.abs(produkt);
+		if(faktor1<0||faktor2<0)produkt=-produkt;		
+		return produkt;		
+	}
+	
+	public double hoch(double basis, double exponent){
+		boolean negativ=false;
+		if(basis<0)negativ=true;
+		basis=Math.abs(basis);
+		double result=Math.pow(basis, exponent);
+		if(negativ)result=-result;
+		return result;
+	}
+	
+	
+	public String longToNewLumini(long input) {
+	    // Sicherheitsprüfung für negative Eingaben
+	    if (input < 0) {
+	        return "-"+  longToNewLumini(-input) ;
+	    }
+
+	    // Die gewünschte Sequenz ist:
+	    // Index 0-1: Länge 1 (Anzahl: 2^1 = 2) -> "0", "1"
+	    // Index 2-5: Länge 2 (Anzahl: 2^2 = 4) -> "00", "01", "10", "11"
+	    // Index 6-13: Länge 3 (Anzahl: 2^3 = 8) -> "000", ...
+
+	    long currentLength = 1; // Wir beginnen mit der Länge 1
+	    long bucketSize = 2;   // Die Anzahl der Werte für die aktuelle Länge (2^currentLength)
+
+	    // Wir iterieren durch die Längen-Klassen.
+	    // Solange unser 'input' (der Index) größer oder gleich der Anzahl der Werte
+	    // in der aktuellen Klasse ist, ziehen wir diese Anzahl ab und gehen zur nächsten Länge.
+	    while (input >= bucketSize) {
+	        input -= bucketSize; // Ziehe die Größe der aktuellen Klasse ab
+	        currentLength++;     // Erhöhe die Länge für die nächste Klasse
+	        bucketSize *= 2;    // Verdopple die Größe für die nächste Klasse (2^(newLength))
+	    }
+
+	    // Wenn die Schleife endet, ist 'input' der korrekte, 0-basierte Offset
+	    // innerhalb der Klasse mit der Länge 'currentLength'.
+
+	    // Wandle diesen Offset in einen Binär-String um.
+	    String output = Long.toBinaryString(input);
+
+	    // Füge führende Nullen hinzu, damit der String die korrekte Länge (currentLength) erreicht.
+	    while (output.length() < currentLength) {
+	        output = "0" + output;
+	    }
+
+	    return output;
+	}
+	
+	public String longToNewLumini(long input, int basis) {
+	    // Sicherheitsprüfung für negative Eingaben
+	    if (input < 0) {
+	        return "-"+  longToNewLumini(-input,basis) ;
+	    }
+
+	    // Die gewünschte Sequenz ist:
+	    // Index 0-1: Länge 1 (Anzahl: 2^1 = 2) -> "0", "1"
+	    // Index 2-5: Länge 2 (Anzahl: 2^2 = 4) -> "00", "01", "10", "11"
+	    // Index 6-13: Länge 3 (Anzahl: 2^3 = 8) -> "000", ...
+
+	    long currentLength = 1; // Wir beginnen mit der Länge 1
+	    long bucketSize = basis;   // Die Anzahl der Werte für die aktuelle Länge (2^currentLength)
+
+	    // Wir iterieren durch die Längen-Klassen.
+	    // Solange unser 'input' (der Index) größer oder gleich der Anzahl der Werte
+	    // in der aktuellen Klasse ist, ziehen wir diese Anzahl ab und gehen zur nächsten Länge.
+	    while (input >= bucketSize) {
+	        input -= bucketSize; // Ziehe die Größe der aktuellen Klasse ab
+	        currentLength++;     // Erhöhe die Länge für die nächste Klasse
+	        bucketSize *= basis;    // Verdopple die Größe für die nächste Klasse (2^(newLength))
+	    }
+
+	    // Wenn die Schleife endet, ist 'input' der korrekte, 0-basierte Offset
+	    // innerhalb der Klasse mit der Länge 'currentLength'.
+
+	    // Wandle diesen Offset in einen Binär-String um.
+//	    String output = Long.toBinaryString(input);
+	    String output =    longToBasisNString(input, basis,false);
+	    // Füge führende Nullen hinzu, damit der String die korrekte Länge (currentLength) erreicht.
+	    while (output.length() < currentLength) {
+	        output = "0" + output;
+	    }
+
+	    return output;
+	}
+	
+	public static String longToBasisNString(long value, int basis, boolean basisanzeige) {
+
+		String output2 = "0";
+		if (basisanzeige)
+			output2 = output2 + "(Basis:" + basis + ")";
+		if (value == 0)
+			return output2;
+
+		boolean negativ = false;
+		if (value < 0)
+			negativ = true;
+
+		StringBuilder sb = new StringBuilder(); // Vorteile der Klasse Stringbuilder erforschen
+		while (value != 0) {
+			long modulo = value % basis;
+			sb.append(modulo);
+			value = value - modulo;
+			value /= basis;
+		}
+
+		String output = sb.toString();
+		output = inverString(output);
+
+		output = output.replace("-", "");
+
+		if (negativ)
+			output = "-" + output;
+
+		if (basisanzeige)
+			output = output + "(Basis:" + basis + ")";
+		return output;
+	}
+	
+	public static String inverString(String string) {
+		StringBuilder output = new StringBuilder();
+		for (int i = string.length() - 1; i >= 0; i--) {
+			output.append(string.charAt(i));
+		}
+		return output.toString();
+	}
+	
+	
+
+	
+	
+	
+	
+
+	public static void main(String[] args) {
+		new MathematicsMatrixgameLuminiAIGamificationJavaTraining250320262().start(args);
+	}
+}
