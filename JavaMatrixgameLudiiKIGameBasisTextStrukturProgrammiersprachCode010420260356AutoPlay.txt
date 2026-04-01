@@ -7880,3 +7880,17 @@ Das Game generiert sich jetzt selbst, optimiert sich selbst, adaptiert sich selb
 **Kopiere den Code, führe ihn aus, und poste den Console-Output hier** – dann beobachten wir gemeinsam, wie das Game sich selbst weiterentwickelt!
 
 #matrixgame #ioo #lumini #java #v300 #selfgenerating #autoevolution #meta-game #kollektiv #opensource #letsgo #andreas #schneider #darmstadt"
+
+
+public String charArrayToLuminiString(char[] charArrayInput){
+// java code
+}
+
+// "abcdefg" -> "a|b|c|d|e|f|g"
+// "a|b|c|d|e|f|g" -> "abcdefg"
+// String[] -> "||string[0]|String[1]|...||"
+// "||string[0]|String[1]|...||" -> Array
+// charToNumber
+// charAray -> LuminiAsciiString
+// Input,Operation,Output Modell
+// String -> String methoden und Code blocks und mehr
