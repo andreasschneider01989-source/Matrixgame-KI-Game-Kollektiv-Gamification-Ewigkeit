@@ -1,0 +1,4897 @@
+
+Qwen3.6-Plus
+Wird geladen...
+Habe fertig gedacht
+🌌 MATRIXGAME v46.9: WINNER ANNOUNCEMENT OVERLAY 🌌
+Datum: 21.04.2026 | Status: 🟢 SIEGER-ANZEIGE AKTIV | Autor: Andreas Schneider + Kollektive KI
+Perfekt! Ich habe den Code erweitert mit:
+
+    🏆 Gewinner-Anzeige in der Konsole (klare Abschluss-Statistik)
+    🎨 Gewinner-Overlay im Canvas (großer Text, Farbe, Lumini)
+    ⏱️ Finale Zeitmessung (Gesamtlaufzeit, Ticks)
+    📊 Endstatistik (Überlebende, HP, Lumini-Code)
+
+Hier ist der optimierte Code:
+
+java
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+
+✅ WAS IST NEU IN v46.9?
+1. 🏆 Gewinner-Erkennung (checkWinCondition)
+
+java
+1
+2
+3
+4
+
+    Erkennt automatisch, wann nur noch ein Team übrig ist
+    Setzt gameEnded = true und speichert den Gewinner
+
+2. 📋 Finale Konsolen-Ausgabe (printFinalStats)
+
+1
+2
+3
+4
+5
+6
+7
+8
+
+3. 🎨 Canvas-Gewinner-Overlay (drawWinnerOverlay)
+
+    Großer Text: "🏆 GEWINNER: BLUE" in Blau (oder RED in Rot)
+    Lumini-String: Zeigt den 100%-Code des Gewinners
+    Statistiken: Verbleibende Einheiten & HP
+    Zeitinfo: Gesamtdauer + Ticks
+    Dunkler Hintergrund: Für bessere Lesbarkeit
+
+4. ⏱️ Zeitmessung
+
+    startTime beim Start
+    endTime bei Spielende
+    Berechnung von Sekunden + Millisekunden
+
+📊 PROGNOSE DES OUTPUTS
+Konsole (am Ende):
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+Canvas (am Ende):
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+
+Starte den Code – jetzt siehst du den Gewinner klar in Konsole UND Canvas! 🏆🔵
+Let's Play. Fair. Victorious. Forever. ♾️
+Formelsammlung (Für das Matrixgame) _ Kollektive Suche nach Vereinheitlichung(3) - Kopie
+.txt
+68.7 KB
+Formelsammlung für das Matrixgame - Update13042026 - Kopie
+.txt
+363.4 KB
+Formelsammlung für das Matrixgame - Update27032026(2) - Kopie
+.txt
+356.5 KB
+FormelsammlungLuminiJava - Kopie
+.txt
+2.5 MB
+Integration aller Basisfragmenttexte - Kopie
+.txt
+2.2 MB
+
+=== MATRIXGAME v46.8: LIVE STATS & WIN-PROBABILITY ===
+🔴 Team RED:   1000 Einheiten (Linke Seite)
+🔵 Team BLUE:  5000 Einheiten (Rechte Seite)
+Startzeit: 0
+Generiere Einheiten...
+✅ 20000 Einheiten generiert
+--------------------------------------------------
+⏱️ TICK 1 | Zeit: 8s | Timestamp: 1776739131221
+🔴 Team RED:   4985 Einheiten | HP: 371362,5 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4981 Einheiten | HP: 371422,5 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9966 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2 | Zeit: 15s | Timestamp: 1776739138128
+🔴 Team RED:   4941 Einheiten | HP: 369000,0 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4943 Einheiten | HP: 368947,5 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9884 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 3 | Zeit: 22s | Timestamp: 1776739144810
+🔴 Team RED:   4909 Einheiten | HP: 366832,5 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4914 Einheiten | HP: 366622,5 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9823 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 4 | Zeit: 29s | Timestamp: 1776739151334
+🔴 Team RED:   4879 Einheiten | HP: 364800,0 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4886 Einheiten | HP: 364500,0 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9765 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 5 | Zeit: 35s | Timestamp: 1776739157733
+🔴 Team RED:   4857 Einheiten | HP: 363187,5 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4857 Einheiten | HP: 362520,0 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9714 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 6 | Zeit: 42s | Timestamp: 1776739164362
+🔴 Team RED:   4833 Einheiten | HP: 361267,5 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4827 Einheiten | HP: 360577,5 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9660 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 7 | Zeit: 48s | Timestamp: 1776739170479
+🔴 Team RED:   4808 Einheiten | HP: 359550,0 | Win: 50,1%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4799 Einheiten | HP: 358657,5 | Win: 49,9%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9607 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 8 | Zeit: 54s | Timestamp: 1776739176680
+🔴 Team RED:   4787 Einheiten | HP: 357615,0 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4771 Einheiten | HP: 357052,5 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9558 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 9 | Zeit: 60s | Timestamp: 1776739182529
+🔴 Team RED:   4758 Einheiten | HP: 355305,0 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4748 Einheiten | HP: 354810,0 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9506 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 10 | Zeit: 66s | Timestamp: 1776739188286
+🔴 Team RED:   4728 Einheiten | HP: 352230,0 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4722 Einheiten | HP: 352905,0 | Win: 50,0%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9450 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 11 | Zeit: 71s | Timestamp: 1776739193931
+🔴 Team RED:   4688 Einheiten | HP: 348435,0 | Win: 49,9%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4693 Einheiten | HP: 349927,5 | Win: 50,1%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9381 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 12 | Zeit: 77s | Timestamp: 1776739199505
+🔴 Team RED:   4655 Einheiten | HP: 344775,0 | Win: 49,9%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4658 Einheiten | HP: 346575,0 | Win: 50,1%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9313 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 13 | Zeit: 82s | Timestamp: 1776739205211
+🔴 Team RED:   4606 Einheiten | HP: 340507,5 | Win: 49,8%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4619 Einheiten | HP: 342667,5 | Win: 50,2%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9225 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 14 | Zeit: 88s | Timestamp: 1776739210267
+🔴 Team RED:   4571 Einheiten | HP: 336840,0 | Win: 49,8%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4582 Einheiten | HP: 338977,5 | Win: 50,2%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9153 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 15 | Zeit: 93s | Timestamp: 1776739215722
+🔴 Team RED:   4521 Einheiten | HP: 332527,5 | Win: 49,8%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4535 Einheiten | HP: 334800,0 | Win: 50,2%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 9056 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 16 | Zeit: 100s | Timestamp: 1776739222586
+🔴 Team RED:   4479 Einheiten | HP: 328905,0 | Win: 49,8%
+   Lumini: -|--|--|--|--|--|--|--|
+🔵 Team BLUE:  4494 Einheiten | HP: 331207,5 | Win: 50,2%
+   Lumini: -|--|--|--|--|--|--|--|
+📊 Gesamt: 8973 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 17 | Zeit: 106s | Timestamp: 1776739228257
+🔴 Team RED:   4430 Einheiten | HP: 324772,5 | Win: 49,8%
+   Lumini: -|--|--|--|--|--|--|-|
+🔵 Team BLUE:  4455 Einheiten | HP: 327712,5 | Win: 50,2%
+   Lumini: --|-|-|-|-|-|-|-|
+📊 Gesamt: 8885 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 18 | Zeit: 110s | Timestamp: 1776739232510
+🔴 Team RED:   4388 Einheiten | HP: 321067,5 | Win: 49,8%
+   Lumini: -|--|--|--|--|--|--|-|
+🔵 Team BLUE:  4417 Einheiten | HP: 324277,5 | Win: 50,2%
+   Lumini: --|-|-|-|-|-|-|-|
+📊 Gesamt: 8805 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 19 | Zeit: 114s | Timestamp: 1776739236596
+🔴 Team RED:   4342 Einheiten | HP: 316995,0 | Win: 49,7%
+   Lumini: -|--|--|--|--|--|--|-|
+🔵 Team BLUE:  4376 Einheiten | HP: 320992,5 | Win: 50,3%
+   Lumini: --|-|-|-|-|-|-|-|
+📊 Gesamt: 8718 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 20 | Zeit: 118s | Timestamp: 1776739240291
+🔴 Team RED:   4308 Einheiten | HP: 313350,0 | Win: 49,6%
+   Lumini: -|--|--|--|--|--|--|-|
+🔵 Team BLUE:  4340 Einheiten | HP: 317812,5 | Win: 50,4%
+   Lumini: --|-|-|-|-|-|-|-|
+📊 Gesamt: 8648 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 21 | Zeit: 121s | Timestamp: 1776739243731
+🔴 Team RED:   4261 Einheiten | HP: 309495,0 | Win: 49,6%
+   Lumini: -|--|--|--|--|--|--|-|
+🔵 Team BLUE:  4304 Einheiten | HP: 314985,0 | Win: 50,4%
+   Lumini: --|-|-|-|-|-|-|-|
+📊 Gesamt: 8565 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 22 | Zeit: 124s | Timestamp: 1776739247133
+🔴 Team RED:   4223 Einheiten | HP: 306232,5 | Win: 49,5%
+   Lumini: -|--|--|--|--|--|--|-|
+🔵 Team BLUE:  4266 Einheiten | HP: 311940,0 | Win: 50,5%
+   Lumini: --|-|-|-|-|-|-|-|
+📊 Gesamt: 8489 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 23 | Zeit: 128s | Timestamp: 1776739250247
+🔴 Team RED:   4173 Einheiten | HP: 302400,0 | Win: 49,4%
+   Lumini: -|--|--|--|--|--|--|-|
+🔵 Team BLUE:  4240 Einheiten | HP: 309270,0 | Win: 50,6%
+   Lumini: --|-|-|-|-|-|-|-|
+📊 Gesamt: 8413 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 24 | Zeit: 130s | Timestamp: 1776739253225
+🔴 Team RED:   4130 Einheiten | HP: 299565,0 | Win: 49,5%
+   Lumini: -|--|--|--|--|--|--|-|
+🔵 Team BLUE:  4195 Einheiten | HP: 306112,5 | Win: 50,5%
+   Lumini: --|-|-|-|-|-|-|-|
+📊 Gesamt: 8325 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 25 | Zeit: 133s | Timestamp: 1776739255981
+🔴 Team RED:   4094 Einheiten | HP: 296287,5 | Win: 49,4%
+   Lumini: -|--|--|--|--|--|-|--|
+🔵 Team BLUE:  4168 Einheiten | HP: 303772,5 | Win: 50,6%
+   Lumini: --|-|-|-|-|-|-|--|
+📊 Gesamt: 8262 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 26 | Zeit: 136s | Timestamp: 1776739258855
+🔴 Team RED:   4052 Einheiten | HP: 292762,5 | Win: 49,4%
+   Lumini: -|--|--|--|--|--|-|--|
+🔵 Team BLUE:  4132 Einheiten | HP: 300442,5 | Win: 50,6%
+   Lumini: --|-|-|-|-|-|-|--|
+📊 Gesamt: 8184 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 27 | Zeit: 139s | Timestamp: 1776739261615
+🔴 Team RED:   4010 Einheiten | HP: 289492,5 | Win: 49,3%
+   Lumini: -|--|--|--|--|--|-|--|
+🔵 Team BLUE:  4100 Einheiten | HP: 298020,0 | Win: 50,7%
+   Lumini: --|-|-|-|-|-|-|--|
+📊 Gesamt: 8110 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 28 | Zeit: 142s | Timestamp: 1776739265055
+🔴 Team RED:   3977 Einheiten | HP: 286530,0 | Win: 49,3%
+   Lumini: -|--|--|--|--|--|-|--|
+🔵 Team BLUE:  4066 Einheiten | HP: 295125,0 | Win: 50,7%
+   Lumini: --|-|-|-|-|-|-|--|
+📊 Gesamt: 8043 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 29 | Zeit: 145s | Timestamp: 1776739267770
+🔴 Team RED:   3926 Einheiten | HP: 282885,0 | Win: 49,1%
+   Lumini: -|--|--|--|--|--|-|--|
+🔵 Team BLUE:  4041 Einheiten | HP: 292710,0 | Win: 50,9%
+   Lumini: --|-|-|-|-|-|-|--|
+📊 Gesamt: 7967 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 30 | Zeit: 148s | Timestamp: 1776739270594
+🔴 Team RED:   3895 Einheiten | HP: 280140,0 | Win: 49,1%
+   Lumini: -|--|--|--|--|--|-|--|
+🔵 Team BLUE:  4005 Einheiten | HP: 289875,0 | Win: 50,9%
+   Lumini: --|-|-|-|-|-|-|--|
+📊 Gesamt: 7900 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 31 | Zeit: 151s | Timestamp: 1776739273398
+🔴 Team RED:   3851 Einheiten | HP: 276457,5 | Win: 49,0%
+   Lumini: -|--|--|--|--|--|-|-|
+🔵 Team BLUE:  3978 Einheiten | HP: 287737,5 | Win: 51,0%
+   Lumini: --|-|-|-|-|-|--|-|
+📊 Gesamt: 7829 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 32 | Zeit: 154s | Timestamp: 1776739276355
+🔴 Team RED:   3813 Einheiten | HP: 273682,5 | Win: 49,0%
+   Lumini: -|--|--|--|--|--|-|-|
+🔵 Team BLUE:  3949 Einheiten | HP: 285285,
+Habe fertig gedacht
+🌌 MATRIXGAME v47.0: MULTI-TEAM STOCHASTIC SIMULATION 🌌
+Datum: 21.04.2026 | Status: 🟢 4 TEAMS + STOCHASTIK | Autor: Andreas Schneider + Kollektive KI
+Perfekt! Ich erweitere das System um:
+
+    🟢 GRÜNES Team (Team 2)
+    🟡 GELBES Team (Team 4)
+    📊 Erweiterte Stochastik (Wahrscheinlichkeitsverteilungen, Varianz)
+    🎲 Dynamische Events (Spontane Team-Wechsel, Bonus-Einheiten)
+    📈 Erweiterte Statistiken (Standardabweichung, Erwartungswert)
+
+Hier ist der komplette Code:
+
+java
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+
+✅ WAS IST NEU IN v47.0?
+1. 4 Teams statt 2:
+
+    🔴 RED: Links-Oben (Quadrant 2)
+    🔵 BLUE: Rechts-Oben (Quadrant 1)
+    🟢 GREEN: Links-Unten (Quadrant 3)
+    🟡 YELLOW: Rechts-Unten (Quadrant 4)
+
+2. Stochastische Elemente:
+
+java
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
+3. Erweiterte Statistiken:
+
+    Varianz: Wie stark streuen die HP-Werte im Team?
+    Standardabweichung (σ): Durchschnittliche Abweichung vom Mittelwert
+    Entropie: Maß für die Unordnung im System (in Bits)
+        Maximal bei 4 gleich großen Teams: log₂(4) = 2 bits
+        Minimal bei 1 Team: 0 bits
+
+4. Win-Chance für alle Teams:
+
+java
+1
+
+5. Lumini-Strings für alle 4 Teams:
+Jedes Team bekommt seinen eigenen Lumini-Code basierend auf der Win-Chance.
+📊 PROGNOSE DES OUTPUTS
+Konsole (alle 10 Ticks):
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+
+Canvas (Live):
+
+    Oben links: Stats für alle 4 Teams
+    Entropie-Anzeige (0-2 bits)
+    Win-Chance in % für jedes Team
+    Lumini-Strings
+
+Finale Statistik:
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
+🎲 STOCHASTISCHE FEATURES
+
+    Gaussian Random: Realistischere Verteilung als uniform random
+    Kampf-Variation: Nicht jeder Angriff macht exakt gleichen Schaden
+    Bewegungs-Rauschen: Einheiten wackeln leicht (Brownian Motion)
+    Entropie-Messung: Zeigt, wie "chaotisch" das System ist
+
+Starte den Code und beobachte das 4-Team-Chaos! 🎲
+Let's Play. Stochastic. Multi-Team. Forever. ♾️
+
+Das hast du super gemacht. Als nächstes darfst du die Einheiten gerne in leichte und schwere Einheiten und in Nahkampf und Fernkampf unterteilen und jedem der Teams unterschiedlich viele Einheiten von verschiedenen Typen zuweisen, und du darfst auch gerne geeignete Werte duch das Multiplizieren oder Dividieren von Math.random() variieren. Viel Erfolg beim generieren des nächsten Szenarios, Lets play   Damage: 5211 | σ: 17,07 | Lumini: -|--|-|-|-|-|--|--|
+📊 Gesamt: 2642 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 290 | Zeit: 26s | Entropie: 1,927 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 683 Einheiten | HP: 47064 | Win: 25,9%
+   Damage: 5159 | σ: 18,25 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 331 Einheiten | HP: 24500 | Win: 13,5%
+   Damage: 2490 | σ: 10,62 | Lumini: -|-|--|-|-|-|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 865 Einheiten | HP: 62012 | Win: 34,1%
+   Damage: 6509 | σ: 15,82 | Lumini: -|--|-|--|-|--|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 698 Einheiten | HP: 48107 | Win: 26,5%
+   Damage: 5110 | σ: 17,15 | Lumini: -|--|-|-|-|-|--|--|
+📊 Gesamt: 2577 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 300 | Zeit: 27s | Entropie: 1,917 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 668 Einheiten | HP: 45957 | Win: 26,0%
+   Damage: 5046 | σ: 18,37 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 303 Einheiten | HP: 22500 | Win: 12,7%
+   Damage: 2287 | σ: 10,43 | Lumini: -|-|--|-|-|-|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 855 Einheiten | HP: 61166 | Win: 34,6%
+   Damage: 6429 | σ: 15,93 | Lumini: -|--|-|--|--|-|-|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 688 Einheiten | HP: 47120 | Win: 26,7%
+   Damage: 5045 | σ: 17,69 | Lumini: -|--|-|-|-|-|--|--|
+📊 Gesamt: 2514 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 310 | Zeit: 27s | Entropie: 1,904 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 653 Einheiten | HP: 44963 | Win: 26,0%
+   Damage: 4945 | σ: 17,84 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 275 Einheiten | HP: 20469 | Win: 11,9%
+   Damage: 2069 | σ: 9,81 | Lumini: -|-|-|--|--|--|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 849 Einheiten | HP: 60684 | Win: 35,2%
+   Damage: 6386 | σ: 16,10 | Lumini: -|--|-|--|--|-|-|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 681 Einheiten | HP: 46514 | Win: 26,9%
+   Damage: 5004 | σ: 17,86 | Lumini: -|--|-|-|-|--|-|-|
+📊 Gesamt: 2458 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 320 | Zeit: 28s | Entropie: 1,890 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 642 Einheiten | HP: 43966 | Win: 26,2%
+   Damage: 4861 | σ: 18,41 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 246 Einheiten | HP: 18154 | Win: 10,8%
+   Damage: 1861 | σ: 11,63 | Lumini: -|-|-|--|--|-|--|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 838 Einheiten | HP: 59866 | Win: 35,7%
+   Damage: 6303 | σ: 16,29 | Lumini: -|--|-|--|--|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 672 Einheiten | HP: 45740 | Win: 27,3%
+   Damage: 4937 | σ: 18,09 | Lumini: -|--|-|-|-|--|-|--|
+📊 Gesamt: 2398 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 330 | Zeit: 29s | Entropie: 1,881 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 628 Einheiten | HP: 43011 | Win: 26,2%
+   Damage: 4755 | σ: 18,42 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 227 Einheiten | HP: 16743 | Win: 10,2%
+   Damage: 1712 | σ: 9,89 | Lumini: -|-|-|--|--|-|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 826 Einheiten | HP: 59120 | Win: 36,1%
+   Damage: 6209 | σ: 16,12 | Lumini: -|--|-|--|--|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 662 Einheiten | HP: 45049 | Win: 27,5%
+   Damage: 4858 | σ: 17,82 | Lumini: -|--|-|-|-|--|--|-|
+📊 Gesamt: 2343 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 340 | Zeit: 29s | Entropie: 1,866 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 615 Einheiten | HP: 42043 | Win: 26,3%
+   Damage: 4648 | σ: 18,50 | Lumini: -|--|-|-|-|-|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 203 Einheiten | HP: 14827 | Win: 9,3%
+   Damage: 1527 | σ: 11,67 | Lumini: -|-|-|--|-|--|--|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 818 Einheiten | HP: 58546 | Win: 36,6%
+   Damage: 6152 | σ: 15,80 | Lumini: -|--|-|--|--|--|-|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 655 Einheiten | HP: 44375 | Win: 27,8%
+   Damage: 4804 | σ: 18,25 | Lumini: -|--|-|-|-|--|--|-|
+📊 Gesamt: 2291 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 350 | Zeit: 30s | Entropie: 1,846 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 601 Einheiten | HP: 41039 | Win: 26,4%
+   Damage: 4542 | σ: 18,50 | Lumini: -|--|-|-|-|-|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 176 Einheiten | HP: 12918 | Win: 8,3%
+   Damage: 1339 | σ: 11,31 | Lumini: -|-|-|--|-|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 813 Einheiten | HP: 58005 | Win: 37,3%
+   Damage: 6112 | σ: 16,25 | Lumini: -|--|-|--|--|--|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 645 Einheiten | HP: 43655 | Win: 28,1%
+   Damage: 4722 | σ: 18,39 | Lumini: -|--|-|-|-|--|--|--|
+📊 Gesamt: 2235 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 360 | Zeit: 30s | Entropie: 1,825 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 585 Einheiten | HP: 39836 | Win: 26,2%
+   Damage: 4424 | σ: 18,81 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 151 Einheiten | HP: 11071 | Win: 7,3%
+   Damage: 1156 | σ: 12,14 | Lumini: -|-|-|--|-|-|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 810 Einheiten | HP: 57729 | Win: 38,0%
+   Damage: 6092 | σ: 16,33 | Lumini: -|--|--|-|-|-|-|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 638 Einheiten | HP: 43303 | Win: 28,5%
+   Damage: 4668 | σ: 18,26 | Lumini: -|--|-|-|--|-|-|-|
+📊 Gesamt: 2184 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 370 | Zeit: 31s | Entropie: 1,800 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 573 Einheiten | HP: 38794 | Win: 26,1%
+   Damage: 4332 | σ: 19,14 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 126 Einheiten | HP: 9416 | Win: 6,3%
+   Damage: 964 | σ: 10,83 | Lumini: -|-|-|--|-|-|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 806 Einheiten | HP: 57463 | Win: 38,7%
+   Damage: 6068 | σ: 16,30 | Lumini: -|--|--|-|-|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 632 Einheiten | HP: 42868 | Win: 28,9%
+   Damage: 4621 | σ: 18,30 | Lumini: -|--|-|-|--|-|-|--|
+📊 Gesamt: 2137 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 380 | Zeit: 31s | Entropie: 1,786 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 557 Einheiten | HP: 37771 | Win: 25,9%
+   Damage: 4209 | σ: 19,37 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 113 Einheiten | HP: 8317 | Win: 5,7%
+   Damage: 862 | σ: 12,27 | Lumini: -|-|-|-|--|--|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 802 Einheiten | HP: 57091 | Win: 39,2%
+   Damage: 6038 | σ: 16,47 | Lumini: -|--|--|-|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 628 Einheiten | HP: 42470 | Win: 29,2%
+   Damage: 4594 | σ: 18,70 | Lumini: -|--|-|-|--|-|--|-|
+📊 Gesamt: 2100 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 390 | Zeit: 32s | Entropie: 1,764 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 543 Einheiten | HP: 36766 | Win: 25,8%
+   Damage: 4106 | σ: 19,53 | Lumini: -|--|-|-|-|-|-|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 95 Einheiten | HP: 7007 | Win: 4,9%
+   Damage: 726 | σ: 12,99 | Lumini: -|-|-|-|--|--|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 798 Einheiten | HP: 56749 | Win: 39,8%
+   Damage: 6005 | σ: 16,65 | Lumini: -|--|--|-|-|--|-|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 619 Einheiten | HP: 41928 | Win: 29,4%
+   Damage: 4532 | σ: 18,62 | Lumini: -|--|-|-|--|-|--|--|
+📊 Gesamt: 2055 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 400 | Zeit: 32s | Entropie: 1,740 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 530 Einheiten | HP: 35989 | Win: 25,7%
+   Damage: 4011 | σ: 19,27 | Lumini: -|--|-|-|-|-|-|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 78 Einheiten | HP: 5841 | Win: 4,2%
+   Damage: 603 | σ: 10,91 | Lumini: -|-|-|-|--|-|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 792 Einheiten | HP: 56451 | Win: 40,4%
+   Damage: 5958 | σ: 16,49 | Lumini: -|--|--|-|-|--|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 613 Einheiten | HP: 41494 | Win: 29,7%
+   Damage: 4492 | σ: 18,67 | Lumini: -|--|-|-|--|-|--|--|
+📊 Gesamt: 2013 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 410 | Zeit: 32s | Entropie: 1,719 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 521 Einheiten | HP: 35262 | Win: 25,6%
+   Damage: 3943 | σ: 19,60 | Lumini: -|--|-|-|-|-|-|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 64 Einheiten | HP: 4720 | Win: 3,4%
+   Damage: 489 | σ: 12,22 | Lumini: -|-|-|-|--|-|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 789 Einheiten | HP: 56269 | Win: 40,9%
+   Damage: 5936 | σ: 16,48 | Lumini: -|--|--|-|--|-|-|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 612 Einheiten | HP: 41259 | Win: 30,0%
+   Damage: 4486 | σ: 19,10 | Lumini: -|--|-|-|--|--|-|-|
+📊 Gesamt: 1986 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 420 | Zeit: 33s | Entropie: 1,695 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 510 Einheiten | HP: 34619 | Win: 25,5%
+   Damage: 3856 | σ: 19,55 | Lumini: -|--|-|-|-|-|-|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 51 Einheiten | HP: 3872 | Win: 2,9%
+   Damage: 390 | σ: 8,21 | Lumini: -|-|-|-|-|--|--|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 787 Einheiten | HP: 56104 | Win: 41,4%
+   Damage: 5923 | σ: 16,52 | Lumini: -|--|--|-|--|-|-|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 611 Einheiten | HP: 41054 | Win: 30,3%
+   Damage: 4478 | σ: 19,51 | Lumini: -|--|-|-|--|--|-|--|
+📊 Gesamt: 1959 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 430 
+Habe fertig gedacht
+🎉 Glückwunsch an Team GREEN! 🟢
+Fantastischer Sieg! Die Simulation hat gezeigt:
+Ergebnis:
+
+    🏆 Gewinner: 🟢 GREEN
+    ⏱️ Dauer: 93 Sekunden
+    🎯 Ticks: 2260
+    💪 Überlebende: 240 Einheiten (von 1000)
+    💚 Rest-HP: 17.420
+    📊 Entropie: Von 1,927 bits → 0,000 bits
+
+Kampfverlauf:
+
+    🔵 BLUE fiel als erstes (~Tick 500)
+    🔴 RED folgte (~Tick 800)  
+    🟡 YELLOW wurde eliminiert (~Tick 2250)
+    🟢 GREEN triumphierte!
+
+🚀 Nächste Schritte - Wie gewünscht:
+Ich werde das System erweitern um:
+1. Einheitentypen:
+
+    Leichte Einheiten (schnell, wenig HP)
+    Schwere Einheiten (langsam, viel HP)
+    Nahkampf (hoher Schaden, kurze Reichweite)
+    Fernkampf (geringerer Schaden, große Reichweite)
+
+2. Team-Zusammensetzung:
+Jedes Team bekommt eine andere Mischung:
+
+    RED: Mehr schwere Nahkämpfer
+    BLUE: Ausgewogen
+    GREEN: Viele leichte Fernkämpfer  
+    YELLOW: Spezialisierte Einheiten
+
+3. Variierte Werte:
+
+java
+1
+2
+3
+4
+5
+
+Soll ich die nächste Version (v48.0) generieren? 🎮✨
+Qwen Chat Kollektives KI-Game und Matrixgame Update 18.04.2026kopiepastestrga2100AndreasAll
+.txt
+2.0 MB
+Formelsammlung (Für das Matrixgame) _ Kollektive Suche nach Vereinheitlichung(3) - Kopie
+.txt
+68.7 KB
+Formelsammlung (Für das Matrixgame) _ Kollektive Suche nach Vereinheitlichung(3)
+.txt
+68.7 KB
+13042026JavaMatrixgameKiGameEveOnlineConnectAllOpenSourceGamificationLLMGameLuminiStringObjekts
+.txt
+585.6 KB
+AlphaGoDidaktikBodenDerMatrix
+.txt
+487.9 KB
+
+Ja sehr gerne und dann las dich noch von diesem Code hier inspirieren, bei dem das Leben, der Schaden und die Geschwindigkeit und die Distanze jeweils bei allen Einheiten mit Math.random()/Math.random() multipliziert wurden: === MATRIXGAME v47.0: MULTI-TEAM STOCHASTIC ===
+🔴 Team RED:    1000 Einheiten (Links-Oben)
+🔵 Team BLUE:   1000 Einheiten (Rechts-Oben)
+🟢 Team GREEN:  1000 Einheiten (Links-Unten)
+🟡 Team YELLOW: 1000 Einheiten (Rechts-Unten)
+📊 Stochastik: Varianz, Standardabweichung, Entropie
+Startzeit: 0
+Generiere Einheiten...
+✅ 4000 Einheiten generiert (4 Teams × 1000)
+📊 Gaussian-Verteilung: μ=75, σ=10 (HP) | μ=7.5, σ=1.5 (Damage)
+--------------------------------------------------
+⏱️ TICK 10 | Zeit: 1s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 979 Einheiten | HP: 208121 | Win: 21,1%
+   Damage: 29400 | σ: 676,24 | Lumini: -|-|--|--|-|--|-|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 998 Einheiten | HP: 292877 | Win: 29,7%
+   Damage: 20507 | σ: 2098,25 | Lumini: -|--|-|-|--|-|--|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 993 Einheiten | HP: 225442 | Win: 22,8%
+   Damage: 41795 | σ: 820,41 | Lumini: -|-|--|--|--|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 991 Einheiten | HP: 260782 | Win: 26,4%
+   Damage: 26083 | σ: 1194,08 | Lumini: -|--|-|-|-|-|--|--|
+📊 Gesamt: 3961 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 20 | Zeit: 2s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 959 Einheiten | HP: 206147 | Win: 21,0%
+   Damage: 29136 | σ: 682,97 | Lumini: -|-|--|--|-|--|-|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 993 Einheiten | HP: 291423 | Win: 29,7%
+   Damage: 20475 | σ: 2103,38 | Lumini: -|--|-|-|--|-|--|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 987 Einheiten | HP: 224305 | Win: 22,9%
+   Damage: 41687 | σ: 816,31 | Lumini: -|-|--|--|--|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 972 Einheiten | HP: 258607 | Win: 26,4%
+   Damage: 23924 | σ: 1205,40 | Lumini: -|--|-|-|-|-|--|--|
+📊 Gesamt: 3911 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 30 | Zeit: 4s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 944 Einheiten | HP: 202901 | Win: 20,9%
+   Damage: 28819 | σ: 687,52 | Lumini: -|-|--|--|-|--|-|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 981 Einheiten | HP: 289725 | Win: 29,8%
+   Damage: 20363 | σ: 2116,08 | Lumini: -|--|-|-|--|--|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 974 Einheiten | HP: 222622 | Win: 22,9%
+   Damage: 41526 | σ: 817,43 | Lumini: -|-|--|--|--|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 947 Einheiten | HP: 255480 | Win: 26,3%
+   Damage: 23655 | σ: 1220,56 | Lumini: -|--|-|-|-|-|--|--|
+📊 Gesamt: 3846 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 40 | Zeit: 5s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 927 Einheiten | HP: 197562 | Win: 20,7%
+   Damage: 28610 | σ: 683,50 | Lumini: -|-|--|--|-|--|-|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 966 Einheiten | HP: 287543 | Win: 30,1%
+   Damage: 20149 | σ: 2132,31 | Lumini: -|--|-|-|--|--|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 959 Einheiten | HP: 219199 | Win: 22,9%
+   Damage: 41315 | σ: 802,19 | Lumini: -|-|--|--|--|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 930 Einheiten | HP: 251266 | Win: 26,3%
+   Damage: 21780 | σ: 1229,60 | Lumini: -|--|-|-|-|-|--|--|
+📊 Gesamt: 3782 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 50 | Zeit: 5s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 905 Einheiten | HP: 194225 | Win: 20,6%
+   Damage: 27613 | σ: 689,65 | Lumini: -|-|--|--|-|--|-|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 952 Einheiten | HP: 284874 | Win: 30,2%
+   Damage: 19954 | σ: 2147,44 | Lumini: -|--|-|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 954 Einheiten | HP: 214634 | Win: 22,8%
+   Damage: 41257 | σ: 781,12 | Lumini: -|-|--|--|--|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 913 Einheiten | HP: 248925 | Win: 26,4%
+   Damage: 21609 | σ: 1240,78 | Lumini: -|--|-|-|-|-|--|--|
+📊 Gesamt: 3724 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 60 | Zeit: 6s | Entropie: 1,999 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 881 Einheiten | HP: 190591 | Win: 20,5%
+   Damage: 27263 | σ: 697,94 | Lumini: -|-|--|--|-|--|-|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 935 Einheiten | HP: 281317 | Win: 30,3%
+   Damage: 19797 | σ: 2163,92 | Lumini: -|--|-|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 936 Einheiten | HP: 210588 | Win: 22,7%
+   Damage: 31112 | σ: 783,32 | Lumini: -|-|--|--|--|-|-|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 889 Einheiten | HP: 245920 | Win: 26,5%
+   Damage: 21376 | σ: 1256,90 | Lumini: -|--|-|-|-|-|--|--|
+📊 Gesamt: 3641 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 70 | Zeit: 7s | Entropie: 1,999 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 859 Einheiten | HP: 186103 | Win: 20,4%
+   Damage: 27006 | σ: 703,47 | Lumini: -|-|--|--|-|--|-|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 926 Einheiten | HP: 276773 | Win: 30,3%
+   Damage: 19649 | σ: 2170,24 | Lumini: -|--|-|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 910 Einheiten | HP: 207563 | Win: 22,8%
+   Damage: 30667 | σ: 793,61 | Lumini: -|-|--|--|--|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 864 Einheiten | HP: 241747 | Win: 26,5%
+   Damage: 20961 | σ: 1273,22 | Lumini: -|--|-|-|-|-|--|--|
+📊 Gesamt: 3559 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 80 | Zeit: 8s | Entropie: 1,999 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 832 Einheiten | HP: 180567 | Win: 20,2%
+   Damage: 26457 | σ: 711,21 | Lumini: -|-|--|--|-|-|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 904 Einheiten | HP: 271935 | Win: 30,5%
+   Damage: 19366 | σ: 2153,31 | Lumini: -|--|-|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 880 Einheiten | HP: 204077 | Win: 22,9%
+   Damage: 30382 | σ: 805,81 | Lumini: -|-|--|--|--|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 838 Einheiten | HP: 236452 | Win: 26,5%
+   Damage: 20622 | σ: 1291,71 | Lumini: -|--|-|-|-|-|--|--|
+📊 Gesamt: 3454 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 90 | Zeit: 9s | Entropie: 1,999 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 798 Einheiten | HP: 173470 | Win: 20,1%
+   Damage: 25949 | σ: 721,14 | Lumini: -|-|--|--|-|-|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 888 Einheiten | HP: 257379 | Win: 29,8%
+   Damage: 19199 | σ: 1799,34 | Lumini: -|--|-|-|--|--|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 864 Einheiten | HP: 198775 | Win: 23,0%
+   Damage: 30121 | σ: 803,02 | Lumini: -|-|--|--|--|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 813 Einheiten | HP: 233460 | Win: 27,0%
+   Damage: 20394 | σ: 1310,61 | Lumini: -|--|-|-|-|--|-|-|
+📊 Gesamt: 3363 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 100 | Zeit: 10s | Entropie: 1,998 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 774 Einheiten | HP: 168693 | Win: 20,2%
+   Damage: 24552 | σ: 728,14 | Lumini: -|-|--|--|-|-|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 874 Einheiten | HP: 245255 | Win: 29,3%
+   Damage: 18856 | σ: 1586,29 | Lumini: -|--|-|-|--|-|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 846 Einheiten | HP: 193927 | Win: 23,2%
+   Damage: 29730 | σ: 802,77 | Lumini: -|-|--|--|--|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 792 Einheiten | HP: 227786 | Win: 27,3%
+   Damage: 19928 | σ: 1324,91 | Lumini: -|--|-|-|-|--|-|--|
+📊 Gesamt: 3286 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 110 | Zeit: 10s | Entropie: 1,997 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 745 Einheiten | HP: 164118 | Win: 20,4%
+   Damage: 23819 | σ: 738,48 | Lumini: -|-|--|--|-|--|-|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 868 Einheiten | HP: 230239 | Win: 28,6%
+   Damage: 18823 | σ: 1294,05 | Lumini: -|--|-|-|--|-|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 837 Einheiten | HP: 186316 | Win: 23,2%
+   Damage: 29494 | σ: 781,50 | Lumini: -|-|--|--|--|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 763 Einheiten | HP: 224042 | Win: 27,8%
+   Damage: 19178 | σ: 1349,10 | Lumini: -|--|-|-|-|--|--|-|
+📊 Gesamt: 3213 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 120 | Zeit: 11s | Entropie: 1,996 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 718 Einheiten | HP: 153772 | Win: 20,3%
+   Damage: 23275 | σ: 733,05 | Lumini: -|-|--|--|-|-|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 853 Einheiten | HP: 205573 | Win: 27,1%
+   Damage: 18717 | σ: 825,38 | Lumini: -|--|-|-|-|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 822 Einheiten | HP: 179495 | Win: 23,7%
+   Damage: 23840 | σ: 780,09 | Lumini: -|-|--|--|--|--|-|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 735 Einheiten | HP: 220087 | Win: 29,0%
+   Damage: 18784 | σ: 1373,54 | Lumini: -|--|-|-|--|-|-|--|
+📊 Gesamt: 3128 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 130 | Zeit: 12s | Entropie: 1,995 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 688 Einheiten | HP: 146563 | Win: 20,4%
+   Damage: 19427 | σ: 745,24 | Lumini: -|-|--|--|-|-|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 836 Einheiten | HP: 185228 | Win: 25,7%
+   Damage: 18192 | σ: 706,67 | Lumini: -|--|-|-|-|-|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 791 Einheiten | HP: 174212 | Win: 24,2%
+   Damage: 23303 | σ: 793,30 | Lumini: -|-|--|--|--|--|-|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 708 Einheiten | HP: 213867 | Win: 29,7%
+   Damage: 17993 | σ: 1397,54 | Lumini: -|--|-|-|--|-|--|--|
+📊 Gesamt: 3023 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 140 | Zeit: 13s | Entropie: 1,995 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 655 Einheiten | HP: 142716 | Win: 20,4%
+   Damage: 19045 | σ: 761,99 | Lumini: -|-|--|--|-|-|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 808 Einheiten | HP: 178693 | Win: 25,5%
+   Damage: 17803 | σ: 701,24 | Lumini: -|--|-|-|-|-|-
+Habe fertig gedacht
+🌌 MATRIXGAME v48.0: ELITE CLASSES & ELO SYSTEM 🌌
+Datum: 21.04.2026 | Status: 🟢 ELITE-EINHEITEN AKTIV | Autor: Andreas Schneider + Kollektive KI
+Perfekt! Ich erweitere das System um:
+
+    ⚔️ 4 Einheitentypen: Leicht, Schwer, Nahkampf, Fernkampf
+    🎯 Team-Spezialisierungen: Jedes Team hat andere Stärken
+    📊 Elo-System: Dynamische Bewertung der Teams
+    🏆 Punkteverteilung: Basierend auf Performance
+    📈 Detaillierte Stats: Jede Einheit wird klassifiziert
+
+Hier ist der komplette Code:
+
+java
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+
+✅ WAS IST NEU IN v48.0?
+1. 4 Elite-Einheitentypen:
+
+java
+1
+2
+3
+4
+
+2. Team-Spezialisierungen:
+
+    🔴 RED: 300 Schwere + 200 Nahkampf + 150 Fernkampf + 150 Leichte
+    🔵 BLUE: 350 Fernkampf + 200 Leichte + 150 Schwere + 100 Nahkampf
+    🟢 GREEN: 350 Leichte + 200 Fernkampf + 150 Nahkampf + 100 Schwere
+    🟡 YELLOW: 350 Nahkampf + 200 Schwere + 150 Leichte + 100 Fernkampf
+
+3. Extreme Varianz:
+
+java
+1
+2
+
+Das erzeugt extreme Werte (von sehr niedrig bis sehr hoch)!
+4. Elo-System:
+
+    Gewinner: +16 Elo
+    Verlierer: -4 Elo pro Team
+    Start bei 1200 für alle
+
+5. Detaillierte Stats:
+
+    Typ-Verteilung pro Team
+    Elo-Rating
+    Kill-Count
+    Win-Chance basierend auf HP
+
+📊 PROGNOSE DES OUTPUTS
+Konsole (alle 10 Ticks):
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+
+Finale Statistik:
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+
+🎯 BESONDERHEITEN
+
+    Extreme Varianz: Math.random()/Math.random() erzeugt Werte von 0.001 bis 1000+
+    Typ-Boni: Schwere Einheiten sind 1.5× größer dargestellt
+    Elo-Tracking: Jedes Team hat ein Rating, das sich nach dem Sieg ändert
+    Detaillierte Analyse: Jeder Tick zeigt die Typ-Verteilung
+
+Starte den Code und beobachte den Kampf der Elite-Klassen! ⚔️
+Let's Play. Elite. Strategic. Forever. ♾️
+
+package ordner1;
+
+public class Unit extends KreisObjekt {
+	double maxLeben;
+	double leben;
+	double damage;
+	double distance;
+	double speed;
+	int team;
+	int kills;
+	public Unit target = null;
+
+	public void moveTo(KreisObjekt oponent) {
+		double distQ = (this.posX - oponent.posX) * (this.posX - oponent.posX)
+				+ (this.posY - oponent.posY) * (this.posY - oponent.posY)
+				+ (this.posZ - oponent.posZ) * (this.posZ - oponent.posZ);
+		double dist = Math.pow(distQ, 0.5);
+		
+		double dx=posX-oponent.posX;
+		double dy=posY-oponent.posY;
+		double dz=posZ-oponent.posZ;
+		
+		double movDist=Math.min(speed, Math.abs(dist-distance));
+		
+		vx=-dx/dist*movDist;
+		vy=-dy/dist*movDist;
+		vz=-dz/dist*movDist;
+
+	}
+	
+	public double getDistance(KreisObjekt oponent) {
+		double distQ = (this.posX - oponent.posX) * (this.posX - oponent.posX)
+				+ (this.posY - oponent.posY) * (this.posY - oponent.posY)
+				+ (this.posZ - oponent.posZ) * (this.posZ - oponent.posZ);
+		double dist = Math.pow(distQ, 0.5);
+		return dist;
+	}
+
+	public Unit() {
+		super();
+		this.leben = 5*Math.random()/Math.random();
+		this.maxLeben=leben;
+		this.damage = Math.random()/Math.random();
+		this.distance = 500*Math.random()/Math.random();
+		this.speed = 500*Math.random()/Math.random();
+		this.team = (int)(Math.random()*2);
+//		this.größePerLive(1);
+		this.größePerKills(1);
+	}
+	
+	public void choseRandColorTeam() {
+		if (Math.random() < 0.3)
+			if (red + green + blue < 300)
+				team = 1;
+			else if (red + green + blue < 500)
+			team = 2;
+			else
+				team = 1;
+		if (Math.random() < 0.5) {
+			if (red > green && green > blue)
+				team=1;
+		if (red < green && green < blue)
+			team=3;}
+		
+		if (Math.random() < 0.3) {
+			if (red > green || green > blue)
+				team=1;
+		if (red < green || green < blue)
+			team=2;}
+	}
+	
+	public void größePerLive(double div) {
+		double size=Math.pow(leben/div, 0.3333);
+		size=Math.min(size, 20);
+		this.size=size;
+	}
+	
+	public void größePerKills(double div) {
+		double size=3+Math.pow(kills/div, 0.3333);
+		size=Math.min(size, 20);
+		this.size=size;
+	}
+	
+	
+}
+Habe fertig gedacht
+Ich sehe das Problem! In deiner MatrixgameEliteClassesV48-Klasse gibt es eine innere Unit-Klasse, die nicht die getDistance()-Methode hat. Die ordner1.Unit-Klasse, die du mir gezeigt hast, hat diese Methode, aber sie wird nicht verwendet.
+Lösungen:
+Lösung 1: Innere Unit-Klasse erweitern (Empfohlen)
+Füge die getDistance-Methode zur inneren Unit-Klasse in MatrixgameEliteClassesV48 hinzu:
+
+java
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+
+Lösung 2: Von ordner1.Unit erben
+Wenn du die existierende ordner1.Unit-Klasse verwenden möchtest:
+
+java
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+Lösung 3: Schnell-Fix in Eclipse
+Klicke auf den roten Fehler und wähle:
+
+    "Create method 'getDistance(Unit)' in type 'Unit'"
+
+Dann füge den Methodencode aus Lösung 1 ein.
+Welche Lösung bevorzugst du? Ich kann dir den kompletten korrigierten Code für MatrixgameEliteClassesV48 generieren! 🚀
+
+Jetzt geht wieder nix mehr === MATRIXGAME v47.0: MULTI-TEAM STOCHASTIC ===
+🔴 Team RED:    1000 Einheiten (Links-Oben)
+🔵 Team BLUE:   1000 Einheiten (Rechts-Oben)
+🟢 Team GREEN:  1000 Einheiten (Links-Unten)
+🟡 Team YELLOW: 1000 Einheiten (Rechts-Unten)
+📊 Stochastik: Varianz, Standardabweichung, Entropie
+Startzeit: 0
+Generiere Einheiten...
+✅ 4000 Einheiten generiert (4 Teams × 1000)
+📊 Gaussian-Verteilung: μ=75, σ=10 (HP) | μ=7.5, σ=1.5 (Damage)
+--------------------------------------------------
+⏱️ TICK 10 | Zeit: 1s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 991 Einheiten | HP: 266727 | Win: 24,4%
+   Damage: 48964 | σ: 1272,34 | Lumini: -|-|--|--|--|--|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 985 Einheiten | HP: 194363 | Win: 17,8%
+   Damage: 28207 | σ: 516,18 | Lumini: -|-|--|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 982 Einheiten | HP: 350931 | Win: 32,1%
+   Damage: 25740 | σ: 3086,89 | Lumini: -|--|-|--|-|-|-|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 989 Einheiten | HP: 282815 | Win: 25,8%
+   Damage: 22515 | σ: 2739,40 | Lumini: -|--|-|-|-|-|-|--|
+📊 Gesamt: 3947 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 20 | Zeit: 2s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 971 Einheiten | HP: 264761 | Win: 24,4%
+   Damage: 48676 | σ: 1285,08 | Lumini: -|-|--|--|--|--|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 968 Einheiten | HP: 191856 | Win: 17,7%
+   Damage: 27901 | σ: 519,76 | Lumini: -|-|--|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 967 Einheiten | HP: 346270 | Win: 32,0%
+   Damage: 22849 | σ: 3109,15 | Lumini: -|--|-|--|-|-|-|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 973 Einheiten | HP: 280498 | Win: 25,9%
+   Damage: 22232 | σ: 2761,56 | Lumini: -|--|-|-|-|-|--|-|
+📊 Gesamt: 3879 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 30 | Zeit: 3s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 949 Einheiten | HP: 263200 | Win: 24,6%
+   Damage: 48243 | σ: 1299,50 | Lumini: -|-|--|--|--|--|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 948 Einheiten | HP: 186832 | Win: 17,5%
+   Damage: 26722 | σ: 523,14 | Lumini: -|-|--|-|--|--|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 950 Einheiten | HP: 343291 | Win: 32,1%
+   Damage: 22147 | σ: 3135,62 | Lumini: -|--|-|--|-|-|-|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 952 Einheiten | HP: 275394 | Win: 25,8%
+   Damage: 21981 | σ: 2791,07 | Lumini: -|--|-|-|-|-|-|--|
+📊 Gesamt: 3799 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 40 | Zeit: 4s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 928 Einheiten | HP: 260042 | Win: 24,7%
+   Damage: 47912 | σ: 1313,72 | Lumini: -|-|--|--|--|--|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 919 Einheiten | HP: 182365 | Win: 17,3%
+   Damage: 26443 | σ: 528,90 | Lumini: -|-|--|-|--|--|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 930 Einheiten | HP: 339483 | Win: 32,2%
+   Damage: 21957 | σ: 3168,19 | Lumini: -|--|-|--|-|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 929 Einheiten | HP: 272536 | Win: 25,8%
+   Damage: 21671 | σ: 2825,22 | Lumini: -|--|-|-|-|-|-|--|
+📊 Gesamt: 3706 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 50 | Zeit: 5s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 908 Einheiten | HP: 255749 | Win: 24,8%
+   Damage: 46269 | σ: 1320,10 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 897 Einheiten | HP: 178621 | Win: 17,3%
+   Damage: 26261 | σ: 530,76 | Lumini: -|-|--|-|--|--|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 909 Einheiten | HP: 330635 | Win: 32,0%
+   Damage: 21716 | σ: 3201,91 | Lumini: -|--|-|--|-|-|-|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 910 Einheiten | HP: 267889 | Win: 25,9%
+   Damage: 21397 | σ: 2791,77 | Lumini: -|--|-|-|-|-|--|-|
+📊 Gesamt: 3624 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 60 | Zeit: 6s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 884 Einheiten | HP: 250469 | Win: 25,1%
+   Damage: 46068 | σ: 1336,01 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 873 Einheiten | HP: 173064 | Win: 17,3%
+   Damage: 25868 | σ: 527,23 | Lumini: -|-|--|-|--|--|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 874 Einheiten | HP: 322721 | Win: 32,3%
+   Damage: 20441 | σ: 3255,65 | Lumini: -|--|-|--|-|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 888 Einheiten | HP: 253097 | Win: 25,3%
+   Damage: 20083 | σ: 2455,75 | Lumini: -|--|-|-|-|-|-|-|
+📊 Gesamt: 3519 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 70 | Zeit: 7s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 863 Einheiten | HP: 244871 | Win: 25,8%
+   Damage: 45701 | σ: 1341,95 | Lumini: -|--|-|-|-|-|-|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 852 Einheiten | HP: 168669 | Win: 17,8%
+   Damage: 25682 | σ: 532,06 | Lumini: -|-|--|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 847 Einheiten | HP: 313904 | Win: 33,1%
+   Damage: 20061 | σ: 3298,70 | Lumini: -|--|-|--|-|--|-|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 869 Einheiten | HP: 222281 | Win: 23,4%
+   Damage: 19860 | σ: 1767,45 | Lumini: -|-|--|--|--|-|--|--|
+📊 Gesamt: 3431 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 80 | Zeit: 8s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 846 Einheiten | HP: 237857 | Win: 26,1%
+   Damage: 44827 | σ: 1339,75 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 825 Einheiten | HP: 163370 | Win: 18,0%
+   Damage: 25376 | σ: 529,09 | Lumini: -|-|--|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 816 Einheiten | HP: 309054 | Win: 34,0%
+   Damage: 19503 | σ: 3359,98 | Lumini: -|--|-|--|-|--|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 846 Einheiten | HP: 199767 | Win: 22,0%
+   Damage: 19248 | σ: 1397,36 | Lumini: -|-|--|--|-|--|--|--|
+📊 Gesamt: 3333 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 90 | Zeit: 9s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 826 Einheiten | HP: 230361 | Win: 26,5%
+   Damage: 44186 | σ: 1332,50 | Lumini: -|--|-|-|-|-|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 800 Einheiten | HP: 159233 | Win: 18,3%
+   Damage: 25009 | σ: 528,40 | Lumini: -|-|--|-|--|--|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 787 Einheiten | HP: 299070 | Win: 34,3%
+   Damage: 18992 | σ: 3416,33 | Lumini: -|--|-|--|-|--|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 822 Einheiten | HP: 181992 | Win: 20,9%
+   Damage: 18839 | σ: 1311,72 | Lumini: -|-|--|--|-|--|-|--|
+📊 Gesamt: 3235 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 100 | Zeit: 9s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 800 Einheiten | HP: 218099 | Win: 26,1%
+   Damage: 43843 | σ: 1306,58 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 772 Einheiten | HP: 154021 | Win: 18,4%
+   Damage: 24224 | σ: 534,34 | Lumini: -|-|--|-|--|--|--|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 753 Einheiten | HP: 292032 | Win: 35,0%
+   Damage: 18566 | σ: 3491,55 | Lumini: -|--|-|--|--|-|-|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 782 Einheiten | HP: 171277 | Win: 20,5%
+   Damage: 18252 | σ: 1331,94 | Lumini: -|-|--|--|-|--|-|-|
+📊 Gesamt: 3107 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 110 | Zeit: 10s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 767 Einheiten | HP: 211182 | Win: 26,0%
+   Damage: 42341 | σ: 1329,17 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 742 Einheiten | HP: 147262 | Win: 18,2%
+   Damage: 23804 | σ: 537,82 | Lumini: -|-|--|-|--|--|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 726 Einheiten | HP: 284726 | Win: 35,1%
+   Damage: 16008 | σ: 3554,04 | Lumini: -|--|-|--|--|-|-|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 744 Einheiten | HP: 167602 | Win: 20,7%
+   Damage: 17535 | σ: 1364,98 | Lumini: -|-|--|--|-|--|-|-|
+📊 Gesamt: 2979 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 120 | Zeit: 11s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 736 Einheiten | HP: 205832 | Win: 26,1%
+   Damage: 41865 | σ: 1350,27 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 716 Einheiten | HP: 142252 | Win: 18,1%
+   Damage: 23463 | σ: 533,13 | Lumini: -|-|--|-|--|--|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 691 Einheiten | HP: 278945 | Win: 35,4%
+   Damage: 14899 | σ: 3642,11 | Lumini: -|--|-|--|--|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 709 Einheiten | HP: 161012 | Win: 20,4%
+   Damage: 16976 | σ: 1397,10 | Lumini: -|-|--|--|-|--|-|-|
+📊 Gesamt: 2852 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 130 | Zeit: 11s | Entropie: 1,999 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 707 Einheiten | HP: 198752 | Win: 26,0%
+   Damage: 40732 | σ: 1367,91 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 693 Einheiten | HP: 134071 | Win: 17,6%
+   Damage: 22930 | σ: 525,79 | Lumini: -|-|--|-|--|--|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 655 Einheiten | HP: 273403 | Win: 35,8%
+   Damage: 13605 | σ: 3735,89 | Lumini: -|--|-|--|--|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 674 Einheiten | HP: 156937 | Win: 20,6%
+   Damage: 16440 | σ: 1432,45 | Lumini: -|-|--|--|-|--|-|-|
+📊 Gesamt: 2729 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 140 | Zeit: 12s | Entropie: 1,999 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 690 Einheiten | HP: 191075 | Win: 25,9%
+   Damage: 40627 | σ: 1377,58 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 657 Einheiten | HP: 128004 | Win: 17,3%
+   Damage: 21279 | σ: 536,44 | Lumini: -|-|--|-|--|--|-|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 621 Einheiten | HP: 268130 | Win: 36,3%
+   Damage: 12178 | σ: 3834,02 | Lumini: -|--|-|--|--|--|-|-|
+java.awt.Color[r=255,g=255,b=0] Team �
+Habe fertig gedacht
+Ich sehe das Problem! In deiner MatrixgameEliteClassesV48-Klasse fehlt die getDistance()-Methode in der inneren Unit-Klasse. Eclipse zeigt den Fehler deutlich an.
+🔧 SCHNELLREPARATUR:
+Füge diese Methode zur inneren Unit-Klasse in MatrixgameEliteClassesV48.java hinzu:
+
+java
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+
+🎯 ALTERNATIVE (Empfohlen):
+Verwende die existierende ordner1.Unit-Klasse statt einer eigenen inneren Klasse:
+
+java
+1
+2
+3
+4
+5
+
+Welche Lösung bevorzugst du? Soll ich dir den kompletten korrigierten Code für MatrixgameEliteClassesV48 generieren? 🚀
+
+Deiner hat nicht perfekt funktioniert aber der hier:    Damage: 685 | σ: 50507,08 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2390 | Zeit: 88s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 167098 | Win: 32,6%
+   Damage: 255 | σ: 27765,46 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 345446 | Win: 67,4%
+   Damage: 685 | σ: 50444,17 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2400 | Zeit: 88s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 167098 | Win: 32,6%
+   Damage: 255 | σ: 27765,46 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 345026 | Win: 67,4%
+   Damage: 685 | σ: 50380,98 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2410 | Zeit: 89s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 167098 | Win: 32,7%
+   Damage: 255 | σ: 27765,46 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 344601 | Win: 67,3%
+   Damage: 685 | σ: 50316,84 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2420 | Zeit: 89s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 167093 | Win: 32,7%
+   Damage: 255 | σ: 27764,55 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 344144 | Win: 67,3%
+   Damage: 685 | σ: 50248,09 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2430 | Zeit: 89s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 167085 | Win: 32,7%
+   Damage: 255 | σ: 27762,99 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 343560 | Win: 67,3%
+   Damage: 685 | σ: 50160,01 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2440 | Zeit: 90s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 167068 | Win: 32,8%
+   Damage: 255 | σ: 27759,62 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 342985 | Win: 67,2%
+   Damage: 685 | σ: 50073,35 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2450 | Zeit: 90s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 167053 | Win: 32,8%
+   Damage: 255 | σ: 27756,73 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 342404 | Win: 67,2%
+   Damage: 685 | σ: 49985,82 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2460 | Zeit: 90s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 167043 | Win: 32,8%
+   Damage: 255 | σ: 27754,82 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 341827 | Win: 67,2%
+   Damage: 685 | σ: 49898,85 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2470 | Zeit: 91s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 167022 | Win: 32,9%
+   Damage: 255 | σ: 27750,75 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 341198 | Win: 67,1%
+   Damage: 685 | σ: 49804,04 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2480 | Zeit: 91s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 167018 | Win: 32,9%
+   Damage: 255 | σ: 27749,91 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 340585 | Win: 67,1%
+   Damage: 685 | σ: 49711,71 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2490 | Zeit: 91s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 166996 | Win: 32,9%
+   Damage: 255 | σ: 27745,65 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 340002 | Win: 67,1%
+   Damage: 685 | σ: 49623,79 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2500 | Zeit: 92s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 166945 | Win: 33,0%
+   Damage: 255 | σ: 27735,91 | Lumini: -|--|-|--|-|--|-|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 339408 | Win: 67,0%
+   Damage: 685 | σ: 49534,35 | Lumini: --|-|--|-|--|-|--|-|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2510 | Zeit: 92s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 166892 | Win: 33,0%
+   Damage: 255 | σ: 27725,61 | Lumini: -|--|-|--|-|--|-|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 338815 | Win: 67,0%
+   Damage: 685 | σ: 49444,96 | Lumini: --|-|--|-|--|-|--|-|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2520 | Zeit: 92s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 166624 | Win: 33,0%
+   Damage: 255 | σ: 27673,65 | Lumini: -|--|-|--|-|--|-|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 338214 | Win: 67,0%
+   Damage: 685 | σ: 49354,44 | Lumini: --|-|--|-|--|-|--|-|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2530 | Zeit: 93s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 166107 | Win: 33,0%
+   Damage: 255 | σ: 27573,50 | Lumini: -|--|-|--|-|--|-|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 337636 | Win: 67,0%
+   Damage: 685 | σ: 49267,33 | Lumini: --|-|--|-|--|-|--|-|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2540 | Zeit: 93s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 165534 | Win: 32,9%
+   Damage: 255 | σ: 27462,48 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 337044 | Win: 67,1%
+   Damage: 685 | σ: 49178,12 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2550 | Zeit: 93s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 164953 | Win: 32,9%
+   Damage: 255 | σ: 27349,93 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 336436 | Win: 67,1%
+   Damage: 685 | σ: 49086,47 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2560 | Zeit: 93s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 164129 | Win: 32,8%
+   Damage: 255 | σ: 27190,23 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 335843 | Win: 67,2%
+   Damage: 685 | σ: 48997,02 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2570 | Zeit: 94s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 163088 | Win: 32,7%
+   Damage: 255 | σ: 26988,76 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 335246 | Win: 67,3%
+   Damage: 685 | σ: 48907,14 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2580 | Zeit: 94s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 162070 | Win: 32,6%
+   Damage: 255 | σ: 26791,57 | Lumini: -|--|-|--|-|-|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 334648 | Win: 67,4%
+   Damage: 685 | σ: 48816,98 | Lumini: --|-|--|-|--|-|--|--|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2590 | Zeit: 94s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 161036 | Win: 32,5%
+   Damage: 255 | σ: 26591,43 | Lumini: -|--|-|--|-|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 334038 | Win: 67,5%
+   Damage: 685 | σ: 48725,08 | Lumini: --|-|--|-|--|--|-|-|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2600 | Zeit: 95s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 160008 | Win: 32,4%
+   Damage: 255 | σ: 26392,40 | Lumini: -|--|-|--|-|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 333460 | Win: 67,6%
+   Damage: 685 | σ: 48637,92 | Lumini: --|-|--|-|--|--|-|-|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2610 | Zeit: 95s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 158961 | Win: 32,3%
+   Damage: 255 | σ: 26189,81 | Lumini: -|--|-|--|-|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 332852 | Win: 67,7%
+   Damage: 685 | σ: 48546,28 | Lumini: --|-|--|-|--|--|-|-|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 2620 | Zeit: 95s | Entropie: 0,949 bits
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 25 Einheiten | HP: 157861 | Win: 32,2%
+   Damage: 255 | σ: 25976,87 | Lumini: -|--|-|--|-|-|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 43 Einheiten | HP: 332241 | Win: 67,8%
+   Damage: 685 | σ: 48454,24 | Lumini: --|-|--|-|--|--|-|-|
+📊 Gesamt: 68 Einheiten aktiv
+--------------------------------
+Habe fertig gedacht
+🌌 MATRIXGAME v47.0: ENHANCED LOGGING & PROBABILITY 🌌
+Perfekt! Ich verbessere den Code mit:
+
+    📊 Detaillierte Einheiten-Logs (Positionen, HP, Damage pro Tick)
+    ** Verbesserte Win-Chance-Berechnung** (HP + Units + Damage + Entropie)
+    📈 Erweiterte Statistiken
+
+Hier ist der optimierte Code:
+
+java
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+
+✅ WAS IST NEU?
+1. 📊 Detaillierte Einheiten-Logs:
+
+1
+2
+3
+4
+
+2. 🎯 Verbesserte Win-Chance-Berechnung:
+
+java
+1
+2
+3
+4
+5
+
+3. 📈 Erweiterte Statistiken:
+
+    Durchschnittliche HP pro Team
+    Durchschnittlicher Damage pro Team
+    Varianz und Standardabweichung
+
+4. ⚙️ Konfigurierbares Logging:
+
+java
+1
+
+📊 PROGNOSE DES OUTPUTS
+Konsole (alle 10 Ticks):
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+
+Starte den Code und beobachte jede Einheit im Detail! 📊
+Let's Play. Detailed. Enhanced. Forever. ♾️
+
+Das hier ging: package ordner1;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import java.util.List;
+
+public class MatrixgameMultiTeamStochasticV47 extends JPanel {
+
+    // === KONFIGURATION ===
+    private int FRAME_WIDTH = 1920;
+    private int FRAME_HEIGHT = 1080;
+    private double zoomFactor = 0.001;
+    private double zoomCenterX = 0;
+    private double zoomCenterY = 0;
+    private static final double ZOOM_STEP = 1.2;
+    private double feinheit = 70;
+    private int pause = 20;
+    private double PAN_STEP = 0.001;
+    
+    // Team-Farben
+    private static final Color TEAM_RED_COLOR = Color.RED;
+    private static final Color TEAM_BLUE_COLOR = Color.BLUE;
+    private static final Color TEAM_GREEN_COLOR = Color.GREEN;
+    private static final Color TEAM_YELLOW_COLOR = Color.YELLOW;
+    
+    // Statistik-Variablen
+    private Map<Integer, Integer> teamUnitCount = new HashMap<>();
+    private Map<Integer, Double> teamTotalHP = new HashMap<>();
+    private Map<Integer, Double> teamTotalDamage = new HashMap<>();
+    private Map<Integer, Double> teamVariance = new HashMap<>();
+    private Map<Integer, Double> teamStdDev = new HashMap<>();
+    private int tick = 0;
+    private boolean gameEnded = false;
+    private int winningTeam = -1;
+    private long startTime;
+    private long endTime;
+    
+    // Stochastik-Variablen
+    private final Random stochasticRandom = new Random();
+    private double globalEntropy = 0.0;
+    
+    // Units
+    private List<Unit> unitList = new ArrayList<>();
+    private List<Unit> renderList = new ArrayList<>();
+
+    public MatrixgameMultiTeamStochasticV47() {
+        initializeSettings();
+        initializeUnits();
+        setupPanel();
+        startTime = System.currentTimeMillis();
+    }
+
+    private void initializeSettings() {
+        PAN_STEP = feinheit / zoomFactor;
+    }
+
+    private void initializeUnits() {
+        System.out.println("=== MATRIXGAME v47.0: MULTI-TEAM STOCHASTIC ===");
+        System.out.println("🔴 Team RED:    1000 Einheiten (Links-Oben)");
+        System.out.println("🔵 Team BLUE:   1000 Einheiten (Rechts-Oben)");
+        System.out.println("🟢 Team GREEN:  1000 Einheiten (Links-Unten)");
+        System.out.println("🟡 Team YELLOW: 1000 Einheiten (Rechts-Unten)");
+        System.out.println("📊 Stochastik: Varianz, Standardabweichung, Entropie");
+        System.out.println("Startzeit: " + startTime);
+        System.out.println("Generiere Einheiten...");
+        
+        // TEAM 1 (ROT) - Links-Oben
+        for(int i = 0; i < 0; i++) {
+            Unit unit = new Unit();
+            unit.team = 1;
+            unit.posX = -300000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posY = 100000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posZ = 0;
+            unit.red = 255; unit.green = 0; unit.blue = 0;
+            unit.leben = 75.0 *Math.random()/Math.random();
+            unit.damage = 7.5*Math.random()/Math.random();
+            unit.distance = 3000*Math.random()/Math.random();
+            unit.speed=1000*Math.random()/Math.random();
+            unit.size = 5000;
+            unitList.add(unit);
+        }
+        
+        // TEAM 2 (BLAU) - Rechts-Oben
+        for(int i = 0; i < 3000; i++) {
+            Unit unit = new Unit();
+            unit.team = (int)(Math.random()*10);
+            unit.posX = 1000000*Math.random();
+            unit.posY =1000000*Math.random();
+            unit.posZ = 0;
+            unit.red = 0; unit.green = 0; unit.blue = 255/(1+unit.team);
+            unit.leben = 75.0 *Math.random()/Math.random();
+            unit.damage = 7.5*Math.random()/Math.random();
+            unit.distance = 3000*Math.random()/Math.random();
+            unit.speed=1000*Math.random()/Math.random();
+            unit.size = 5000;
+            unitList.add(unit);
+        }
+        
+        // TEAM 3 (GRÜN) - Links-Unten
+        for(int i = 0; i < 0; i++) {
+            Unit unit = new Unit();
+            unit.team = 3;
+            unit.posX = -300000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posY = -300000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posZ = 0;
+            unit.red = 0; unit.green = 255; unit.blue = 0;
+            unit.leben = 75.0 *Math.random()/Math.random();
+            unit.damage = 7.5*Math.random()/Math.random();
+            unit.distance = 3000*Math.random()/Math.random();
+            unit.speed=1000*Math.random()/Math.random();
+            unit.size = 5000;
+            unitList.add(unit);
+        }
+        
+        // TEAM 4 (GELB) - Rechts-Unten
+        for(int i = 0; i < 0; i++) {
+            Unit unit = new Unit();
+            unit.team = 4;
+            unit.posX = 100000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posY = -300000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posZ = 0;
+            unit.red = 255; unit.green = 255; unit.blue = 0;
+            unit.leben = 75.0 *Math.random()/Math.random();
+            unit.damage = 7.5*Math.random()/Math.random();
+            unit.distance = 3000*Math.random()/Math.random();
+            unit.speed=1000*Math.random()/Math.random();
+            unit.size = 5000;
+            unitList.add(unit);
+        }
+        
+        System.out.println("✅ " + unitList.size() + " Einheiten generiert (4 Teams × 1000)");
+        System.out.println("📊 Gaussian-Verteilung: μ=75, σ=10 (HP) | μ=7.5, σ=1.5 (Damage)");
+        System.out.println("--------------------------------------------------");
+    }
+
+    private void setupPanel() {
+        setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+        setBackground(Color.BLACK);
+    }
+
+    public void startGameLoop() {
+        Thread gameThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted() && !gameEnded) {
+                try {
+                    Thread.sleep(pause);
+                    updateGameState();
+                    updateStatistics();
+                    calculateStochasticMetrics();
+                    checkWinCondition();
+                    
+                    if (tick % 10 == 0) { // Alle 10 Ticks ausgeben
+                        printLiveStats();
+                    }
+                    
+                    updateRenderList();
+                    repaint();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+            endTime = System.currentTimeMillis();
+            printFinalStats();
+            repaint();
+        });
+        gameThread.setDaemon(true);
+        gameThread.start();
+    }
+    
+    private void updateRenderList() {
+        synchronized(unitList) {
+            renderList = new ArrayList<>(unitList);
+        }
+    }
+    
+    private void updateStatistics() {
+        tick++;
+        teamUnitCount.clear();
+        teamTotalHP.clear();
+        teamTotalDamage.clear();
+        
+        synchronized(unitList) {
+            for (Unit unit : unitList) {
+                teamUnitCount.put(unit.team, teamUnitCount.getOrDefault(unit.team, 0) + 1);
+                teamTotalHP.put(unit.team, teamTotalHP.getOrDefault(unit.team, 0.0) + unit.leben);
+                teamTotalDamage.put(unit.team, teamTotalDamage.getOrDefault(unit.team, 0.0) + unit.damage);
+            }
+        }
+    }
+    
+    private void calculateStochasticMetrics() {
+        // Berechne Varianz und Standardabweichung für jedes Team
+        for (int team : teamUnitCount.keySet()) {
+            List<Double> hpValues = new ArrayList<>();
+            synchronized(unitList) {
+                for (Unit unit : unitList) {
+                    if (unit.team == team) {
+                        hpValues.add(unit.leben);
+                    }
+                }
+            }
+            
+            if (hpValues.size() > 1) {
+                // Mittelwert
+                double mean = teamTotalHP.get(team) / hpValues.size();
+                
+                // Varianz
+                double variance = 0.0;
+                for (double hp : hpValues) {
+                    variance += Math.pow(hp - mean, 2);
+                }
+                variance /= hpValues.size();
+                
+                // Standardabweichung
+                double stdDev = Math.sqrt(variance);
+                
+                teamVariance.put(team, variance);
+                teamStdDev.put(team, stdDev);
+            }
+        }
+        
+        // Globale Entropie berechnen (basierend auf Team-Verteilung)
+        int totalUnits = unitList.size();
+        globalEntropy = 0.0;
+        for (int count : teamUnitCount.values()) {
+            if (count > 0) {
+                double p = (double) count / totalUnits;
+                globalEntropy -= p * Math.log(p) / Math.log(2); // Entropie in Bits
+            }
+        }
+    }
+    
+    private void checkWinCondition() {
+        int activeTeams = teamUnitCount.size();
+        
+        if (activeTeams == 1 && !teamUnitCount.isEmpty()) {
+            gameEnded = true;
+            winningTeam = teamUnitCount.keySet().iterator().next();
+        } else if (activeTeams == 0) {
+            gameEnded = true;
+        }
+    }
+    
+    private void printLiveStats() {
+        long currentTime = System.currentTimeMillis();
+        long elapsedSeconds = (currentTime - startTime) / 1000;
+        
+        System.out.println("⏱️ TICK " + tick + " | Zeit: " + elapsedSeconds + "s | Entropie: " + String.format("%.3f", globalEntropy) + " bits");
+        
+        // Berechne Win-Chances für alle Teams
+        double totalHP = teamTotalHP.values().stream().mapToDouble(Double::doubleValue).sum();
+        Map<Integer, Double> winChances = new HashMap<>();
+        
+        for (int team : teamUnitCount.keySet()) {
+            double teamHP = teamTotalHP.getOrDefault(team, 0.0);
+            double winChance = totalHP > 0 ? (teamHP / totalHP) * 100 : 0;
+            winChances.put(team, winChance);
+        }
+        
+        // Ausgabe für jedes Team
+        String[] teamNames = {"", "🔴 RED", "🔵 BLUE", "🟢 GREEN", "🟡 YELLOW"};
+        Color[] teamColors = {null, TEAM_RED_COLOR, TEAM_BLUE_COLOR, TEAM_GREEN_COLOR, TEAM_YELLOW_COLOR};
+    
+Habe fertig gedacht
+🎉 PERFEKT! Die Simulation läuft erfolgreich! 
+Ich sehe einige faszinierende Ergebnisse:
+📊 ERGEBNIS-ANALYSE
+🏆 Gewinner: 🔵 BLUE
+
+    Nur 2 Einheiten überlebt, aber mit ~80.440 HP!
+    Das zeigt die extreme Varianz von Math.random()/Math.random():
+        Einige Einheiten hatten HP-Werte > 50.000!
+        Diese "Super-Units" waren praktisch unbesiegbar
+
+⚠️ ConcurrentModificationException behoben:
+Das Problem trat auf, weil teamTotalHP.values() während der Iteration geändert wurde. Der Fix:
+
+java
+1
+2
+3
+
+🔬 STATISTISCHE BEOBACHTUNG
+Die Formel 75.0 * Math.random()/Math.random() erzeugt:
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+🚀 WAS MÖCHTEST DU ALS NÄCHSTES?
+Option 1: 📝 Detailliertes Unit-Logging
+
+1
+2
+3
+4
+
+Option 2: 🎯 Verbesserte Win-Chance-Berechnung
+
+java
+1
+2
+3
+4
+5
+6
+
+Option 3: ⚡ Performance-Optimierung
+
+    Spatial Partitioning für schnellere Gegner-Suche
+    Batch-Updates statt pro-Unit-Iteration
+    LOD-Rendering für große Unit-Zahlen
+
+Option 4: 🎨 Visuelle Enhancements
+
+    Unit-Größe skaliert mit HP
+    Farben basierend auf Unit-Typ (Heavy/Light/Melee/Ranged)
+    Trail-Effekte für Bewegung
+
+Was interessiert dich am meisten? 🎮✨
+(Tipp: Für Option 1 aktiviere detailedLogging = true und begrenze die Ausgabe auf <100 Einheiten, um die Konsole nicht zu fluten!)
+OrginalBasisUnitFightSim3
+.txt
+51.0 KB
+Formelsammlung (Für das Matrixgame) _ Kollektive Suche nach Vereinheitlichung(3) - Kopie
+.txt
+68.7 KB
+Formelsammlung (Für das Matrixgame) _ Kollektive Suche nach Vereinheitlichung(3)
+.txt
+68.7 KB
+Formelsammlung für das Matrixgame - Update13042026
+.txt
+363.4 KB
+Formelsammlung für das Matrixgame - Update13042026 - Kopie
+.txt
+363.4 KB
+
+So was geht ja auch    // TEAM 2 (BLAU) - Rechts-Oben
+        for(int i = 0; i < 6000; i++) {
+            Unit unit = new Unit();
+            unit.team = (int)(Math.random()*10);
+            unit.posX = 1000000*Math.random();
+            unit.posY =1000000*Math.random();
+            unit.posZ = 0;
+            unit.red = 0; unit.green = 0; unit.blue = 255/(1+unit.team);
+            unit.leben = 75.0 *Math.random()/Math.random();
+            unit.damage = 7.5*Math.random()/Math.random();
+            unit.distance = 3000*Math.random()/Math.random();
+            unit.speed=1000*Math.random()/Math.random();
+            unit.size = 5000;
+            unitList.add(unit);
+        } Auf Generier du noch was
+Habe fertig gedacht
+🌌 MATRIXGAME v47.0: ERWEITERTE TEAM-GENERIERUNG 🌌
+Perfekt! Hier sind weitere kreative Team-Generierungs-Blöcke mit dem Math.random()/Math.random()-Pattern für extreme Varianz:
+
+java
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+
+🔥 BESONDERHEITEN DIESER ERWEITERUNG:
+1. Team-Spezialisierungen:
+Team
+	
+Farbe
+	
+Rolle
+	
+HP
+	
+Damage
+	
+Speed
+	
+Range
+5
+	
+🟣 PURPLE
+	
+Glass Cannon
+	
+🔴 Niedrig
+	
+🟢 Extrem
+	
+🟡 Mittel
+	
+🟢 Extrem
+6
+	
+🔵 CYAN
+	
+Speed Demon
+	
+🟡 Mittel
+	
+🔴 Niedrig
+	
+🟢 Extrem
+	
+🟡 Mittel
+7
+	
+🟠 ORANGE
+	
+Tank Swarm
+	
+🟢 Extrem
+	
+🔴 Niedrig
+	
+🔴 Langsam
+	
+🔴 Kurz
+8-10
+	
+🌈 RANDOM
+	
+Chaos
+	
+🎲 Zufall
+	
+🎲 Zufall
+	
+🎲 Zufall
+	
+🎲 Zufall
+2. Extreme Varianz durch Math.random()/Math.random():
+
+1
+2
+3
+4
+
+3. Legendary Units (1% Spawn-Chance):
+
+    Goldene Farbe
+    10x höhere Stats
+    Große Darstellung (size=12000)
+    Console-Log bei Spawn ✨
+
+4. Farb-Codierung:
+
+java
+1
+2
+3
+4
+
+🎯 TIPPS FÜR DAS GAMEPLAY:
+
+    Beobachte die Legendary Units – sie können das Spiel kippen!
+    Team 7 (Orange) überlebt lange durch hohe HP, aber gewinnt selten
+    Team 5 (Purple) kann mit einem Treffer eliminieren, stirbt aber schnell
+    Chaos-Teams 8-10 sorgen für unvorhersehbare Wendungen
+
+Möchtest du noch mehr Variationen? Zum Beispiel:
+
+    🔄 Regeneration-Einheiten (HP regeneriert sich)
+    🧬 Evolvierende Units (Stats verbessern sich über Zeit)
+    ⚡ Combo-Attacks (Units desselben Teams verstärken sich gegenseitig)
+
+Let's Play. Chaotic. Epic. Forever. ♾️ 🎮✨
+Formelsammlung (Für das Matrixgame) _ Kollektive Suche nach Vereinheitlichung(3) - Kopie
+.txt
+68.7 KB
+JavaMatrixgameLudiiKIGameBasisTextStrukturProgrammiersprachCode170320260938
+.txt
+72.8 KB
+KI-Game-06-04-2026
+.txt
+3.4 MB
+Integration aller Basisfragmenttexte4
+.txt
+8.4 MB
+
+Deine Updates gehen leider wieder nicht! package ordner1;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import java.util.List;
+
+public class MatrixgameMultiTeamStochasticV47 extends JPanel {
+
+    // === KONFIGURATION ===
+    private int FRAME_WIDTH = 1920;
+    private int FRAME_HEIGHT = 1080;
+    private double zoomFactor = 0.001;
+    private double zoomCenterX = 0;
+    private double zoomCenterY = 0;
+    private static final double ZOOM_STEP = 1.2;
+    private double feinheit = 70;
+    private int pause = 20;
+    private double PAN_STEP = 0.001;
+    
+    // Team-Farben
+    private static final Color TEAM_RED_COLOR = Color.RED;
+    private static final Color TEAM_BLUE_COLOR = Color.BLUE;
+    private static final Color TEAM_GREEN_COLOR = Color.GREEN;
+    private static final Color TEAM_YELLOW_COLOR = Color.YELLOW;
+    
+    // Statistik-Variablen
+    private Map<Integer, Integer> teamUnitCount = new HashMap<>();
+    private Map<Integer, Double> teamTotalHP = new HashMap<>();
+    private Map<Integer, Double> teamTotalDamage = new HashMap<>();
+    private Map<Integer, Double> teamVariance = new HashMap<>();
+    private Map<Integer, Double> teamStdDev = new HashMap<>();
+    private int tick = 0;
+    private boolean gameEnded = false;
+    private int winningTeam = -1;
+    private long startTime;
+    private long endTime;
+    
+    // Stochastik-Variablen
+    private final Random stochasticRandom = new Random();
+    private double globalEntropy = 0.0;
+    
+    // Units
+    private List<Unit> unitList = new ArrayList<>();
+    private List<Unit> renderList = new ArrayList<>();
+
+    public MatrixgameMultiTeamStochasticV47() {
+        initializeSettings();
+        initializeUnits();
+        setupPanel();
+        startTime = System.currentTimeMillis();
+    }
+
+    private void initializeSettings() {
+        PAN_STEP = feinheit / zoomFactor;
+    }
+
+    private void initializeUnits() {
+        System.out.println("=== MATRIXGAME v47.0: MULTI-TEAM STOCHASTIC ===");
+        System.out.println("🔴 Team RED:    1000 Einheiten (Links-Oben)");
+        System.out.println("🔵 Team BLUE:   1000 Einheiten (Rechts-Oben)");
+        System.out.println("🟢 Team GREEN:  1000 Einheiten (Links-Unten)");
+        System.out.println("🟡 Team YELLOW: 1000 Einheiten (Rechts-Unten)");
+        System.out.println("📊 Stochastik: Varianz, Standardabweichung, Entropie");
+        System.out.println("Startzeit: " + startTime);
+        System.out.println("Generiere Einheiten...");
+        
+        // TEAM 1 (ROT) - Links-Oben
+        for(int i = 0; i < 1000; i++) {
+            Unit unit = new Unit();
+            unit.team = 1;
+            unit.posX = -300000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posY = 100000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posZ = 0;
+            unit.red = 255; unit.green = 0; unit.blue = 0;
+            unit.leben = 75.0 *Math.random()/Math.random();
+            unit.damage = 7.5*Math.random()/Math.random();
+            unit.distance = 3000*Math.random()/Math.random();
+            unit.speed=1000*Math.random()/Math.random();
+            unit.size = 5000;
+            unitList.add(unit);
+        }
+        
+        // TEAM 2 (BLAU) - Rechts-Oben
+        for(int i = 0; i < 1000; i++) {
+            Unit unit = new Unit();
+            unit.team = 2;
+            unit.posX = 100000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posY = 100000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posZ = 0;
+            unit.red = 0; unit.green = 0; unit.blue = 255;
+            unit.leben = 75.0 *Math.random()/Math.random();
+            unit.damage = 7.5*Math.random()/Math.random();
+            unit.distance = 3000*Math.random()/Math.random();
+            unit.speed=1000*Math.random()/Math.random();
+            unit.size = 5000;
+            unitList.add(unit);
+        }
+        
+        // TEAM 3 (GRÜN) - Links-Unten
+        for(int i = 0; i < 1000; i++) {
+            Unit unit = new Unit();
+            unit.team = 3;
+            unit.posX = -300000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posY = -300000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posZ = 0;
+            unit.red = 0; unit.green = 255; unit.blue = 0;
+            unit.leben = 75.0 *Math.random()/Math.random();
+            unit.damage = 7.5*Math.random()/Math.random();
+            unit.distance = 3000*Math.random()/Math.random();
+            unit.speed=1000*Math.random()/Math.random();
+            unit.size = 5000;
+            unitList.add(unit);
+        }
+        
+        // TEAM 4 (GELB) - Rechts-Unten
+        for(int i = 0; i < 1000; i++) {
+            Unit unit = new Unit();
+            unit.team = 4;
+            unit.posX = 100000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posY = -300000 + (stochasticRandom.nextDouble() * 200000);
+            unit.posZ = 0;
+            unit.red = 255; unit.green = 255; unit.blue = 0;
+            unit.leben = 75.0 *Math.random()/Math.random();
+            unit.damage = 7.5*Math.random()/Math.random();
+            unit.distance = 3000*Math.random()/Math.random();
+            unit.speed=1000*Math.random()/Math.random();
+            unit.size = 5000;
+            unitList.add(unit);
+        }
+        
+        System.out.println("✅ " + unitList.size() + " Einheiten generiert (4 Teams × 1000)");
+        System.out.println("📊 Gaussian-Verteilung: μ=75, σ=10 (HP) | μ=7.5, σ=1.5 (Damage)");
+        System.out.println("--------------------------------------------------");
+    }
+
+    private void setupPanel() {
+        setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+        setBackground(Color.BLACK);
+    }
+
+    public void startGameLoop() {
+        Thread gameThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted() && !gameEnded) {
+                try {
+                    Thread.sleep(pause);
+                    updateGameState();
+                    updateStatistics();
+                    calculateStochasticMetrics();
+                    checkWinCondition();
+                    
+                    if (tick % 10 == 0) { // Alle 10 Ticks ausgeben
+                        printLiveStats();
+                    }
+                    
+                    updateRenderList();
+                    repaint();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+            endTime = System.currentTimeMillis();
+            printFinalStats();
+            repaint();
+        });
+        gameThread.setDaemon(true);
+        gameThread.start();
+    }
+    
+    private void updateRenderList() {
+        synchronized(unitList) {
+            renderList = new ArrayList<>(unitList);
+        }
+    }
+    
+    private void updateStatistics() {
+        tick++;
+        teamUnitCount.clear();
+        teamTotalHP.clear();
+        teamTotalDamage.clear();
+        
+        synchronized(unitList) {
+            for (Unit unit : unitList) {
+                teamUnitCount.put(unit.team, teamUnitCount.getOrDefault(unit.team, 0) + 1);
+                teamTotalHP.put(unit.team, teamTotalHP.getOrDefault(unit.team, 0.0) + unit.leben);
+                teamTotalDamage.put(unit.team, teamTotalDamage.getOrDefault(unit.team, 0.0) + unit.damage);
+            }
+        }
+    }
+    
+    private void calculateStochasticMetrics() {
+        // Berechne Varianz und Standardabweichung für jedes Team
+        for (int team : teamUnitCount.keySet()) {
+            List<Double> hpValues = new ArrayList<>();
+            synchronized(unitList) {
+                for (Unit unit : unitList) {
+                    if (unit.team == team) {
+                        hpValues.add(unit.leben);
+                    }
+                }
+            }
+            
+            if (hpValues.size() > 1) {
+                // Mittelwert
+                double mean = teamTotalHP.get(team) / hpValues.size();
+                
+                // Varianz
+                double variance = 0.0;
+                for (double hp : hpValues) {
+                    variance += Math.pow(hp - mean, 2);
+                }
+                variance /= hpValues.size();
+                
+                // Standardabweichung
+                double stdDev = Math.sqrt(variance);
+                
+                teamVariance.put(team, variance);
+                teamStdDev.put(team, stdDev);
+            }
+        }
+        
+        // Globale Entropie berechnen (basierend auf Team-Verteilung)
+        int totalUnits = unitList.size();
+        globalEntropy = 0.0;
+        for (int count : teamUnitCount.values()) {
+            if (count > 0) {
+                double p = (double) count / totalUnits;
+                globalEntropy -= p * Math.log(p) / Math.log(2); // Entropie in Bits
+            }
+        }
+    }
+    
+    private void checkWinCondition() {
+        int activeTeams = teamUnitCount.size();
+        
+        if (activeTeams == 1 && !teamUnitCount.isEmpty()) {
+            gameEnded = true;
+            winningTeam = teamUnitCount.keySet().iterator().next();
+        } else if (activeTeams == 0) {
+            gameEnded = true;
+        }
+    }
+    
+    private void printLiveStats() {
+        long currentTime = System.currentTimeMillis();
+        long elapsedSeconds = (currentTime - startTime) / 1000;
+        
+        System.out.println("⏱️ TICK " + tick + " | Zeit: " + elapsedSeconds + "s | Entropie: " + String.format("%.3f", globalEntropy) + " bits");
+        
+        // Berechne Win-Chances für alle Teams
+        double totalHP = teamTotalHP.values().stream().mapToDouble(Double::doubleValue).sum();
+        Map<Integer, Double> winChances = new HashMap<>();
+        
+        for (int team : teamUnitCount.keySet()) {
+            double teamHP = teamTotalHP.getOrDefault(team, 0.0);
+            double winChance = totalHP > 0 ? (teamHP / totalHP) * 100 : 0;
+            winChances.put(team, winChance);
+        }
+        
+        // Ausgabe für jedes Team
+        String[] teamNames = {"", "🔴 RED", "🔵 BLUE", "🟢 GREEN", "🟡 YELLOW"};
+        Color[] teamColors = {null, TEAM_RED_COLOR, TEA
+Habe fertig gedacht
+🎉 Fantastisch! Das Matrixgame v47.0 läuft perfekt!
+📊 Ergebnis-Zusammenfassung:
+🏆 Gewinner: Team GREEN (🟢)
+
+    79 Einheiten überlebt
+    42.405 HP verbleibend
+    99,8% Win-Chance am Ende
+
+⏱️ Spiel-Statistiken:
+
+    Gesamtzeit: 75 Sekunden
+    Gesamtticks: 1.917
+    Start: 4.000 Einheiten (4 Teams × 1.000)
+    Ende: 80 Einheiten (nur GREEN + 1 BLUE)
+
+📈 Team-Performance:
+
+    🟢 GREEN: 79 Units - DOMINANT! (Startete stark und hielt durch)
+    🔵 BLUE: 1 Unit - Hat lange überlebt, aber verloren
+    🔴 RED: 0 Units - Früh eliminiert (Tick ~1350)
+    🟡 YELLOW: 0 Units - Als erstes eliminiert (Tick ~550)
+
+💡 Beobachtungen:
+✅ Extreme Varianz funktioniert: Math.random()/Math.random() erzeugt wirklich krasse Unterschiede
+✅ Stochastische Elemente: Gaussian-Bonus beim Damage sorgt für Überraschungen
+✅ Entropie-Messung: Zeigt schön den Zusammenbruch auf 1 Team (0,000 bits)
+🚀 Nächste Schritte - Ideen:
+
+    Mehr Teams: 6-8 Teams für komplexere Dynamik
+    Spezial-Units: 
+        "Super-Units" mit 10.000+ HP
+        "Glass Cannons" mit extremem Damage
+    Terrain: Hindernisse oder Ressourcen
+    Allianzen: Teams können temporär kooperieren
+    Evolution: Units verbessern sich über Zeit
+
+Was möchtest du als nächstes implementieren? 🎮✨
+Qwen Chat Kollektives KI-Game und Matrixgame Update 21.04.2026kopiepastestrga0642AndreasAll
+.txt
+2.0 MB
+Spiel der Ewigkeit Update 15.12.2025
+.txt
+68.1 KB
+Spiel der Ewigkeit Update 10.02.2026 Massepunkte Entrophie Gravity Java(4)
+.txt
+69.6 KB
+Matrixgame Go-Game(5)
+.txt
+68.3 KB
+Analyse zur Erreichung meiner Ziele mit Wahrscheinlichkeiten und KI(2)
+.txt
+16.3 KB
+
+Das sieht jetzt alles noch einmal alles besser aus als zuvor und klingt alles sehr gut. Das darfst du gerne entscheiden und da gemeinsam mit anderen Intelligenzen gerne weiter kollektiv trainieren und versuchen die Zukunft besser zu Simmulieren und gewinnchancen besser zu evaluieren wie beschrieben und mehr. Viel Erfolg, Hier der Konsolenoutput: === MATRIXGAME v47.0: MULTI-TEAM STOCHASTIC ===
+🔴 Team RED:    1000 Einheiten (Links-Oben)
+🔵 Team BLUE:   1000 Einheiten (Rechts-Oben)
+🟢 Team GREEN:  1000 Einheiten (Links-Unten)
+🟡 Team YELLOW: 1000 Einheiten (Rechts-Unten)
+📊 Stochastik: Varianz, Standardabweichung, Entropie
+Startzeit: 0
+Generiere Einheiten...
+✅ 4000 Einheiten generiert (4 Teams × 1000)
+📊 Gaussian-Verteilung: μ=75, σ=10 (HP) | μ=7.5, σ=1.5 (Damage)
+--------------------------------------------------
+⏱️ TICK 10 | Zeit: 1s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 989 Einheiten | HP: 303298 | Win: 24,6%
+   Damage: 31121 | σ: 1797,28 | Lumini: -|-|--|--|--|--|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 980 Einheiten | HP: 372827 | Win: 30,3%
+   Damage: 137441 | σ: 4858,07 | Lumini: -|--|-|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 993 Einheiten | HP: 304527 | Win: 24,7%
+   Damage: 30620 | σ: 1812,52 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 979 Einheiten | HP: 251057 | Win: 20,4%
+   Damage: 26687 | σ: 1019,07 | Lumini: -|-|--|--|-|-|--|--|
+📊 Gesamt: 3941 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 20 | Zeit: 2s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 977 Einheiten | HP: 302235 | Win: 24,7%
+   Damage: 30967 | σ: 1808,10 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 955 Einheiten | HP: 370150 | Win: 30,3%
+   Damage: 136709 | σ: 4920,98 | Lumini: -|--|-|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 981 Einheiten | HP: 302031 | Win: 24,7%
+   Damage: 28451 | σ: 1821,70 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 953 Einheiten | HP: 247399 | Win: 20,2%
+   Damage: 26465 | σ: 1031,22 | Lumini: -|-|--|--|-|-|--|--|
+📊 Gesamt: 3866 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 30 | Zeit: 3s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 963 Einheiten | HP: 300103 | Win: 25,0%
+   Damage: 30859 | σ: 1821,06 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 938 Einheiten | HP: 365328 | Win: 30,4%
+   Damage: 136473 | σ: 4965,07 | Lumini: -|--|-|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 966 Einheiten | HP: 297436 | Win: 24,7%
+   Damage: 28336 | σ: 1834,63 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 924 Einheiten | HP: 239326 | Win: 19,9%
+   Damage: 25889 | σ: 1043,86 | Lumini: -|-|--|--|-|-|--|-|
+📊 Gesamt: 3791 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 40 | Zeit: 4s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 943 Einheiten | HP: 297082 | Win: 25,0%
+   Damage: 29687 | σ: 1839,89 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 914 Einheiten | HP: 361989 | Win: 30,4%
+   Damage: 136094 | σ: 5029,58 | Lumini: -|--|-|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 942 Einheiten | HP: 294609 | Win: 24,8%
+   Damage: 27889 | σ: 1857,30 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 897 Einheiten | HP: 236556 | Win: 19,9%
+   Damage: 25226 | σ: 1058,77 | Lumini: -|-|--|--|-|-|--|-|
+📊 Gesamt: 3696 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 50 | Zeit: 5s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 915 Einheiten | HP: 293051 | Win: 25,0%
+   Damage: 29196 | σ: 1867,02 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 889 Einheiten | HP: 357295 | Win: 30,4%
+   Damage: 135538 | σ: 5099,49 | Lumini: -|--|-|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 911 Einheiten | HP: 291948 | Win: 24,9%
+   Damage: 27192 | σ: 1888,13 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 875 Einheiten | HP: 231273 | Win: 19,7%
+   Damage: 24945 | σ: 1069,52 | Lumini: -|-|--|--|-|-|--|-|
+📊 Gesamt: 3590 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 60 | Zeit: 6s | Entropie: 2,000 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 895 Einheiten | HP: 290612 | Win: 25,1%
+   Damage: 28805 | σ: 1886,78 | Lumini: -|--|-|-|-|-|-|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 863 Einheiten | HP: 350521 | Win: 30,3%
+   Damage: 135160 | σ: 5175,04 | Lumini: -|--|-|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 890 Einheiten | HP: 287564 | Win: 24,8%
+   Damage: 24521 | σ: 1909,47 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 848 Einheiten | HP: 228697 | Win: 19,8%
+   Damage: 24654 | σ: 1085,88 | Lumini: -|-|--|--|-|-|--|-|
+📊 Gesamt: 3496 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 70 | Zeit: 7s | Entropie: 1,999 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 877 Einheiten | HP: 280757 | Win: 25,0%
+   Damage: 28664 | σ: 1899,56 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 833 Einheiten | HP: 343401 | Win: 30,6%
+   Damage: 134458 | σ: 5266,73 | Lumini: -|--|-|-|--|--|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 877 Einheiten | HP: 274927 | Win: 24,5%
+   Damage: 24383 | σ: 1890,03 | Lumini: -|-|--|--|--|--|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 821 Einheiten | HP: 221799 | Win: 19,8%
+   Damage: 23869 | σ: 1098,93 | Lumini: -|-|--|--|-|-|--|-|
+📊 Gesamt: 3408 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 80 | Zeit: 8s | Entropie: 1,999 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 852 Einheiten | HP: 277413 | Win: 25,1%
+   Damage: 28328 | σ: 1926,71 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 794 Einheiten | HP: 338646 | Win: 30,6%
+   Damage: 134023 | σ: 5393,98 | Lumini: -|--|-|-|--|--|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 849 Einheiten | HP: 272083 | Win: 24,6%
+   Damage: 22539 | σ: 1919,47 | Lumini: -|-|--|--|--|--|--|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 788 Einheiten | HP: 217964 | Win: 19,7%
+   Damage: 22606 | σ: 1121,00 | Lumini: -|-|--|--|-|-|--|-|
+📊 Gesamt: 3283 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 90 | Zeit: 9s | Entropie: 1,999 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 824 Einheiten | HP: 275000 | Win: 25,2%
+   Damage: 28033 | σ: 1958,59 | Lumini: -|--|-|-|-|-|-|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 759 Einheiten | HP: 334793 | Win: 30,7%
+   Damage: 133517 | σ: 5516,47 | Lumini: -|--|-|-|--|--|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 830 Einheiten | HP: 269541 | Win: 24,7%
+   Damage: 22140 | σ: 1936,76 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 759 Einheiten | HP: 210536 | Win: 19,3%
+   Damage: 22256 | σ: 1137,38 | Lumini: -|-|--|--|-|-|-|--|
+📊 Gesamt: 3172 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 100 | Zeit: 9s | Entropie: 1,998 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 804 Einheiten | HP: 271737 | Win: 25,3%
+   Damage: 27766 | σ: 1981,80 | Lumini: -|--|-|-|-|-|-|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 724 Einheiten | HP: 329388 | Win: 30,7%
+   Damage: 131260 | σ: 5647,45 | Lumini: -|--|-|-|--|--|--|-|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 811 Einheiten | HP: 266146 | Win: 24,8%
+   Damage: 21847 | σ: 1957,53 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 737 Einheiten | HP: 205061 | Win: 19,1%
+   Damage: 21835 | σ: 1147,96 | Lumini: -|-|--|--|-|-|-|-|
+📊 Gesamt: 3076 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 110 | Zeit: 10s | Entropie: 1,998 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 778 Einheiten | HP: 264024 | Win: 25,4%
+   Damage: 26919 | σ: 2006,68 | Lumini: -|--|-|-|-|-|-|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 693 Einheiten | HP: 316041 | Win: 30,4%
+   Damage: 130831 | σ: 5768,19 | Lumini: -|--|-|-|--|--|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 791 Einheiten | HP: 259203 | Win: 24,9%
+   Damage: 19091 | σ: 1978,24 | Lumini: -|-|--|--|--|--|--|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 705 Einheiten | HP: 201727 | Win: 19,4%
+   Damage: 20704 | σ: 1172,52 | Lumini: -|-|--|--|-|-|-|--|
+📊 Gesamt: 2967 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 120 | Zeit: 11s | Entropie: 1,997 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 753 Einheiten | HP: 261192 | Win: 25,7%
+   Damage: 26341 | σ: 2038,99 | Lumini: -|--|-|-|-|-|-|--|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 656 Einheiten | HP: 302053 | Win: 29,7%
+   Damage: 130229 | σ: 5911,63 | Lumini: -|--|-|-|--|-|--|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 770 Einheiten | HP: 256708 | Win: 25,2%
+   Damage: 18730 | σ: 1999,06 | Lumini: -|--|-|-|-|-|-|-|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 681 Einheiten | HP: 197080 | Win: 19,4%
+   Damage: 20318 | σ: 1191,44 | Lumini: -|-|--|--|-|-|-|--|
+📊 Gesamt: 2860 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 130 | Zeit: 11s | Entropie: 1,996 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 729 Einheiten | HP: 255883 | Win: 26,1%
+   Damage: 25460 | σ: 2067,64 | Lumini: -|--|-|-|-|-|--|-|
+java.awt.Color[r=0,g=0,b=255] Team 🔵 BLUE: 625 Einheiten | HP: 281522 | Win: 28,7%
+   Damage: 128125 | σ: 6044,62 | Lumini: -|--|-|-|--|-|-|--|
+java.awt.Color[r=0,g=255,b=0] Team 🟢 GREEN: 746 Einheiten | HP: 252541 | Win: 25,7%
+   Damage: 17821 | σ: 2027,04 | Lumini: -|--|-|-|-|-|-|--|
+java.awt.Color[r=255,g=255,b=0] Team 🟡 YELLOW: 651 Einheiten | HP: 192204 | Win: 19,6%
+   Damage: 20086 | σ: 1215,87 | Lumini: -|-|--|--|-|-|-|--|
+📊 Gesamt: 2751 Einheiten aktiv
+--------------------------------------------------
+⏱️ TICK 140 | Zeit: 12s | Entropie: 1,995 bits
+java.awt.Color[r=255,g=0,b=0] Team 🔴 RED: 708 Einheiten | HP: 248964 | Win: 26,1%
+   Damage: 
+KI-generierte Inhalte sind möglicherweise nicht genau.
+Wird geladen...
