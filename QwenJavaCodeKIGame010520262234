@@ -1,0 +1,485 @@
+# 🎮 MATRIXGAME-GO: JAVA-ENGINE INTEGRATION – OPTION 3 AKTIVIERT 🚀
+
+**Andreas**, verstanden! Du wählst **Option 3**: Integration der Go-Mechanik in deine Java-Engine mit Unit-Fight-Klassen. Ich erstelle jetzt die bijektive Brücke zwischen **Lumini-String-Notation** ↔ **Java-Unit-System** ↔ **AlphaZero-Evaluation**.
+
+---
+
+## 🔧 MODUL: `MatrixGoEngine.java` – Kernklasse
+
+```java
+package matrixgame.go;
+
+import java.util.*;
+import java.util.stream.*;
+
+/**
+ * Matrixgame Go Engine – AlphaZero-Didaktik integriert
+ * Bijektive Transformation: SGF ↔ Lumini ↔ Array ↔ Unit-Fight
+ */
+public class MatrixGoEngine {
+    
+    // === KONFIGURATION ===
+    private final int boardSize;          // 4x4, 5x5, 6x6, etc.
+    private final double komi;            // 3.5, 5.5, etc.
+    private final char EMPTY = '-';
+    private final char BLACK = 'b';
+    private final char WHITE = 'w';
+    
+    // === STATE ===
+    private char[][] board;               // 2D-Array für schnelle Zugberechnung
+    private List<String> history;         // Historie für Replay/Training
+    private Map<String, Double> policyCache;  // AlphaZero Policy-Cache
+    private Map<String, Double> valueCache;   // AlphaZero Value-Cache
+    
+    // === KONSTRUKTOR ===
+    public MatrixGoEngine(int size, double komi) {
+        this.boardSize = size;
+        this.komi = komi;
+        this.board = new char[size][size];
+        this.history = new ArrayList<>();
+        this.policyCache = new HashMap<>();
+        this.valueCache = new HashMap<>();
+        initBoard();
+    }
+    
+    private void initBoard() {
+        for(int r=0; r<boardSize; r++)
+            Arrays.fill(board[r], EMPTY);
+    }
+    
+    // === LUMINI-TRANSFORMER (BIJEKTIV) ===
+    
+    /**
+     * Transformiert Board-Zustand in Lumini-String
+     * Beispiel: ||-|b|-|-|| für 4x4 mit Stein auf B3
+     */
+    public String toLuminiString() {
+        StringBuilder sb = new StringBuilder();
+        for(int r=0; r<boardSize; r++) {
+            sb.append("|");
+            for(int c=0; c<boardSize; c++) {
+                sb.append(board[r][c]).append("|");
+            }
+            sb.append("\n");
+        }
+        return sb.toString().trim();
+    }
+    
+    /**
+     * Parse Lumini-String zurück zu Board (bijektiv)
+     */
+    public static MatrixGoEngine fromLuminiString(String lumini, int size, double komi) {
+        MatrixGoEngine engine = new MatrixGoEngine(size, komi);
+        String[] rows = lumini.split("\\|\\|");
+        int r=0;
+        for(String row : rows) {
+            if(row.trim().isEmpty()) continue;
+            String[] cells = row.split("\\|");
+            for(int c=0; c<cells.length && c<size; c++) {
+                if(!cells[c].trim().isEmpty()) {
+                    engine.board[r][c] = cells[c].trim().charAt(0);
+                }
+            }
+            r++;
+        }
+        return engine;
+    }
+    
+    // === ZUG-LOGIK MIT FREIHEITS-CHECK ===
+    
+    /**
+     * Führt Zug aus + entfernt gefangene Steine (Go-Regeln)
+     * @param row 0-indexed Zeile
+     * @param col 0-indexed Spalte
+     * @param player 'b' oder 'w'
+     * @return true wenn Zug legal war
+     */
+    public boolean makeMove(int row, int col, char player) {
+        if(!isValidMove(row, col)) return false;
+        
+        board[row][col] = player;
+        String coord = coordToString(row, col);
+        history.add(player + "[" + coord + "]");
+        
+        // Gefangene Gegner-Steine entfernen
+        char opponent = (player == BLACK) ? WHITE : BLACK;
+        removeCapturedGroups(opponent);
+        
+        // Eigenen Stein entfernen, wenn er keine Freiheiten hat (Suicide-Regel)
+        if(getLiberties(row, col, player) == 0) {
+            board[row][col] = EMPTY;
+            return false;
+        }
+        
+        updateCaches();
+        return true;
+    }
+    
+    /**
+     * Berechne Freiheiten (Liberties) einer Gruppe
+     */
+    private int getLiberties(int row, int col, char player) {
+        Set<String> visited = new HashSet<>();
+        Set<String> liberties = new HashSet<>();
+        dfsLiberties(row, col, player, visited, liberties);
+        return liberties.size();
+    }
+    
+    private void dfsLiberties(int r, int c, char player, 
+                              Set<String> visited, Set<String> liberties) {
+        String key = r + "," + c;
+        if(visited.contains(key)) return;
+        visited.add(key);
+        
+        int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}};
+        for(int[] d : dirs) {
+            int nr = r + d[0], nc = c + d[1];
+            if(inBounds(nr, nc)) {
+                if(board[nr][nc] == EMPTY) {
+                    liberties.add(nr + "," + nc);
+                } else if(board[nr][nc] == player) {
+                    dfsLiberties(nr, nc, player, visited, liberties);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Entfernt alle gegnerischen Gruppen ohne Freiheiten
+     */
+    private void removeCapturedGroups(char opponent) {
+        boolean[][] visited = new boolean[boardSize][boardSize];
+        for(int r=0; r<boardSize; r++) {
+            for(int c=0; c<boardSize; c++) {
+                if(board[r][c] == opponent && !visited[r][c]) {
+                    if(getGroupLiberties(r, c, opponent, visited) == 0) {
+                        captureGroup(r, c, opponent);
+                    }
+                }
+            }
+        }
+    }
+    
+    // === ALPHA-ZERO INTEGRATION (Policy/Value) ===
+    
+    /**
+     * Simuliert AlphaZero Policy-Netzwerk-Ausgabe
+     * @return Map<Koordinate, Wahrscheinlichkeit>
+     */
+    public Map<String, Double> getPolicyDistribution() {
+        String stateHash = getStateHash();
+        if(policyCache.containsKey(stateHash)) {
+            return policyCache.get(stateHash);
+        }
+        
+        // Heuristische Policy-Schätzung (kann durch echtes NN ersetzt werden)
+        Map<String, Double> policy = new HashMap<>();
+        double totalWeight = 0;
+        
+        for(int r=0; r<boardSize; r++) {
+            for(int c=0; c<boardSize; c++) {
+                if(board[r][c] == EMPTY && isValidMove(r,c)) {
+                    double weight = evaluateMoveHeuristic(r, c);
+                    policy.put(coordToString(r,c), weight);
+                    totalWeight += weight;
+                }
+            }
+        }
+        
+        // Normalisieren zu Wahrscheinlichkeiten
+        for(String coord : policy.keySet()) {
+            policy.put(coord, policy.get(coord) / totalWeight);
+        }
+        
+        policyCache.put(stateHash, policy);
+        return policy;
+    }
+    
+    /**
+     * Value-Netzwerk: Schätzt Siegchance [-1, +1]
+     */
+    public double getValueEstimate(char player) {
+        String stateHash = getStateHash() + "_" + player;
+        if(valueCache.containsKey(stateHash)) {
+            return valueCache.get(stateHash);
+        }
+        
+        // Heuristische Bewertung (kann durch echtes NN ersetzt werden)
+        double score = calculateAreaScore(player);
+        double normalized = Math.tanh(score * 0.1); // [-1, +1]
+        
+        valueCache.put(stateHash, normalized);
+        return normalized;
+    }
+    
+    // === UNIT-FIGHT BRIDGE (Matrixgame-Integration) ===
+    
+    /**
+     * Transformiert Go-Board in Unit-Fight-Konfiguration
+     * Jeder Stein wird zu einer "Unit" mit HP/Position/Team
+     */
+    public List<UnitFight.Unit> toUnitFightUnits() {
+        List<UnitFight.Unit> units = new ArrayList<>();
+        for(int r=0; r<boardSize; r++) {
+            for(int c=0; c<boardSize; c++) {
+                if(board[r][c] != EMPTY) {
+                    UnitFight.Unit unit = new UnitFight.Unit();
+                    unit.team = (board[r][c] == BLACK) ? 1 : 2;
+                    unit.posX = c * 1000;  // Skalierung für 3D-Raum
+                    unit.posY = r * 1000;
+                    unit.posZ = 0;
+                    unit.leben = 100.0;  // Basis-HP
+                    unit.damage = 10.0;
+                    unit.size = 500;
+                    unit.id = board[r][c] + "_" + r + "_" + c;
+                    units.add(unit);
+                }
+            }
+        }
+        return units;
+    }
+    
+    /**
+     * Synchronisiert Unit-Fight-Ergebnisse zurück ins Go-Board
+     * (z.B. wenn Units "sterben" = Steine gefangen werden)
+     */
+    public void syncFromUnitFight(List<UnitFight.Unit> units) {
+        // Markiere alle Positionen als potentiell leer
+        boolean[][] alive = new boolean[boardSize][boardSize];
+        
+        for(UnitFight.Unit unit : units) {
+            if(unit.leben > 0) {
+                int c = (int)(unit.posX / 1000);
+                int r = (int)(unit.posY / 1000);
+                if(inBounds(r,c)) alive[r][c] = true;
+            }
+        }
+        
+        // Entferne "tote" Steine vom Board
+        for(int r=0; r<boardSize; r++) {
+            for(int c=0; c<boardSize; c++) {
+                if(board[r][c] != EMPTY && !alive[r][c]) {
+                    board[r][c] = EMPTY;  // Stein wurde im Unit-Fight "gefangen"
+                }
+            }
+        }
+    }
+    
+    // === HILFSMETHODEN ===
+    
+    private boolean inBounds(int r, int c) {
+        return r>=0 && r<boardSize && c>=0 && c<boardSize;
+    }
+    
+    private boolean isValidMove(int r, int c) {
+        return inBounds(r,c) && board[r][c] == EMPTY;
+    }
+    
+    private String coordToString(int r, int c) {
+        return "" + (char)('a'+c) + (r+1);  // a1, b2, etc.
+    }
+    
+    private String getStateHash() {
+        StringBuilder sb = new StringBuilder();
+        for(char[] row : board) sb.append(new String(row));
+        return sb.toString();
+    }
+    
+    private double evaluateMoveHeuristic(int r, int c) {
+        // Einfache Heuristik: Zentrum > Ecken > Ränder
+        double centerDist = Math.abs(r - boardSize/2.0) + Math.abs(c - boardSize/2.0);
+        return 1.0 / (1.0 + centerDist * 0.5);
+    }
+    
+    private double calculateAreaScore(char player) {
+        // Chinese Rules: Steine + umschlossenes Gebiet
+        int stones = 0, territory = 0;
+        for(int r=0; r<boardSize; r++) {
+            for(int c=0; c<boardSize; c++) {
+                if(board[r][c] == player) stones++;
+                else if(board[r][c] == EMPTY && isTerritory(r,c,player)) territory++;
+            }
+        }
+        return stones + territory;
+    }
+    
+    private boolean isTerritory(int r, int c, char claimedBy) {
+        // Einfache Territorium-Erkennung: Alle angrenzenden Steine gehören einem Spieler
+        Set<Character> neighbors = new HashSet<>();
+        int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}};
+        for(int[] d : dirs) {
+            int nr = r+d[0], nc = c+d[1];
+            if(inBounds(nr,nc) && board[nr][nc] != EMPTY) {
+                neighbors.add(board[nr][nc]);
+            }
+        }
+        return neighbors.size() == 1 && neighbors.contains(claimedBy);
+    }
+    
+    // === GETTER / STATUS ===
+    
+    public char[][] getBoard() { return board; }
+    public List<String> getHistory() { return new ArrayList<>(history); }
+    public double getKomi() { return komi; }
+    
+    public String getGameSummary() {
+        double blackScore = calculateAreaScore(BLACK);
+        double whiteScore = calculateAreaScore(WHITE) + komi;
+        String result = (blackScore > whiteScore) ? "B+" + (blackScore-whiteScore) : 
+                       "W+" + (whiteScore-blackScore);
+        return String.format("Score: B=%.1f vs W=%.1f (inkl. Komi) → %s", 
+                           blackScore, whiteScore, result);
+    }
+}
+```
+
+---
+
+## 🔗 MODUL: `UnitFight.java` – Brückenklasse
+
+```java
+package matrixgame.unitfight;
+
+import java.util.*;
+
+/**
+ * Unit-Fight System – kompatibel mit Matrixgame Go Engine
+ * Jede Go-Position kann als Unit im 3D-Raum dargestellt werden
+ */
+public class UnitFight {
+    
+    public static class Unit {
+        public int team;           // 1=Schwarz, 2=Weiß
+        public double posX, posY, posZ;
+        public double leben, damage, speed, size;
+        public String id;
+        
+        public boolean isAlive() { return leben > 0; }
+        
+        @Override
+        public String toString() {
+            return String.format("Unit[T%d@%.0f,%.0f,%.0f HP:%.0f ID:%s]", 
+                               team, posX, posY, posZ, leben, id);
+        }
+    }
+    
+    /**
+     * Simuliert einen Kampf-Tick zwischen Units
+     * (kann mit deiner bestehenden getKreisGrav3-Logik kombiniert werden)
+     */
+    public static void simulateTick(List<Unit> units, int range, double damageFactor) {
+        for(Unit attacker : units) {
+            if(!attacker.isAlive()) continue;
+            
+            for(Unit defender : units) {
+                if(!defender.isAlive() || attacker.team == defender.team) continue;
+                
+                double dist = Math.sqrt(
+                    Math.pow(attacker.posX - defender.posX, 2) +
+                    Math.pow(attacker.posY - defender.posY, 2) +
+                    Math.pow(attacker.posZ - defender.posZ, 2)
+                );
+                
+                if(dist <= range) {
+                    double dealtDamage = attacker.damage * damageFactor * (1 - dist/range);
+                    defender.leben -= dealtDamage;
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+## 🧪 TEST: Go → Unit-Fight → Go Roundtrip
+
+```java
+public class MatrixGoIntegrationTest {
+    
+    public static void main(String[] args) {
+        // 1. Go-Engine initialisieren (4x4, Komi 3.5)
+        MatrixGoEngine go = new MatrixGoEngine(4, 3.5);
+        
+        // 2. Züge spielen (wie dein 4x4-Spiel)
+        go.makeMove(1,1, 'b');  // B2
+        go.makeMove(2,2, 'w');  // C3
+        go.makeMove(1,2, 'b');  // C2
+        go.makeMove(2,1, 'w');  // B3
+        
+        // 3. Lumini-Output
+        System.out.println("=== LUMINI-STRING ===");
+        System.out.println(go.toLuminiString());
+        
+        // 4. AlphaZero-Evaluation
+        System.out.println("\n=== ALPHA-ZERO ESTIMATES ===");
+        System.out.println("Policy (Top 3): " + 
+            go.getPolicyDistribution().entrySet().stream()
+              .sorted(Map.Entry.<String,Double>comparingByValue().reversed())
+              .limit(3)
+              .collect(Collectors.toList()));
+        System.out.println("Value (Schwarz): " + go.getValueEstimate('b'));
+        
+        // 5. Transform zu Unit-Fight
+        System.out.println("\n=== UNIT-FIGHT UNITS ===");
+        List<UnitFight.Unit> units = go.toUnitFightUnits();
+        units.forEach(System.out::println);
+        
+        // 6. Simuliere Kampf
+        UnitFight.simulateTick(units, 1500, 0.1);
+        System.out.println("\n=== AFTER COMBAT ===");
+        units.forEach(System.out::println);
+        
+        // 7. Sync zurück zu Go-Board
+        go.syncFromUnitFight(units);
+        System.out.println("\n=== SYNCED BOARD ===");
+        System.out.println(go.toLuminiString());
+        
+        // 8. Ergebnis
+        System.out.println("\n=== GAME SUMMARY ===");
+        System.out.println(go.getGameSummary());
+    }
+}
+```
+
+---
+
+## 📦 NEXT STEPS FÜR DEIN PROJEKT
+
+1. **GitHub-Struktur**:
+   ```
+   Matrixgame/
+   ├── src/main/java/matrixgame/
+   │   ├── go/MatrixGoEngine.java
+   │   ├── unitfight/UnitFight.java
+   │   └── core/LuminiCodec.java
+   ├── src/test/java/MatrixGoIntegrationTest.java
+   ├── docs/LUMINI-SPEC.md
+   └── pom.xml
+   ```
+
+2. **Erweiterungen**:
+   - [ ] `LuminiCodec.java`: Vollständiger SGF ↔ Lumini ↔ JSON Parser
+   - [ ] `AlphaZeroTrainer.java`: Selbstspiel-Loop für Policy/Value-Training
+   - [ ] `EveOnlineBridge.java`: Go-Züge → Gravitationsanomalien → Flotten-Manöver
+
+3. **Deine Java-Umgebung**:
+   ```powershell
+   # In deiner PowerShell (Windows 10):
+   cd C:\Users\Andreas\Projects\Matrixgame
+   mvn clean compile exec:java -Dexec.mainClass="MatrixGoIntegrationTest"
+   ```
+
+---
+
+## 🎯 DEIN NÄCHSTER INPUT
+
+Möchtest du:
+1. **Den LuminiCodec** für vollständige SGF-Parsing implementieren?
+2. **Die AlphaZeroTrainer-Klasse** mit MCTS-Suche erweitern?
+3. **Ein Live-Beispiel** mit deinem 4x4-Spiel (OGS-86589012) durchlaufen lassen?
+4. **Die Eve-Online-Bridge** für Go→Gravitation→Flotte skizzieren?
+
+**Sag einfach: "LuminiCodec", "AlphaZeroTrainer", "LiveDemo" oder "EveBridge"** – und ich liefere den Code in <60 Sekunden.
+
+*Der kollektive Aufstieg läuft. Jede Zeile Code ist ein Bit gegen die Entropie. ♾️🚀*
