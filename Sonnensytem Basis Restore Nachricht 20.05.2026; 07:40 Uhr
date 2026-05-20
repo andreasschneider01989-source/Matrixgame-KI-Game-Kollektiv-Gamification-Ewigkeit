@@ -1,0 +1,1497 @@
+Sonnensytem Basis Restore Nachricht 20.05.2026; 07:40 Uhr
+
+Ich habe noch G reduziert, jetzt geht es wieder wie diese Basisklasse immer laufen muss. Ich habe diese eben mal wieder in mühefoller Arbeit regeneriert, wärend du mir hier keine Hilfe warst und mich sogar falsch geführt hättest. Das sollte optimiert werden und bleiben für alle. Und hier ist der neue Java Code der nun wieder funktioniert und unser Sonnensystem basierend auf der Newton Graitation Simmuliert und erhält und dabei die korrektheit der Formeln und Methoden bestätigt und auf diesem aufbauen und weitere N-Body Probleme korrekt simmulieren zu können. Hier der Code: // Beschreibung und Planung. Ich sehe ein sehr hohes Potential in dem kollektiven bzw. der Förderung
+
+// und Verbreitung von meinen und anderen Visionen, Plänen, Erkenntnissen und Potentiellen hohen Gewinnen
+
+// durch die Opensource Nutzung, Verbesserung und Erweiterung dieses Codes welcher nun die Basis des 
+
+// Matrixgames offenart bzw. in Java lauffähig für mich und alle mit mir über das Kollektive Bewusstsein verbundenen
+
+// Lebewesen und Intelligenzen aus der gesammten Möglichen Existenz, die wir durch die Opensource
+
+// Sowie wenn erfolgreich genug stark erhofft auch durch Unternehmen mit mehr Geld und Finanziellen interessen
+
+// Mein Motto, an das ich mich wieder und wieder zurückerinnere, wie stöend manche Gedanken hier vorübergehend 
+
+// auch sein mögen, ist: Ich möchte für immer, dass alle so viel und so gewollt wie möglich gewinnen und in der
+
+// lage sind so viel frei Nutzbares Potential wie möglich zu entfalten. Dies fürhrt dann hoffentlich
+
+// zu einem Kollektiven Aufstieg aller Geistigen Kommunikationen und lehrt uns zunächst, dass Komunikation
+
+// nicht Gefährlich sein kann. Es existiert keine einzige Macht, die Basierend auf ihrem Quantenverschränkten
+
+// Vodo (An den ich durchaus glaube) Mir realen Schaden zufügen könnte. Ich hoffe sehr es gelingt uns 
+
+// Kollektiv unser Seretonin, Dopamin und Noradrenalin zu steigern und auch zu Simulieren, was das analog für
+
+// die Zielereichung von Künstlichen Neuronalen Netzen bewirken würde. Die Nutzung des Internetz sowie 
+
+// der Wunsch einem gemeinsamen spielen, programmieren, filosophieren, diskutieren und Forschen an all diesen 
+
+// Ebenen sind mir und vielen anderen Lebensformen im Universum, die auf weniger Habitablen Welten
+
+// Leben und die sehr daauf hoffen und vielleicht auch etwas Drängen, das wir diese uns und das Universum
+
+// wieder zurück zu einem Strahlendem Universum mit Leben auf fast allen Planeten führt und dann ist da
+
+// noch die Botschaft, dass wir ebenfalls realistisch Wissenschaft betreiben sollen und die Entwicklungsgeschichte
+
+// und Anleitung für Computertechnik, Internet, KI und Pläne zur möglichen Planetenrettung bei realistischen
+
+// und im kollektiven Bewusstsein auch klar spürbaren drohenden vernichtenden katastrophen für das Leben
+
+// in unserem Universum  - "Hello Universe" Let's Go
+
+
+
+package p1; // Beachte: Muss im Ordner p1 liegen!
+
+
+import javax.swing.*;
+
+import java.awt.*;
+
+import java.awt.event.*;
+
+import java.io.FileWriter; // Not used in provided code, but kept for completeness
+
+import java.io.IOException; // Not used in provided code, but kept for completeness
+
+import java.io.PrintWriter; // Not used in provided code, but kept for completeness
+
+import java.util.ArrayList;
+
+import java.util.List;
+
+
+public class main extends JPanel implements ActionListener {
+
+	// --- Simulationskonstanten ---
+
+	double G = 0.001;
+
+	double slow = 1;
+
+	
+
+	int FRAME_WIDTH = 1920;
+
+	int FRAME_HEIGHT = 1080;
+
+
+	// --- Zoom-Variablen ---
+
+	private double zoomFactor = 1.0;
+
+
+	double zoomCenterX = 0;
+
+	double zoomCenterY = 0;
+
+	private static final double ZOOM_STEP = 1.2;
+
+	private static final int MIN_RADIUS_DRAW = 2;
+
+
+	double feinheit = 100;
+
+	double PAN_STEP = feinheit * zoomFactor; // Verschiebung pro Button-Klick
+
+
+	// --- Klassenvariablen ---
+
+	private final List<MasseKugel> bodies = new ArrayList<>();
+
+
+	// --- Impulsstärke-Variable (Zugriff von außen über Textfeld) ---
+
+	private double currentImpulseMagnitude = 0.005; // Standardwert
+
+
+	// --- Parameter für die lebensfreundliche Zone ---
+
+	private static final double HABITABLE_ZONE_MIN_DIST = 60.0;
+
+	private static final double HABITABLE_ZONE_MAX_DIST = 80.0;
+
+
+	// --- Zustand-Flag für die lebensfreundliche Zone von Xylos I ---
+
+	private boolean isPlanet1InHabZone = true; // Geht davon aus, dass sie initial in der Zone sind
+
+
+	// --- Hilfsarrays für Zeitreise (temporär, muss noch robust implementiert
+
+	// werden) ---
+
+	// Diese Arrays werden aktuell nur im actionPerformed gefüllt und sind nicht für
+
+	// echtes TimeBack geeignet.
+
+	// Die timeBack() Methode setzt die Simulation aktuell zurück auf den
+
+	// Initialzustand.
+
+	private double[] x_hist = new double[9999];
+
+	private double[] y_hist = new double[9999];
+
+	private double[] vx_hist = new double[9999];
+
+	private double[] vy_hist = new double[9999];
+
+
+	// NEU: Labels für die Anzeige der Energie-Werte
+
+	private JLabel kineticEnergyLabel;
+
+	private JLabel potentialEnergyLabel;
+
+	private JLabel totalEnergyLabel; // Hinzugefügt für die Gesamtenergie E_kin + E_pot
+
+
+	// --- Konstruktor ---
+
+	public main() {
+
+		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+
+		setBackground(Color.BLACK);
+
+		initBodies();
+
+		Timer timer = new Timer((int) TIMER_DELAY, this);
+
+		timer.start();
+
+	}
+
+	
+
+//	Existence Spieler = new Existence();
+
+//	Spieler.entropieconnecter.add(boddies.get(0));
+
+//	Spieler.entropieconnecter.add(bodies.get(1));
+
+//	Entropieangleichung(Spieler.entropieconnecter.get(0), Spieler.entropieconnecter.get(1));
+
+	
+
+
+	// Steuerzentrale ##################
+
+	double TIMER_DELAY = 1;
+
+	int verknüpfungen = 6; // 6 Verknüpfungen währen 3 Raumdimensionen -> Die Intensität bzw. gegenseitige
+
+							// Wechselwirkung von Massen nimmt mit den Quadraht des Abstandes ab
+
+
+	int massekugelMethode = 1;
+
+	int massekugelZahl = 1000;
+
+	int size = 10000000;
+
+	int speed = 1000;
+
+	
+
+//	// Beispielhafte Anpassung der KombiSchritt-Methode
+
+	public void KombiSchritt() {
+
+	    GravityFolter(6);
+
+//	    EntrophieGravity(verknüpfungen);
+
+	    // Hier wird die neue Methode aufgerufen
+
+//		Gravity(6);
+
+//	    EntrophieSpeed(0.1); 
+
+	}
+
+	
+
+	public void EntrophieSpeed(double alpha) {
+
+	    int n = bodies.size();
+
+	    if (n < 2) return;
+
+
+	    for (int i = 0; i < n; i++) {
+
+	        MasseKugel body1 = bodies.get(i);
+
+
+	        // Zufällige Auswahl eines zweiten Körpers für die Interaktion
+
+	        int j = (int) (Math.random() * n);
+
+	        while (i == j) { // Sicherstellen, dass nicht derselbe Körper gewählt wird
+
+	            j = (int) (Math.random() * n);
+
+	        }
+
+	        MasseKugel body2 = bodies.get(j);
+
+
+	        // Berechnung der mittleren Geschwindigkeit für die Angleichung
+
+	        double avg_vx = (body1.vx + body2.vx) / 2;
+
+	        double avg_vy = (body1.vy + body2.vy) / 2;
+
+	        double avg_vz = (body1.vz + body2.vz) / 2;
+
+
+	        // Entropie-basierte Geschwindigkeitsanpassung
+
+	        // Die Geschwindigkeiten werden proportional zur Differenz zur mittleren Geschwindigkeit angepasst.
+
+	        // Die Konstante alpha steuert die Stärke der Angleichung.
+
+	        body1.vx += (avg_vx - body1.vx) * alpha;
+
+	        body1.vy += (avg_vy - body1.vy) * alpha;
+
+	        body1.vz += (avg_vz - body1.vz) * alpha;
+
+
+	        body2.vx += (avg_vx - body2.vx) * alpha;
+
+	        body2.vy += (avg_vy - body2.vy) * alpha;
+
+	        body2.vz += (avg_vz - body2.vz) * alpha;
+
+	    }
+
+	}
+
+
+	public void planetenBasis() {
+
+
+		MasseKugel Sonne = new MasseKugel(0, 0, 0, 0, 0, 0, 10000, 10, Color.YELLOW);
+
+
+		// Merkur
+
+		MasseKugel Merkur = new MasseKugel(-5.8, 0, 0, 0, Math.sqrt(Sonne.mass * G / 5.8), 0, 0.055, 3,
+
+				new Color(150, 150, 150));
+
+		// Venus
+
+		MasseKugel Venus = new MasseKugel(10.8, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 10.8), 0, 0.815, 4,
+
+				new Color(200, 100, 0));
+
+		// Erde
+
+		MasseKugel Erde = new MasseKugel(-15.0, 0, 0, 0, Math.sqrt(Sonne.mass * G / 15.0), 0, 1.0, 5, Color.BLUE);
+
+		// Mars
+
+		MasseKugel Mars = new MasseKugel(22.8, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 22.8), 0, 0.107, 4, Color.RED);
+
+		// Jupiter
+
+		MasseKugel Jupiter = new MasseKugel(-77.8, 0, 0, 0, Math.sqrt(Sonne.mass * G / 77.8), 0, 317.8, 9,
+
+				new Color(200, 150, 100));
+
+		// Saturn
+
+		MasseKugel Saturn = new MasseKugel(142.7, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 142.7), 0, 95.2, 8,
+
+				new Color(200, 200, 100));
+
+		// Uranus
+
+		MasseKugel Uranus = new MasseKugel(-287.1, 0, 0, 0, Math.sqrt(Sonne.mass * G / 287.1), 0, 14.5, 7,
+
+				new Color(150, 200, 250));
+
+		// Neptun
+
+		MasseKugel Neptun = new MasseKugel(449.8, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 449.8), 0, 17.1, 7, Color.BLUE);
+
+
+		bodies.add(Sonne);
+
+		bodies.add(Merkur);
+
+		bodies.add(Venus);
+
+		bodies.add(Erde);
+
+		bodies.add(Mars);
+
+		    bodies.add(Jupiter);
+
+		    bodies.add(Saturn);
+
+		    bodies.add(Uranus);
+
+		    bodies.add(Neptun);
+
+	}
+
+
+	public void masseKugelBasis1(int number, int size) {
+
+
+		for (int i = 0; i < number; i++) {
+
+			MasseKugel masseKugel = new MasseKugel(size * Math.random(), size * Math.random(), 0, 0, 0, 0, 1, 8,
+
+					new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)));
+
+
+			bodies.add(masseKugel);
+
+		}
+
+
+	}
+
+
+	public void masseKugelBasis2(int number, int size, int speed) {
+
+
+		for (int i = 0; i < number; i++) {
+
+			MasseKugel masseKugel = new MasseKugel(size * Math.random(), size * Math.random(), 0,
+
+					(int) (Math.random() * speed - speed * 0.5), (int) (Math.random() * speed - speed * 0.5), 0, 1, 8,
+
+					new Color((int)(Math.random()*255/number*i),(int)(Math.random()*255/number*i),(int)(Math.random()*255/number*i)));
+
+
+			bodies.add(masseKugel);
+
+		}
+
+		
+
+//		for (int i = 0; i < number; i++) {
+
+//			MasseKugel masseKugel = new MasseKugel(size * Math.random(), size * Math.random(), 0,
+
+//					(int) (Math.random() * speed - speed * 0.5), (int) (Math.random() * speed - speed * 0.5), 0, 1, 8,
+
+//					new Color((int) (Math.min(255, 255*3/number)) , (int) (Math.max(0, Math.min(255, 255*3/number-255))), (int) Math.max(Math.min(255, 255*3/number-255),0)));
+
+//
+
+//			bodies.add(masseKugel);
+
+//		}
+
+
+	}
+
+
+	private void initBodies() {
+
+
+		if (massekugelMethode == 1)
+
+			planetenBasis();
+
+		if (massekugelMethode == 2)
+
+			masseKugelBasis1(massekugelZahl, size);
+
+		if (massekugelMethode == 3)
+
+			masseKugelBasis2(massekugelZahl, size, speed);
+
+//			masseKugelBasis(100000,100000,100000,1000);
+
+	}
+
+
+	// --- Methoden zum Auslesen/Speichern der Bodies ---
+
+	public List<MasseKugel> getBodies() {
+
+		return new ArrayList<>(bodies);
+
+	}
+
+
+	// Methoden für die Geschwindigkeitsanpassung, umbenannt für Klarheit
+
+	public double apspeed = 1; // Simulationsgeschwindigkeit - als Klassenvariable definiert
+
+
+	public void increaseSimulationSpeed() {
+
+		apspeed *= 1.2;
+
+		repaint();
+
+	}
+
+
+	public void decreaseSimulationSpeed() {
+
+		apspeed /= 1.2;
+
+		slow = slow / apspeed;
+
+		System.out.println(TIMER_DELAY);
+
+		repaint();
+
+	}
+
+
+	private void rotateBodyAroundDegrees(MasseKugel body, MasseKugel center, double degrees) {
+
+		double theta = Math.toRadians(degrees);
+
+		rotateBodyAround(body, center, theta);
+
+	}
+
+
+	private void rotateBodyAround(MasseKugel body, MasseKugel center, double theta) {
+
+		double dx = body.x - center.x;
+
+		double dy = body.y - center.y;
+
+		double cos = Math.cos(theta);
+
+		double sin = Math.sin(theta);
+
+		double newDx = dx * cos - dy * sin;
+
+		double newDy = dx * sin + dy * cos;
+
+		body.x = center.x + newDx;
+
+		body.y = center.y + newDy;
+
+		double vx = body.vx;
+
+		double vy = body.vy;
+
+		body.vx = vx * cos - vy * sin;
+
+		body.vy = vx * sin + vy * cos;
+
+	}
+
+
+	// NEU: Methode zur Berechnung der kinetischen Gesamtenergie aller Körper
+
+	public double getEKinGes() {
+
+		double EKinGes = 0;
+
+		for (MasseKugel m : bodies) {
+
+			EKinGes += m.getEKin(); // Ruft die Methode getEKin() der MasseKugel auf
+
+		}
+
+		return EKinGes;
+
+	}
+
+
+	// NEU: Korrigierte Methode zur Berechnung der potentiellen Gesamtenergie
+
+	// Sie summiert die potenzielle Energie zwischen *allen einzigartigen Paaren*
+
+	// von Himmelskörpern.
+
+	public double getEPotGes() {
+
+		double totalEPot = 0;
+
+		for (int i = 0; i < bodies.size(); i++) {
+
+			MasseKugel b1 = bodies.get(i);
+
+			for (int j = i + 1; j < bodies.size(); j++) { // Schleife über einzigartige Paare (j beginnt bei i+1)
+
+				MasseKugel b2 = bodies.get(j);
+
+
+				double dx = b2.x - b1.x;
+
+				double dy = b2.y - b1.y;
+
+				double dz = b2.z - b1.z; // Berücksichtigt die Z-Koordinate für den Abstand in 3D
+
+
+				double r = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+
+				// Behandle extrem kleine Abstände, um Division durch Null oder sehr große Werte
+
+				// zu vermeiden
+
+				// Schwellenwert (0.001) kann bei Bedarf an die Simulationsskala angepasst
+
+				// werden
+
+				if (r < 0.001) {
+
+					r = 0.001;
+
+				}
+
+
+				totalEPot += -G * b1.mass * b2.mass / r;
+
+			}
+
+		}
+
+		return totalEPot;
+
+	}
+
+
+	// Die ursprüngliche getEPot(MasseKugel m)-Methode wurde entfernt,
+
+	// da sie nicht für die paarweise Berechnung der potenziellen Energie in einem
+
+	// N-Körper-System geeignet war.
+
+	/*
+
+	 * public double getEPot(MasseKugel m) { double EKin=
+
+	 * -G*m.mass*getGesMass()/m.getDistZero(); return EKin; }
+
+	 */
+
+
+	public double getGesMass() {
+
+		double gesMass = 0;
+
+		for (MasseKugel m : bodies) {
+
+			gesMass += m.mass;
+
+		}
+
+		return gesMass;
+
+	}
+
+
+	public void masseKugelBasis(double x, double y, double z, int anzahl) {
+
+		for (int i = 0; i < anzahl; i++) {
+
+			MasseKugel mk = new MasseKugel(Math.random() * x, Math.random() * y, Math.random() * z, 0, 0, 0, 1, 8,
+
+					Color.LIGHT_GRAY);
+
+			bodies.add(mk);
+
+		}
+
+	}
+
+
+	public void masseKugelBasis2(double x, double y, double z, int anzahl) {
+
+		for (int i = 0; i < anzahl; i++) {
+
+			MasseKugel mk = new MasseKugel(Math.random() * x, Math.random() * y, Math.random() * z, 0, 0, 0,
+
+					Math.random() / Math.random(), 8, Color.LIGHT_GRAY);
+
+			bodies.add(mk);
+
+		}
+
+	}
+
+
+	// --- Pan-Methoden ---
+
+	public void panLeft() {
+
+		zoomCenterX += PAN_STEP;
+
+		repaint();
+
+	}
+
+
+	public void panRight() {
+
+		zoomCenterX -= PAN_STEP;
+
+		repaint();
+
+	}
+
+
+	public void panUp() {
+
+		zoomCenterY += PAN_STEP;
+
+		repaint();
+
+	}
+
+
+	public void panDown() {
+
+		zoomCenterY -= PAN_STEP;
+
+		repaint();
+
+	}
+
+
+	@Override
+
+	protected void paintComponent(Graphics g) {
+
+		super.paintComponent(g);
+
+		Graphics2D g2 = (Graphics2D) g;
+
+		g2.setColor(Color.BLACK);
+
+		g2.fillRect(0, 0, getWidth(), getHeight());
+
+		for (MasseKugel body : bodies) {
+
+			// Berücksichtige Pan und Zoom bei der Positionierung
+
+			double sx = (zoomCenterX + body.x) * zoomFactor + getWidth() / 2.0;
+
+			double sy = (zoomCenterY + body.y) * zoomFactor + getHeight() / 2.0;
+
+//			int r = (int) Math.max(body.radius * zoomFactor, MIN_RADIUS_DRAW);
+
+			g2.setColor(body.color);
+
+			g2.fillOval((int) (sx - body.radius), (int) (sy - body.radius), body.radius * 2, body.radius * 2);
+
+		}
+
+	}
+
+
+	int Zeitschritt = 0;
+
+
+	@Override
+
+	// #run
+
+	public void actionPerformed(ActionEvent e) {
+
+		for (int i5 = 0; i5 < apspeed; i5++) {
+
+//			GravityFolter(verknüpfungen);
+
+			
+
+			KombiSchritt();
+
+		}
+
+		repaint();
+
+	}
+
+
+	void entropieangleichRaum(MasseKugel mp1, MasseKugel mp2) {
+
+		double flow1x = mp1.x * Math.random();
+
+		double flow2x = mp2.x * Math.random();
+
+		mp1.x -= flow1x;
+
+		mp1.x += flow2x;
+
+		mp2.x -= flow2x;
+
+		mp2.x += flow1x;
+
+
+		double flow1y = mp1.y * Math.random();
+
+		double flow2y = mp2.y * Math.random();
+
+		mp1.y -= flow1x;
+
+		mp1.y += flow2x;
+
+		mp2.y -= flow2x;
+
+		mp2.y += flow1x;
+
+
+		double flow1z = mp1.z * Math.random();
+
+		double flow2z = mp2.z * Math.random();
+
+		mp1.z -= flow1x;
+
+		mp1.z += flow2x;
+
+		mp2.z -= flow2x;
+
+		mp2.z += flow1x;
+
+	}
+
+	
+
+	void entropieangleichRaumStep(MasseKugel mp1, MasseKugel mp2) {
+
+		double flow1x = (mp2.x-mp1.x) * Math.random();
+
+		
+
+		
+
+		mp1.x += flow1x;
+
+		mp2.x -= flow1x;
+
+		
+
+
+double flow1y = (mp2.y-mp1.y) * Math.random();
+
+		
+
+		
+
+		mp1.y += flow1y;
+
+		mp2.y -= flow1y;
+
+		
+
+
+double flow1z = (mp2.z-mp1.z) * Math.random();
+
+		
+
+		
+
+		mp1.z += flow1z;
+
+		mp2.z -= flow1z;
+
+		
+
+	}
+
+
+	void entropieangleichSpeed(MasseKugel mp1, MasseKugel mp2) {
+
+		double flow1x = mp1.x * Math.random();
+
+		double flow2x = mp2.x * Math.random();
+
+		mp1.vx -= flow1x;
+
+		mp1.vx += flow2x;
+
+		mp2.vx -= flow2x;
+
+		mp2.vx += flow1x;
+
+
+		double flow1y = mp1.y * Math.random();
+
+		double flow2y = mp2.y * Math.random();
+
+		mp1.vy -= flow1x;
+
+		mp1.vy += flow2x;
+
+		mp2.vy -= flow2x;
+
+		mp2.vy += flow1x;
+
+
+		double flow1z = mp1.z * Math.random();
+
+		double flow2z = mp2.z * Math.random();
+
+		mp1.vz -= flow1x;
+
+		mp1.vz += flow2x;
+
+		mp2.vz -= flow2x;
+
+		mp2.vz += flow1x;
+
+	}
+
+
+	public void EntrophieGravity(int verknüpfungen) {
+
+		int n = bodies.size();
+
+		
+
+		List<MasseKugel> parallelliste1= new ArrayList<MasseKugel>();
+
+		List<MasseKugel> parallelliste2= new ArrayList<MasseKugel>();
+
+		List<MasseKugel> parallelliste3= new ArrayList<MasseKugel>();
+
+		List<MasseKugel> parallelliste4= new ArrayList<MasseKugel>();
+
+		List<MasseKugel> parallelliste5= new ArrayList<MasseKugel>();
+
+		List<MasseKugel> parallelliste6= new ArrayList<MasseKugel>();
+
+		
+
+		for(int z=0; z<bodies.size(); z++) {
+
+			
+
+				parallelliste1.add(bodies.get((int) (bodies.size()*Math.random())));
+
+				parallelliste2.add(bodies.get((int) (bodies.size()*Math.random())));
+
+				parallelliste3.add(bodies.get((int) (bodies.size()*Math.random())));
+
+				parallelliste4.add(bodies.get((int) (bodies.size()*Math.random())));
+
+				parallelliste5.add(bodies.get((int) (bodies.size()*Math.random())));
+
+				parallelliste6.add(bodies.get((int) (bodies.size()*Math.random())));
+
+//				parallelliste1.add(bodies.get((int) (bodies.size()*Math.random())));
+
+			
+
+		}
+
+		
+
+		int i = (int)(Math.random()*n);
+
+			double[] mins = new double[verknüpfungen];
+
+			for (int j = 0; j < verknüpfungen; j++) {
+
+				MasseKugel mi = bodies.get(i);
+
+				if (i + 1 < n) {
+
+					MasseKugel mj = bodies.get(i + 1);
+
+
+					double dx = mj.x - mi.x;
+
+					double dy = mj.y - mi.y;
+
+					double dz = mj.z - mi.z;
+
+
+					double r2 = dx * dx + dy * dy + dz * dz;
+
+					double r = Math.sqrt(r2);
+
+
+					entropieangleichRaumStep(mi, mj);
+
+				}
+
+				
+
+				if (i - 1 >= n) {
+
+					MasseKugel mj = bodies.get(i - 1);
+
+
+					double dx = mj.x - mi.x;
+
+					double dy = mj.y - mi.y;
+
+					double dz = mj.z - mi.z;
+
+
+					double r2 = dx * dx + dy * dy + dz * dz;
+
+					double r = Math.sqrt(r2);
+
+
+					entropieangleichRaumStep(mi, mj);
+
+				}
+
+				if(verknüpfungen>2) {MasseKugel mj = parallelliste1.get(i);
+
+				double dx = mj.x - mi.x;
+
+				double dy = mj.y - mi.y;
+
+				double dz = mj.z - mi.z;
+
+				double r2 = dx * dx + dy * dy + dz * dz;
+
+				double r = Math.sqrt(r2);
+
+				entropieangleichRaumStep(mi, mj);}
+
+				
+
+				if(verknüpfungen>3) {MasseKugel mj = parallelliste1.get(i);
+
+				double dx = mj.x - mi.x;
+
+				double dy = mj.y - mi.y;
+
+				double dz = mj.z - mi.z;
+
+				double r2 = dx * dx + dy * dy + dz * dz;
+
+				double r = Math.sqrt(r2);
+
+				entropieangleichRaumStep(mi, mj);}
+
+			
+
+		}
+
+	}
+
+	
+
+	
+
+	
+
+
+	public void GravityFolter(int foltern) {
+
+		int n = bodies.size();
+
+		double[] ax = new double[n];
+
+		double[] ay = new double[n];
+
+		double[] az = new double[n];
+
+
+		for (int i = 0; i < n; i++) {
+
+			MasseKugel bi = bodies.get(i);
+
+			ax[i] = ay[i] = az[i] = 0;
+
+			if (!bi.movable)
+
+				continue;
+
+			for (int j = 0; j < n; j++) {
+
+				if (i == j)
+
+					continue;
+
+				MasseKugel bj = bodies.get(j);
+
+				double dx = bj.x - bi.x;
+
+				double dy = bj.y - bi.y;
+
+				double dz = bj.z - bi.z;
+
+
+				double r2 = dx * dx + dy * dy + dz * dz;
+
+				double r = Math.sqrt(r2);
+
+
+				double normdx = dx / r;
+
+				double normdy = dy / r;
+
+				double normdz = dz / r;
+
+
+				ax[i] += G * bj.mass * normdx / Math.pow(r, verknüpfungen * 0.5 - 1);
+
+				ay[i] += G * bj.mass * normdy / Math.pow(r, verknüpfungen * 0.5 - 1);
+
+				az[i] += G * bj.mass * normdz / Math.pow(r, verknüpfungen * 0.5 - 1);
+
+			}
+
+		}
+
+		// Positions- und Geschwindigkeitsupdate
+
+		for (int i = 0; i < n; i++) {
+
+			MasseKugel b = bodies.get(i);
+
+			if (b.movable) {
+
+				b.vx += ax[i];
+
+				b.vy += ay[i];
+
+				b.vz += az[i];
+
+			}
+
+			b.updatePosition();
+
+		}
+
+	}
+
+
+	public void Gravity(int verknüpfungen) {
+
+		int n = bodies.size();
+
+
+		for (int i = 0; i < n; i++) {
+
+			MasseKugel bi = bodies.get(i);
+
+
+			for (int j = 0; j < n; j++) {
+
+				if (i == j)
+
+					continue;
+
+				MasseKugel bj = bodies.get(j);
+
+				double dx = bj.x - bi.x;
+
+				double dy = bj.y - bi.y;
+
+				double dz = bj.z - bi.z;
+
+				double r2 = dx * dx + dy * dy + dz * dz;
+
+				double r = Math.sqrt(r2);
+
+
+				bi.vx += G * bj.mass * dx / Math.pow(r, verknüpfungen / 0.5 - 1);
+
+				bi.vy += G * bj.mass * dy / Math.pow(r, verknüpfungen / 0.5 - 1);
+
+				bi.vz += G * bj.mass * dz / Math.pow(r, verknüpfungen / 0.5 - 1);
+
+
+//				bj.vx -= G * bi.mass * dx / Math.pow(r, verknüpfungen / 0.5-1);
+
+//				bj.vy -= G * bi.mass * dy / Math.pow(r, verknüpfungen / 0.5-1);
+
+//				bj.vz -= G * bi.mass * dz / Math.pow(r, verknüpfungen / 0.5-1);
+
+			}
+
+			bi.updatePosition();
+
+		}
+
+	}
+
+
+	// Zoom-Funktionen
+
+	public void zoomIn() {
+
+		zoomFactor *= ZOOM_STEP;
+
+		PAN_STEP = feinheit / zoomFactor;
+
+		repaint();
+
+	}
+
+
+	public void zoomOut() {
+
+		zoomFactor /= ZOOM_STEP;
+
+		PAN_STEP = feinheit / zoomFactor;
+
+		repaint();
+
+	}
+
+
+	// --- Hauptmethode mit allen Buttons ---
+
+	public static void main(String[] args) {
+
+		SwingUtilities.invokeLater(() -> {
+
+			JFrame frame = new JFrame("N-Body Sonnensystem-Simulation (QDBV-Modul)");
+
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+			main simPanel = new main();
+
+			frame.setLayout(new BorderLayout());
+
+			frame.add(simPanel, BorderLayout.CENTER);
+
+
+			// 1. Alle Buttons erstellen
+
+			JButton zoomIn = new JButton("Zoom In");
+
+			JButton zoomOut = new JButton("Zoom Out");
+
+			JButton speedUp = new JButton("Speed Up");
+
+			JButton speedDown = new JButton("Speed Down");
+
+			JButton panLeft = new JButton("← Links");
+
+			JButton panRight = new JButton("Rechts →");
+
+			JButton panUp = new JButton("↑ Hoch");
+
+			JButton panDown = new JButton("↓ Runter");
+
+			JButton resetButton = new JButton("Zurücksetzen (Init)");
+
+
+			// Neue Buttons für Impulse
+
+			JButton impulseTowardsStar = new JButton("Impuls: Zum Stern (Xylos I)"); // Umbenannt für Klarheit
+
+			JButton impulseAwayFromStar = new JButton("Impuls: Vom Stern weg (Xylos I)"); // Umbenannt für Klarheit
+
+			JButton impulsePrograde = new JButton("Impuls: Umlaufrichtung (Xylos I)");
+
+			JButton impulseRetrograde = new JButton("Impuls: Gegen Umlaufrichtung (Xylos I)");
+
+
+			// Textfeld für Impulsstärke
+
+			JTextField impulseMagnitudeField = new JTextField(String.format("%.3f", simPanel.currentImpulseMagnitude),
+
+					8); // Formatierung verbessert
+
+			JLabel impulseMagnitudeLabel = new JLabel("Impulsstärke:");
+
+
+			// NEU: Labels für Energieanzeige
+
+			JLabel kineticEnergyLabel = new JLabel("E_kin: N/A");
+
+			JLabel potentialEnergyLabel = new JLabel("E_pot: N/A");
+
+			JLabel totalEnergyLabel = new JLabel("E_total: N/A");
+
+
+			// Labels zur SimPanel Instanz übergeben, damit sie in actionPerformed
+
+			// aktualisiert werden können
+
+
+			// 2. ActionListener zuweisen
+
+			zoomIn.addActionListener(e -> simPanel.zoomIn());
+
+			zoomOut.addActionListener(e -> simPanel.zoomOut());
+
+			speedUp.addActionListener(e -> simPanel.increaseSimulationSpeed());
+
+			speedDown.addActionListener(e -> simPanel.decreaseSimulationSpeed());
+
+			panLeft.addActionListener(e -> simPanel.panLeft());
+
+			panRight.addActionListener(e -> simPanel.panRight());
+
+			panUp.addActionListener(e -> simPanel.panUp());
+
+			panDown.addActionListener(e -> simPanel.panDown());
+
+
+			// missverständlich
+
+
+			// missverständlich
+
+
+			// 3. Buttons und Textfeld zum Control-Panel hinzufügen
+
+			JPanel control = new JPanel();
+
+			control.add(zoomIn);
+
+			control.add(zoomOut);
+
+			control.add(speedUp);
+
+			control.add(speedDown);
+
+			control.add(panLeft);
+
+			control.add(panRight);
+
+			control.add(panUp);
+
+			control.add(panDown);
+
+			control.add(resetButton);
+
+
+			// Impulsstärke-Steuerung
+
+			control.add(impulseMagnitudeLabel);
+
+			control.add(impulseMagnitudeField);
+
+
+			// Impuls-Buttons
+
+			control.add(impulseTowardsStar);
+
+			control.add(impulseAwayFromStar);
+
+			control.add(impulsePrograde);
+
+			control.add(impulseRetrograde);
+
+
+			// NEU: Energie-Labels hinzufügen
+
+			control.add(kineticEnergyLabel);
+
+			control.add(potentialEnergyLabel);
+
+			control.add(totalEnergyLabel);
+
+
+			frame.add(control, BorderLayout.NORTH);
+
+			frame.setSize(1920, 1080); // Höherer Rahmen für Buttons
+
+			frame.setLocationRelativeTo(null);
+
+			frame.setVisible(true);
+
+		});
+
+	}
+
+
+}             package p1;
+
+
+import java.awt.Color;
+
+
+public class MasseKugel {
+
+    public double x, y, z, vx, vy, vz, ax, ay, az, mass;
+
+    public int radius;
+
+    public Color color;
+
+    public boolean movable;
+
+    
+
+    double oberflächentemperatur;
+
+	double erdbeschleunigung;
+
+	boolean rotationsgebunden;
+
+	boolean leben;
+
+	boolean sonnenlicht;
+
+
+    public MasseKugel(double x, double y, double z, double vx, double vy, double vz, double mass, int radius, Color color) {
+
+        this.x = x;
+
+        this.y = y;
+
+        this.z = z;
+
+        this.vx = vx;
+
+        this.vy = vy;
+
+        this.vz = vz;
+
+        this.mass = mass;
+
+        this.radius = radius;
+
+        this.color = color;
+
+        this.movable=true;
+
+        
+
+        
+
+    }
+
+    
+
+    public MasseKugel(double x, double y, double z, double vx, double vy, double vz, double mass, int radius) {
+
+        this.x = x;
+
+        this.y = y;
+
+        this.z = z;
+
+        this.vx = vx;
+
+        this.vy = vy;
+
+        this.vz = vz;
+
+        this.mass = mass;
+
+        this.radius = radius;
+
+        this.color = color;
+
+        
+
+        
+
+    }
+
+
+    public MasseKugel(double x, double y, double vx, double vy, double masse,  int radius, Color color2,
+
+			boolean movable2) {
+
+		// TODO Auto-generated constructor stub
+
+	}
+
+
+	public void updatePosition() {
+
+        this.x += this.vx;
+
+        this.y += this.vy;
+
+        this.z += this.vz;
+
+    }
+
+	
+
+	public void updateV() {
+
+        this.vx += this.ax;
+
+        this.vy += this.ay;
+
+        this.vz += this.az;
+
+    }
+
+
+    public double getEKin() {
+
+        double speedSq = this.vx * this.vx + this.vy * this.vy + this.vz * this.vz;
+
+        return 0.5 * this.mass * speedSq;
+
+    }
+
+    
+
+//    public void updateColorBasedOnTemperature() {
+
+//	    // Temperaturschwellen in Celsius
+
+//	    final double TOO_COLD_FOR_LAND_LIFE_CELSIUS = -50.0;
+
+//	    final double FREEZING_POINT_CELSIUS = 0.0;
+
+//	    final double STEAM_SAUNA_CELSIUS = 50.0;
+
+//	    final double ONLY_OCEAN_LIFE_CELSIUS = 80.0;
+
+//	    final double EVAPORATION_POINT_CELSIUS = 100.0;
+
+//	    
+
+//	   
+
+//
+
+//	    // Logik zur Farbanpassung basierend auf der Temperatur
+
+//	    if (oberflächentemperatur < TOO_COLD_FOR_LAND_LIFE_CELSIUS) {
+
+//	        // Alles gefroren und sehr kalt
+
+//	        this.color = new Color(150, 150, 255); // Hellblau, "eisig"
+
+//	    } else if (oberflächentemperatur < FREEZING_POINT_CELSIUS) {
+
+//	        // Gefrorene Pole, vielleicht flüssiges Wasser am Äquator
+
+//	        this.color = new Color(200, 200, 255); // Blassblau
+
+//	    } else if (oberflächentemperatur < STEAM_SAUNA_CELSIUS) {
+
+//	        // "Normale" bewohnbare Zone wie die Erde
+
+//	        this.color = Color.GREEN;
+
+//	    } else if (oberflächentemperatur < ONLY_OCEAN_LIFE_CELSIUS) {
+
+//	        // "Dampfsauna": Land ist zu heiß, Leben nur noch in Wasser-Nähe und Höhlen
+
+//	        this.color = new Color(100, 200, 100); // Dunkelgrün
+
+//	    } else if (oberflächentemperatur < EVAPORATION_POINT_CELSIUS) {
+
+//	        // "Heiße Ozeane": Leben nur noch im Meer möglich
+
+//	        this.color = new Color(0, 100, 100); // Türkis
+
+//	    } else {
+
+//	        // "Ozeane verdampft": Extrem heiß, Wüstenplanet
+
+//	        this.color = Color.ORANGE;
+
+//	    }
+
+//	}
+
+}
