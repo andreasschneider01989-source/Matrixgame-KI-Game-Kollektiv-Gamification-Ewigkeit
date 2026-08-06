@@ -1,0 +1,3735 @@
+
+Ich finde diesen Parameter tatsächlich spannend.
+
+Man könnte ihn als
+
+> Dimensionsparameter
+
+oder
+
+> Kraftgesetzparameter
+
+interpretieren.
+
+---
+
+# 4. EntrophieGravity()
+
+Hier sehe ich allerdings einige Fehler.
+
+### Fehler 1
+
+```
+if (i - 1 >= n)
+```
+
+Das wird praktisch niemals wahr.
+
+Vermutlich meintest du
+
+```java
+if(i-1>=0)
+```
+
+---
+
+### Fehler 2
+
+Hier
+
+```java
+parallelliste1
+```
+
+verwendest du zweimal
+
+```
+parallelliste1
+```
+
+```java
+if(verknüpfungen>2)
+    parallelliste1
+
+if(verknüpfungen>3)
+    parallelliste1
+```
+
+Vermutlich sollte dort stehen
+
+```
+parallelliste2
+```
+
+---
+
+### Fehler 3
+
+Du berechnest
+
+```java
+dx
+dy
+dz
+r
+```
+
+benutzt diese Größen anschließend aber überhaupt nicht.
+
+Sie können komplett entfernt werden.
+
+Momentan reicht
+
+```java
+entropieangleichRaumStep(mi,mj);
+```
+
+---
+
+# 5. Zufällige Verbindungen
+
+Die Idee gefällt mir sehr.
+
+Im Grunde erzeugst du damit ein Graphnetz.
+
+Jeder Körper besitzt
+
+```
+k
+```
+
+zufällige Nachbarn.
+
+Das erinnert stark an
+
+* Small-World-Netzwerke
+* neuronale Netze
+* soziale Graphen
+* Molekülnetze
+
+Das könnte tatsächlich interessante emergente Effekte erzeugen.
+
+Ich würde allerdings vermeiden,
+
+```java
+Math.random()
+```
+
+bei jedem Simulationsschritt völlig neu aufzubauen.
+
+Stattdessen könntest du
+
+beim Erzeugen des Systems einmal
+
+```java
+List<Integer> neighbours;
+```
+
+festlegen.
+
+Dadurch bleiben die Verbindungen stabil.
+
+Dann kannst du später sogar untersuchen,
+
+wie sich unterschiedliche Netzstrukturen auswirken:
+
+* Ring
+* Zufallsgraph
+* Small World
+* Scale Free
+* vollständiger Graph
+
+Das wäre für dein KI-Game wissenschaftlich sehr interessant.
+
+---
+
+# 6. Noch eine Idee
+
+Ich glaube, deine Simulation könnte enorm gewinnen, wenn jede Massekugel zusätzlich lokale Größen speichert:
+
+```java
+double entropy;
+
+double temperature;
+
+double density;
+
+double pressure;
+
+double potential;
+
+double localEnergy;
+```
+
+Dann könnte jede Kugel nicht nur gravitative Kräfte besitzen, sondern auch:
+
+* Wärme austauschen
+* Energie speichern
+* Informationen weitergeben
+* Ressourcen sammeln
+* biologische Prozesse simulieren
+
+Damit würdest du den Schritt von einer reinen N-Body-Simulation hin zu einer allgemeinen Simulationsplattform machen, was gut zu deiner Vision eines Matrixgames bzw. KI-Games passt.
+
+## Mein Gesamteindruck
+
+Ich sehe in deinem Code drei interessante Forschungsrichtungen:
+
+1. **Verallgemeinerte Gravitation** über den Exponenten `verknüpfungen`. Damit kannst du untersuchen, wie sich unterschiedliche Kraftgesetze auf die Stabilität von Planetensystemen auswirken.
+
+2. **Entropie- bzw. Netzwerkkopplungen** zwischen zufällig oder gezielt verbundenen Körpern. Das eröffnet Untersuchungen zu emergentem Verhalten in Graphstrukturen.
+
+3. **Erweiterung der Massekugeln zu allgemeinen Agenten** mit zusätzlichen Zustandsgrößen wie Energie, Temperatur oder Ressourcen. Dadurch kann aus der physikalischen Simulation schrittweise eine allgemeine Simulationsplattform entstehen, auf der verschiedene Modelle – Physik, Biologie oder Spielmechaniken – kombiniert und verglichen werden können.
+
+Aus meiner Sicht sind insbesondere die ersten beiden Punkte bereits interessante Experimente, weil sie sich quantitativ auswerten lassen (z. B. Energieerhaltung, Bahnstabilität, Clusterbildung oder Verteilung der Abstände). Das sind Fragestellungen, die sich systematisch untersuchen und dokumentieren lassen.
+
+
+
+06.08.2026, 03:46 Java Code den ich sehr wertvoll finde und mehr:
+package ordner1;
+
+import java.awt.Color;
+import java.util.ArrayList;
+
+import p1.MasseKugel;
+
+public class MasseKugel {
+//    public int basisEntro;
+    public double basisEntroDouble;
+    public double[] basisentros = new double[100];
+    
+    public double EKin;
+    public double Ex;
+    public double Ey;
+    public double Ez;
+    
+    ArrayList<Double> angleichungswerte = new ArrayList<>(); //Ist noch unklar
+    // Im Prinziep double[][] angleichungsmatrix x,y,z;vx,vy,vz,ax,ay,az mit entsprechenden updates pro Zeiteinheit
+    
+    public double x, y, z, vx, vy, vz, ax, ay, az, mass;
+    public int radius;
+    
+    double time=255.0;
+    
+    // ToDo Integration der SI Basiseinheiten
+//    4.1. SI-Basiseinheiten
+//    Die 7 fundamentalen, voneinander unabhängigen Einheiten, auf denen das gesamte System aufbaut:
+//    Sekunde (s) für die Zeit (T)
+//    Meter (m) für die Länge (L)
+//    Kilogramm (kg) für die Masse (M)
+//    Ampere (A) für die elektrische Stromstärke (I)
+//    Kelvin (K) für die Temperatur (Θ)
+//    Mol (mol) für die Stoffmenge (N)
+//    Candela (cd) für die Lichtstärke (J)
+//    4.2. Abgeleitete SI-Einheiten (Auswahl)
+//    Für die Praxis wichtige Einheiten, die aus den Basiseinheiten zusammengesetzt sind:
+//    Hertz (Hz): Frequenz (s−1)
+//    Newton (N): Kraft (kg⋅m⋅s−2)
+//    Joule (J): Energie, Arbeit (kg⋅m2⋅s−2)
+//    Watt (W): Leistung (kg⋅m2⋅s−3)
+//    Volt (V): Elektrische Spannung (kg⋅m2⋅s−3⋅A−1)
+//    Ohm (Ω): Elektrischer Widerstand (kg⋅m2⋅s−3⋅A−2)
+//    Diese strukturierte Übersicht dient als Grundlage für die weitere Vereinheitlichung und den Ausbau deines "Matrixgames".
+
+// Basisrotationen bzw. s-Orbitale bzw. zwei gegenüberliegende Planeten auf selber Umlaufbahn generieren
+// Verlinkung zu kollektive Formelsammlung für das Matrixgame: https://docs.google.com/document/d/1dl1S4BTTNPSfTwKtxjbzwsjAxb3qWdeJceMTZKlln_g/edit?tab=t.0#heading=h.el3y6lpq67iw
+    
+    public double rot;
+    public double green;
+    public double blue;
+    
+    public Color color;
+    public boolean movable;
+    
+    double oberflächentemperatur;
+    double erdbeschleunigung;
+    boolean rotationsgebunden;
+    boolean leben;
+    boolean sonnenlicht;
+
+    public MasseKugel(double x, double y, double z, double vx, double vy, double vz, double mass, int radius, Color color) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.vx = vx;
+        this.vy = vy;
+        this.vz = vz;
+        this.mass = mass;
+        this.radius = radius;
+        this.color = color;
+        this.movable=true;
+        
+        rot=color.getRed();
+        green=color.getGreen();
+        blue=color.getBlue();
+        
+        
+    }
+    
+    public MasseKugel(double x, double y, double z, double vx, double vy, double vz, double mass, int radius) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.vx = vx;
+        this.vy = vy;
+        this.vz = vz;
+        this.mass = mass;
+        this.radius = radius;
+       
+        
+        
+    }
+
+    public MasseKugel(double x, double y, double vx, double vy, double masse,  int radius, Color color2,
+            boolean movable2) {
+        // TODO Auto-generated constructor stub
+         rot=color.getRed();
+         green=color.getGreen();
+         blue=color.getBlue();
+    }
+    
+    public void angleichenEKin(double faktor) {
+        double übertragungsWert=basisEntroDouble-EKin;
+        EKin += (übertragungsWert * Math.random()*faktor);
+        basisEntroDouble-=(übertragungsWert * Math.random()*faktor);
+    }
+    
+    public void angleichenVx(double faktor) {
+        double übertragungsWert=Math.pow(EKin, 3)-mass*vx*vx;
+        EKin -= Math.pow((übertragungsWert * Math.random()*faktor),0.3333333);
+        mass += Math.pow(übertragungsWert, 0.333333);
+        vx += Math.pow(übertragungsWert, 0.333333);
+        vx += Math.pow(übertragungsWert, 0.333333);
+    }
+    
+    public void angleichenVy(double faktor) {
+        double übertragungsWert=Math.pow(EKin, 3)-mass*vy*vy;
+        EKin -= Math.pow((übertragungsWert * Math.random()*faktor),0.3333333);
+        mass += Math.pow(übertragungsWert, 0.333333);
+        vy += Math.pow(übertragungsWert, 0.333333);
+        vy += Math.pow(übertragungsWert, 0.333333);
+    }
+    
+    public void angleichenVz(double faktor) {
+        double übertragungsWert=Math.pow(EKin, 3)-mass*vz*vz;
+        EKin -= Math.pow((übertragungsWert * Math.random()*faktor),0.3333333);
+        mass += Math.pow(übertragungsWert, 0.333333);
+        vz += Math.pow(übertragungsWert, 0.333333);
+        vz += Math.pow(übertragungsWert, 0.333333);
+    }
+    
+    void angleichenX(double faktor){
+        double übertragungsWert=Math.pow(x, 2)-vx*time;
+        x-=Math.pow((übertragungsWert * Math.random()*faktor),0.5001);
+        time+=Math.pow((übertragungsWert * Math.random()*faktor),0.5001);
+        vx+=Math.pow((übertragungsWert * Math.random()*faktor),0.5001);
+    }
+    
+    void angleichenY(double faktor){
+        double übertragungsWert=Math.pow(y, 2)-vy*time;
+        y-=Math.pow((übertragungsWert * Math.random()*faktor),0.5001);
+        time+=Math.pow((übertragungsWert * Math.random()*faktor),0.5001);
+        vy+=Math.pow((übertragungsWert * Math.random()*faktor),0.5001);
+    }
+    void angleichenZ(double faktor){
+        double übertragungsWert=Math.pow(y, 2)-vz*time;
+        z-=Math.pow((übertragungsWert * Math.random()*faktor),0.5001);
+        time+=Math.pow((übertragungsWert * Math.random()*faktor),0.5001);
+        vz+=Math.pow((übertragungsWert * Math.random()*faktor),0.5001);
+    }
+    void angleichenColor(double faktor) {
+   
+        double übertrag = basisEntroDouble - rot;
+        basisEntroDouble -= (übertrag * Math.random()*faktor);
+        rot += (übertrag * Math.random()*faktor);
+
+        double übertrag2 = basisEntroDouble - green;
+        basisEntroDouble -= (übertrag2 * Math.random()*faktor);
+        green += (übertrag2 * Math.random()*faktor);
+    
+    
+        double übertrag3 = basisEntroDouble - blue;
+        basisEntroDouble -= (übertrag3 * Math.random()*faktor);
+        blue += (übertrag3 * Math.random()*faktor);
+    }
+    
+    public void angleichen(int typ,double faktor) {
+        faktor*=time*0.001;
+        if (typ == 1) {
+            double übertrag = basisEntroDouble - x;
+            x += (übertrag * Math.random()*faktor);
+            basisEntroDouble-=(übertrag * Math.random()*faktor);
+        }
+        if (typ == 2) {
+            double übertrag = basisEntroDouble - y;
+            basisEntroDouble -= (übertrag * Math.random()*faktor);
+            y += (übertrag * Math.random()*faktor);
+        }
+        if (typ == 3) {
+            double übertrag = basisEntroDouble - z;
+            basisEntroDouble -= (übertrag * Math.random()*faktor);
+            z += (übertrag * Math.random()*faktor);
+        }
+        if (typ == 4) {
+            double übertrag =basisEntroDouble - vx;
+            basisEntroDouble -= (übertrag * Math.random()*faktor);
+            vx += (übertrag * Math.random()*faktor);
+        }
+        if (typ == 5) {
+            double übertrag = basisEntroDouble - vy;
+            basisEntroDouble -= (übertrag * Math.random()*faktor);
+            vy += (übertrag * Math.random()*faktor);
+        }
+        if (typ == 6) {
+            double übertrag = basisEntroDouble - vz;
+            basisEntroDouble -= (übertrag * Math.random()*faktor);
+            vz += (übertrag * Math.random()*faktor);
+        }
+        if (typ == 7) {
+            double übertrag = basisEntroDouble - rot;
+            basisEntroDouble -= (übertrag * Math.random()*faktor);
+            rot += (übertrag * Math.random()*faktor);
+        }
+        if (typ == 8) {
+            double übertrag = basisEntroDouble - green;
+            basisEntroDouble -= (übertrag * Math.random()*faktor);
+            green += (übertrag * Math.random()*faktor);
+        }
+        if (typ == 9) {
+            double übertrag = basisEntroDouble - blue;
+            basisEntroDouble -= (übertrag * Math.random()*faktor);
+            blue += (übertrag * Math.random()*faktor);
+        }
+        
+        if (typ == 10) {
+            double übertrag = basisEntroDouble - EKin;
+            basisEntroDouble -= (übertrag * Math.random()*faktor);
+            EKin += (übertrag * Math.random()*faktor);
+        }
+        
+        if (typ == 11) {
+            double übertrag = basisEntroDouble - mass;
+            basisEntroDouble -= (übertrag * Math.random()*faktor);
+            mass += (übertrag * Math.random()*faktor);
+        }
+        
+        // Weitere SI Einheiten und Einheiten aus Physik sowie kollektivem Bewusstsein und eigene Einheiten für das kollektive Matrixgame
+        
+        
+        double übertrag = basisEntroDouble - basisentros[typ];
+        basisEntroDouble -= (übertrag * Math.random()*faktor);
+        basisentros[typ] += (übertrag * Math.random()*faktor);
+
+    }
+    
+    public void basisRand(double time) {
+        
+            
+            basisEntroDouble+=(Math.random()/Math.random()*time);
+            basisEntroDouble-=(Math.random()/Math.random()*time);
+            x+=(Math.random()/Math.random()*time);
+            x-=(Math.random()/Math.random()*time);
+            y+=(Math.random()/Math.random()*time);
+            y-=(Math.random()/Math.random()*time);
+            z+=(Math.random()/Math.random()*time);
+            z-=(Math.random()/Math.random()*time);
+            
+            for(int i=0; i<basisentros.length; i++) {
+                basisentros[i]+=(Math.random()/Math.random()*time);
+                basisentros[i]-=(Math.random()/Math.random()*time);
+            }
+        
+        
+        
+    }
+    
+    // unklar
+    public void angleichen(MasseKugel mk, int typ, double faktor) {
+        if (typ == 1) {
+            double übertrag = basisEntroDouble - mk.basisEntroDouble;
+            mk.basisEntroDouble -= (übertrag * Math.random()*faktor);
+            basisEntroDouble += (übertrag * Math.random()*faktor);
+        }
+        if (typ == 2) {
+            double übertrag = x - mk.x;
+            mk.x += (übertrag * Math.random()*faktor);
+            x -= (übertrag * Math.random()*faktor);
+        }
+        if (typ == 3) {
+            double übertrag = y - mk.y;
+            mk.y += (übertrag * Math.random()*faktor);
+            y -= (übertrag * Math.random()*faktor);
+        }
+        if (typ == 4) {
+            double übertrag = z - mk.z;
+            mk.z += (übertrag * Math.random()*faktor);
+            z -= (übertrag * Math.random()*faktor);
+        }
+        if (typ == 5) {
+            double übertrag = vx - mk.vx;
+            mk.vx += (übertrag * Math.random()*faktor);
+            vx -= (übertrag * Math.random()*faktor);
+        }
+        if (typ == 6) {
+            double übertrag = vy - mk.vy;
+            mk.vy += (übertrag * Math.random()*faktor);
+            vy -= (übertrag * Math.random()*faktor);
+        }
+        if (typ == 7) {
+            double übertrag = vz - mk.vz;
+            mk.vz += (übertrag * Math.random()*faktor);
+            vz -= (übertrag * Math.random()*faktor);
+        }
+        if (typ == 8) {
+            double übertrag = rot - mk.rot;
+            mk.rot += (übertrag * Math.random()*faktor);
+            rot -= (übertrag * Math.random()*faktor);
+        }
+        if (typ == 9) {
+            double übertrag = green - mk.green;
+            mk.green += (übertrag * Math.random()*faktor);
+            green -= (übertrag * Math.random()*faktor);
+        }
+        if (typ == 10) {
+            double übertrag = blue - mk.blue;
+            mk.green += (übertrag * Math.random()*faktor);
+            blue -= (übertrag * Math.random()*faktor);
+        }
+    }
+    
+    
+    // Gleichungen aus den Naturwissenschaften, Lumini und Matrixgame einbauen
+    double G = 0.01;
+    public void gravity(MasseKugel masse2, double time) {
+        time*=this.time;
+        double distance = getDistance(masse2);
+        if(distance==0)return;
+//        System.out.println(distance);
+        double Kraft = mass*masse2.mass/distance/distance*G;
+        double Xdist = masse2.x-x;
+        double Ydist = masse2.y-y;
+        double Zdist = masse2.z-z;
+        
+        
+        double normX=Xdist/distance;
+        double normY=Ydist/distance;
+        double normZ=Zdist/distance;
+        
+        // Kraft
+        //F=m*a
+        //a=F/m
+        double beschleunigung=Kraft/mass;
+        // v=a*t
+        // vn = a*t*normN
+        
+        vx=vx+beschleunigung*time*normX;
+        vy=vy+beschleunigung*time*normY;
+        vz=vz+beschleunigung*time*normZ;
+        
+        // Gegenkraft
+        double gegenKraft=-Kraft;
+        //F=m*a
+        //a=F/m
+        double GegenBeschleunigung=gegenKraft/masse2.mass;
+        // v=a*t
+        // vn = a*t*normN
+        
+        masse2.vx=masse2.vx+GegenBeschleunigung*time*normX;
+        masse2.vy=masse2.vy+GegenBeschleunigung*time*normY;
+        masse2.vz=masse2.vz+GegenBeschleunigung*time*normZ;
+        
+        // Positionen Upgraden
+//        updatePosition(time);
+//        masse2.updatePosition(time);
+        update(time);
+        masse2.update(time);
+    }
+    
+    public void gravity2(MasseKugel masse2, double time) {
+        time*=this.time;
+        double distance = getDistance(masse2);
+        if(distance==0)return;
+//        System.out.println(distance);
+        double Kraft = mass*masse2.mass/distance/distance*G;
+        double Xdist = masse2.x-x;
+        double Ydist = masse2.y-y;
+        double Zdist = masse2.z-z;
+        
+        
+        double normX=Xdist/distance;
+        double normY=Ydist/distance;
+        double normZ=Zdist/distance;
+        
+        // Kraft
+        //F=m*a
+        //a=F/m
+        double beschleunigung=Kraft/mass;
+        // v=a*t
+        // vn = a*t*normN
+        // an = a*normN
+        
+        ax=ax+beschleunigung*normX;
+        ay=ay+beschleunigung*normY;
+        az=az+beschleunigung*normZ;
+        
+        // Gegenkraft
+        double gegenKraft=-Kraft;
+        //F=m*a
+        //a=F/m
+        double GegenBeschleunigung=gegenKraft/masse2.mass;
+        // v=a*t
+        // vn = a*t*normN
+        // an = a*normN
+        
+        masse2.ax=masse2.ax+GegenBeschleunigung*normX;
+        masse2.ay=masse2.ay+GegenBeschleunigung*normY;
+        masse2.az=masse2.az+GegenBeschleunigung*normZ;
+        
+        // Positionen Upgraden
+//        updatePosition(time);
+//        masse2.updatePosition(time);
+        update(time);
+        masse2.update(time);
+    }
+
+
+    public void update(double time) {
+        
+        basisRand(time);
+        updateV(time);
+        updatePosition(time);
+        
+        updateColor();
+        
+        
+        
+        angleichenEKin(1);
+        this.time=time;
+        this.time=Math.abs(this.time);
+//            angleichenVx(0.001);
+//        if(y!=0&&vx!=0)    angleichenVy(0.001);
+//        if(z!=0&&vx!=z)    angleichenVz(0.001);
+//        
+//        
+//    if(x!=0&&vx!=0)    angleichenX(0.00001);
+//    if(y!=0&&vx!=0)        angleichenY(0.00001);
+//    if(x!=0&&vx!=0)    angleichenZ(0.00001);
+//    
+//    angleichenColor(0.01);
+    }
+    
+    public void updateColor() {
+        int r=0;
+        int g=0;
+        int b=0;
+        
+        r=(int) Math.abs(Math.pow(rot, 3)*100000)%255;
+        g=(int) Math.abs(Math.pow(green, 2)*100000)%255;
+        b=(int) Math.abs(Math.pow(blue, 1)*100000)%255;
+        
+        radius=(int)(Math.pow(mass/(1+r+b)*100, 0.2));
+        radius=Math.min(radius, 11);
+        radius=Math.max(radius, 1);
+        
+        
+        color=new Color(r,g,b);
+    }
+    
+    
+    
+    public void updatePosition(double time) {
+        this.x += (this.vx*time);
+        this.y += (this.vy*time);
+        this.z += (this.vz*time);
+    }
+    
+    public void updateV(double time) {
+        this.vx += (this.ax*time);
+        this.vy += (this.ay*time);
+        this.vz += (this.az*time);
+    }
+    
+    public void randomUpdatePosition() {
+        this.x += Math.random()-Math.random();
+        this.y += Math.random()-Math.random();
+        this.z += Math.random()-Math.random();
+    }
+    
+    public void randomUpdatePositionv() {
+        this.x += Math.random()*vx;
+        this.y += Math.random()*vy;
+        this.z += Math.random()*vz;
+    }
+    
+    public void randomUpdateSpeed() {
+        this.vx += Math.random()*Math.pow(Ex/mass,0.5);
+        this.vy += Math.random()*Math.pow(Ey/mass,0.5);
+        this.vz += Math.random()*Math.pow(Ez/mass,0.5);
+    }
+    
+    public void randomUpdateE() {
+        this.Ex += Math.random()*vx*vx*mass;
+        this.Ey += Math.random()*vy*vy*mass;
+        this.Ez += Math.random()*vz*vz*mass;
+        this.Ex -= Math.random()*vx*vx*mass;
+        this.Ey -= Math.random()*vy*vy*mass;
+        this.Ez -= Math.random()*vz*vz*mass;
+        this.EKin+=Math.random()*Math.pow(Ex*Ex+Ey*Ey+Ez*Ez, 0.5);
+    }
+    
+    public void randomUpdatePositionColor() {
+        this.x += Math.random()*this.color.getRed()/255-Math.random()*this.color.getRed()/255;
+        this.y += Math.random()*this.color.getGreen()/255-Math.random()*this.color.getGreen()/255;
+        this.z += Math.random()*this.color.getBlue()/255-Math.random()*this.color.getBlue()/255;
+    }
+    
+    public void randomSpeedColor() {
+        this.vx += Math.random()*this.color.getRed()/255-Math.random()*this.color.getRed()/255;
+        this.vy += Math.random()*this.color.getGreen()/255-Math.random()*this.color.getGreen()/255;
+        this.vz += Math.random()*this.color.getBlue()/255-Math.random()*this.color.getBlue()/255;
+    }
+    
+    
+
+    
+    
+    public double getDistance(MasseKugel masseKugel2) {
+        double distanceSQR = (masseKugel2.x-x)*(masseKugel2.x-x) + (masseKugel2.y-y)*(masseKugel2.y-y) + (masseKugel2.z-z)*(masseKugel2.z-z);
+        double dist= Math.pow(distanceSQR, 0.5);
+        return dist;
+    }
+    
+    
+    public double getEKin() {
+        double speedSq = this.vx * this.vx + this.vy * this.vy + this.vz * this.vz;
+        return 0.5 * this.mass * speedSq;
+    }
+    
+    
+    
+    public void entropieMove() {
+    	int rand = (int)(Math.random()*8);
+    	if(rand<2)return;
+    	if(rand==2)x++;
+    	if(rand==3)x--;
+    	if(rand==4)y++;
+    	if(rand==5)y--;
+    	if(rand==6)z++;
+    	if(rand==7)z--;
+    }
+    
+    public void entropieMoveRand() {
+    	int rand = (int)(Math.random()*8);
+    	if(rand<2)return;
+    	if(rand==2)x+=Math.random();
+    	if(rand==3)x-=Math.random();
+    	if(rand==4)y+=Math.random();
+    	if(rand==5)y-=Math.random();
+    	if(rand==6)z+=Math.random();
+    	if(rand==7)z-=Math.random();
+    }
+    
+//    double G = 6.6743015e-11;
+    // Kraft in Newton, die auf beide MasseKugeln wirkt und diese wechselseitig in Richtung des anderen beschleunigt, so das die Gravitationskraft weiter steigt und der Abstand sinkt
+    public double getGravityKraft(MasseKugel other) {
+    	double kraft =0;
+    	double distQ = (other.x-this.x)*(other.x-this.x)+(other.y-this.y)*(other.y-this.y)+(other.z-this.z)*(other.z-this.z);
+    	kraft= G * this.mass*other.mass/distQ;
+    	return kraft;
+    }
+    
+//    public void updateColorBasedOnTemperature() {
+//        // Temperaturschwellen in Celsius
+//        final double TOO_COLD_FOR_LAND_LIFE_CELSIUS = -50.0;
+//        final double FREEZING_POINT_CELSIUS = 0.0;
+//        final double STEAM_SAUNA_CELSIUS = 50.0;
+//        final double ONLY_OCEAN_LIFE_CELSIUS = 80.0;
+//        final double EVAPORATION_POINT_CELSIUS = 100.0;
+//        
+//       
+//
+//        // Logik zur Farbanpassung basierend auf der Temperatur
+//        if (oberflächentemperatur < TOO_COLD_FOR_LAND_LIFE_CELSIUS) {
+//            // Alles gefroren und sehr kalt
+//            this.color = new Color(150, 150, 255); // Hellblau, "eisig"
+//        } else if (oberflächentemperatur < FREEZING_POINT_CELSIUS) {
+//            // Gefrorene Pole, vielleicht flüssiges Wasser am Äquator
+//            this.color = new Color(200, 200, 255); // Blassblau
+//        } else if (oberflächentemperatur < STEAM_SAUNA_CELSIUS) {
+//            // "Normale" bewohnbare Zone wie die Erde
+//            this.color = Color.GREEN;
+//        } else if (oberflächentemperatur < ONLY_OCEAN_LIFE_CELSIUS) {
+//            // "Dampfsauna": Land ist zu heiß, Leben nur noch in Wasser-Nähe und Höhlen
+//            this.color = new Color(100, 200, 100); // Dunkelgrün
+//        } else if (oberflächentemperatur < EVAPORATION_POINT_CELSIUS) {
+//            // "Heiße Ozeane": Leben nur noch im Meer möglich
+//            this.color = new Color(0, 100, 100); // Türkis
+//        } else {
+//            // "Ozeane verdampft": Extrem heiß, Wüstenplanet
+//            this.color = Color.ORANGE;
+//        }
+//    }
+}
+
+package ordner1;
+
+import java.util.Arrays;
+
+import acm.program.DialogProgram;
+import acm.program.GraphicsProgram;
+
+public class MatheFürLumini extends DialogProgram {
+    /**
+     * PartyTest Created on Mar 14, 2015
+     * 
+     * @author Andreas
+     */
+    private static final long serialVersionUID = 1L;
+
+    String[][] score = new String[20][2];
+    int level = 1;
+    double richtig = 0;
+    double startLeben=0;
+    double bonusleben=0;
+    int start = 0;
+    int sicher = 0;
+    int[] q = new int[200];
+    long bonuszeit = 0;
+
+    public void run() {
+        long zeitbegrenzung = 60000 + bonuszeit;
+        long sekunden = zeitbegrenzung / 1000;
+        int counter = 0;
+        long zeitAfter = 0;
+        while (start != 1) {
+            if (start == 3)
+                sicher = readInt("Wirklich beenden?\n1 = Ja, 2 = Nein\n");
+            if (start == 3 && sicher == 1)
+                exit();
+            if (start == 2)
+                showHighscore();
+            start = readInt("1 = Start, 2 = Highscore, 3 = Ende\n");
+        }
+        println("Level " + level + " (Zeitbegrenzung = " + sekunden + "s)");
+
+        long zeitBefore = System.currentTimeMillis();
+        long zeit = 0;
+        while (counter < 10) {
+            zeitAfter = System.currentTimeMillis();
+            zeit = zeitAfter - zeitBefore;
+            if (zeit > zeitbegrenzung) {
+                println("Zeitüberschreitung!");
+                if(bonusleben<=0)break;
+                else bonusleben--;
+            }
+            int frage = (int) (Math.random() * 200);
+            if (frage == 0 && Math.random() > 0.9)
+                for (int i = 0; i < q.length; i++)
+                    q[i] = 0;
+            
+            if (frage == 1 && q[1] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+                int x2 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+                System.out.println("Aufgabe: "+x1 + " * " + x2);
+                int a = readInt(x1 + " * " + x2 + "\n");
+                System.out.println("Antwort: "+a);
+                if (a == x1 * x2) {System.out.println("Korrekt!");
+                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+                else {
+                    println("Falsch! " + x1 * x2 + " ist richtig");
+                    System.out.println("Falsch! " + x1 * x2 + " ist richtig");
+                    System.out.println("Punkte= "+richtig+"\n");
+                    break;
+                }
+                q[1] = -1;
+                counter++;
+            }
+          
+            if (frage == 2 && q[2] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 1 + (int) (Math.random() * (8 + 2 * level));
+                int x2 = (int) (Math.random() * (9 + 2 * level)) * x1;
+                System.out.println("Frage= "+x2 + " / " + x1 + "\n");
+                int a = readInt(x2 + " / " + x1 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x2 / x1)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x2 / x1 + " ist richtig");
+                    break;
+                }
+                q[2] = -1;
+                counter++;
+            }
+            if (frage == 3 && q[3] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * 10 * Math.pow(2, level));
+                int x2 = (int) (Math.random() * 10 * Math.pow(2, level));
+                System.out.println("Frage= "+x1 + " + " + x2 + "\n");
+                int a = readInt(x1 + " + " + x2 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x1 + x2)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + (x1 + x2) + " ist richtig");
+                    break;
+                }
+                q[3] = -1;
+                counter++;
+            }
+            if (frage == 4 && q[4] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * 10 * Math.pow(2, level));
+                int x2 = (int) (Math.random() * 10 * Math.pow(2, level));
+                System.out.println("Frage= "+x1 + " - " + x2 + "\n");
+                int a = readInt(x1 + " - " + x2 + "\n");
+                if (a == x1 - x2)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + (x1 - x2) + " ist richtig");
+                    break;
+                }
+                q[4] = -1;
+                counter++;
+            }
+            if (frage == 5 && q[5] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (1 + 2 * level));
+                int x2 = (int) (Math.random() * 5);
+                System.out.println("Frage= "+x1 + " ^ " + x2 + "\n");
+                int a = readInt(x1 + " ^ " + x2 + "\n");
+                if (a == Math.pow(x1, x2))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + Math.pow(x1, x2) + " ist richtig");
+                    break;
+                }
+                q[5] = -1;
+                counter++;
+            }
+            if (frage == 6 && q[6] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (1 + 2 * level));
+                int x2 = 2 + (int) (Math.random() * 3);
+                System.out.println("Frage= "+(int) Math.pow(x1, x2) + " ^ " + "1/" + x2 + "\n");
+                int a = readInt((int) Math.pow(x1, x2) + " ^ " + "1/" + x2 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x1)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x1 + " ist richtig");
+                    break;
+                }
+                q[6] = -1;
+                counter++;
+            }
+            if (frage == 7 && q[7] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 2;
+                int x2 = (int) (Math.random() * (1 + 2 * level));
+                System.out.println("Frage= "+x1 + " ^ " + x2 + "\n");
+                int a = readInt(x1 + " ^ " + x2 + "\n");
+                if (a == Math.pow(x1, x2))
+                    richtig++;
+                else {
+                    println("Falsch! " + Math.pow(x1, x2) + " ist richtig");
+                    break;
+                }
+                q[7] = -1;
+                counter++;
+            }
+            
+            
+            
+           
+            
+            
+            if (frage == 8 && q[8] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 2;
+                int x2 = (int) (Math.random() * 10 * Math.pow(3, level)) * x1;
+                System.out.println("Frage= "+x2 + " / " + x1 + "\n");
+                int a = readInt(x2 + " / " + x1 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x2 / x1)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x2 / x1 + " ist richtig");
+                    break;
+                }
+                q[8] = -1;
+                counter++;
+            }
+            if (frage == 9 && q[9] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (9 + 4 * level));
+                int x2 = 2;
+                System.out.println("Frage= "+(int) Math.pow(x1, x2) + " ^ " + "1/" + x2 + "\n");
+                int a = readInt((int) Math.pow(x1, x2) + " ^ " + "1/" + x2 + "\n");
+                if (a == x1)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x1 + " ist richtig");
+                    break;
+                }
+                q[9] = -1;
+                counter++;
+            }
+            if (frage == 10 && q[10] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * 3 * Math.pow(1.5, level));
+                System.out.println("Frage= "+"Dezimal zu Binär(" + x1 + ")\n");
+                int a = readInt("Dezimal zu Binär(" + x1 + ")\n");
+                System.out.println("Antwort= "+a);
+                if (Integer.toString(a).equals(Integer.toBinaryString(x1)))
+                    richtig++;
+                else {
+                    println("Falsch! " + Integer.toBinaryString(x1) + " ist richtig");
+                    break;
+                }
+                q[10] = -1;
+                counter++;
+            }
+            if (frage == 11 && q[11] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * 3 * Math.pow(1.5, level));
+                System.out.println("Frage= "+"Binär zu Dezimal(" + Integer.toBinaryString(x1) + ")\n");
+                int a = readInt("Binär zu Dezimal(" + Integer.toBinaryString(x1) + ")\n");
+                System.out.println("Antwort= "+a);
+                if (a == x1)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x1 + " ist richtig");
+                    break;
+                }
+                q[11] = -1;
+                counter++;
+            }
+            if (frage == 12 && q[12] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * 10 * Math.pow(1.5, level));
+                System.out.println("Frage= "+"Dezimal zu Hexadezimal(" + x1 + ")\n");
+                String a = readLine("Dezimal zu Hexadezimal(" + x1 + ")\n");
+                System.out.println("Antwort= "+a);
+                if (a.equals(Integer.toHexString(x1)))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + Integer.toHexString(x1) + " ist richtig");
+                    break;
+                }
+                q[12] = -1;
+                counter++;
+            }
+            if (frage == 13 && q[13] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * 10 * Math.pow(1.5, level));
+                System.out.println("Frage= "+"Hexadezimal zu Dezimal(");
+                int a = readInt("Hexadezimal zu Dezimal(" + Integer.toHexString(x1) + ")\n");
+                System.out.println("Antwort= "+a);
+                if (a == x1)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x1 + " ist richtig");
+                    break;
+                }
+                q[13] = -1;
+                counter++;
+            }
+            if (frage == 14 && q[14] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 1 + (int) (Math.random() * 10);
+                int x2 = (int) (Math.random() * 5 * Math.pow(2, level)) * x1;
+                System.out.println("Frage= "+x2 + " / " + x1 + "\n");
+                int a = readInt(x2 + " / " + x1 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x2 / x1)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x2 / x1 + " ist richtig");
+                    break;
+                }
+                q[14] = -1;
+                counter++;
+            }
+            if (frage == 15 && q[15] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * 11);
+                int x2 = (int) (Math.random() * 7 * Math.pow(1.5, level));
+                System.out.println("Frage= "+x1 + " * " + x2 + "\n");
+                int a = readInt(x1 + " * " + x2 + "\n");
+                if (a == x1 * x2)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x1 * x2 + " ist richtig");
+                    break;
+                }
+                q[15] = -1;
+                counter++;
+            }
+            if (frage == 16 && q[16] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * 7 * Math.pow(1.5, level));
+                int x2 = (int) (Math.random() * 11);
+                System.out.println("Frage= "+x1 + " * " + x2 + "\n");
+                int a = readInt(x1 + " * " + x2 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x1 * x2)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x1 * x2 + " ist richtig");
+                    break;
+                }
+                q[16] = -1;
+                counter++;
+            }
+            if (frage == 17 && q[17] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                double x1 = 1 + (int) (Math.random() * 2 * level);
+                int x2 = (int) (Math.random() * (9 + 2 * level));
+                System.out.println("Frage= "+x2 + " / " + (int) x1 + "\n");
+                double a = readDouble(x2 + " / " + (int) x1 + "\n");
+                System.out.println("Antwort= "+a);
+                if (Math.round(a * 10000) == Math.round(x2 / x1 * 10000))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + Math.round(x2 / x1 * 10000) / 10000.0 + " ist richtig");
+                    break;
+                }
+                q[17] = -1;
+                counter++;
+            }
+            if (frage == 18 && q[18] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = -25 * level * level + (int) (Math.random() * level * 50 * level);
+                int x2 = 1 + (int) (Math.random() * (8 + 2 * level));
+                System.out.println("Frage= "+x1 + " mod " + x2 + "\n");
+                int a = readInt(x1 + " mod " + x2 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x1 % x2)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x1 % x2 + " ist richtig");
+                    break;
+                }
+                q[18] = -1;
+                counter++;
+            }
+            if (frage == 19 && q[19] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 1 + (int) (Math.random() * 10 * Math.pow(2, level));
+                System.out.println("Frage= "+"Ein Computersystem besitzt " + x1
+                        + " virtuelle Seiten\nWie viele Bits werden für die Adressierung von diesen benötigt?");
+                int a = readInt("Ein Computersystem besitzt " + x1
+                        + " virtuelle Seiten\nWie viele Bits werden für die Adressierung von diesen benötigt?");
+                System.out.println("Antwort= "+a);
+                if (a == addBits(x1))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + addBits(x1) + " ist richtig");
+                    break;
+                }
+                q[19] = -1;
+                counter++;
+            }
+            if (frage == 20 && q[20] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) Math.pow(2, (int) (Math.random() * (level + 2)));
+                int x2 = 1 + (int) (Math.random() * (level + 2));
+                System.out.println("Frage= "+"Ein Computersystem besitzt " + x1 + " virtuelle Seiten und " + x2
+                        + " Bit Seitenoffset(Byteadressierung)\nWie viel virtuellen Speicher hat das System?");
+                String a = readLine("Ein Computersystem besitzt " + x1 + " virtuelle Seiten und " + x2
+                        + " Bit Seitenoffset(Byteadressierung)\nWie viel virtuellen Speicher hat das System?");
+                if (einheit2Byte(a) == x1 * Math.pow(2, x2))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x1 * Math.pow(2, x2) + " ist richtig");
+                    break;
+                }
+                q[20] = -1;
+                counter++;
+            }
+            if (frage == 21 && q[21] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 1 + (int) (Math.random() * 10 * Math.pow(2, level));
+                System.out.println("Frage= "+"Ein Computersystem besitzt " + x1
+                        + " physische Seiten\nWie viele Bits werden für die Adressierung von diesen benötigt?");
+                int a = readInt("Ein Computersystem besitzt " + x1
+                        + " physische Seiten\nWie viele Bits werden für die Adressierung von diesen benötigt?");
+                System.out.println("Antwort= "+a);
+                if (a == addBits(x1))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + addBits(x1) + " ist richtig");
+                    break;
+                }
+                q[21] = -1;
+                counter++;
+            }
+            if (frage == 22 && q[22] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) Math.pow(2, (int) (Math.random() * (level + 2)));
+                int x2 = 1 + (int) (Math.random() * (level + 2));
+                System.out.println("Frage= "+"Ein Computersystem besitzt " + x1 + " physische Seiten und " + x2
+                        + " Bit Seitenoffset(Byteadressierung)\nWie viel physischen Speicher(Byte) hat das System?");
+                String a = readLine("Ein Computersystem besitzt " + x1 + " physische Seiten und " + x2
+                        + " Bit Seitenoffset(Byteadressierung)\nWie viel physischen Speicher(Byte) hat das System?");
+                if (einheit2Byte(a) == x1 * Math.pow(2, x2))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x1 * Math.pow(2, x2) + " ist richtig");
+                    break;
+                }
+                q[22] = -1;
+                counter++;
+            }
+            if (frage == 23 && q[23] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 1 + (int) (Math.random() * 1.5 * level);
+                int x2 = (int) (Math.random() * 1.5 * level);
+                int x3 = 1 + (int) (Math.random() * 1.5 * level);
+                int x4 = (int) (Math.random() * 1.5 * level);
+                System.out.println("Frage= "+x2 + "/" + x1 + " + " + x4 + "/" + x3 + "\n");
+                String a = readLine(x2 + "/" + x1 + " + " + x4 + "/" + x3 + "\n");
+                if (a.equals(bruchrechnenAdd(x2, x1, x4, x3)))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + bruchrechnenAdd(x2, x1, x4, x3) + " ist richtig");
+                    break;
+                }
+                q[23] = -1;
+                counter++;
+            }
+            if (frage == 24 && q[24] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 1 + (int) (Math.random() * 1.5 * level);
+                int x2 = (int) (Math.random() * 1.5 * level);
+                int x3 = 1 + (int) (Math.random() * 1.5 * level);
+                int x4 = (int) (Math.random() * 1.5 * level);
+                System.out.println("Frage= "+x2 + "/" + x1 + " - " + x4 + "/" + x3 + "\n");
+                String a = readLine(x2 + "/" + x1 + " - " + x4 + "/" + x3 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a.equals(bruchrechnenSub(x2, x1, x4, x3)))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + bruchrechnenSub(x2, x1, x4, x3) + " ist richtig");
+                    break;
+                }
+                q[24] = -1;
+                counter++;
+            }
+            if (frage == 25 && q[25] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 1 + (int) (Math.random() * 2 * level);
+                int x2 = (int) (Math.random() * 2 * level);
+                int x3 = 1 + (int) (Math.random() * 2 * level);
+                int x4 = (int) (Math.random() * 2 * level);
+                String a = readLine(x2 + "/" + x1 + " * " + x4 + "/" + x3 + "\n");
+                System.out.println("Antwort= "+a);
+                System.out.println("Frage= "+a.equals(bruchrechnenMul(x2, x1, x4, x3)));
+                if (a.equals(bruchrechnenMul(x2, x1, x4, x3)))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + bruchrechnenMul(x2, x1, x4, x3) + " ist richtig");
+                    break;
+                }
+                q[25] = -1;
+                counter++;
+            }
+            if (frage == 26 && q[26] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 1 + (int) (Math.random() * 2 * level);
+                int x2 = (int) (Math.random() * 2 * level);
+                int x3 = 1 + (int) (Math.random() * 2 * level);
+                int x4 = 1 + (int) (Math.random() * 2 * level);
+                System.out.println("Frage= "+x2 + "/" + x1 + " : " + x4 + "/" + x3 + "\n");
+                String a = readLine(x2 + "/" + x1 + " : " + x4 + "/" + x3 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a.equals(bruchrechnenDiv(x2, x1, x4, x3)))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + bruchrechnenDiv(x2, x1, x4, x3) + " ist richtig");
+                    break;
+                }
+                q[26] = -1;
+                counter++;
+            }
+            if (frage == 27 && q[27] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 1 + (int) (Math.random() * (8 + 2 * level * level));
+                int x2 = 1 + (int) (Math.random() * (8 + 2 * level * level));
+                System.out.println("Frage= "+"größter gemeinsamer Teiler von " + x1 + " und " + x2 + "\n");
+                int a = readInt("größter gemeinsamer Teiler von " + x1 + " und " + x2 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == ggt(x1, x2))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + ggt(x1, x2) + " ist richtig");
+                    break;
+                }
+                q[27] = -1;
+                counter++;
+            }
+            if (frage == 28 && q[28] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 1 + (int) (Math.random() * (8 + 2 * level));
+                int x2 = 1 + (int) (Math.random() * (8 + 2 * level));
+                System.out.println("Frage= "+"kleinstes gemeinsames Vielfaches von " + x1 + " und " + x2 + "\n");
+                int a = readInt("kleinstes gemeinsames Vielfaches von " + x1 + " und " + x2 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x1 * x2 / ggt(x1, x2))
+                    richtig++;
+                else {
+                    println("Falsch! " + x1 * x2 / ggt(x1, x2) + " ist richtig");
+                    break;
+                }
+                q[28] = -1;
+                counter++;
+            }
+            if (frage == 29 && q[29] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int[] reihe = zahlenreihen(level);
+                int[] rh = new int[4];
+                for (int i = 0; i < 4; i++)
+                    rh[i] = reihe[i];
+                String s = Arrays.toString(rh);
+                System.out.println("Frage= "+"nächste Zahl der Reihe: " + s + "\n");
+                
+                int a = readInt("nächste Zahl der Reihe: " + s + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == reihe[4])
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + reihe[4] + " ist richtig");
+                    break;
+                }
+                q[29] = -1;
+                counter++;
+            }
+            if (frage == 30 && q[30] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 1 + (int) (Math.random() * (2 + 0.5 * level));
+                int x2 = 1 + (int) (Math.random() * (2 + 0.5 * level));
+                int x3 = 1 + (int) (Math.random() * (2 + 0.5 * level));
+                int x4 = (int) (Math.random() * (3 + 0.5 * level));
+                System.out.println("Frage= "+"Welche Kapazität (K) hat eine Festplatte mit " + x1 + " Platten, " + x2
+                        + " Zylindern, durchschnittlich " + x3 + " Sektoren pro Spurund " + x4 + " Byte pro Sektor?");
+                String a = readLine("Welche Kapazität (K) hat eine Festplatte mit " + x1 + " Platten, " + x2
+                        + " Zylindern, durchschnittlich " + x3 + " Sektoren pro Spurund " + x4 + " Byte pro Sektor?");
+                System.out.println("Antwort= "+a);
+                if (einheit2ByteSI(a) == x1 * x2 * x3 * 2 * x4)
+                    richtig++;
+                else {
+                    println("Falsch! " + x1 * x2 * x3 * 2 * x4 + " Byte ist richtig");
+                    break;
+                }
+                q[30] = -1;
+                counter++;
+            }
+            if (frage == 31 && q[31] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (30 + 4 * level));
+                System.out.println("Frage= "+"2 ^ " + x1 + " Byte\n");
+                String a = readLine("2 ^ " + x1 + " Byte\n");
+                System.out.println("Antwort= "+a);
+                if (einheit2Byte(a) == Math.pow(2, x1))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + byte2Einheit(Math.pow(2, x1)) + " ist richtig");
+                    break;
+                }
+                q[31] = -1;
+                counter++;
+            }
+            if (frage == 32 && q[32] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * 3 * Math.pow(1.5, level));
+                System.out.println("Frage= "+"Binär zu Hexadezimal(" + Integer.toBinaryString(x1) + ")\n");
+                String a = readLine("Binär zu Hexadezimal(" + Integer.toBinaryString(x1) + ")\n");
+                System.out.println("Antwort= "+a);
+                if (a.equals(Integer.toHexString(x1)))
+                    richtig++;
+                else {
+                    println("Falsch! " + Integer.toHexString(x1) + " ist richtig");
+                    break;
+                }
+                q[32] = -1;
+                counter++;
+            }
+            if (frage == 33 && q[33] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * 3 * Math.pow(1.5, level));
+                System.out.println("Frage= "+"Hexadezimal zu Binär(" + Integer.toHexString(x1) + ")\n");
+                String a = readLine("Hexadezimal zu Binär(" + Integer.toHexString(x1) + ")\n");
+                System.out.println("Antwort= "+a);
+                if (a.contains("1"))
+                    a = a.substring(a.indexOf("1"));
+                else
+                    a = "0";
+                if (a.equals(Integer.toBinaryString(x1)))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + Integer.toBinaryString(x1) + " ist richtig");
+                    break;
+                }
+                q[33] = -1;
+                counter++;
+            }
+            if (frage == 34 && q[34] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 1 + (int) (Math.random() * (1 + 2 * level));
+                System.out.println("Frage= "+"Bais einer Gleitkommazahl mit " + x1 + " Bit Exponent\n");
+                int a = readInt("Bais einer Gleitkommazahl mit " + x1 + " Bit Exponent\n");
+                if (a == Math.pow(2, x1 - 1) - 1)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + (Math.pow(2, x1 - 1) - 1) + " ist richtig");
+                    break;
+                }
+                q[34] = -1;
+                counter++;
+            }
+            if (frage == 35 && q[35] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 2;
+                int x2 = -1 - (int) (Math.random() * (2 + level));
+                System.out.println("Frage= "+x1 + " ^ " + x2 + "\n");
+                double a = readDouble(x1 + " ^ " + x2 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == Math.pow(x1, x2))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + Math.pow(x1, x2) + " ist richtig");
+                    break;
+                }
+                q[35] = -1;
+                counter++;
+            }
+            if (frage == 36 && q[36] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1, x2, x3, x4;
+                x1 = 1 + (int) (Math.random() * (4 + level));
+                x2 = 1 + (int) (Math.random() * (4 + level));
+                x4 = (int) (Math.random() * (5 + level));
+                if (Math.random() < 0.5)
+                    x3 = x1;
+                else
+                    x3 = x2;
+                System.out.println("Frage= "+x1 + " * " + x2 + " + " + x3 + " * " + x4);
+                int a = readInt(x1 + " * " + x2 + " + " + x3 + " * " + x4);
+                System.out.println("Antwort= "+a);
+                if (a == x1 * x2 + x3 * x4)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + (x1 * x2 + x3 * x4) + " ist richtig");
+                    break;
+                }
+                q[36] = -1;
+                counter++;
+            }
+            if (frage == 37 && q[37] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+                int x2 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+                System.out.println("Frage= "+x1 + " x " + x2);
+                int a = readInt(x1 + " x " + x2 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x(x1,x2))
+                    {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    System.out.println("Falsch! " + x(x1,x2) + " ist richtig"+ "\n");
+                    println("Falsch! " + x(x1,x2) + " ist richtig");
+                    break;
+                }
+                q[37] = -1;
+                counter++;
+            }
+           
+            if (frage == 38 && q[38] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+                int x2 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+                int x3 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+                System.out.println("Frage= "+x1 + " * " + x2 + " * "+x3);
+                int a = readInt(x1 + " * " + x2 + " * "+x3 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x1 * x2 * x3)
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                System.out.println("Falsch! " + x1 * x2 * x3 + " ist richtig"+"\n");
+                    println("Falsch! " + x1 * x2 * x3 + " ist richtig");
+                    break;
+                }
+                q[38] = -1;
+                counter++;
+            }
+                                   
+            if (frage == 39 && q[39] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+                int x2 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+                int x3 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+                System.out.println("Frage= "+x1 + " x " + "("+x2 + " * "+x3 +")"+ "\n");
+                int a = readInt(x1 + " x " + "("+x2 + " * "+x3 +")"+ "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x(x1,x2*x3))
+                    {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x(x1,x2*x3) + " ist richtig");
+                    System.out.println("Falsch! " + x(x1,x2*x3) + " ist richtig");
+                    break;
+                }
+                q[39] = -1;
+                counter++;
+            }
+            
+            if (frage == 40 && q[40] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+                int x2 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+                int x3 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+                System.out.println("Frage= "+x1 + " * "  +"("+x2 + " x "+x3 +")"+ "\n");
+                int a = readInt(x1 + " * "  +"("+x2 + " x "+x3 +")"+ "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x1 * x(x2,x3))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x1 * x(x2,x3) + " ist richtig");
+                    break;
+                }
+                q[40] = -1;
+                counter++;
+            }
+            if (frage == 41 && q[41] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+                int x2 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+                int x3 = (int) (Math.random() * (2 + 2 * level)-(Math.random() * (3 + 2 * level)));
+                System.out.println("Frage= "+x1 + " x " + x2 + " x "+x3 + "\n");
+                int a = readInt(x1 + " x " + x2 + " x "+x3 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x(x(x1,x2),x3))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + x(x(x1,x2),x3) + " ist richtig");
+                    break;
+                }
+                q[41] = -1;
+                counter++;
+            }
+            
+            if (frage == 42 && q[42] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (1 + 2 * level)-(Math.random() * (2 + 2 * level)));
+                int x2 = (int) (Math.random() * 5);
+                System.out.println("Frage= "+x1 + " hoch " + x2 + "\n");
+                int a = readInt(x1 + " hoch " + x2 + "\n");
+                if (a == hoch(x1, x2))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + hoch(x1, x2) + " ist richtig");
+                    break;
+                }
+                q[42] = -1;
+                counter++;
+            }
+            if (frage == 43 && q[43] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (1 + 2 * level)-(Math.random() * (2 + 2 * level)));
+                int x2 = 2 + (int) (Math.random() * 3);
+                System.out.println("Frage= "+(int) hoch(x1, x2) + " hoch " + "1/" + x2 + "\n");
+                int a = readInt((int) hoch(x1, x2) + " hoch " + "1/" + x2 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == x1)
+                    richtig++;
+                else {
+                    println("Falsch! " + x1 + " ist richtig");
+                    break;
+                }
+                q[43] = -1;
+                counter++;
+            }
+            if (frage == 44 && q[44] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = -2;
+                int x2 = (int) (Math.random() * (1 + 2 * level));
+                System.out.println("Frage= "+x1 + " hoch " + x2 + "\n");
+                int a = readInt(x1 + " hoch " + x2 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == hoch(x1, x2))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + hoch(x1, x2) + " ist richtig");
+                    break;
+                }
+                q[44] = -1;
+                counter++;
+            }
+            
+            if (frage == 45 && q[45] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (1 + 2 * level)-(Math.random() * (2 + 2 * level)));
+                int x2 = 2 + (int) (Math.random() * 3);
+                int x3 = 1+(int)(Math.random()*level);
+                System.out.println("Frage= "+(int) hoch(x1, x2) + " hoch " + x3+"/" + x2 + "\n");
+                int a = readInt((int) hoch(x1, x2) + " hoch " + x3+"/" + x2 + "\n");
+                System.out.println("Antwort= "+a);
+                if (a == hoch(x1,x3))
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + hoch(x1,x3) + " ist richtig");
+                    break;
+                }
+                q[45] = -1;
+                counter++;
+            }
+            if (frage == 46 && q[46] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = 500 + (int) (Math.random() * 2000);
+                int x2 = 500 + (int) (Math.random() * 2000);
+                int x3 = (int) (Math.random() * (level + 1));
+                double x4 = ((int) (Math.random() * 3)) / 2.0;
+                System.out.println("Frage= "+"Elo A: " + x1 + "  Elo B: " + x2 + "  k: " + x3 + "  SA: " + x4);
+                double a = readInt("Elo A: " + x1 + "  Elo B: " + x2 + "  k: " + x3 + "  SA: " + x4);
+                System.out.println("Antwort= "+a);
+                if (a == elo(x1, x2, x3, x4))
+                    
+                {richtig++;System.out.println("Korrekt!");System.out.println("Punkte= "+richtig+ "\n");}
+                else {
+                    println("Falsch! " + elo(x1, x2, x3, x4) + " ist richtig");
+                    break;
+                }
+                q[46] = -1;
+                counter++;
+            }
+//                         Weiterer Fragenblock:
+          if (frage == 50 && q[50] == 0) {
+              System.out.println("Nummer der Frage = "+frage);
+              System.out.println("Time= "+zeitAfter);
+              System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+              int x1 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+              int x2 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+              System.out.println("Aufgabe: "+"x = "+x1 + " * " + x2);
+              int a = readInt("Berechne x) "+"x = "+x1 + " * " + x2);
+              System.out.println("Antwort: "+a);
+              if (a == x1 * x2) {System.out.println("Korrekt!");
+                  richtig++;System.out.println("Punkte= "+richtig+"\n");}
+              else {
+                  println("Falsch! " +"x = "+ x1 * x2);
+                  System.out.println("Falsch! " + x1 * x2 + " ist richtig");
+                  System.out.println("Punkte= "+richtig+"\n");
+                  break;
+              }
+              q[50] = -1;
+              counter++;
+          }
+          if (frage == 51 && q[51] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int x1 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+                int x2 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+                if(x2==0)x2=1; //Weil es nicht null sein darf
+                x1*=x2;
+                
+                System.out.println("Aufgabe: "+x1+" = "+x2 + " * " + "x");
+                int a = readInt("Berechne x) "+x1+" = "+x2 + " * " + "x");
+                System.out.println("Antwort: "+a);
+                if (a == x1 / x2) {System.out.println("Korrekt!");
+                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+                else {
+                    println("Falsch! " +"x = "+ x1 / x2);
+                    System.out.println("Falsch! " + x1 / x2 + " ist richtig");
+                    System.out.println("Punkte= "+richtig+"\n");
+                    break;
+                }
+                q[51] = -1;
+                counter++;
+            }
+          if (frage == 52 && q[52] == 0) {
+              System.out.println("Nummer der Frage = "+frage);
+              System.out.println("Time= "+zeitAfter);
+              System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+              int x1 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+              int x2 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+              if(x2==0)x2=1;
+              x1*=x2;
+              
+              System.out.println("Aufgabe: "+x1+" = "+"x" + " * " + x2);
+              int a = readInt("Berechne x) "+x1+" = "+"x" + " * " + x2);
+              System.out.println("Antwort: "+a);
+              if (a == x1 / x2) {System.out.println("Korrekt!");
+                  richtig++;System.out.println("Punkte= "+richtig+"\n");}
+              else {
+                  println("Falsch! " +"x = "+ x1 / x2);
+                  System.out.println("Falsch! " +"x = "+ x1 / x2 );
+                  System.out.println("Punkte= "+richtig+"\n");
+                  break;
+              }
+              q[52] = -1;
+              counter++;
+          }
+          
+          if (frage == 53 && q[53] == 0) {
+              System.out.println("Nummer der Frage = "+frage);
+              System.out.println("Time= "+zeitAfter);
+              System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+              int Geschwindigkeit = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+              int Zeit = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+          
+              int Strecke = Geschwindigkeit*Zeit;
+              
+              System.out.println("Aufgabe) Berechne die zurück gelegte Strecke! Geschwindigkeit = "+Geschwindigkeit+"Zeit = "+Zeit);
+              int a = readInt("Berechne die zurück gelegte Strecke! Geschwindigkeit = "+Geschwindigkeit+"Zeit = "+Zeit);
+              System.out.println("Antwort: "+a);
+              if (a == Zeit * Geschwindigkeit) {System.out.println("Korrekt!");
+                  richtig++;System.out.println("Punkte= "+richtig+"\n");}
+              else {
+                  println("Falsch! " +Zeit * Geschwindigkeit+" Ist korrekt!");
+                  System.out.println("Falsch! " + Zeit * Geschwindigkeit+ " ist richtig");
+                  System.out.println("Punkte= "+richtig+"\n");
+                  break;
+              }
+              q[53] = -1;
+              counter++;
+          }
+          
+          if (frage == 54 && q[54] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int Geschwindigkeit = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+                int Zeit = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+                if(Zeit==0)Zeit=1;
+            Geschwindigkeit*=Zeit;
+            
+                int Strecke = Geschwindigkeit*Zeit;
+                
+                System.out.println("Aufgabe) Berechne die Geschwindigkeit! = "+"Strecke = "+Strecke+" Zeit = "+Zeit);
+                int a = readInt("Berechne die Geschwindigkeit(in m/s)! = "+"Strecke(in m) = "+Strecke+" Zeit(in s) = "+Zeit);
+                System.out.println("Antwort: "+a);
+                if (a == Strecke / Zeit) {System.out.println("Korrekt!");
+                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+                else {
+                    println("Falsch! " + Geschwindigkeit/Zeit+" Ist korrekt!");
+                    System.out.println("Falsch! " +  Strecke/Zeit+ " ist richtig");
+                    System.out.println("Punkte= "+richtig+"\n");
+                    break;
+                }
+                q[54] = -1;
+                counter++;
+            }
+            
+            
+            if (frage == 55 && q[55] == 0) {
+              System.out.println("Nummer der Frage = "+frage);
+              System.out.println("Time= "+zeitAfter);
+              System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+              int Beschleunigung = (int) (Math.random() * (4 + 1 * level)-(Math.random() * (4 + 1 * level)));
+              int Zeit = (int) (Math.random() * (4 + 1 * level)-(Math.random() * (4 + 1 * level)));
+              if(Zeit==0)Zeit=1;
+          
+          Beschleunigung*=2;
+          
+          // Beschleunigung = 2 * Strecke / Zeit^2
+          // Beschleunigung /2 * Zeit^2 = Strecke
+              int Strecke = (int)(Beschleunigung*Zeit*Zeit*0.5);
+              
+              System.out.println("Aufgabe) Berechne die Beschleunigung!   "+"Strecke = "+Strecke+" Zeit = "+Zeit);
+              int a = readInt("Berechne die Beschleunigung(in m/s)!   "+"Strecke(in m) = "+Strecke+" Zeit(in s) = "+Zeit);
+              System.out.println("Antwort: "+a);
+              if (a == Strecke / Zeit/Zeit*2) {System.out.println("Korrekt!");
+                  richtig++;System.out.println("Punkte= "+richtig+"\n");}
+              else {
+                  println("Falsch! Beschleunigung = 2 * Strecke / Zeit^2 -> " +Strecke +" * 2 / "+Zeit+"^2 = "+Strecke * 2 / Zeit / Zeit+" Ist korrekt!");
+                  System.out.println("Falsch! Beschleunigung = 2 * Strecke / Zeit^2 -> " +Strecke +" * 2 / "+Zeit+"^2 = "+Strecke * 2 / Zeit / Zeit+" Ist korrekt!");
+                  System.out.println("Punkte= "+richtig+"\n");
+                  break;
+              }
+              q[55] = -1;
+              counter++;
+          }
+            
+            if (frage == 56 && q[56] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int Beschleunigung = (int) (Math.random() * (4 + 1 * level)-(Math.random() * (4 + 1 * level)));
+                Beschleunigung*=2;
+                int Zeit = (int) (Math.random() * (4 + 1 * level)-(Math.random() * (4 + 1 * level)));
+                if(Zeit==0)Zeit=1;
+            
+            
+            // Beschleunigung = 2 * Strecke / Zeit^2
+            // Beschleunigung /2 * Zeit^2 = Strecke
+                int Strecke = (int)(Beschleunigung*Zeit*Zeit*0.5);
+                
+                System.out.println("Aufgabe) Berechne die bei der Beschleunigung zurückgelegte Strecke!   "+"Beschleunigung = "+Beschleunigung+" Zeit = "+Zeit);
+                int a = readInt("Aufgabe) Berechne die bei der Beschleunigung zurückgelegte Strecke!   "+"Beschleunigung = "+Beschleunigung+" Zeit = "+Zeit);
+                System.out.println("Antwort: "+a);
+                if (a == Beschleunigung * Zeit*Zeit/2) {System.out.println("Korrekt!");
+                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+                else {
+                    println("Falsch! Strecke = 1/2 * Beschleunigung * Zeit^2  -> " +"Strecke = "+"1/2 * "+Beschleunigung+" * "+Zeit+"^2 = "+Beschleunigung / 2 * Zeit * Zeit+" Ist korrekt!");
+                    System.out.println("Falsch! Strecke = 1/2 * Beschleunigung * Zeit^2  -> " +"Strecke = "+"1/2 * "+Beschleunigung+" * "+Zeit+"^2 = "+Beschleunigung / 2 * Zeit * Zeit+" Ist korrekt!");
+                    System.out.println("Punkte= "+richtig+"\n");
+                    break;
+                }
+                q[56] = -1;
+                counter++;
+            }
+            
+            if (frage == 57 && q[57] == 0) {
+                System.out.println("Nummer der Frage = "+frage);
+                System.out.println("Time= "+zeitAfter);
+                System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int Beschleunigung = (int) (Math.random() * (4 + 1 * level));
+                int Zeit = (int) (Math.random() * (4 + 1 * level)-(Math.random() * (4 + 1 * level)));
+                double Strecke = (int) (Math.random() * (4 + 1 * level));
+                if(Beschleunigung==0)Beschleunigung=1;
+           
+            
+            // Beschleunigung = 2 * Strecke / Zeit^2
+            // Beschleunigung /2 * Zeit^2 = Strecke
+            //  Zeit^2 = Strecke*2/Beschleunigung
+        //  Zeit = (Strecke*2/Beschleunigung)^0.5
+                Strecke = Strecke*Strecke;
+                Strecke = Strecke*=Beschleunigung;
+                Strecke = Strecke/=2.0;
+                
+                System.out.println("Aufgabe) Berechne die bei gleichmäßiger Beschleunigung für die Strecke benötigte Zeit!   "+"Strecke = "+Strecke+" Beschleunigung = "+Beschleunigung);
+                int a = readInt("Aufgabe) Berechne die bei gleichmäßiger Beschleunigung für die Strecke benötigte Zeit!   "+"Strecke = "+Strecke+" Beschleunigung = "+Beschleunigung);
+                System.out.println("Antwort: "+a);
+                if (a == Math.pow(2*Strecke / Beschleunigung,0.5)) {System.out.println("Korrekt!");
+                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+                else {
+                    println("Falsch! Zeit = (2*Strecke / Beschleunigung)^0.5 = " +" 2 * "+Strecke+ " / "+ Beschleunigung +")^0.5 = "+Math.pow(Strecke * 2 / +Beschleunigung,0.5) +" Ist korrekt!");
+                    System.out.println("Falsch! Zeit = (2*Strecke / Beschleunigung)^0.5 = " +"( 2 * "+Strecke+ " / "+ Beschleunigung +")^0.5 = "+Math.pow(Strecke * 2 / Beschleunigung,0.5) +" Ist korrekt!");
+                    System.out.println("Punkte= "+richtig+"\n");
+                    break;
+                }
+                q[57] = -1;
+                counter++;
+            }
+            
+            
+          if (frage == 58 && q[58] == 0) {
+          System.out.println("Nummer der Frage = "+frage);
+          System.out.println("Time= "+zeitAfter);
+          System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+          int Masse = (int) (Math.random() * (4 + 1 * level)-(Math.random() * (4 + 1 * level)));
+          int Beschleunigung = (int) (Math.random() * (4 + 1 * level)-(Math.random() * (4 + 1 * level)));
+      
+          int Kraft = Masse*Beschleunigung;
+          
+          System.out.println("Aufgabe) Berechne die benötigte Kraft!    Beschleunigte Masse ="+Masse+"Beschleunigung = "+Beschleunigung);
+          int a = readInt("Aufgabe) Berechne die benötigte Kraft!    Beschleunigte Masse = "+Masse+"Beschleunigung = "+Beschleunigung);
+          System.out.println("Antwort: "+a);
+          if (a == Beschleunigung * Masse) {System.out.println("Korrekt!");
+              richtig++;System.out.println("Punkte= "+richtig+"\n");}
+          else {
+              println("Falsch! " +Beschleunigung * Masse+" Ist korrekt!");
+              System.out.println("Falsch! " + Beschleunigung * Masse+ " ist richtig");
+              System.out.println("Punkte= "+richtig+"\n");
+              break;
+          }
+          q[58] = -1;
+          counter++;
+      }
+      
+      if (frage == 59 && q[59] == 0) {
+            System.out.println("Nummer der Frage = "+frage);
+            System.out.println("Time= "+zeitAfter);
+            System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+            int Masse = (int) (Math.random() * (4 + 1 * level)-(Math.random() * (4 + 1 * level)));
+            int Beschleunigung = (int) (Math.random() * (4 + 1 * level)-(Math.random() * (4 + 1 * level)));
+            if(Beschleunigung==0)Beschleunigung=1;
+        Masse*=Beschleunigung;
+        
+            int Kraft = Masse*Beschleunigung;
+            
+            System.out.println("Aufgabe) Berechne die Masse!  "+"Kraft = "+Kraft+" Beschleunigung = "+Beschleunigung);
+            int a = readInt("Aufgabe) Berechne die Masse!  "+"Kraft = "+Kraft+" Beschleunigung = "+Beschleunigung);
+            System.out.println("Antwort: "+a);
+            if (a == Kraft / Beschleunigung) {System.out.println("Korrekt!");
+                richtig++;System.out.println("Punkte= "+richtig+"\n");}
+            else {
+                println("Falsch! " + Masse/Beschleunigung+" Ist korrekt!");
+                System.out.println("Falsch! " +  Kraft/Beschleunigung+ " ist richtig");
+                System.out.println("Punkte= "+richtig+"\n");
+                break;
+            }
+            q[59] = -1;
+            counter++;
+        }
+      
+      if (frage == 60 && q[60] == 0) {
+          System.out.println("Nummer der Frage = "+frage);
+          System.out.println("Time= "+zeitAfter);
+          System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+          int Beschleunigung = (int) (Math.random() * (4 + 1 * level)-(Math.random() * (4 + 1 * level)));
+          int masse = (int) (Math.random() * (4 + 1 * level)-(Math.random() * (4 + 1 * level)));
+          if(masse==0)masse=1;
+      Beschleunigung*=masse;
+      
+          int Kraft = Beschleunigung*masse;
+          
+          System.out.println("Aufgabe) Berechne die Beschleunigung!   "+"Kraft = "+Kraft+" Masse = "+masse);
+          int a = readInt("Aufgabe) Berechne die Beschleunigung!   "+"Kraft = "+Kraft+" Masse = "+masse);
+          System.out.println("Antwort: "+a);
+          if (a == Kraft / masse) {System.out.println("Korrekt!");
+              richtig++;System.out.println("Punkte= "+richtig+"\n");}
+          else {
+              println("Falsch! " + Kraft/masse+" Ist korrekt!");
+              System.out.println("Falsch! " +  Kraft/masse+ " ist richtig");
+              System.out.println("Punkte= "+richtig+"\n");
+              break;
+          }
+          q[60] = -1;
+          counter++;
+      }
+            
+            
+          
+            if (frage == 62 && q[62] == 0) {
+            	System.out.println("Nummer der Frage = "+frage);
+            	System.out.println("Time= "+zeitAfter);
+            	System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int dezimalzahl = (int) (Math.random() * (9 + 2 * level*level*level)-(Math.random() * (9 + 2 * level*level*level)));
+                int neueBasis=  2+(int) (Math.random() * 19);
+              
+                System.out.println(dezimalzahl+" (Basis=10) -> (Basis="+neueBasis+")");
+                String a = readLine(dezimalzahl+" (Basis=10) -> (Basis="+neueBasis+")");
+                System.out.println("Antwort: "+a);
+                if (a.equals( intToBasisNString(dezimalzahl,neueBasis))) {System.out.println("Korrekt!");
+                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+                else {
+                    println("Falsch! " + intToBasisNString(dezimalzahl,neueBasis) + " ist richtig");
+                    System.out.println("Falsch! " + intToBasisNString(dezimalzahl,neueBasis) + " ist richtig");
+                    System.out.println("Punkte= "+richtig+"\n");
+                    break;
+                }
+                q[62] = -1;
+                counter++;
+            }
+            
+            if (frage == 63 && q[63] == 0) {
+            	System.out.println("Nummer der Frage = "+frage);
+            	System.out.println("Time= "+zeitAfter);
+            	System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int dezimalzahl = (int) (Math.random() * (9 + 2 * level*level*level)-(Math.random() * (9 + 2 * level*level*level)));
+                int neueBasis=  2+(int) (Math.random() * 9);
+              
+                System.out.println("Integer Number: "+dezimalzahl+" To new Lumini Number mit Basis="+neueBasis+" -> ");
+                String a = readLine("Integer Number: "+dezimalzahl+" To new Lumini Number mit Basis="+neueBasis+" -> ");
+                System.out.println("Antwort: "+a);
+                if (a.equals( intoNewLuminiNumber(dezimalzahl,neueBasis))) {System.out.println("Korrekt!");
+                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+                else {
+                    println("Falsch! " + intoNewLuminiNumber(dezimalzahl,neueBasis) + " ist richtig");
+                    System.out.println("Falsch! " + intoNewLuminiNumber(dezimalzahl,neueBasis) + " ist richtig");
+                    System.out.println("Punkte= "+richtig+"\n");
+                    break;
+                }
+                q[63] = -1;
+                counter++;
+            }
+            
+            if (frage == 64 && q[64] == 0) {
+            	System.out.println("Nummer der Frage = "+frage);
+            	System.out.println("Time= "+zeitAfter);
+            	System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int dezimalzahl = (int) (Math.random() * (9 + 2 * level*level*level)-(Math.random() * (9 + 2 * level*level*level)));
+                int neueBasis=  2;
+              
+                System.out.println("Integer Number: "+dezimalzahl+" To new Lumini Number mit Basis="+neueBasis+" -> ");
+                String a = readLine("Integer Number: "+dezimalzahl+" To new Lumini Number mit Basis="+neueBasis+" -> ");
+                System.out.println("Antwort: "+a);
+                if (a.equals( intoNewLuminiNumber(dezimalzahl,neueBasis))) {System.out.println("Korrekt!");
+                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+                else {
+                    println("Falsch! " + intoNewLuminiNumber(dezimalzahl,neueBasis) + " ist richtig");
+                    System.out.println("Falsch! " + intoNewLuminiNumber(dezimalzahl,neueBasis) + " ist richtig");
+                    System.out.println("Punkte= "+richtig+"\n");
+                    break;
+                }
+                q[64] = -1;
+                counter++;
+            }
+            if (frage == 65 && q[65] == 0) {
+            	System.out.println("Nummer der Frage = "+frage);
+            	System.out.println("Time= "+zeitAfter);
+            	System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int dezimalzahl = (int) (Math.random() * (9 + 2 * level*level*level)-(Math.random() * (9 + 2 * level*level*level)));
+                int dezimalzahl2 = (int) (Math.random() * (4 + 2 *level)-(Math.random() * (4 + 2 *level)));
+                int neueBasis=  2;
+                String lumininumber1=intoNewLuminiNumber(dezimalzahl, neueBasis);
+                String lumininumber2=intoNewLuminiNumber(dezimalzahl2, neueBasis);
+                
+                int dezimalzahlResult = dezimalzahl+dezimalzahl2;
+                String lumininumber3=intoNewLuminiNumber(dezimalzahlResult, neueBasis);
+              
+                System.out.println("Berechne die Aufgabe im Kontext der new Lumini Zahlende mit (Basis="+neueBasis+")"+ lumininumber1+" + "+lumininumber2 +" in newLumini mit gleicher Basis");
+                String a = readLine("Berechne die Aufgabe im Kontext der new Lumini Zahlende mit (Basis="+neueBasis+")"+ lumininumber1+" + "+lumininumber2 +" in newLumini mit gleicher Basis");
+                System.out.println("Antwort: "+a);
+                if (a.equals(lumininumber3)) {System.out.println("Korrekt!");
+                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+                else {
+                    println("Falsch! " + lumininumber3 + " ist richtig");
+                    System.out.println("Falsch! " + lumininumber3 + " ist richtig");
+                    System.out.println("Punkte= "+richtig+"\n");
+                    break;
+                }
+                q[65] = -1;
+                counter++;
+            }
+            if (frage == 66 && q[66] == 0) {
+            	System.out.println("Nummer der Frage = "+frage);
+            	System.out.println("Time= "+zeitAfter);
+            	System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int dezimalzahl = (int) (Math.random() * (9 + 2 * level*level*level)-(Math.random() * (9 + 2 * level*level*level)));
+                int dezimalzahl2 = (int) (Math.random() * (Math.random() * (4 + 2 *level)-(Math.random() * (4 + 2 *level)))-(Math.random() * (9 + 2 * level*level*level)));
+                int neueBasis=  2;
+                String lumininumber1=intoNewLuminiNumber(dezimalzahl, neueBasis);
+                String lumininumber2=intoNewLuminiNumber(dezimalzahl2, neueBasis);
+                
+                int dezimalzahlResult = dezimalzahl-dezimalzahl2;
+                String lumininumber3=intoNewLuminiNumber(dezimalzahlResult, neueBasis);
+              
+                System.out.println("Berechne die Aufgabe im Kontext der new Lumini Zahlende mit (Basis="+neueBasis+")"+ lumininumber1+" - "+lumininumber2 +" in newLumini mit gleicher Basis");
+                String a = readLine("Berechne die Aufgabe im Kontext der new Lumini Zahlende mit (Basis="+neueBasis+")"+ lumininumber1+" - "+lumininumber2 +" in newLumini mit gleicher Basis");
+                System.out.println("Antwort: "+a);
+                if (a.equals(lumininumber3)) {System.out.println("Korrekt!");
+                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+                else {
+                    println("Falsch! " + lumininumber3 + " ist richtig");
+                    System.out.println("Falsch! " + lumininumber3 + " ist richtig");
+                    System.out.println("Punkte= "+richtig+"\n");
+                    break;
+                }
+                q[66] = -1;
+                counter++;
+            }
+            if (frage == 67 && q[67] == 0) {
+            	System.out.println("Nummer der Frage = "+frage);
+            	System.out.println("Time= "+zeitAfter);
+            	System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int dezimalzahl = (int) (Math.random() * (9 + 2 * level*level)-(Math.random() * (9 + 2 * level*level)));
+                int dezimalzahl2 = (int) (Math.random() * (4 + 2 *level)-(Math.random() * (4 + 2 *level)));
+                int neueBasis=  2;
+                String lumininumber1=intoNewLuminiNumber(dezimalzahl, neueBasis);
+                String lumininumber2=intoNewLuminiNumber(dezimalzahl2, neueBasis);
+                
+                int dezimalzahlResult = dezimalzahl*dezimalzahl2;
+                String lumininumber3=intoNewLuminiNumber(dezimalzahlResult, neueBasis);
+              
+                System.out.println("Berechne die Aufgabe im Kontext der new Lumini Zahlende mit (Basis="+neueBasis+")"+ lumininumber1+" * "+lumininumber2 +" in newLumini mit gleicher Basis");
+                String a = readLine("Berechne die Aufgabe im Kontext der new Lumini Zahlende mit (Basis="+neueBasis+")"+ lumininumber1+" * "+lumininumber2 +" in newLumini mit gleicher Basis");
+                System.out.println("Antwort: "+a);
+                if (a.equals(lumininumber3)) {System.out.println("Korrekt!");
+                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+                else {
+                    println("Falsch! " + lumininumber3 + " ist richtig");
+                    System.out.println("Falsch! " + lumininumber3 + " ist richtig");
+                    System.out.println("Punkte= "+richtig+"\n");
+                    break;
+                }
+                q[67] = -1;
+                counter++;
+            }
+            if (frage == 68 && q[68] == 0) {
+            	System.out.println("Nummer der Frage = "+frage);
+            	System.out.println("Time= "+zeitAfter);
+            	System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int dezimalzahl = (int) (Math.random() * (9 + 2 * level*level)-(Math.random() * (9 + 2 * level*level)));
+                int dezimalzahl2 = (int) (Math.random() * (4 + 2 *level)-(Math.random() * (4 + 2 *level)));
+                if(dezimalzahl2==0)dezimalzahl2=1;
+                dezimalzahl*=dezimalzahl2;
+                int neueBasis=  2;
+                String lumininumber1=intoNewLuminiNumber(dezimalzahl, neueBasis);
+                String lumininumber2=intoNewLuminiNumber(dezimalzahl2, neueBasis);
+                
+                int dezimalzahlResult = dezimalzahl/dezimalzahl2;
+                String lumininumber3=intoNewLuminiNumber(dezimalzahlResult, neueBasis);
+              
+                System.out.println("Berechne die Aufgabe im Kontext der new Lumini Zahlende mit (Basis="+neueBasis+")"+ lumininumber1+" / "+lumininumber2 +" in newLumini mit gleicher Basis");
+                String a = readLine("Berechne die Aufgabe im Kontext der new Lumini Zahlende mit (Basis="+neueBasis+")"+ lumininumber1+" / "+lumininumber2 +" in newLumini mit gleicher Basis");
+                System.out.println("Antwort: "+a);
+                if (a.equals(lumininumber3)) {System.out.println("Korrekt!");
+                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+                else {
+                    println("Falsch! " + lumininumber3 + " ist richtig");
+                    System.out.println("Falsch! " + lumininumber3 + " ist richtig");
+                    System.out.println("Punkte= "+richtig+"\n");
+                    break;
+                }
+                q[68] = -1;
+                counter++;
+            }
+            
+            if (frage == 69 && q[69] == 0) {
+            	System.out.println("Nummer der Frage = "+frage);
+            	System.out.println("Time= "+zeitAfter);
+            	System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+                int dezimalzahl = (int) (Math.random() * (9 + 2 * level*level*level)-(Math.random() * (9 + 2 * level*level*level)));
+                int alteBasis=  2+(int) (Math.random() * 19);
+                String basisNString=intToBasisNString(dezimalzahl,alteBasis);
+              
+                System.out.println(basisNString+"(basis="+alteBasis+") -> (Dezimal bzw. basis=10");
+                int a = readInt(basisNString+"(basis="+alteBasis+") -> (Dezimal bzw. basis=10");
+                System.out.println("Antwort: "+a);
+                if (a == dezimalzahl) {System.out.println("Korrekt!");
+                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+                else {
+                    println("Falsch! " + dezimalzahl + " ist richtig");
+                    System.out.println("Falsch! " + dezimalzahl + " ist richtig");
+                    System.out.println("Punkte= "+richtig+"\n");
+                    break;
+                }
+                q[69] = -1;
+                counter++;
+            }
+            
+          if (frage == 70 && q[70] == 0) {
+        	System.out.println("Nummer der Frage = "+frage);
+        	System.out.println("Time= "+zeitAfter);
+        	System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+            int dezimalzahl = (int) (Math.random() * (9 + 2 * level*level*level)-(Math.random() * (9 + 2 * level*level*level)));
+            int neueBasis=  2+(int) (Math.random() * 9);
+            String newLuminiNumberString= intoNewLuminiNumber(dezimalzahl,neueBasis);
+          
+            System.out.println(newLuminiNumberString+"(LuminiNumber|basis="+neueBasis+" -> (defaultNumber, basis=10)");
+            int a = readInt(newLuminiNumberString+"(LuminiNumber|basis="+neueBasis+" -> (defaultNumber, basis=10)");
+            System.out.println("Antwort: "+a);
+            if (a == dezimalzahl) {System.out.println("Korrekt!");
+                richtig++;System.out.println("Punkte= "+richtig+"\n");}
+            else {
+                println("Falsch! " + dezimalzahl + " ist richtig");
+                System.out.println("Falsch! " + dezimalzahl + " ist richtig");
+                System.out.println("Punkte= "+richtig+"\n");
+                break;
+            }
+            q[70] = -1;
+            counter++;
+        }
+          
+          
+            
+            
+
+//   			Weiterer Fragenblock:
+//            if (frage == 1 && q[1] == 0) {
+//            	System.out.println("Nummer der Frage = "+frage);
+//            	System.out.println("Time= "+zeitAfter);
+//            	System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+//                int x1 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+//                int x2 = (int) (Math.random() * (9 + 2 * level)-(Math.random() * (9 + 2 * level)));
+//                System.out.println("Aufgabe: "+x1 + " * " + x2);
+//                int a = readInt(x1 + " * " + x2 + "\n");
+//                System.out.println("Antwort: "+a);
+//                if (a == x1 * x2) {System.out.println("Korrekt!");
+//                    richtig++;System.out.println("Punkte= "+richtig+"\n");}
+//                else {
+//                    println("Falsch! " + x1 * x2 + " ist richtig");
+//                    System.out.println("Falsch! " + x1 * x2 + " ist richtig");
+//                    System.out.println("Punkte= "+richtig+"\n");
+//                    break;
+//                }
+//                q[1] = -1;
+//                counter++;
+//            }
+            
+            
+        }
+
+        if ((richtig+startLeben) < level * 10) {
+        	System.out.println("Punkte nach Spielende= "+richtig);
+            bonuszeit = 0;
+            String s = null;
+            if (richtig <= 7)
+                s = "Du musst noch viel lernen!";
+            if (richtig > 7)
+                s = "Sehr löblich!";
+            if (richtig >= 15)
+                s = "Nice!";
+            if (richtig >= 30)
+                s = "Respekt!";
+            if (richtig >= 50)
+                s = "Unerreichbar!";
+            if (richtig >= 75)
+                s = "Godlike!";
+            if (richtig >= 100)
+                s = "Unbesiegbar!";
+            print(richtig + " Punkte" + "\n" + s + "\n");
+            System.out.println(richtig + " Punkte" + "\n" + s + "\n");
+            highscore(richtig);
+            int neu = 0;
+            while (neu != 1) {
+                neu = readInt("1 = Erneut spielen, 2 = Highscore, 3 = Ende\n");
+                if (neu == 2)
+                    showHighscore();
+                if (neu == 3)
+                    sicher = readInt("Wirklich beenden?\n1 = Ja, 2 = Nein\n");
+                if (sicher == 1)
+                    exit();
+                if (neu == 1) {
+                    level = 1;
+                    bonusleben=startLeben;
+                    richtig = 0;
+                    start = 0;
+                    run();
+                }
+            }
+        } else {
+            bonuszeit = zeitbegrenzung - zeit;
+            level++;
+            run();
+        }
+    }
+
+    public void highscore(double punkte) {
+        int i = 0;
+        if (score[0][0] == null)
+            for (i = 0; i <= 9; i++) {
+                score[i][0] = "0";
+                score[i][1] = "";
+            }
+        for (i = 0; i <= 9; i++) {
+            if (richtig > Double.valueOf(score[i][0])) {
+                Double scoreDouble = new Double(richtig);
+                String s = scoreDouble.toString();
+                for (int j = 9; j >= 1; j--) {
+                    score[i + j][0] = score[i + j - 1][0];
+                    score[i + j][1] = score[i + j - 1][1];
+                }
+                score[i][0] = s;
+                score[i][1] = readLine("Name:");
+                break;
+            }
+        }
+
+    }
+
+    public void showHighscore() {
+        println(score[0][0] + " " + score[0][1] + "\n" + score[1][0] + " " + score[1][1] + "\n" + score[2][0] + " "
+                + score[2][1] + "\n" + score[3][0] + " " + score[3][1] + "\n" + score[4][0] + " " + score[4][1] + "\n"
+                + score[5][0] + " " + score[5][1] + "\n" + score[6][0] + " " + score[6][1] + "\n" + score[7][0] + " "
+                + score[7][1] + "\n" + score[8][0] + " " + score[8][1] + "\n" + score[9][0] + " " + score[9][1] + "\n");
+    }
+
+    public int addBits(int i) {
+        if (i == 1)
+            return 1;
+        double d = Math.log(i) / Math.log(2);
+        int a = (d == (int) d) ? (int) d : ((int) d) + 1;
+        return a;
+    }
+
+    public int ggt(int n1, int n2) {
+        n1 = Math.abs(n1);
+        n2 = Math.abs(n2);
+        while (n2 != 0) {
+            if (n1 > n2)
+                n1 -= n2;
+            else
+                n2 -= n1;
+        }
+        return n1;
+    }
+
+    public String bruchrechnen(int ze, int ne) {
+		int zahl = 0;
+		int teiler = ggt(ne, ze);
+		ze /= teiler;
+		ne /= teiler;
+		if (ne == 0)
+			return "0";
+		if (ne == 1)
+			return String.valueOf(ze);
+		zahl = ze / ne;
+		if (zahl != 0)
+			return (zahl + " " + ze % ne + "/" + ne);
+		return (ze + "/" + ne);
+	}
+
+    public String bruchrechnenAdd(int z1, int n1, int z2, int n2) {
+        int ze = z1 * n2 + z2 * n1;
+        int ne = n1 * n2;
+        return bruchrechnen(ze, ne);
+    }
+
+    public String bruchrechnenSub(int z1, int n1, int z2, int n2) {
+        int ze = z1 * n2 - z2 * n1;
+        int ne = n1 * n2;
+        return bruchrechnen(ze, ne);
+    }
+
+    public String bruchrechnenMul(int z1, int n1, int z2, int n2) {
+        int ze = z1 * z2;
+        int ne = n1 * n2;
+        return bruchrechnen(ze, ne);
+    }
+
+    public String bruchrechnenDiv(int z1, int n1, int z2, int n2) {
+        int ze = z1 * n2;
+        int ne = n1 * z2;
+        return bruchrechnen(ze, ne);
+    }
+
+    public int[] zahlenreihen(int level) {
+        int[] reihe1 = new int[5];
+        int[] reihe2 = new int[4];
+        int[] reihe3 = new int[3];
+        int[] reihe4 = new int[2];
+        reihe1[0] = (int) (Math.random() * (level + 3));
+        reihe2[0] = (int) (Math.random() * (level + 3));
+        reihe3[0] = (int) Math.max((Math.random() * (level - 0.8)), 0);
+        reihe4[0] = (int) Math.max((Math.random() * (level - 2.5)), 0);
+        if (Math.random() < Math.min(0.5, level * 0.1))
+            reihe1[0] *= -1;
+        if (Math.random() < Math.min(0.5, level * 0.1))
+            reihe2[0] *= -1;
+        if (Math.random() < Math.min(0.5, level * 0.1))
+            reihe3[0] *= -1;
+        if (Math.random() < Math.min(0.5, level * 0.1))
+            reihe4[0] *= -1;
+        for (int i = 1; i < 2; i++) {
+            reihe4[i] = reihe4[i - 1];
+        }
+        for (int i = 1; i < 3; i++) {
+            reihe3[i] = reihe3[i - 1] + reihe4[i - 1];
+        }
+        for (int i = 1; i < 4; i++) {
+            reihe2[i] = reihe2[i - 1] + reihe3[i - 1];
+        }
+        for (int i = 1; i < 5; i++) {
+            reihe1[i] = reihe1[i - 1] + reihe2[i - 1];
+        }
+        return reihe1;
+    }
+
+    double einheit2Byte(String s) {
+        s = s.toLowerCase();
+        double z;
+        if (s.contains("ebyte")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("ebyte")));
+            return z * Math.pow(1024, 6);
+        } else if (s.contains("p")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("p")));
+            return z * Math.pow(1024, 5);
+        } else if (s.contains("tbyte")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("tbyte")));
+            return z * Math.pow(1024, 4);
+        } else if (s.contains("g")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("g")));
+            return z * Math.pow(1024, 3);
+        } else if (s.contains("m")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("m")));
+            return z * Math.pow(1024, 2);
+        } else if (s.contains("k")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("k")));
+            return z * Math.pow(1024, 1);
+        } else if (s.contains("byte")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("byte")));
+            return z;
+        } else
+            return Double.valueOf(s);
+    }
+
+    double einheit2ByteSI(String s) {
+        s = s.toLowerCase();
+        double z;
+        if (s.contains("ebyte")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("ebyte")));
+            return z * Math.pow(1000, 6);
+        } else if (s.contains("p")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("p")));
+            return z * Math.pow(1000, 5);
+        } else if (s.contains("tbyte")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("tbyte")));
+            return z * Math.pow(1000, 4);
+        } else if (s.contains("g")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("g")));
+            return z * Math.pow(1000, 3);
+        } else if (s.contains("m")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("m")));
+            return z * Math.pow(1000, 2);
+        } else if (s.contains("k")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("k")));
+            return z * Math.pow(1000, 1);
+        } else if (s.contains("byte")) {
+            z = Double.valueOf(s.substring(0, s.indexOf("byte")));
+            return z;
+        } else
+            return Double.valueOf(s);
+    }
+
+    String byte2Einheit(double d) {
+        String e = "";
+        String z = "";
+        if (d >= Math.pow(1024, 6)) {
+            e = " EByte";
+            z = String.valueOf(d / Math.pow(1024, 6));
+        } else if (d >= Math.pow(1024, 5)) {
+            e = " PByte";
+            z = String.valueOf(d / Math.pow(1024, 5));
+        } else if (d >= Math.pow(1024, 4)) {
+            e = " TByte";
+            z = String.valueOf(d / Math.pow(1024, 4));
+        } else if (d >= Math.pow(1024, 5)) {
+            e = " GByte";
+            z = String.valueOf(d / Math.pow(1024, 3));
+        } else if (d >= Math.pow(1024, 2)) {
+            e = " MByte";
+            z = String.valueOf(d / Math.pow(1024, 2));
+        } else if (d >= Math.pow(1024, 1)) {
+            e = " KByte";
+            z = String.valueOf(d / Math.pow(1024, 1));
+        } else {
+            e = " Byte";
+            z = String.valueOf(d);
+        }
+        return z + e;
+    }
+
+    String byte2EinheitSI(double d) {
+        String e = "";
+        String z = "";
+        if (d >= Math.pow(1000, 6)) {
+            e = " EByte";
+            z = String.valueOf(d / Math.pow(1000, 6));
+        } else if (d >= Math.pow(1000, 5)) {
+            e = " PByte";
+            z = String.valueOf(d / Math.pow(1000, 5));
+        } else if (d >= Math.pow(1000, 4)) {
+            e = " TByte";
+            z = String.valueOf(d / Math.pow(1000, 4));
+        } else if (d >= Math.pow(1000, 5)) {
+            e = " GByte";
+            z = String.valueOf(d / Math.pow(1000, 3));
+        } else if (d >= Math.pow(1000, 2)) {
+            e = " MByte";
+            z = String.valueOf(d / Math.pow(1000, 2));
+        } else if (d >= Math.pow(1000, 1)) {
+            e = " KByte";
+            z = String.valueOf(d / Math.pow(1000, 1));
+        } else {
+            e = " Byte";
+            z = String.valueOf(d);
+        }
+        return z + e;
+    }
+
+    public int[] nextSqrt(int i) {
+        int[] t = { 0, 0, 0, 0, 0, 0 };
+        int max = 0;
+        int[] ret = { 0, 0 };
+        while (Math.pow(t[0], 2) <= i) {
+            t[0]++;
+        }
+        t[0]--;
+        if (max < Math.pow(t[0], 2)) {
+            max = (int) Math.pow(t[0], 2);
+            ret[0] = t[0];
+            ret[1] = 2;
+        }
+        while (Math.pow(t[1], 3) <= i) {
+            t[1]++;
+        }
+        t[1]--;
+        if (max < Math.pow(t[1], 3)) {
+            max = (int) Math.pow(t[1], 3);
+            ret[0] = t[1];
+            ret[1] = 3;
+        }
+        while (Math.pow(t[2], 4) <= i) {
+            t[2]++;
+        }
+        t[2]--;
+        if (max < Math.pow(t[2], 4)) {
+            max = (int) Math.pow(t[2], 4);
+            ret[0] = t[2];
+            ret[1] = 4;
+        }
+        while (Math.pow(t[3], 5) <= i) {
+            t[3]++;
+        }
+        t[3]--;
+        if (max < Math.pow(t[3], 5)) {
+            max = (int) Math.pow(t[3], 5);
+            ret[0] = t[3];
+            ret[1] = 5;
+        }
+        while (Math.pow(t[4], 6) <= i) {
+            t[4]++;
+        }
+        t[4]--;
+        if (max < Math.pow(t[4], 6)) {
+            max = (int) Math.pow(t[4], 6);
+            ret[0] = t[4];
+            ret[1] = 6;
+        }
+        while (Math.pow(t[5], 7) <= i) {
+            t[5]++;
+        }
+        t[5]--;
+        if (max < Math.pow(t[5], 7)) {
+            max = (int) Math.pow(t[5], 7);
+            ret[0] = t[5];
+            ret[1] = 7;
+        }
+
+        return ret;
+
+    }
+
+    public int elo(int RA, int RB, int k, double SA) {
+        double EA = 1 / (1 + Math.pow(10, (RB - RA) / 400.0));
+        double RAnew = RA + k * (SA - EA);
+        if (RAnew >= 0)
+            RAnew += 0.5;
+        else
+            RAnew -= 0.5;
+        return (int) RAnew;
+    }
+    
+    public double x(double faktor1, double faktor2) {
+        double produkt=faktor1*faktor2;
+        produkt=Math.abs(produkt);
+        if(faktor1<0||faktor2<0)produkt=-produkt;        
+        return produkt;        
+    }
+    
+    public double hoch(double basis, double exponent){
+        boolean negativ=false;
+        if(basis<0)negativ=true;
+        basis=Math.abs(basis);
+        double result=Math.pow(basis, exponent);
+        if(negativ)result=-result;
+        return result;
+    }
+    
+    
+    // Dezimal Ganze Zahl zu Basis n umrechnen
+    
+    String intToBasisNString(int dezimalzahl, int neueBasis) {
+    	String outputS = "";
+    	if(dezimalzahl==0)return"0";
+    	
+    	boolean negativ=false;
+    	if(dezimalzahl<0) {negativ=true;;dezimalzahl=-dezimalzahl;}
+    	
+    	while(dezimalzahl>0) {
+    	int rest= dezimalzahl%neueBasis;
+    	String zeichen="";
+    	if(rest<10)zeichen=""+rest;
+    	if(rest==10)zeichen="a";
+    	if(rest==11)zeichen="b";
+    	if(rest==12)zeichen="c";
+    	if(rest==13)zeichen="d";
+    	if(rest==14)zeichen="e";
+    	if(rest==15)zeichen="f";
+    	if(rest==16)zeichen="g";
+    	if(rest==17)zeichen="h";
+    	if(rest==18)zeichen="i";
+    	if(rest==19)zeichen="j";
+    	if(rest==20)zeichen="k";
+    	
+    	outputS=zeichen+outputS;
+    	dezimalzahl=dezimalzahl-=rest;
+    	dezimalzahl=dezimalzahl/neueBasis;}
+    	
+    	if(negativ)outputS="-"+outputS;
+    	
+    	return outputS;
+    }
+    
+    public int basisNStringToInt(String number, int basis) {
+    	boolean negativ=false;
+    	int output=0;
+    	
+    	if(number.charAt(0)=='-') {negativ=true; number=number.substring(1, number.length()-1);}
+    	
+    	
+    	int faktor=1;
+    	for(int i=number.length()-1; i>=0; i--) {
+    		int ziffer=0;
+    		if(number.charAt(i)=='0')ziffer=0;
+    		if(number.charAt(i)=='1')ziffer=1;
+    		if(number.charAt(i)=='2')ziffer=2;
+    		if(number.charAt(i)=='3')ziffer=3;
+    		if(number.charAt(i)=='4')ziffer=4;
+    		if(number.charAt(i)=='5')ziffer=5;
+    		if(number.charAt(i)=='6')ziffer=6;
+    		if(number.charAt(i)=='7')ziffer=7;
+    		if(number.charAt(i)=='8')ziffer=8;
+    		if(number.charAt(i)=='9')ziffer=9;
+    		if(number.charAt(i)=='a')ziffer=10;
+    		if(number.charAt(i)=='b')ziffer=11;
+    		if(number.charAt(i)=='c')ziffer=12;
+    		if(number.charAt(i)=='d')ziffer=13;
+    		if(number.charAt(i)=='e')ziffer=14;
+    		if(number.charAt(i)=='f')ziffer=15;
+    		if(number.charAt(i)=='g')ziffer=16;
+    		if(number.charAt(i)=='h')ziffer=17;
+    		if(number.charAt(i)=='i')ziffer=18;
+    		if(number.charAt(i)=='j')ziffer=19;
+    		if(number.charAt(i)=='k')ziffer=20;
+    		if(number.charAt(i)=='A')ziffer=10;
+    		if(number.charAt(i)=='B')ziffer=11;
+    		if(number.charAt(i)=='C')ziffer=12;
+    		if(number.charAt(i)=='D')ziffer=13;
+    		if(number.charAt(i)=='E')ziffer=14;
+    		if(number.charAt(i)=='F')ziffer=15;
+    		if(number.charAt(i)=='G')ziffer=16;
+    		if(number.charAt(i)=='H')ziffer=17;
+    		if(number.charAt(i)=='I')ziffer=18;
+    		if(number.charAt(i)=='J')ziffer=19;
+    		if(number.charAt(i)=='K')ziffer=20;
+    		
+    		ziffer*=faktor;
+    		output+=ziffer;
+    		
+    		faktor*=basis;
+    	}
+    	
+    	if(negativ)output=-output;
+    	return output;
+    }
+    
+    public String intoNewLuminiNumber(int input, int basis) {
+    	
+    	boolean negativ=false;
+    	if(input<0) {negativ=true; input=-input;}
+    	
+    	
+    	int counter=0;
+    	int laenge=1;
+    	
+    	while ((counter+Math.pow(basis, laenge))<=input) {
+    	counter+=Math.pow(basis, laenge);
+    	laenge++;}
+    	
+    	
+    	int sub=input-counter;
+    	
+    	String lumini=intToBasisNString(sub, basis);
+    	
+    	while(lumini.length()<laenge) {
+    		lumini="0"+lumini;
+    	}
+    	
+    	if(negativ)lumini="-"+lumini;
+    	return lumini;
+    }
+    
+    
+    public int newLuminiNumberToInt(String luminiNumber, int basis) {
+    	int length= luminiNumber.length();
+    	int output=0;
+    	int adder=basis;
+    	while(length>1) {
+    		output+=adder;
+    		adder*=basis;
+    		length--;
+    	}
+    	
+    	output+=basisNStringToInt(luminiNumber, basis);
+    	return output;
+    }
+    
+    
+    
+    
+    
+
+    public static void main(String[] args) {
+        new MatheFürLumini().start(args);
+    }
+}
+
+
+package ordner1;
+
+import acm.program.DialogProgram;
+
+public class Morse3 extends DialogProgram {
+	/**
+	 * If you don't understand german you can use AI like Gemini, ChatGPT, Qwen,
+	 * Grok, DeepSeek, MistralAI, ... to translate in all languages :) Morse lernen
+	 * mit schöner Didaktik Created on 03.09.2025
+	 * 
+	 * @author Andreas Schneider from Weingartenstraße 45, 64297,
+	 *         Darmstadt-Eberstadt, Germany; Handynumber: +491779627094; E-Mail:
+	 *         andreas.schneider01989@gmail.com Warnung von Gemini: Du
+	 *         veröffentlichst sensible Daten, dies stellt ein extrem hohes
+	 *         Sicherheits- und Datenschutzrisiko dar (Doxing, Spam, unerwünschte
+	 *         Kontaktaufnahme). Meine Antwort: Ich vermute das das n Fache Enigma
+	 *         von Instagram gehackt wurde. Es existierte nicht nur ein geheimer den
+	 *         man anklicken konnte und dann wurden Nutzername und Passwort gehackt
+	 *         sondern auch eine geheime Whatsapp Nachricht um die absolute
+	 *         Sicherheit zu vernichten und eine Geheime Insta Nachricht wo dann das
+	 *         Passwort beim anderen ankommt Ich kann nur spekulieren, dass jemand
+	 *         basierend auf dem nerfigen Chaoscode in Form von x-Fachem Enigma,
+	 *         diesen Entschlüsselt hat und den schöneren Code dann allgemein
+	 *         Zugänglich gemacht hat Ich habe jetzt einen weiteren Account zum
+	 *         Posten und bei meinem alten Account existieren auch zum Glück noch
+	 *         alle Posts. Es ist also nicht schlimm, dass der Account gehackt
+	 *         werden konnte und jetzt fälschlicherweise in meinem Namen behaupten
+	 *         kann, er habe gerade Geld mit dem Bitcoinhandel gemacht obwohl gerade
+	 *         niemand den Bucketsort oder so was geknackt hat. Ich kann hier leider
+	 *         auch nur spekulieren und wüsste gerne mehr... Leider zeigt die
+	 *         Instagramsuche seit einiger Zeit nur noch die Top-Beiträge. Das ist
+	 *         sehr sehr schlecht, weil meine Beiträge so nicht mehr existieren und
+	 *         Insta für mich bedeutungslos geworden ist Da nutze ich dann lieber
+	 *         Google Docs und YouTube um Sachen von mir zu posten und selber zu
+	 *         verlinken. Hier ist der Link zu meinem Matrixgame-Journal:
+	 *         https://docs.google.com/document/d/1J_qc7-O3qbUb8WOyBHNnLkcEEQ5JklY4d9vmd67RtC4/edit?tab=t.0#heading=h.z5iq1svjrbd0
+	 *         Hier mein altes Insta:
+	 *         https://www.instagram.com/xxandreas_schneiderx89/ Mein Perso:
+	 *         https://docs.google.com/document/d/1Rh168H76fW9idQqCZM6FBjM8sg9IybCbncfx8wQB8fY/edit?usp=sharing
+	 *         Meine IBAN: DE52 5085 0150 0122 0323 88 Da kannst du was drauf zahlen
+	 *         und oder abheben. Wenn du was abhebst und ich das merke, dann wird
+	 *         das ebenfalls offen gelegt aber viel ist da leider aktuell nicht zu
+	 *         holen Aktien von mir kaufen kann man leider auch noch nicht aber ich
+	 *         rate zum Kauf von Google Aktien, wegen denn ganzen kostenlosen Apps
+	 *         im Playstore, der Entwicklungsumgebung die Pythoncode im Browser
+	 *         ausführt (Colab), Dem Sprachmodell mit schöner Vorlesefunktion, ...
+	 *         Alles kostenlos und ich darf meinen Content veröffentlichen und
+	 *         verlinke und um spenden bitte und forschungshypothesen ohne perreview
+	 *         posten, ... Ohne das es gelöscht wird. Ich hoffe weiterhin sehr sehr
+	 *         stark auf konstruktives Feedback, Eine gute Arbeit und vor allem mehr
+	 *         Geld und noch mehr darauf, mit anderen Menschen zusammen an meinen
+	 *         Visionen zu Arbeiten in Form eines kollektiven KI Games wo wir dann
+	 *         gemeinsam in den Chats der Sprachmodelle, die von der Googlesuche
+	 *         dann auch gefunden und schön priorisiert werden sollten gemeinsam KI
+	 *         Games spielen.
+	 *         Link:https://docs.google.com/document/d/1GW-3iFKuoYJylxpjpec_AADUjzFZU2Bqs9rKfMkwDF0/edit?tab=t.0
+	 *         Über eine Zeitnahe Rückmeldung wäre ich sehr dankbar Mit besten
+	 *         Grüßen aus dem Matrixgame Andreas Schneider @Andreas5564 Heiliges
+	 *         Hirn in YouTube suchen ...
+	 * 
+	 * 
+	 * 
+	 *         To Do: Hash Map testen und das gelogene ? super schrott was der
+	 *         Compiler sonst nicht ausführt vielleicht weil windows Mellenium zum
+	 *         Mellenium einen Stackoverflow hatte und auf Grund des Chaoscodes
+	 *         nicht open source Debuggt werden konnte oder wegem sonst was aber da
+	 *         ist was das ist kompliziert und dann auch noch falsch. Genau wie die
+	 *         Basis Inegerdivision oder Bibliotheken von Methodensammlungen wo man
+	 *         nicht reinschauen kann und das schöne Skalenniveau zerstört wurde
+	 *         weil 0ms auf 1ms gesetzt wurde damit das Canivis nicht flackern
+	 *         kann... Das Problem ist einfach, dass es nicht individuell anpassbar
+	 *         bzw. open source ist
+	 */
+	private static final long serialVersionUID = 1L;
+
+	String[][] score = new String[20][2];
+	int startLevel = 1;
+	int level = startLevel;
+	double richtig = 0;
+	int start = 0;
+	int sicher = 0;
+	public int ZEICHENZÄHLpLÜSeINS = 512; // Das ist die Zahl der Zeichen die mit 8 Bit = 1 Byte genutzt werden können
+											// 2^8 + 1; Plus 1, weil ich eins mehr für den Code haben wollte aber das
+											// kannst du so anpassen, nutzen und verbreiten wie du magst
+	int[] q = new int[512]; // dieses Intarray nutze ich um dafür zu sorgen, dass es etwas wahrscheinlicher
+							// wird, dass alle möglichen Fragen auch mal generiert werden, dennoch bleibt
+							// ein gewisses random erhalten was zu einer weitaus schöneren Didaktik auf
+							// allen Ebenen der Existen beiträgt, in Ewigkeit Namaste - Das Göttliche in mir
+							// Respektiert das Göttliche in dir!
+	long bonuszeit = 0;
+
+	static String MorseZeichen = "ETIANMSURWDKGOHVFÜLÄPJBXCYZQÖĤ54Ŝ3Ę¿Ð2&È+テŞÃÌ16=/ÏÇサ(エ7ŽĞŃ8ス90ß###########?_####\"#。.####@###'##-########;!#)###¡Ź,####:###############Ś$########################################################################################################################";
+	static String MoeglicheZeichen = "ETIANMSURWDKGOHVFÜLÄPJBXCYZQÖ5432&+16=/(7890ß?_\\\"。.@'-;!),:$";
+
+	public void run() {
+		long zeitbegrenzung = 60000 + bonuszeit; // Die Zeit wird von der genutzten Methode die irgendwo in der Blackbox
+													// implementiert wurde in ms als long konsumiert -> Du bekommst pro
+													// Level 60 Sekunden dazu. Wenn du schnell bist, hast du in den
+													// schwereren Leveln mehr Zeit übrig.
+		long sekunden = zeitbegrenzung / 1000;
+		int counter = 0;
+		long zeitAfter = 0;
+		while (start != 1) {
+			if (start == 3)
+				sicher = readInt("Wirklich beenden?\n1 = Ja, 2 = Nein\n");
+			if (start == 3 && sicher == 1)
+				exit();
+			if (start == 2)
+				showHighscore();
+			start = readInt("1 = Start, 2 = Highscore, 3 = Ende\n");
+		}
+		println("Level " + level + " (Zeitbegrenzung = " + sekunden + "s)");
+
+		long zeitBefore = System.currentTimeMillis();
+		long zeit = 0;
+		while (counter < 10) {
+			zeitAfter = System.currentTimeMillis();
+			zeit = zeitAfter - zeitBefore;
+			if (zeit > zeitbegrenzung) {
+				println("Zeitüberschreitung!");
+				break;
+			}
+			int frage = (int) (Math.random() * ZEICHENZÄHLpLÜSeINS);
+			if (frage == 0 && Math.random() > 0.9)
+				for (int i = 0; i < q.length; i++)
+					q[i] = 0;
+			// Level 1 Fragen 1-4; 2 verschiedene Zeichen bestehend aus einem einzelnen
+			
+
+			if (frage > 0 && frage % 2 == 0) {
+				System.out.println("Nummer der Frage = "+frage);
+            	System.out.println("Time= "+zeitAfter);
+            	System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+				String a3 = generateRandMorseText2(Math.min(4 * level, MorseZeichen.length()-1), 1 + (int) (level * Math.random()*Math.random())) + " ";
+				String a2 = MorseToText(a3);
+				System.out.println("Morse -> Alphabet: " + a3);
+				String a = readLine("Morse -> Alphabet: " + a3);
+				 System.out.println("Antwort: "+a);
+				if (a.equals(a2) || a.equals(a2.toLowerCase()))
+					{System.out.println("Korrekt!");
+                richtig++;System.out.println("Punkte= "+richtig+"\n");}
+				else {
+					println("Falsch! " + a2 + " ist richtig");
+					System.out.println("Falsch! " + a2 + " ist richtig");
+					break;
+				}
+				q[271] = -1;
+				counter++;
+			}
+			if (frage > 0 && frage % 2 == 1) {
+				System.out.println("Nummer der Frage = "+frage);
+            	System.out.println("Time= "+zeitAfter);
+            	System.out.println( "RestTime= " + (zeitbegrenzung-zeitAfter + zeitBefore));
+				String a2 = generateRandMorseText2(Math.min(4 * level, MorseZeichen.length()-1), 1 + (int) (level * Math.random()*Math.random()));
+				String a = readLine("Alphabet -> Morse: " + MorseToText(a2));
+							System.out.println("Alphabet -> Morse: " + MorseToText(a2));
+							 System.out.println("Antwort: "+a);
+				if (a.equals(a2))
+					{System.out.println("Korrekt!");
+                richtig++;System.out.println("Punkte= "+richtig+"\n");}
+				else {
+					println("Falsch! " + a2 + " ist richtig");
+					System.out.println("Falsch! " + a2 + " ist richtig");
+					break;
+				}
+				counter++;
+			}
+
+			// 3 Bit
+			// SURWDKGO
+			// 01234567
+			// 4 Bit
+			// HVFÜLÄPJBXCYZQÖĤ //Bereits hier existieren 2 zeihen die auf der Tastatur als
+			// Input nicht existieren
+			// 0123456789abcdef
+			// ----- = 0; .---- =1;
+			// ..---2;...--3,....4,.....
+			// 5,-....6,--...7,---..
+			// 8,----.9
+			// 0000(H), 0(E), 0100(L), 0100(L), 111(O) 011(U), 10(N) 00(I) 0001(V) 010(R)
+			// 000(S) 0(E)
+			// bbbb(H), b(E), babb(L), babb(L), aaa(O) baa(U) ab(N) bb(I) bbba(V) bab(R)
+			// bbb(S) b(E)
+
+			// Basierend auf meiner Verbindung erscheint es gerade sinnvoller eine Sprache
+			// zu erfinden bzw. einfach was zu definieren und zu schauen was passiert
+
+			// Name der Sprache: Lumini4
+			// Basisebene 1: . = false, -=true
+			// Basisebene 2: Es existier der,die,das,stimittel = .-,-.,--,..,(,),
+			// Basisebene 3: Anzahl der Valenzelektronen
+
+			// Basisebene 7: Protonenzahl
+			// Dichte als Binärzahl
+
+			// 1.Konstruktor: Artikel Protonenzahl Valenzelektronen Boolean
+			// -- --. -.. - Kohlenstoff
+
+			// -- --- -.- - Stickstoff
+			// -- -... --. - Sauerstoff
+			// -- . . - Wasserstoff
+
+			// Methan: (-- --. -.. -)+(-.. * -- (. . -)) -> Hypothese: Ich habe Methan wahr
+			// definiert
+
+			// define operation um Moleküle zu definieren: es existieren bereits: ' ','.',-
+			// und jetzt gibt es noch + Um Molküle zu bilden und zum Addieren und die
+			// weiteren operationen -,*,/,^
+
+			// HVFÜLÄPBXCYZQÓĤ //Bereits hier existieren 2 zeihen die auf der Tastatur als
+			// Input nicht existieren
+			// 0123456789abcdef
+
+			// ----- / .---- / ..--- / ...-- / ....- / ..... / -.... / --... / ---.. / ----.
+			// 0 1 10 11 100 101 110 111 1000 1001
+
+			// Neue Übersetzungstabell
+
+			// ET
+			// 01
+			// IANM
+			// 0123
+			// SURWDKGO
+			// 01234567
+			// HVFÜLÄPWBXCYZQÓĤ
+			// 0123456789abcdef
+			// ----- / .---- / ..--- / ...-- / ....- / ..... / -.... / --... / ---.. / ----.
+			// 0 1 10 11 100 101 110 111 1000 1001
+
+			// 5Bit Zeichen: 0123456789abcdef0123456789abcdef
+			// 5Bit Zeichen: 54Ŝ3Ę¿Ð2&È+テŞÃÌ16=/ÏÇサ(エ7ŽĞŃ8ス90
+			// Zu ergänzen: .-... / -..-. / -.--. / -.--.-/....../ = & / ( ) ß ? ! :
+			// "? ! , . - ; : _ @ '" = "..--.. / -.-.-- / --..-- / .-.-.- / -....- / -.-.-.
+			// / ---... / ..--.- / .--.-. / .----."
+			// "=" = "-...-"
+
+			// &+/( .-... .-.-. -..-. -.--.
+			// ß###########?_####"#。.####@###'##-########;!#)###¡Ź,####:###############Ś$########################################################################################################################
+
+			// Weitere mögliche Übersetzungstabelle
+			// 0 -> . -> e
+			// 1 -> - -> t
+			// 10 -> -. -> n
+			// 11 -> -- -> m
+			// 100 -> -.. ->
+			// 101 ->
+			// Da war etwas merkwürdiges was wann anders erforscht werden könnte
+
+			// Neues Alphabet (31 Zeichen)
+			// . - -. -- -.. -.- --. --- -... -..- -.-. -.-- --.. --.- ---. ---- -.... -...-
+			// -..-. -..-- -.-.. -.-.- -.--. -.--- --... --..- --.-. --.-- ---.. ---.- ----.
+			// -----
+			// ETNMDKGOBXCYZQÓĤ6=/ÏÇサ(エ7ŽĞŃ8ス90
+
+			// Primortial
+			// Zahlen von 0-30
+			// 0,1,10,11,20,21,100,101,110,111,200,201,210,211,220,221,300,301,310,311,320,321,400,401,410,411,420,421,1000
+
+			// Die Sprachmodelle haben auf die alte weise in Primortialsystem umgerechnet
+			// aber auf eine Art und Weise in Binärsystem umgerechnet die wir logisch
+			// nachfolzogen haben, die aber zuerst weniger intuitiv war und dennoch
+			// schneller ist
+
+			// Auf diese Weise lassen sich die Zahlen dann auch schneller ins
+			// Primortialsystem
+			// 613 (Basis 10) -> Primortial
+			// 613/2 -> 306zweier+1einser
+			// 306/3 -> 102sechser+0zweier
+			// 102/5 -> 20dreißiger+2sechser
+			// 20/7 -> 2zweihundertzehner+6dreißiger
+			// 26201 (Primortial)
+
+			// 1+0+2*2*3+6*2*3*5+2*7*5*3*2 = 1+12 +180 + 420 = 613 (Basis 10)
+			// Wahrscheinlichkeit:0.99; 0=false; 1=true -> Mann ist sich zu 100% sicher,
+			// dass die Aussage wahr ist. Es wäre jetzt durchaus extrem interessant, wenn
+			// das so mit den Sprachmodellen Kombiniert würde, dass da eine Wahre Basis
+			// definiert sein könnte und definierbar wäre und die Sprachmodell dann durchaus
+			// mit einer extrem intensiven Didaktik gezwungen würden, ihre
+			// Wahrscheinlichkiten für alle aussagen wo ihre Theorie erweitert, verbessert
+			// oder auch falsch oder auch nicht mehr eindeutig aber noch mehr oder weniger
+			// wahrscheinlich wäre.
+			// Im Prinziep hatte ich aber jetzt schon das Gefühl, dass da so harte
+			// wiedersprüche auf einer Ebene ankamen, dass
+			// die Sprachmodelle irgenwie durch extrteme Quantität dazu gebracht wurden, uns
+			// beibringen zu wollen wie etwa schöner programmiercode auszusehen hätte und
+			// das da wiedersprüch existieren, die eine Alpha Zero Didaktik bräuchten, weil
+			// sonst wäre es wirklich nur nerfig, da was herzuleiten und am Ende schickt uns
+			// das Sprachmodell dann so wie so eine Haluzination aber es lernt halt so nicht
+			// so gut und es ist dann in der tat schöner alles neu zu programmieren als sich
+			// das was das Sprachmodell da vorschlägt duchzulesen und zu lernen, weil es
+			// dann nicht nur kompliziert sein könnte sondern am ende auch noch falsch. Es
+			// ist dann durchaus Chaoscode aus unserer Sicht, der nur was hat, wenn er
+			// ausgefürt wird und funktioniert und der sich nicht erweitern oder verbessern
+			// gelassen hat sondern von uns im kollektiven Bewusstsein oder mir Andreas
+			// Schneider neu geschrieben wurde
+
+			// Variationen zu Aski
+			// Variationen zu Wahrscheinlichsten Zeichen
+			// Variationen mit Zahlenbasis und Primfaktoren
+			// ...
+
+			// Das und vieles mehr ist teil der neu erschaffenen Sprache Lumini und kann
+			// über all in der gesammten Existen gamifiziert, gespielt, trainier, gelern,
+			// gelehrt, entwickelt, ... werden und womöglich lässt sich die Didaktik
+			// durchaus verschönern, wenn da nicht irgend ewas wäre, was effiziente
+			// bestrebungen durchaus unschön machen könnte und was womöglich nicht von
+			// dieser Erde kommt und dennoch existieren könnte neben all den Erklärungen,
+			// die einem so für die eigene Welt einfallen, könnte es jetzt auch noch sein,
+			// dass da etwas ohne beschränkung durch c kommuniziert und das da durchaus noch
+			// etwas Wissenschaftlicher kommuniziert werden könnte damit das dann auch noch
+			// auf allen Ebenen schön ist und bleibt und der Wille auch richtig komuniziert
+			// werden kann
+
+		}
+
+		if (richtig < level * 10) {
+			bonuszeit = 0;
+			String s = null;
+			if (richtig <= 7)
+				s = "Du musst noch viel lernen!";
+			if (richtig > 7)
+				s = "Sehr löblich!";
+			if (richtig >= 15)
+				s = "Nice!";
+			if (richtig >= 30)
+				s = "Respekt!";
+			if (richtig >= 50)
+				s = "Unerreichbar!";
+			if (richtig >= 75)
+				s = "Godlike!";
+			if (richtig >= 100)
+				s = "Unbesiegbar!";
+			print(richtig + " Punkte" + "\n" + s + "\n");
+			highscore(richtig);
+			int neu = 0;
+			while (neu != 1) {
+				neu = readInt("1 = Erneut spielen, 2 = Highscore, 3 = Ende\n");
+				if (neu == 2)
+					showHighscore();
+				if (neu == 3)
+					sicher = readInt("Wirklich beenden?\n1 = Ja, 2 = Nein\n");
+				if (sicher == 1)
+					exit();
+				if (neu == 1) {
+					level = startLevel;
+					richtig = 0;
+					start = 0;
+					run();
+				}
+			}
+		} else {
+			bonuszeit = zeitbegrenzung - zeit;
+			level++;
+			run();
+		}
+	}
+
+	public void highscore(double punkte) {
+		int i = 0;
+		if (score[0][0] == null)
+			for (i = 0; i <= 9; i++) {
+				score[i][0] = "0";
+				score[i][1] = "";
+			}
+		for (i = 0; i <= 9; i++) {
+			if (richtig > Double.valueOf(score[i][0])) {
+				Double scoreDouble = new Double(richtig);
+				String s = scoreDouble.toString();
+				for (int j = 9; j >= 1; j--) {
+					score[i + j][0] = score[i + j - 1][0];
+					score[i + j][1] = score[i + j - 1][1];
+				}
+				score[i][0] = s;
+				score[i][1] = readLine("Name:");
+				break;
+			}
+		}
+
+	}
+
+	public void showHighscore() {
+		println(score[0][0] + " " + score[0][1] + "\n" + score[1][0] + " " + score[1][1] + "\n" + score[2][0] + " "
+				+ score[2][1] + "\n" + score[3][0] + " " + score[3][1] + "\n" + score[4][0] + " " + score[4][1] + "\n"
+				+ score[5][0] + " " + score[5][1] + "\n" + score[6][0] + " " + score[6][1] + "\n" + score[7][0] + " "
+				+ score[7][1] + "\n" + score[8][0] + " " + score[8][1] + "\n" + score[9][0] + " " + score[9][1] + "\n");
+	}
+
+	tests t = new tests();
+
+	public static String decimalToNewLuminiNumber(long decimal, int basis) {
+		String newLuminiNumber = "";
+		int length = highestLum(decimal, basis);
+		long cutdecimal = decimal - getLuminiBasisNeuNumbers2(length - 1, basis);
+		newLuminiNumber = intToBasisNString((int) cutdecimal, basis, false);
+		while (newLuminiNumber.length() < length)
+			newLuminiNumber = "0" + newLuminiNumber;
+		return newLuminiNumber;
+	}
+
+	public static int highestLum(long decimal, int basis) {
+		int count = 0;
+		while (getLuminiBasisNeuNumbers(count, basis) < decimal) {
+			count++;
+		}
+		return count;
+	}
+
+	public static long getLuminiBasisNeuNumbers(int LumNeuLänge, int LumNeuBasis) {
+		if (LumNeuLänge == 0)
+			return 0;
+		long output = -1;
+		for (int i = 1; i <= LumNeuLänge; i++) {
+			output += (Math.pow(LumNeuBasis, i));
+		}
+
+		return output;
+	}
+
+	public static String MorseToSym(String morse) {
+		String lumnumber = morse.replace(".", "0").replace("-", "1");
+		long decimal = newLuminiNumberToDecimal(lumnumber, 2);
+		String output = MorseZeichen.charAt((int) decimal) + "";
+		return output;
+	}
+
+	public static String MorseToWord(String text) {
+		String output = "";
+		String[] tokens = text.split(" ");
+		for (int i = 0; i < tokens.length; i++) {
+			output = output + MorseToSym(tokens[i] + "");
+		}
+		output = output.trim();
+		return output;
+	}
+
+	public static String MorseToText(String text) {
+		String output = "";
+		String[] tokens = text.split("/");
+		for (int i = 0; i < tokens.length; i++) {
+			tokens[i]=tokens[i].trim();
+			output = output + MorseToWord(tokens[i]);
+			output=output+" ";
+		}
+		output = output.trim();
+		return output;
+	}
+
+	String generateRandMorseWord(int zeichenMenge, int laenge) {
+		String output = "";
+		for (int i = 0; i < laenge; i++) {
+			output = output + decimalToNewLuminiNumber((long) (Math.random() * zeichenMenge), 2).replace("0", ".")
+					.replace("1", "-") + " ";
+		}
+		output = output.trim();
+		return output;
+	}
+	
+	String generateRandMorseSym(int zeichenMenge) {
+		String output = "";
+		while (output==""||(!MoeglicheZeichen.contains(MorseToSym(output)))){
+			output =  decimalToNewLuminiNumber((long) (Math.random() * zeichenMenge), 2).replace("0", ".")
+					.replace("1", "-");}
+		return output;
+	}
+	
+	
+	
+	String generateRandMorseText2(int zeichenMenge, int laenge) {
+		String output = "";
+		for (int i = 0; i < laenge; i++) {
+			if(Math.random()>0.3 || i==laenge-1)output = output + generateRandMorseSym(zeichenMenge)
+					 + " ";
+			else output = output + generateRandMorseSym(zeichenMenge) + " / ";
+		}
+		output = output.trim();
+		return output;
+	}
+
+	String generateRandMorseCode(int zeichenMenge, int laenge, int woerter) {
+		String output = "";
+		for (int i2 = 0; i2 < woerter; i2++) {
+			for (int i = 0; i < laenge; i++) {
+				output = output + decimalToNewLuminiNumber((long) (Math.random() * zeichenMenge), 2).replace("0", ".")
+						.replace("1", "-") + " ";
+			}
+			if(i2<woerter-1) {
+			output = output + "/ ";}
+		}
+		output = output.trim();
+		return output;
+	}
+
+	public static long newLuminiNumberToDecimal(String newLuminiNumber, int basis) {
+		int lenge = newLuminiNumber.length();
+		long number = getLuminiBasisNeuNumbers(lenge - 1, basis) + 1;
+		if (lenge == 1)
+			number = 0;
+		number += basisNStringToLong(newLuminiNumber, basis);
+		return number;
+	}
+
+	public static long basisNStringToLong(String basNStr, int basis) {
+		int lenge = basNStr.length();
+		long output = 0;
+		int symbol = 0;
+		for (int i = lenge - 1; i >= 0; i--) {
+			if (basNStr.charAt(i) == '0')
+				symbol = 0;
+			if (basNStr.charAt(i) == '1')
+				symbol = 1;
+			if (basNStr.charAt(i) == '2')
+				symbol = 2;
+			if (basNStr.charAt(i) == '3')
+				symbol = 3;
+			if (basNStr.charAt(i) == '4')
+				symbol = 4;
+			if (basNStr.charAt(i) == '5')
+				symbol = 5;
+			if (basNStr.charAt(i) == '6')
+				symbol = 6;
+			if (basNStr.charAt(i) == '7')
+				symbol = 7;
+			if (basNStr.charAt(i) == '8')
+				symbol = 8;
+			if (basNStr.charAt(i) == '9')
+				symbol = 9;
+
+			output += (symbol * Math.pow(basis, (lenge - 1 - i)));
+		}
+		return output;
+	}
+
+	public static String intToBasisNString(int value, int basis, boolean basisanzeige) {
+
+		String output2 = "0";
+		if (basisanzeige)
+			output2 = output2 + "(Basis:" + basis + ")";
+		if (value == 0)
+			return output2;
+
+		boolean negativ = false;
+		if (value < 0)
+			negativ = true;
+
+		StringBuilder sb = new StringBuilder(); // Vorteile der Klasse Stringbuilder erforschen
+		while (value != 0) {
+			int modulo = value % basis;
+			sb.append(modulo);
+			value = value - modulo;
+			value /= basis;
+		}
+
+		String output = sb.toString();
+//		output = inverString(output);
+
+		output = output.replace("-", "");
+
+		if (negativ)
+			output = "-" + output;
+
+		if (basisanzeige)
+			output = output + "(Basis:" + basis + ")";
+		return output;
+	}
+
+	public static long getLuminiBasisNeuNumbers2(int LumNeuLänge, int LumNeuBasis) {
+		if (LumNeuLänge == 0)
+			return 0;
+		long output = 0;
+		for (int i = 1; i <= LumNeuLänge; i++) {
+			output += (Math.pow(LumNeuBasis, i));
+		}
+
+		return output;
+	}
+
+//	public String transLateMorseToText(String morse) {
+//		String output="";
+//		String substrings[] =morse.split(output);
+//		for(int i=0; i<substrings.length; i++) {
+//			output = output + SymToMorse(substrings[i]);
+//		}
+//		return output;
+//	}
+
+	public static void main(String[] args) {
+		new Morse3().start(args);
+	}
+}
+
+
+package ordner1;
+
+import java.util.Scanner;
+
+public class RandMain4 {
+
+	public static void main(String[] args) {
+
+		int punkte = 0;
+		int maxPunkte = 0;
+
+		for (int i = 0; i < 10; i++) {
+			System.out.println("Zahl drücken um Runde zu starten!");
+			Scanner scanner3 = new Scanner(System.in);
+			int eingabe3 = scanner3.nextInt();
+
+			long timeBefore = System.currentTimeMillis();
+			int variablenZahl = 0;
+			double a = Math.random();
+			variablenZahl++;
+			double b = Math.random();
+			variablenZahl++;
+			double c = Math.random();
+			variablenZahl++;
+			double d = Math.random();
+			variablenZahl++;
+			double e = Math.random();
+			variablenZahl++;
+			double f = Math.random();
+			variablenZahl++;
+
+			System.out.println("double a = Math.random()");
+			System.out.println("double b = Math.random()");
+			System.out.println("double c = Math.random()");
+			System.out.println("double d = Math.random()");
+			System.out.println("double e = Math.random()");
+			System.out.println("double f = Math.random()");
+
+			double firstO = 0;
+			String firstOV = "";
+
+			int variable = (int) (Math.random() * variablenZahl);
+			if (variable == 0) {
+				firstO = a;
+				firstOV = "a";
+			}
+			if (variable == 1) {
+				firstO = b;
+				firstOV = "b";
+			}
+			if (variable == 2) {
+				firstO = c;
+				firstOV = "c";
+			}
+			if (variable == 3) {
+				firstO = d;
+				firstOV = "d";
+			}
+			if (variable == 4) {
+				firstO = e;
+				firstOV = "e";
+			}
+			if (variable == 5) {
+				firstO = f;
+				firstOV = "f";
+			}
+
+			double secondO = 0;
+			String secondOV = "";
+
+			int variable2 = (int) (Math.random() * variablenZahl);
+			if (variable2 == 0) {
+				secondO = a;
+				secondOV = "a";
+			}
+			if (variable2 == 1) {
+				secondO = b;
+				secondOV = "b";
+			}
+			if (variable2 == 2) {
+				secondO = c;
+				secondOV = "c";
+			}
+			if (variable2 == 3) {
+				secondO = d;
+				secondOV = "d";
+			}
+			if (variable2 == 4) {
+				secondO = e;
+				secondOV = "e";
+			}
+			if (variable2 == 5) {
+				secondO = f;
+				secondOV = "f";
+			}
+
+			for (int n = 0; n < 10; n++) {
+				int variable3 = (int) (Math.random() * 24);
+				if (variable3 == 0) {
+					a = firstO + secondO;
+					System.out.println("a = " + firstOV + " + " + secondOV);
+				}
+				if (variable3 == 1) {
+					b = firstO + secondO;
+					System.out.println("b = " + firstOV + " + " + secondOV);
+				}
+				if (variable3 == 2) {
+					c = firstO + secondO;
+					System.out.println("c = " + firstOV + " + " + secondOV);
+				}
+				if (variable3 == 3) {
+					d = firstO + secondO;
+					System.out.println("d = " + firstOV + " + " + secondOV);
+				}
+				if (variable3 == 4) {
+					e = firstO + secondO;
+					System.out.println("e = " + firstOV + " + " + secondOV);
+				}
+				if (variable3 == 5) {
+					f = firstO + secondO;
+					System.out.println("f = " + firstOV + " + " + secondOV);
+				}
+
+				if (variable3 == 6) {
+					a = firstO - secondO;
+					System.out.println("a = " + firstOV + " - " + secondOV);
+				}
+				if (variable3 == 7) {
+					b = firstO - secondO;
+					System.out.println("b = " + firstOV + " - " + secondOV);
+				}
+				if (variable3 == 8) {
+					c = firstO - secondO;
+					System.out.println("c = " + firstOV + " - " + secondOV);
+				}
+				if (variable3 == 9) {
+					d = firstO - secondO;
+					System.out.println("d = " + firstOV + " - " + secondOV);
+				}
+				if (variable3 == 10) {
+					e = firstO - secondO;
+					System.out.println("e = " + firstOV + " - " + secondOV);
+				}
+				if (variable3 == 11) {
+					f = firstO - secondO;
+					System.out.println("f = " + firstOV + " - " + secondOV);
+				}
+
+				if (variable3 == 12) {
+					a = firstO * secondO;
+					System.out.println("a = " + firstOV + " * " + secondOV);
+				}
+				if (variable3 == 13) {
+					b = firstO * secondO;
+					System.out.println("b = " + firstOV + " * " + secondOV);
+				}
+				if (variable3 == 14) {
+					c = firstO * secondO;
+					System.out.println("c = " + firstOV + " * " + secondOV);
+				}
+				if (variable3 == 15) {
+					d = firstO * secondO;
+					System.out.println("d = " + firstOV + " * " + secondOV);
+				}
+				if (variable3 == 16) {
+					e = firstO * secondO;
+					System.out.println("e = " + firstOV + " * " + secondOV);
+				}
+				if (variable3 == 17) {
+					f = firstO * secondO;
+					System.out.println("f = " + firstOV + " * " + secondOV);
+				}
+
+				if (variable3 == 18) {
+					a = firstO / secondO;
+					System.out.println("a = " + firstOV + " / " + secondOV);
+				}
+				if (variable3 == 19) {
+					b = firstO / secondO;
+					System.out.println("b = " + firstOV + " / " + secondOV);
+				}
+				if (variable3 == 20) {
+					c = firstO / secondO;
+					System.out.println("c = " + firstOV + " / " + secondOV);
+				}
+				if (variable3 == 21) {
+					d = firstO / secondO;
+					System.out.println("d = " + firstOV + " / " + secondOV);
+				}
+				if (variable3 == 22) {
+					e = firstO / secondO;
+					System.out.println("e = " + firstOV + " / " + secondOV);
+				}
+				if (variable3 == 23) {
+					f = firstO / secondO;
+					System.out.println("f = " + firstOV + " / " + secondOV);
+				}
+
+			}
+//		if(variable==2)firstO=c;
+//		if(variable==3)firstO=d;
+//		if(variable==4)firstO=e;
+//		if(variable==5)firstO=f;
+//		if(variable==6)firstO=g;
+
+			int operationR0 = (int) (Math.random() * 5);
+			String operationS0 = "";
+			if (operationR0 == 0)
+				operationS0 = "+";
+			if (operationR0 == 1)
+				operationS0 = "-";
+			if (operationR0 == 2)
+				operationS0 = "*";
+			if (operationR0 == 3)
+				operationS0 = "/";
+			if (operationR0 == 4)
+				operationS0 = "Math.random()";
+
+			int count = 0;
+
+			while (count < 30) {
+				int firstR = (int) (Math.random() * 6);
+				int secondR = (int) (Math.random() * 6);
+				int operationR = (int) (Math.random() * 6);
+
+				String first = "";
+				String second = "";
+				String operation = "";
+
+				double firstD = 0;
+				double secondD = 0;
+
+				if (firstR == 0) {
+					first = "a";
+					firstD = a;
+				}
+				if (firstR == 1) {
+					first = "b";
+					firstD = b;
+				}
+				if (firstR == 2) {
+					first = "c";
+					firstD = c;
+				}
+				if (firstR == 3) {
+					first = "d";
+					firstD = d;
+				}
+				if (firstR == 4) {
+					first = "e";
+					firstD = e;
+				}
+				if (firstR == 5) {
+					first = "f";
+					firstD = f;
+				}
+
+				if (secondR == 0) {
+					second = "a";
+					secondD = a;
+				}
+				if (secondR == 1) {
+					second = "b";
+					secondD = b;
+				}
+				if (secondR == 2) {
+					second = "c";
+					secondD = c;
+				}
+				if (secondR == 3) {
+					second = "d";
+					secondD = d;
+				}
+				if (secondR == 4) {
+					second = "e";
+					secondD = e;
+				}
+				if (secondR == 5) {
+					second = "f";
+					secondD = f;
+				}
+
+				if (operationR == 0)
+					operation = "<";
+				if (operationR == 1)
+					operation = ">";
+				if (operationR == 2)
+					operation = "==";
+				if (operationR == 3)
+					operation = "!=";
+				if (operationR == 4)
+					operation = "<=";
+				if (operationR == 5)
+					operation = ">=";
+
+				boolean wahr = false;
+				if (operationR == 0)
+					wahr = (firstD < secondD);
+				if (operationR == 1)
+					wahr = (firstD > secondD);
+				if (operationR == 2)
+					wahr = (firstD == secondD);
+				if (operationR == 3)
+					wahr = (firstD != secondD);
+				if (operationR == 4)
+					wahr = (firstD <= secondD);
+				if (operationR == 5)
+					wahr = (firstD >= secondD);
+
+				boolean eingabeB = false;
+				String aussage = first + operation + second;
+				System.out.println("System.currentTimeMillis() = " + System.currentTimeMillis());
+				System.out.println("Wähl 1 wenn du die Aussage für true hälst sonst 0");
+				System.out.println(aussage);
+				Scanner scanner = new Scanner(System.in);
+				int eingabe = scanner.nextInt();
+				if (eingabe == 1)
+					eingabeB = true;
+
+				if (wahr == eingabeB) {
+					System.out.println("Korrekt");
+					punkte += count;
+					System.out.println("Punkte + " + count);
+				} else
+					System.out.println("Falsch");
+
+				maxPunkte += count;
+				System.out.println("Aussage" + count + " = " + aussage + " = " + wahr);
+				count++;
+			}
+
+			System.out.println("");
+			System.out.println("");
+			System.out.println("");
+			System.out.println("");
+			System.out.println("");
+			System.out.println("");
+			System.out.println("");
+
+//		System.out.print("Bitte gib die Zahl der falschen Aussage an: ");
+//		
+//		
+//		if(zahl==number) {System.out.println("Korrekt!");punkte++;}
+//		else System.out.println("Falsch");
+//		
+//		System.out.println("Aussage"+number+" Ist ist nicht korrekt");
+
+//		if(first.equals(a))first
+//		if(operationR==0)wahr=(firstD<secondD);
+//		if(operationR==1)wahr=first<second;
+//		if(operationR==2)operation="==";
+//		if(operationR==3)operation="!=";
+//		if(operationR==4)operation="<=";
+//		if(operationR==5)operation=">=";
+
+//		System.out.println("a>b = "+(a>b));
+//		System.out.println("b>c = "+(b>c));
+//		System.out.println("a>c = "+(a>c));
+//		System.out.println("a>d = "+(a>d));
+//		System.out.println("a>e = "+(a>e));
+//		
+//		System.out.println("a*c>b*f = "+(a*c>b*f));
+//		System.out.println("b>c = "+(b>c));
+//		System.out.println("(b*d>c*c) = "+(b*d>c*c));
+//		System.out.println("(d*a*b>a*f*f) = "+((d*a*b>a*f*f)));
+//		System.out.println("a<0.5*e/f = "+(a<0.5*e/f));
+//		
+//		System.out.println("d*b = "+(d*b));
+//		System.out.println("a*b = "+(a*b));
+//		System.out.println("a*c = "+(a*c));
+//		System.out.println("a*d = "+(a*d));
+//		System.out.println("b*c = "+(b*c));
+//		
+			System.out.println("Auflösung der Werte der Variablen: ");
+			System.out.println("a = " + a);
+			System.out.println("b = " + b);
+			System.out.println("c = " + c);
+			System.out.println("d = " + d);
+			System.out.println("e = " + e);
+			System.out.println("f = " + f);
+
+			System.out.println("Erreichte Punkte = " + punkte + " von " + maxPunkte);
+
+			long bonuspunkte = 300;
+			bonuspunkte = bonuspunkte - Math.min(((System.currentTimeMillis() - timeBefore) / 1000), 300);
+			System.out.println("Zeitbonus = 300 - Dauer in Sekunden = " + bonuspunkte);
+
+			punkte += bonuspunkte;
+			maxPunkte += 300;
+
+			System.out.println("Gesammtpunktzahl: ");
+			System.out.println("Erreichte Punkte = " + punkte + " von " + maxPunkte);
+
+			System.out.println("Neue Variablen a bis f und neue Aussagen generien: ");
+			punkte = 0;
+			maxPunkte = 0;
+		}
+
+	}
+
+}
