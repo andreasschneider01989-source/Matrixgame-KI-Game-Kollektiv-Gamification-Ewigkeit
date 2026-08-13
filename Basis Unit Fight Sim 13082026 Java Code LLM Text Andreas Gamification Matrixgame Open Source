@@ -1,0 +1,3457 @@
+Version1 mit Fehlermeldung in Eclipse Konsole:
+package ordner1;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.BasicStroke; // Wird für die dicke Rand-Markierung benötigt
+
+//Basis Unit Fight Sim To Chess Vision 16v16 Konsolnausgabe in Eclipse für LLMs Kopierbar und analysierbar für KI-Games Matrixgame AlphaZero Didaktik und Entscheidungsalgorithmen für Zielerreichungen geplant und sehr sinnvoll 16.07.2026,14:15UhrAndreasSchneider zuHause
+public class MainGame extends JPanel {
+
+    // --- Instanzvariablen (NICHT static) ---
+    private int FRAME_WIDTH = 1920;
+    private int FRAME_HEIGHT = 1080;
+    private double zoomFactor = 0.0001;
+    private double zoomCenterX = 0;
+    private double zoomCenterY = 0;
+    private static final double ZOOM_STEP = 1.2;
+    private double feinheit = 70;
+    private int pause = 30;
+    private double PAN_STEP = 0.0001;
+
+    // Wichtig: unitList als Instanzvariable
+    private List<Unit> unitList = new ArrayList<>();
+
+    // --- NEU: Temporäre Liste für neu erschaffene Einheiten und Gebäude ---
+    private List<Unit> unitsToAdd = new ArrayList<>();
+
+    // --- Konstruktor ---
+    public MainGame() {
+        initializeSettings();
+        initializeUnits();
+        setupPanel();
+    }
+
+    private void initializeSettings() {
+        PAN_STEP = feinheit / zoomFactor;
+    }
+
+    // Variablen für das zeitgesteuerte Logging (oben in der Klasse deklarieren)
+    private long lastConsolePrintTime = 0;
+
+    private void initializeUnits() {
+        int counterId = 0;
+        // Units hier hinzufügen - nicht in main!
+        // public Unit(size, red, green, blue, posX, double posY, double posZ,double vx,
+        // double vy, double vz)
+
+//        Unit test=new Unit();
+//        test.team=1;
+//        test.posX=0;
+//        test.posY=0;
+//        test.posZ-=0;
+//        test.blue=254;
+//        test.red=254;
+//        test.green=254;
+//        test.speed=200000;
+//        test.id=counterId;
+//        unitList.add(test);
+//        counterId++;
+        
+        double loopSizeN = 100 + Math.random()/Math.random()-Math.random()/Math.random();
+        for (int i = 0; i < loopSizeN; i++) {
+            Unit Unit1 = new Unit();
+            Unit1.team = 0;
+            Unit1.posX = 100000* Math.random()/Math.random()- 100000*Math.random()/Math.random();
+            Unit1.posY =100000* Math.random()/Math.random()- 100000*Math.random()/Math.random();
+            Unit1.posZ = 100000* Math.random()/Math.random()- 100000*Math.random()/Math.random();
+            Unit1.blue = 256*Math.random();
+            Unit1.red = 256*Math.random();
+            Unit1.green = 256*Math.random();
+            Unit1.team = (int) ((Unit1.red+Unit1.green+Unit1.blue)*Math.random()/Math.random()/100);
+            Unit1.id = counterId;
+            unitList.add(Unit1);
+            Unit1.printWerte(Unit1.id, 0);
+            counterId++;}
+
+//        double loopSizeI = 1000 + Math.random()/Math.random()-Math.random()/Math.random();
+//        for (int i = 0; i < loopSizeI; i++) {
+//            Unit Unit1 = new Unit();
+//            Unit1.team = 1;
+//            Unit1.posX = 100000*Math.random() + Math.random()/Math.random()- Math.random()/Math.random();
+//            Unit1.posY = 100000*Math.random() + Math.random()/Math.random()- Math.random()/Math.random();
+//            Unit1.posZ -= 10000*Math.random()-10000*Math.random() + Math.random()/Math.random()- Math.random()/Math.random();
+//            Unit1.blue = 254;
+//            Unit1.red = 254;
+//            Unit1.green = 254;
+//            Unit1.id = counterId;
+//            unitList.add(Unit1);
+//            Unit1.printWerte(Unit1.id, 0);
+//            counterId++;
+
+//            Unit Reihe2 = new Unit();
+//            Reihe2.team = 1;
+//            Reihe2.posX = 80000 * Math.random()/Math.random();
+//            Reihe2.posY = 10000 * Math.random()/Math.random();
+//            Reihe2.posZ -= 0;
+//            Reihe2.blue = 254;
+//            Reihe2.red = 254;
+//            Reihe2.green = 254;
+//            Reihe2.id = counterId;
+//            unitList.add(Reihe2);
+//            counterId++;
+//        }
+
+//            Unit Unit2=new Unit();
+//            Unit2.team=2;
+//            Unit2.red=0;
+//            Unit2.green=0;
+//            Unit2.blue=255*Math.random();
+//            Unit2.posX+=500000*Math.random();
+//            Unit2.posY+=500000*Math.random();
+//            Unit2.posZ+=500000*Math.random();
+//            Unit2.red=0;
+//        double loopSizej = 1000 + Math.random()/Math.random()-Math.random()/Math.random();
+//        for (int j = 0; j < loopSizej; j++) {
+//            Unit Unit3 = new Unit();
+//            Unit3.team = 2;
+//            Unit3.red = 50;
+//            Unit3.green = 50;
+//            Unit3.blue = 50;
+//            Unit3.posX = -100000*Math.random() + Math.random()/Math.random()- Math.random()/Math.random();
+//            Unit3.posY = 100000*Math.random() + Math.random()/Math.random()- Math.random()/Math.random();
+//            Unit3.posZ = 10000*Math.random()-10000*Math.random() + Math.random()/Math.random()- Math.random()/Math.random();;
+//            Unit3.id = counterId;
+//            unitList.add(Unit3);
+//            Unit3.printWerte(Unit3.id, 0);
+//            counterId++;
+
+//            Unit Row7 = new Unit();
+//            Row7.team = 2;
+//            Row7.red = 50;
+//            Row7.green = 50;
+//            Row7.blue = 50;
+//            Row7.posX = 80000 * Math.random()/Math.random();
+//            Row7.posY = 70000*Math.random()/Math.random();
+//            Row7.posZ += 0;
+//            Row7.id = counterId;
+//            unitList.add(Row7);
+//            counterId++;
+
+//        }
+    }
+
+//        unitList.add(new Unit(22, 285, 33, 232, 55, 99, 151, -21, 4, 1));
+//        unitList.add(new Unit(20, 55, 143, 22, 55, 7659, 1231));
+//        unitList.add(new Unit(23, 145, 113, 232, 595, 99, 151));}
+
+    private void setupPanel() {
+        setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+        setBackground(Color.BLACK);
+
+        // --- MOUSELISTENER FÜR SELEKTION UND BEFEHLE ---
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // 1. Linksklick: Einheiten selektieren
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    int mouseX = e.getX();
+                    int mouseY = e.getY();
+                    boolean unitFound = false;
+
+                    for (Unit u : unitList) {
+                        double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0;
+                        double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0;
+                        double radius = Math.abs(u.size);
+
+                        if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) {
+                            u.isSelected = true;
+                            unitFound = true;
+                        } else if (!e.isShiftDown()) {
+                            u.isSelected = false;
+                        }
+                    }
+
+                    if (!unitFound && !e.isShiftDown()) {
+                        for (Unit u : unitList) {
+                            u.isSelected = false;
+                        }
+                    }
+                    repaint();
+                }
+                // 2. Rechtsklick: Befehle an ausgewählte Einheiten verteilen
+                // 2. Rechtsklick: Befehle an ausgewählte Einheiten verteilen
+                else if (SwingUtilities.isRightMouseButton(e)) {
+                    int mouseX = e.getX();
+                    int mouseY = e.getY();
+                    double worldTargetX = (mouseX - getWidth() / 2.0) / zoomFactor - zoomCenterX;
+                    double worldTargetY = (mouseY - getHeight() / 2.0) / zoomFactor - zoomCenterY;
+
+                    Unit clickedEnemy = null;
+                    for (Unit u : unitList) {
+                        double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0;
+                        double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0;
+                        double radius = Math.abs(u.size);
+                        if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) {
+                            clickedEnemy = u;
+                            break;
+                        }
+                    }
+
+                    for (Unit u : unitList) {
+                        if (u.isSelected) {
+
+//                            // --- NEU: Logik für den Gebäude-Bau ---
+//                            if (u.decisionAlgorithm.equals("BUILDING_MODE")) {
+//                                // Einheit "baut" ein Gebäude an der berechneten Weltkoordinate
+//                                Building newBuilding = new Building(worldTargetX, worldTargetY, u.team);
+//                                newBuilding.id = unitList.size() + unitsToAdd.size() + 1000; // Eindeutige ID
+//                                unitsToAdd.add(newBuilding);
+//
+//                                // Nach dem Bauauftrag kehrt die Einheit in einen Ruhezustand zurück
+//                                u.decisionAlgorithm = "STAND_STILL";
+//                                System.out.println("Gebäude für Team " + u.team + " gebaut bei X:" + worldTargetX
+//                                        + " Y:" + worldTargetY);
+//                                continue; // Springe direkt zur nächsten Einheit, um Angriffslogik zu überspringen
+//                            }
+
+                            if (clickedEnemy != null) {
+                                // Angriffsbefehl auf spezifischen Gegner
+                                u.manualTarget = clickedEnemy;
+                                u.targetPosX = null;
+                                u.targetPosY = null;
+                                u.decisionAlgorithm = "NEAREST_ENEMY";
+                            } else {
+                                // Bewegungs-Befehl ins Leere
+                                u.targetPosX = worldTargetX;
+                                u.targetPosY = worldTargetY;
+                                u.manualTarget = null;
+                                u.decisionAlgorithm = "TARGET_POINT";
+                            }
+                        }
+                    }
+                    repaint();
+                }
+            }
+        });
+    }
+
+    // --- Game Loop als Instanzmethode ---
+    public void startGameLoop() {
+        Thread gameThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(pause);
+                    GameLoop();
+                    repaint(); // Kann jetzt aufgerufen werden, da Instanzmethode
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        });
+        gameThread.setDaemon(true); // Wird beendet wenn Fenster geschlossen
+        gameThread.start();
+    }
+
+    public Unit nextGegner(Unit current) {
+        Unit gegner = null;
+        double min = 999999999;
+        for (Unit unit : unitList) {
+            if (current.getDistance(unit) < min && current.team != unit.team) {
+                min = current.getDistance(unit);
+                gegner = unit;
+            }
+        }
+        return gegner;
+
+    }
+
+    int zeitSchritt = 0;
+
+    private void GameLoop() {
+//        if (ende)
+//            return;
+        zeitSchritt++;
+        
+        double counterId=0;
+        double loopSizeN=0;
+        if(unitList.size()*Math.random()<1000*Math.random())  loopSizeN= Math.random()/Math.random();
+        for (int i = 0; i < loopSizeN; i++) {
+            Unit Unit1 = new Unit();
+            Unit1.team = 0;
+            Unit1.posX = 100000* Math.random()/Math.random()- 100000*Math.random()/Math.random();
+            Unit1.posY =100000* Math.random()/Math.random()- 100000*Math.random()/Math.random();
+            Unit1.posZ = 100000* Math.random()/Math.random()- 100000*Math.random()/Math.random();
+            Unit1.blue = 256*Math.random();
+            Unit1.red = 256*Math.random();
+            Unit1.green = 256*Math.random();
+            Unit1.team = (int) ((Unit1.red+Unit1.green+Unit1.blue)*Math.random()/Math.random()/100);
+            Unit1.id = counterId;
+            unitList.add(Unit1);
+            Unit1.printWerte(Unit1.id, 0);
+            counterId++;     zeitSchritt++;}
+
+        int survive1 = 100;
+        int survive2 = 100;
+        
+        int team1Kills=0;
+        int team2Kills=0;
+        int team1Points=0;
+        int team2Ponts=0;
+        
+
+        for (int i = 0; i < unitList.size(); i++) {
+            zeitSchritt++;
+            int rand=(int)(Math.random()*unitList.size());
+            Unit unit = unitList.get(rand);
+
+            // Statistik-Zählung für Teams am Leben erhalten
+            if(unit.leben<=0)return;
+//            if (unit.team == 1)
+//                survive1++;
+//            if (unit.team == 2)
+//                survive2++;
+            unit.leben=Math.min(unit.maxLeben, unit.leben+Math.random());
+            if(unit.points3<0&&unit.points4<0) {unit.leben-=Math.random();unit.team=(int) (unit.team+Math.random()/Math.random()-Math.random()/Math.random());}
+            unit.points3-=Math.random();
+            unit.points4-=Math.random();
+            // Konsolenausgabe alle 10 Schritte
+            if (zeitSchritt % 100 == 0) {
+//                unit.printWerte(i, zeitSchritt);
+            }
+            // In deiner Schleife / deinem Loop aufrufen:
+            long now = System.currentTimeMillis();
+//            long CONSOLE_PRINT_INTERVAL_MS = 10000;
+//            if (now - lastConsolePrintTime >= CONSOLE_PRINT_INTERVAL_MS) {
+//                // Hier kommt gleich nur deine Konsolenausgabe rein
+//                System.out.println(System.currentTimeMillis());
+//                for (int j = 0; j < unitList.size(); j++) {
+//                    unitList.get(j).printWerte(j, zeitSchritt);
+//                }
+//                lastConsolePrintTime = now;
+//            }
+
+            // Priorität 1: Manueller Angriffsbefehl auf ein bestimmtes Ziel
+            if (unit.manualTarget != null && unit.manualTarget.leben > 0) {
+                Unit gegner = unit.manualTarget;
+                if (unit.getDistance(gegner) <= unit.distance) {
+                    gegner.leben -= unit.damage;
+                    System.out.println("Unit " + unit.id + " attackiert manuelles Ziel " + gegner.id + " | Restleben: "
+                            + gegner.leben);
+                    if (gegner.leben <= 0) {
+                        unitList.remove(gegner);
+                        unit.kills++;
+                        unit.points3+=gegner.points1;
+                        unit.points4+=gegner.points2;
+                        if(gegner.team==1)survive1--;
+                        if(gegner.team==2)survive2--;
+                        if(unit.team==1) {team1Points+=gegner.points2; team2Ponts-=gegner.points2;}
+                        if(unit.team==2) {team2Ponts+=gegner.points1;team1Points-=gegner.points2; }
+                        System.out.println("Unit " + gegner.id +"Team = "+gegner.team+" wurde vernichtet durch Unit "+unit.id+" Team = "+unit.team);
+                        System.out.println("unit.printWerte(rand, zeitSchritt);");
+                        
+                        unit.printWerte(rand, zeitSchritt);
+                        System.out.println("gegner.printWerte(gegner.id, zeitSchritt);");
+                        gegner.printWerte(gegner.id, zeitSchritt);
+//                        System.out.println("Team1 Punkte =  " + team1Points);
+//                        System.out.println("Team2 Punkte =  " + team2Ponts);
+//                        System.out.println("Lebende Units aus Team 1 = " + survive1);
+//                        System.out.println("Lebende Units aus Team 2 = " + survive2);
+                        unit.manualTarget = null;
+                    }
+                } else {
+                    unit.moveTo(gegner);
+                    unit.move(1);
+                }
+                continue;
+            }
+
+            // Priorität 2: Ausführung basierend auf dem aktiven Entscheidungs-Algorithmus
+            switch (unit.decisionAlgorithm) {
+
+            // --- NEU: Produktions-Algorithmus für Gebäude ---
+//            case "PRODUCE_UNITS":
+//                if (unit instanceof Building) {
+//                    Building b = (Building) unit;
+//                    b.spawnCooldown++; // Timer hochzählen
+//
+//                    if (b.spawnCooldown >= b.SPAWN_RATE) {
+//                        Unit spawned = b.spawnUnit();
+//                        spawned.id = unitList.size() + unitsToAdd.size() + 2000;
+//                        unitsToAdd.add(spawned); // Sicher der Zwischenliste hinzufügen
+//                        b.spawnCooldown = 0; // Timer reset für den Zyklus
+//                        System.out.println(
+//                                "Gebäude (ID: " + b.id + ") hat eine neue Einheit (Team " + b.team + ") produziert!");
+//                    }
+//                }
+//                break;
+
+            case "TARGET_POINT":
+                // Bewege zu den manuellen Zielkoordinaten
+                if (unit.targetPosX != null && unit.targetPosY != null) {
+                    double tZ = (unit.targetPosZ != null) ? unit.targetPosZ : 0.0;
+
+                    double distQ = Math.pow(unit.posX - unit.targetPosX, 2) + Math.pow(unit.posY - unit.targetPosY, 2);
+                    if (distQ <= 1.0) {
+                        unit.targetPosX = null;
+                        unit.targetPosY = null;
+                        unit.vx = 0;
+                        unit.vy = 0;
+                        unit.decisionAlgorithm = "STAND_STILL";
+                    } else {
+                        unit.moveTo(unit.targetPosX, unit.targetPosY, tZ, unit.speed);
+                        unit.move(1);
+                    }
+                } else {
+                    unit.decisionAlgorithm = "NEAREST_ENEMY";
+                }
+                break;
+
+            case "STAND_STILL":
+                unit.vx = 0;
+                unit.vy = 0;
+                unit.vz = 0;
+                break;
+
+            case "NEAREST_ENEMY":
+            default:
+                // Suche nächsten Gegner und bekämpfe ihn
+                Unit gegner = nextGegner(unit);
+                if (gegner != null) {
+                    if (unit.getDistance(gegner) <= unit.distance) {
+                        gegner.leben -= unit.damage;
+                        if (gegner.leben <= 0) {
+                            unit.kills++;
+                            System.out.println("Unit " + gegner.id +"Team = "+gegner.team+" wurde vernichtet durch Unit "+unit.id+" Team = "+unit.team);
+                            System.out.println("unit.printWerte(rand, zeitSchritt);");
+                            
+                            unit.printWerte(rand, zeitSchritt);
+                            System.out.println("gegner.printWerte(gegner.id, zeitSchritt);");
+                            gegner.printWerte(gegner.id, zeitSchritt);
+                            
+                            
+                            if(unit.team==1) {team1Points+=gegner.points2; team2Ponts-=gegner.points2;}
+                            if(unit.team==2) {team2Ponts+=gegner.points1;team1Points-=gegner.points2; }
+                            
+                            
+//                            System.out.println("Team1 Punkte =  " + team1Points);
+//                            System.out.println("Team2 Punkte =  " + team2Ponts);
+                            
+                            unitList.remove(gegner);
+                        }
+                    } else {
+                        unit.moveTo(gegner);
+                        unit.move(1); // Physik-Vektoren ausführen
+                    }
+                }
+                break;
+            }
+        }
+
+        // --- NEU: Führe am Ende des Zeitschritts alle neu gebauten Einheiten & Gebäude
+        // ein ---
+        if (!unitsToAdd.isEmpty()) {
+            unitList.addAll(unitsToAdd);
+            unitsToAdd.clear(); // Liste leeren für den nächsten Takt
+        }
+
+        // Win/Loss Conditions
+        if (ende == false) {
+            if (survive1 <= 0 && survive2 > 0) {
+                System.out.println("Team 2 hat gewonnen!");
+                ende = true;
+            }
+            if (survive2 <= 0 && survive1 > 0) {
+                System.out.println("Team 1 hat gewonnen!");
+                ende = true;
+            }
+            if (survive1 <= 0 && survive2 <= 0) {
+                System.out.println("Alle Tod");
+                ende = true;
+            }
+        }
+
+        // Win/Loss Conditions
+        if (ende == false) {
+//            System.out.println("Lebende Units aus Team 1 = " + survive1);
+//            System.out.println("Lebende Units aus Team 2 = " + survive2);
+            if (survive1 <= 0 && survive2 > 0) {
+                System.out.println("Team 2 hat gewonnen!");
+                ende = true;
+            }
+            if (survive2 <= 0 && survive1 > 0) {
+                System.out.println("Team 1 hat gewonnen!");
+                ende = true;
+            }
+            if (survive1 <= 0 && survive2 <= 0) {
+                System.out.println("Alle Tod");
+                ende = true;
+            }
+        }
+    }
+
+    private void processUnitClickSelection(double worldMouseX, double worldMouseY) {
+        boolean clickedAny = false;
+        for (Unit u : unitList) {
+            // Berechne Abstand vom Klick zur Einheit (unter Berücksichtigung eines
+            // Klick-Radius)
+            double distance = Math.hypot(u.posX - worldMouseX, u.posY - worldMouseY);
+            double hitRadius = 25.0; // Toleranzradius für den Klick
+
+            if (distance <= hitRadius) {
+                u.isSelected = !u.isSelected; // Status umschalten (oder direkt auf true setzen)
+                clickedAny = true;
+
+                if (u.isSelected) {
+                    System.out.println("[SPIELER-AKTION] Spieler hat Einheit ausgewählt -> " + "ID: " + u.id
+                            + " | Team: " + u.team + " | Position: (" + String.format("%.1f", u.posX) + ", "
+                            + String.format("%.1f", u.posY) + ")");
+                } else {
+                    System.out.println("[SPIELER-AKTION] Spieler hat Auswahl aufgehoben für Einheit ID: " + u.id);
+                }
+            }
+        }
+        if (!clickedAny) {
+            System.out.println("[SPIELER-AKTION] Klick ins Leere – Auswahl auf dem Feld angepasst.");
+        }
+    }
+
+    private void triggerActionOnSelectedUnits(String algorithmState) {
+        int updatedCount = 0;
+        for (Unit u : unitList) {
+            if (u.isSelected) {
+                u.decisionAlgorithm = algorithmState;
+                updatedCount++;
+            }
+        }
+        System.out.println(
+                "Aktion ausgeführt: Zustand '" + algorithmState + "' auf " + updatedCount + " Einheit(en) angewendet.");
+    }
+
+    boolean ende = false;
+
+    // --- Pan-Methoden ---
+    public void panLeft() {
+        zoomCenterX += PAN_STEP;
+        repaint();
+    }
+
+    public void panRight() {
+        zoomCenterX -= PAN_STEP;
+        repaint();
+    }
+
+    public void panUp() {
+        zoomCenterY += PAN_STEP;
+        repaint();
+    }
+
+    public void panDown() {
+        zoomCenterY -= PAN_STEP;
+        repaint();
+    }
+
+    // --- Zoom-Methoden ---
+    public void zoomIn() {
+        zoomFactor *= ZOOM_STEP;
+        updatePanStep();
+        repaint();
+    }
+
+    public void zoomOut() {
+        zoomFactor /= ZOOM_STEP;
+        updatePanStep();
+        repaint();
+    }
+
+    private void updatePanStep() {
+        PAN_STEP = feinheit / zoomFactor;
+    }
+
+    private static JPanel createActionControlPanel(MainGame simPanel) {
+        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 6));
+        actionPanel.setBackground(new Color(45, 45, 45));
+
+        JButton btnHeal = new JButton("Heilen");
+        JButton btnBuild = new JButton("Gebäude Bauen"); // Text verdeutlicht
+        JButton btnProduce = new JButton("Einheit Produzieren"); // --- NEUER BUTTON ---
+        JButton btnSpell = new JButton("Zaubern");
+        JButton btnAttack = new JButton("Angriff");
+
+        // Event-Verknüpfungen (Lambda-Expressions für saubere Übergaben)
+        btnHeal.addActionListener(e -> simPanel.triggerActionOnSelectedUnits("HEALING_MODE"));
+        btnBuild.addActionListener(e -> simPanel.triggerActionOnSelectedUnits("BUILDING_MODE"));
+        btnProduce.addActionListener(e -> simPanel.triggerActionOnSelectedUnits("PRODUCE_UNITS"));
+        btnSpell.addActionListener(e -> simPanel.triggerActionOnSelectedUnits("CASTING_SPELL"));
+        btnAttack.addActionListener(e -> simPanel.triggerActionOnSelectedUnits("FOCUSED_ATTACK"));
+
+        actionPanel.add(btnHeal);
+        actionPanel.add(btnBuild);
+        actionPanel.add(btnProduce); // Im UI anmelden
+        actionPanel.add(btnSpell);
+        actionPanel.add(btnAttack);
+
+        return actionPanel;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+
+        for (KreisObjekt current : unitList) {
+            double radius = Math.abs(current.size);
+            Color color = new Color((int) Math.abs(current.red % 255), (int) Math.abs(current.green % 255),
+                    (int) Math.abs(current.blue % 255));
+
+            double sx = (zoomCenterX + current.posX) * zoomFactor + getWidth() / 2.0;
+            double sy = (zoomCenterY + current.posY) * zoomFactor + getHeight() / 2.0;
+
+            // ... dein bestehender Code in paintComponent ...
+            g2.setColor(color);
+            g2.fillOval((int) (sx - radius), (int) (sy - radius), (int) (radius * 2), (int) (radius * 2));
+
+            // --- NEU: Zeichne den Ring, falls die Einheit ausgewählt ist ---
+            if (current.isSelected) { // Hinweis: Falls 'current' als KreisObjekt deklariert ist, caste es zu
+                                        // (Unit)current
+                g2.setColor(Color.YELLOW); // Matrix-Gelb für klare Sichtbarkeit
+                g2.setStroke(new BasicStroke(3)); // Strichstärke auf 3 Pixel setzen
+
+                // Zeichne einen etwas größeren Ring um die Einheit herum
+                g2.drawOval((int) (sx - radius - 2), (int) (sy - radius - 2), (int) (radius * 2 + 4),
+                        (int) (radius * 2 + 4));
+
+                g2.setStroke(new BasicStroke(1)); // Strichstärke für das nächste Objekt zurücksetzen
+            }
+            // ... Ende deiner for-Schleife ...
+        }
+    }
+
+    // --- MAIN METHODE - Nur Einstiegspunkt ---
+    public static void main(String[] args) {
+        // Best Practice: main nur für Swing-invokeLater und Objekterstellung
+        SwingUtilities.invokeLater(() -> {
+            createAndShowGUI();
+        });
+    }
+
+    private static void createAndShowGUI() {
+        // 1. Hauptpanel erstellen
+        MainGame simPanel = new MainGame();
+
+        // 2. Frame erstellen und konfigurieren
+        JFrame frame = new JFrame("N-Body Sonnensystem-Simulation");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+        frame.add(simPanel, BorderLayout.CENTER);
+
+        // 3. Steuerelemente hinzufügen
+        frame.add(createControlPanel(simPanel), BorderLayout.NORTH);
+
+        // 4. Frame anzeigen
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+        // 5. Game Loop starten
+        simPanel.startGameLoop();
+    }
+
+    private static JPanel createControlPanel(MainGame simPanel) {
+        JPanel mainControlPanel = new JPanel();
+        mainControlPanel.setLayout(new BoxLayout(mainControlPanel, BoxLayout.Y_AXIS));
+
+        // 1. Unteres Panel für Zoom- und Pan-Steuerung
+        JPanel navPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        JButton zoomIn = new JButton("Zoom In");
+        JButton zoomOut = new JButton("Zoom Out");
+        JButton panLeft = new JButton("← Links");
+        JButton panRight = new JButton("Rechts →");
+        JButton panUp = new JButton("↑ Hoch");
+        JButton panDown = new JButton("↓ Runter");
+
+        zoomIn.addActionListener(e -> simPanel.zoomIn());
+        zoomOut.addActionListener(e -> simPanel.zoomOut());
+        panLeft.addActionListener(e -> simPanel.panLeft());
+        panRight.addActionListener(e -> simPanel.panRight());
+        panUp.addActionListener(e -> simPanel.panUp());
+        panDown.addActionListener(e -> simPanel.panDown());
+
+        navPanel.add(zoomIn);
+        navPanel.add(zoomOut);
+        navPanel.add(panLeft);
+        navPanel.add(panRight);
+        navPanel.add(panUp);
+        navPanel.add(panDown);
+
+        // 2. Aktions-Panel für Einheiten-Befehle (Heilen, Bauen, Zaubern, Angriff)
+        JPanel actionPanel = createActionControlPanel(simPanel);
+
+        // Beide Panels in das Haupt-Steuerungselement integrieren
+        mainControlPanel.add(navPanel);
+        mainControlPanel.add(actionPanel);
+
+        return mainControlPanel;
+    }
+}
+
+
+package ordner1;
+
+public class KreisObjekt {
+    double size;
+    double red;
+    double green;
+    double blue;
+    
+    // 3 Angaben zum Aufenthaltsort im Raum
+    double posX;
+    double posY;
+    double posZ;
+    
+    // Geschwindigkeitsvektoren
+    double vx;
+    double vy;
+    double vz;
+    
+    public boolean isSelected = false;
+    
+    public KreisObjekt(double size, double red, double green, double blue, double posX, double posY, double posZ, double vx, double vy, double vz) {
+        this.size = size;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.posX = posX;
+        this.posY = posY;
+        this.posZ = posZ;
+        this.vx = vx;
+        this.vy = vy;
+        this.vz = vz;
+    }
+    
+    public KreisObjekt(double size, double red, double green, double blue, double posX, double posY, double posZ) {
+        this.size = size;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.posX = posX;
+        this.posY = posY;
+        this.posZ = posZ;
+    }
+
+    public KreisObjekt(double posX, double posY) {
+        this.posX = posX;
+        this.posY = posY;
+        this.size = 10.0;
+        this.red = 255;
+        this.green = 0;
+        this.blue = 0;
+        this.posZ = 0;
+    }
+
+    // Default mit interessantem Random (für die Initialisierung des Kindes)
+    public KreisObjekt() {
+        this.posX = 0;
+        this.posY = 0;
+        this.posZ = 0;
+        this.vx = 0;
+        this.vy = 0;
+        this.vz = 0;
+        this.size = 10;
+    }
+
+    // Mathematische Vektor-Addition für den Zeitschritt (Kausalkette)
+    public void move(double dt) {
+        this.posX += this.vx * dt;
+        this.posY += this.vy * dt;
+        this.posZ += this.vz * dt;
+    }
+}
+
+
+package ordner1;
+
+public class Unit extends KreisObjekt {
+    double maxLeben;
+    double leben;
+    double damage;
+    double distance;
+    double speed;
+    int team;
+    int kills;
+    double points1;
+    double points2;
+    double points3;
+    double points4;
+    double konstruktionszeit=System.currentTimeMillis();
+    public Unit target = null;
+    
+    // Neue Variablen für Entscheidungsalgorithmen und Steuerung
+    public String decisionAlgorithm = "NEAREST_ENEMY"; // "TARGET_POINT", "STAND_STILL", "NEAREST_ENEMY"
+    public boolean isSelectable = true;
+    public boolean isInfluencable = true;
+    
+    public double maxCarryCapacity = 50.0; // statt 10.0 – Träger sollen echte Transportarbeit leisten können
+
+    // Zielkoordinaten im 3D-Raum (x, y, z) für manuelle oder algorithmische Bewegung
+    public Double targetPosX = null;
+    public Double targetPosY = null;
+    public Double targetPosZ = null;
+
+    // Spezifisches Ziel für einen manuellen Angriffsbefehl
+    public Unit manualTarget = null;
+    
+    
+    double id;
+    
+
+    public void moveTo(KreisObjekt oponent) {
+        double distQ = (this.posX - oponent.posX) * (this.posX - oponent.posX)
+                + (this.posY - oponent.posY) * (this.posY - oponent.posY)
+                + (this.posZ - oponent.posZ) * (this.posZ - oponent.posZ);
+        double dist = Math.pow(distQ, 0.5);
+        
+        double dx=posX-oponent.posX;
+        double dy=posY-oponent.posY;
+        double dz=posZ-oponent.posZ;
+        
+        double movDist=Math.min(speed, Math.abs(dist-distance));
+        
+        vx=-dx/dist*movDist;
+        vy=-dy/dist*movDist;
+        vz=-dz/dist*movDist;
+
+    }
+    
+    public void moveTo(double posX, double posY, double posZ, double speedManuel) {
+        double distQ = (this.posX - posX) * (this.posX - posX)
+                + (this.posY - posY) * (this.posY - posY)
+                + (this.posZ - posZ) * (this.posZ - posZ);
+        if(distQ<=0.00001) {targetPosX = null; targetPosY=null;}
+        double dist = Math.pow(distQ, 0.5);
+        
+        double dx=this.posX-posX;
+        double dy=this.posY -posY;
+        double dz=this.posZ -posZ;
+        
+        double movDist=Math.min(speedManuel, Math.min(speed, Math.abs(dist-0.0000005)));
+        
+        vx=-dx/dist*movDist;
+        vy=-dy/dist*movDist;
+        vz=-dz/dist*movDist;
+
+    }
+    
+    public double getDistance(Unit oponent) {
+        double distQ = (this.posX - oponent.posX) * (this.posX - oponent.posX)
+                + (this.posY - oponent.posY) * (this.posY - oponent.posY)
+                + (this.posZ - oponent.posZ) * (this.posZ - oponent.posZ);
+        double dist = Math.pow(distQ, 0.5);
+        return dist;
+    }
+
+    public Unit() {
+        super();
+        this.leben = 5*Math.random()/Math.random();
+        this.maxLeben=leben;
+        this.damage = Math.random()/Math.random();
+        this.distance = 50*Math.random()/Math.random();
+        this.speed = 50*Math.random()/Math.random();
+        this.team = (int)(Math.random()*2);
+        this.size=10;
+        this.id=(int)(Math.random()*1000);
+        this.points1=leben/5+damage+speed/50+distance/50;
+        this.points2=leben/5*damage*speed/50*distance/50;
+        this.points3=leben/5+damage+speed/50+distance/50;
+        this.points4=leben/5*damage*speed/50*distance/50;
+//        this.größePerLive(1);
+//        this.größePerKills(1);
+    }
+    
+    public void printWerte(double id2, int zeitSchritt) {
+
+            System.out.println("=== UNIT REPORT [Index: " + id2 + "] ===");
+            System.out.println("System.currentTimeMillis() = " + System.currentTimeMillis());
+            System.out.println("Zeitschritt = " + zeitSchritt);
+            System.out.println("Id = " + id + " | Team = " + team+" | konstruktionsZeit = "+konstruktionszeit);
+            System.out.println("Position -> posX: " + posX + ", posY: " + posY + ", posZ: " + posZ);
+            System.out.println("Algorithmus = " + decisionAlgorithm + " | Selectable: " + isSelectable + " | Influencable: " + isInfluencable);
+            System.out.println("Leben = " + leben + " | MaxLeben" + maxLeben + " | Damage = " + damage + " | Speed = " + speed + " | Reichweite = " + distance);
+            System.out.println("Kills = "+kills+" | points");
+            System.out.println("Punkte1 = "+points1+" | Punkte2 = "+points2+" | Punkte3 = "+points3+" | Punkte4 = "+points4+" | Alter = "+(System.currentTimeMillis()-konstruktionszeit));
+            System.out.println("Rot = "+red+"| grün = "+green+"| blau = "+blue+"| size = "+size);
+            System.out.println("============================================");
+            
+        
+        
+        
+        
+//        if(this.target != null) {
+//        System.out.println("TargetId = "+target.id);
+//        System.out.println("TargetX = "+target.posX);
+//        System.out.println("TargetY = "+target.posY);
+//        System.out.println("TargetZ = "+target.posZ);}
+//        System.out.println("Geschwindigkeit vx = "+vx);
+//        System.out.println("Geschwindigkeit vy = "+vy);
+//        System.out.println("Geschwindigkeit vz = "+vz);
+//        System.out.println("Masse = "+mass);
+//        System.out.println("Farbe = "+color);
+    }
+    
+    public void choseRandColorTeam() {
+        if (Math.random() < 0.3)
+            if (red + green + blue < 300)
+                team = 1;
+            else if (red + green + blue < 500)
+            team = 2;
+            else
+                team = 1;
+        if (Math.random() < 0.5) {
+            if (red > green && green > blue)
+                team=1;
+        if (red < green && green < blue)
+            team=3;}
+        
+        if (Math.random() < 0.3) {
+            if (red > green || green > blue)
+                team=1;
+        if (red < green || green < blue)
+            team=2;}
+    }
+    
+//    public void größePerLive(double div) {
+//        double size=Math.pow(leben/div, 0.3333);
+//        size=Math.min(size, 20);
+//        this.size=size;
+//    }
+//    
+//    public void größePerKills(double div) {
+//        double size=3+Math.pow(kills/div, 0.3333);
+//        size=Math.min(size, 20);
+//        this.size=size;
+//    }
+    
+    
+}
+
+
+
+
+Kampfbericht: 13.08.2026 Kopiert aus Eclipse Konsole:
+Position -> posX: 81137.03522621255, posY: 61498.144867729854, posZ: 5311.808117742408
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 2.693479622622708 | MaxLeben2.693479622622708 | Damage = 0.4404851834498867 | Speed = 83.1326494206637 | Reichweite = 15943.253981032884
+Kills = 53 | points
+Punkte1 = 321.5069137170454 | Punkte2 = 125.80084901853938 | Punkte3 = 321.5069137170454 | Punkte4 = 125.80084901853938 | Alter = 193237.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 262.0] ===
+System.currentTimeMillis() = 1786625479904
+Zeitschritt = 2908028
+Id = 262.0 | Team = 1 | konstruktionsZeit = 1.786625286006E12
+Position -> posX: 66090.95235850348, posY: 59045.47202011039, posZ: 4909.792670264475
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.4288821848923367 | MaxLeben0.8925733654573234 | Damage = 1.779580926514685 | Speed = 19.337453348010786 | Reichweite = 37.18646503179548
+Kills = 0 | points
+Punkte1 = 3.088573967202275 | Punkte2 = 0.0913767752849031 | Punkte3 = 3.088573967202275 | Punkte4 = 0.0913767752849031 | Alter = 193898.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1777.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 172.0] ===
+System.currentTimeMillis() = 1786625480025
+Zeitschritt = 2908870
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 82527.53905294556, posY: 87632.28437455269, posZ: 4587.9150634009275
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 145 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 193902.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1777.0] ===
+System.currentTimeMillis() = 1786625480025
+Zeitschritt = 2908870
+Id = 1777.0 | Team = 2 | konstruktionsZeit = 1.786625286679E12
+Position -> posX: 84914.53634431548, posY: 85715.30380068511, posZ: 4527.844177580438
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -4.954650537036292 | MaxLeben2.212969471797568 | Damage = 2.684855258026217 | Speed = 5.055380232210723 | Reichweite = 33.30058508660087
+Kills = 0 | points
+Punkte1 = 3.8945684587619627 | Punkte2 = 0.08001878953505129 | Punkte3 = 3.8945684587619627 | Punkte4 = 0.08001878953505129 | Alter = 193346.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 183.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 236.0] ===
+System.currentTimeMillis() = 1786625481244
+Zeitschritt = 2918106
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 79419.395777301, posY: 48985.77178764486, posZ: 5113.338995109879
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 33 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 194991.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 183.0] ===
+System.currentTimeMillis() = 1786625481244
+Zeitschritt = 2918106
+Id = 183.0 | Team = 1 | konstruktionsZeit = 1.786625285978E12
+Position -> posX: 77952.95668088603, posY: 45935.105381347326, posZ: 4740.755594622362
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.1442842297420861 | MaxLeben5.063491729185877 | Damage = 0.7829267077952645 | Speed = 9.302966920560426 | Reichweite = 212.25538338799322
+Kills = 0 | points
+Punkte1 = 6.226792059803513 | Punkte2 = 0.6262408463210414 | Punkte3 = 6.226792059803513 | Punkte4 = 0.6262408463210414 | Alter = 195267.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1455.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 171.0] ===
+System.currentTimeMillis() = 1786625481354
+Zeitschritt = 2918787
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 84229.2445685459, posY: 87330.96689821436, posZ: 4630.176242236303
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 146 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 195231.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1455.0] ===
+System.currentTimeMillis() = 1786625481354
+Zeitschritt = 2918787
+Id = 1455.0 | Team = 2 | konstruktionsZeit = 1.786625286658E12
+Position -> posX: 87257.58881896477, posY: 86794.7442447328, posZ: 4705.383965763566
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -2.0126407661565224 | MaxLeben5.154979242677338 | Damage = 2.8912489910561185 | Speed = 4.081579787328549 | Reichweite = 43.38063533539935
+Kills = 0 | points
+Punkte1 = 4.871489142046143 | Punkte2 = 0.21111865037154615 | Punkte3 = 4.871489142046143 | Punkte4 = 0.21111865037154615 | Alter = 194696.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1145.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 171.0] ===
+System.currentTimeMillis() = 1786625482023
+Zeitschritt = 2923577
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 84094.98234950159, posY: 86275.35515401083, posZ: 5271.265670915267
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 147 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 195900.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1145.0] ===
+System.currentTimeMillis() = 1786625482023
+Zeitschritt = 2923577
+Id = 1145.0 | Team = 2 | konstruktionsZeit = 1.78662528626E12
+Position -> posX: 83764.45621357035, posY: 83676.65483951323, posZ: 6849.496785790118
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -4.439255428908556 | MaxLeben2.7283645799253042 | Damage = 0.5004856075629801 | Speed = 6.017992749591622 | Reichweite = 45.53723548128257
+Kills = 0 | points
+Punkte1 = 2.077263088165525 | Punkte2 = 0.02993658827956179 | Punkte3 = 2.077263088165525 | Punkte4 = 0.02993658827956179 | Alter = 195763.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 682.0Team = 1 wurde vernichtet durch Unit 1148.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 239.0] ===
+System.currentTimeMillis() = 1786625482620
+Zeitschritt = 2928063
+Id = 1148.0 | Team = 2 | konstruktionsZeit = 1.78662528626E12
+Position -> posX: 66308.80816039398, posY: 59748.15130572438, posZ: 4960.920545164951
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.993878975853711 | MaxLeben12.993878975853711 | Damage = 0.8098090344655452 | Speed = 10.33426806914607 | Reichweite = 221.5466909923879
+Kills = 1 | points
+Punkte1 = 8.046204010866967 | Punkte2 = 1.9273314699290063 | Punkte3 = 8.046204010866967 | Punkte4 = 1.9273314699290063 | Alter = 196360.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 682.0] ===
+System.currentTimeMillis() = 1786625482620
+Zeitschritt = 2928063
+Id = 682.0 | Team = 1 | konstruktionsZeit = 1.786625286119E12
+Position -> posX: 66137.01419183868, posY: 59758.98141966052, posZ: 4959.65324589854
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.17033675069068377 | MaxLeben5.518379577016709 | Damage = 5.839956915518482 | Speed = 20.31033807186145 | Reichweite = 172.13966726841093
+Kills = 0 | points
+Punkte1 = 10.792632937727271 | Punkte2 = 9.013828928761232 | Punkte3 = 10.792632937727271 | Punkte4 = 9.013828928761232 | Alter = 196501.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 407.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 234.0] ===
+System.currentTimeMillis() = 1786625482683
+Zeitschritt = 2928514
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 79371.16454636457, posY: 48671.9547066798, posZ: 5161.287026786961
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 34 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 196430.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 407.0] ===
+System.currentTimeMillis() = 1786625482684
+Zeitschritt = 2928514
+Id = 407.0 | Team = 1 | konstruktionsZeit = 1.786625286023E12
+Position -> posX: 78870.86804861859, posY: 45329.550465576795, posZ: 5661.648007880002
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.5041978255347037 | MaxLeben4.601764124802654 | Damage = 0.9058830015789628 | Speed = 7.893221596117589 | Reichweite = 38.90298876861727
+Kills = 0 | points
+Punkte1 = 2.7621600338341907 | Punkte2 = 0.10240560194185035 | Punkte3 = 2.7621600338341907 | Punkte4 = 0.10240560194185035 | Alter = 196661.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1172.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 169.0] ===
+System.currentTimeMillis() = 1786625483305
+Zeitschritt = 2933214
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 84835.02828570764, posY: 84910.02832678347, posZ: 5230.049107232144
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 148 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 197182.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1172.0] ===
+System.currentTimeMillis() = 1786625483305
+Zeitschritt = 2933214
+Id = 1172.0 | Team = 2 | konstruktionsZeit = 1.786625286261E12
+Position -> posX: 86296.01091182313, posY: 82214.62973602202, posZ: 5148.680261727841
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -3.7365745711877083 | MaxLeben9.301622847071087 | Damage = 0.33179065713225053 | Speed = 3.135927108007832 | Reichweite = 98.96306380056569
+Kills = 0 | points
+Punkte1 = 4.234095044717939 | Punkte2 = 0.07662173067225785 | Punkte3 = 4.234095044717939 | Punkte4 = 0.07662173067225785 | Alter = 197044.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1561.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 169.0] ===
+System.currentTimeMillis() = 1786625483712
+Zeitschritt = 2936214
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 84627.45444203925, posY: 84447.01727758883, posZ: 5253.46895880485
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 149 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 197589.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1561.0] ===
+System.currentTimeMillis() = 1786625483712
+Zeitschritt = 2936214
+Id = 1561.0 | Team = 2 | konstruktionsZeit = 1.786625286669E12
+Position -> posX: 83375.25675669011, posY: 81653.88422264198, posZ: 5394.750169444313
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -5.10040300705707 | MaxLeben2.06721700177679 | Damage = 0.8055244569433716 | Speed = 6.066837308606014 | Reichweite = 109.24675915808993
+Kills = 0 | points
+Punkte1 = 3.5252397866326484 | Punkte2 = 0.08829288283880303 | Punkte3 = 3.5252397866326484 | Punkte4 = 0.08829288283880303 | Alter = 197043.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 255.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 233.0] ===
+System.currentTimeMillis() = 1786625483744
+Zeitschritt = 2936470
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 79305.51234003766, posY: 48590.37366100119, posZ: 5154.0837036235125
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 35 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 197491.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 255.0] ===
+System.currentTimeMillis() = 1786625483744
+Zeitschritt = 2936470
+Id = 255.0 | Team = 1 | konstruktionsZeit = 1.786625286006E12
+Position -> posX: 77407.41773454417, posY: 46065.433169654585, posZ: 4956.051915649524
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.08604466307363068 | MaxLeben20.019781258087267 | Damage = 0.9955781221495028 | Speed = 10.572316912046963 | Reichweite = 54.71719785537763
+Kills = 0 | points
+Punkte1 = 6.305324669115448 | Punkte2 = 0.9223986968203499 | Punkte3 = 6.305324669115448 | Punkte4 = 0.9223986968203499 | Alter = 197738.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 770.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 232.0] ===
+System.currentTimeMillis() = 1786625484187
+Zeitschritt = 2939785
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 79344.06499419537, posY: 48531.07759682409, posZ: 5152.127267216945
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 36 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 197934.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 770.0] ===
+System.currentTimeMillis() = 1786625484187
+Zeitschritt = 2939785
+Id = 770.0 | Team = 1 | konstruktionsZeit = 1.786625286126E12
+Position -> posX: 81150.36164481005, posY: 45677.0832109938, posZ: 5061.857637893802
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.27294338330059853 | MaxLeben9.104264110785556 | Damage = 0.5120309641551363 | Speed = 11.577736665022925 | Reichweite = 83.66426897931326
+Kills = 0 | points
+Punkte1 = 4.237723899198971 | Punkte2 = 0.36123909696769724 | Punkte3 = 4.237723899198971 | Punkte4 = 0.36123909696769724 | Alter = 198061.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1367.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 168.0] ===
+System.currentTimeMillis() = 1786625485955
+Zeitschritt = 2952871
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 84066.47427692307, posY: 81798.9759333862, posZ: 5025.048048543157
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 150 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 199832.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1367.0] ===
+System.currentTimeMillis() = 1786625485955
+Zeitschritt = 2952871
+Id = 1367.0 | Team = 2 | konstruktionsZeit = 1.786625286273E12
+Position -> posX: 83432.85846689233, posY: 78808.0665115633, posZ: 4767.051226046905
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -3.731268876657481 | MaxLeben3.4363511321763793 | Damage = 1.0091777376826132 | Speed = 8.21695840020742 | Reichweite = 42.11808144591504
+Kills = 0 | points
+Punkte1 = 2.7031487610403384 | Punkte2 = 0.09601406370791957 | Punkte3 = 2.7031487610403384 | Punkte4 = 0.09601406370791957 | Alter = 199682.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 736.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 231.0] ===
+System.currentTimeMillis() = 1786625486492
+Zeitschritt = 2956877
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 78953.32031383216, posY: 47901.45968962983, posZ: 5103.595019545517
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 37 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 200239.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 736.0] ===
+System.currentTimeMillis() = 1786625486492
+Zeitschritt = 2956877
+Id = 736.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 77341.66541935605, posY: 45123.77927462236, posZ: 4911.659561447477
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.5947039071763909 | MaxLeben9.007669340784187 | Damage = 0.35271158081958554 | Speed = 11.523077243805647 | Reichweite = 41.68659297646875
+Kills = 0 | points
+Punkte1 = 3.218438853381911 | Punkte2 = 0.1220919462691607 | Punkte3 = 3.218438853381911 | Punkte4 = 0.1220919462691607 | Alter = 200369.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 523.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 230.0] ===
+System.currentTimeMillis() = 1786625488219
+Zeitschritt = 2968718
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 78390.22789661644, posY: 47686.52397665988, posZ: 5085.445511140581
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 38 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 201966.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 523.0] ===
+System.currentTimeMillis() = 1786625488219
+Zeitschritt = 2968718
+Id = 523.0 | Team = 1 | konstruktionsZeit = 1.786625286053E12
+Position -> posX: 75266.43942046963, posY: 46562.62053655596, posZ: 4975.093034258627
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.3390590771468487 | MaxLeben8.379900820332551 | Damage = 1.5556624128706438 | Speed = 12.084505083775715 | Reichweite = 49.311651553240864
+Kills = 0 | points
+Punkte1 = 4.459565709677486 | Punkte2 = 0.6214735377888154 | Punkte3 = 4.459565709677486 | Punkte4 = 0.6214735377888154 | Alter = 202166.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1357.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 166.0] ===
+System.currentTimeMillis() = 1786625488374
+Zeitschritt = 2969756
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 80998.71971256692, posY: 79169.20770074747, posZ: 4956.648104546705
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 151 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 202251.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1357.0] ===
+System.currentTimeMillis() = 1786625488374
+Zeitschritt = 2969756
+Id = 1357.0 | Team = 2 | konstruktionsZeit = 1.786625286273E12
+Position -> posX: 78670.23236165605, posY: 77173.16077552327, posZ: 4904.73117277869
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -6.018652552355397 | MaxLeben1.148967456478463 | Damage = 2.6378556168496594 | Speed = 9.002300693797034 | Reichweite = 161.01197088554758
+Kills = 0 | points
+Punkte1 = 6.267934539732244 | Punkte2 = 0.3514474663347233 | Punkte3 = 6.267934539732244 | Punkte4 = 0.3514474663347233 | Alter = 202101.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 92.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 229.0] ===
+System.currentTimeMillis() = 1786625489234
+Zeitschritt = 2975877
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 78564.08219562455, posY: 47374.82090758222, posZ: 5131.570414116357
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 39 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 202981.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 92.0] ===
+System.currentTimeMillis() = 1786625489234
+Zeitschritt = 2975877
+Id = 92.0 | Team = 1 | konstruktionsZeit = 1.786625285936E12
+Position -> posX: 80204.95538328643, posY: 44373.92314367142, posZ: 5564.322347587954
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.8503229096139228 | MaxLeben0.4434279146333836 | Damage = 0.3000505747902005 | Speed = 9.598697157341759 | Reichweite = 41.820401190934675
+Kills = 0 | points
+Punkte1 = 1.4171181246824058 | Punkte2 = 0.004272754732310126 | Punkte3 = 1.4171181246824058 | Punkte4 = 0.004272754732310126 | Alter = 203298.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1830.0Team = 2 wurde vernichtet durch Unit 119.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 25.0] ===
+System.currentTimeMillis() = 1786625489597
+Zeitschritt = 2978357
+Id = 119.0 | Team = 1 | konstruktionsZeit = 1.786625285964E12
+Position -> posX: 66950.66910544335, posY: 62183.97475385497, posZ: 4894.067279309537
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 19.400007420269862 | MaxLeben22.713674013391973 | Damage = 18.47303417057002 | Speed = 22.93677015674657 | Reichweite = 38.392795237336685
+Kills = 1 | points
+Punkte1 = 24.24236028113008 | Punkte2 = 29.55953543950839 | Punkte3 = 24.24236028113008 | Punkte4 = 29.55953543950839 | Alter = 203634.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1830.0] ===
+System.currentTimeMillis() = 1786625489598
+Zeitschritt = 2978357
+Id = 1830.0 | Team = 2 | konstruktionsZeit = 1.786625286685E12
+Position -> posX: 66984.67470771357, posY: 62166.42152736618, posZ: 4890.983453729394
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -16.667234076004014 | MaxLeben1.8058000945660062 | Damage = 0.23576481649949813 | Speed = 9.883095870965743 | Reichweite = 29.204127449096585
+Kills = 0 | points
+Punkte1 = 1.3786693018139458 | Punkte2 = 0.00983050655221072 | Punkte3 = 1.3786693018139458 | Punkte4 = 0.00983050655221072 | Alter = 202913.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 463.0Team = 1 wurde vernichtet durch Unit 1148.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 232.0] ===
+System.currentTimeMillis() = 1786625490334
+Zeitschritt = 2983855
+Id = 1148.0 | Team = 2 | konstruktionsZeit = 1.78662528626E12
+Position -> posX: 65270.04142720544, posY: 57797.037430936274, posZ: 5031.618169532022
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.993878975853711 | MaxLeben12.993878975853711 | Damage = 0.8098090344655452 | Speed = 10.33426806914607 | Reichweite = 221.5466909923879
+Kills = 2 | points
+Punkte1 = 8.046204010866967 | Punkte2 = 1.9273314699290063 | Punkte3 = 8.046204010866967 | Punkte4 = 1.9273314699290063 | Alter = 204074.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 463.0] ===
+System.currentTimeMillis() = 1786625490334
+Zeitschritt = 2983855
+Id = 463.0 | Team = 1 | konstruktionsZeit = 1.786625286029E12
+Position -> posX: 65204.48402220574, posY: 57673.90106316155, posZ: 5036.079953535178
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.7091237461145493 | MaxLeben4.265379444878052 | Damage = 0.7995001025041568 | Speed = 13.635162373447386 | Reichweite = 139.5716516185744
+Kills = 0 | points
+Punkte1 = 4.716712271320203 | Punkte2 = 0.5191868861145514 | Punkte3 = 4.716712271320203 | Punkte4 = 0.5191868861145514 | Alter = 204305.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 272.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 227.0] ===
+System.currentTimeMillis() = 1786625490772
+Zeitschritt = 2987006
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 78721.24739505918, posY: 46723.213560378106, posZ: 5178.206693571546
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 40 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 204519.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 272.0] ===
+System.currentTimeMillis() = 1786625490772
+Zeitschritt = 2987006
+Id = 272.0 | Team = 1 | konstruktionsZeit = 1.786625286007E12
+Position -> posX: 79537.01783950921, posY: 43365.34992084429, posZ: 5417.038518074289
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.848893849035719 | MaxLeben1.357515278152179 | Damage = 1.3866062726640314 | Speed = 7.82632386019496 | Reichweite = 3.1004024003638224
+Kills = 0 | points
+Punkte1 = 1.876643853505643 | Punkte2 = 0.0036539597023597116 | Punkte3 = 1.876643853505643 | Punkte4 = 0.0036539597023597116 | Alter = 204765.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1675.0Team = 2 wurde vernichtet durch Unit 125.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 27.0] ===
+System.currentTimeMillis() = 1786625492597
+Zeitschritt = 3000240
+Id = 125.0 | Team = 1 | konstruktionsZeit = 1.786625285965E12
+Position -> posX: 74707.02145690551, posY: 48073.51106528712, posZ: 5031.470957785985
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 199.97757469070973 | MaxLeben199.97757469070973 | Damage = 3.438174302906122 | Speed = 13.00107543372068 | Reichweite = 203.5382829232215
+Kills = 1 | points
+Punkte1 = 47.76447640818691 | Punkte2 = 145.55413865773252 | Punkte3 = 47.76447640818691 | Punkte4 = 145.55413865773252 | Alter = 206632.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1675.0] ===
+System.currentTimeMillis() = 1786625492597
+Zeitschritt = 3000240
+Id = 1675.0 | Team = 2 | konstruktionsZeit = 1.786625286675E12
+Position -> posX: 74886.29248908303, posY: 48168.15353278832, posZ: 5013.235470882066
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -1.8434180707185779 | MaxLeben4.753443806858972 | Damage = 2.6409300855893543 | Speed = 14.536410208234527 | Reichweite = 87.32166160144409
+Kills = 0 | points
+Punkte1 = 5.628780283154721 | Punkte2 = 1.2747775789683011 | Punkte3 = 5.628780283154721 | Punkte4 = 1.2747775789683011 | Alter = 205922.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1651.0Team = 2 wurde vernichtet durch Unit 125.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 27.0] ===
+System.currentTimeMillis() = 1786625492706
+Zeitschritt = 3001063
+Id = 125.0 | Team = 1 | konstruktionsZeit = 1.786625285965E12
+Position -> posX: 74766.02525037869, posY: 48100.31485875077, posZ: 5026.4029267252145
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 199.97757469070973 | MaxLeben199.97757469070973 | Damage = 3.438174302906122 | Speed = 13.00107543372068 | Reichweite = 203.5382829232215
+Kills = 2 | points
+Punkte1 = 47.76447640818691 | Punkte2 = 145.55413865773252 | Punkte3 = 47.76447640818691 | Punkte4 = 145.55413865773252 | Alter = 206741.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1651.0] ===
+System.currentTimeMillis() = 1786625492706
+Zeitschritt = 3001063
+Id = 1651.0 | Team = 2 | konstruktionsZeit = 1.786625286674E12
+Position -> posX: 74935.97053561626, posY: 48181.034800461995, posZ: 5009.822214136269
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -2.7418544087229115 | MaxLeben4.1344941970893325 | Damage = 2.0691943522430867 | Speed = 15.170012314597614 | Reichweite = 72.05678424434983
+Kills = 0 | points
+Punkte1 = 4.640629122839902 | Punkte2 = 0.7481255170303193 | Punkte3 = 4.640629122839902 | Punkte4 = 0.7481255170303193 | Alter = 206032.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1407.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 163.0] ===
+System.currentTimeMillis() = 1786625493203
+Zeitschritt = 3004536
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 75885.25109716837, posY: 74219.6308264458, posZ: 5233.912701399781
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 152 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 207080.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1407.0] ===
+System.currentTimeMillis() = 1786625493203
+Zeitschritt = 3004536
+Id = 1407.0 | Team = 2 | konstruktionsZeit = 1.786625286275E12
+Position -> posX: 73682.06005030446, posY: 72087.05423794582, posZ: 5353.375031834273
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -5.047191616834311 | MaxLeben2.1204283919995492 | Damage = 180.93008682628474 | Speed = 7.787671930297064 | Reichweite = 1.1873748574057672
+Kills = 0 | points
+Punkte1 = 181.5336734404387 | Punkte2 = 0.2838048974898632 | Punkte3 = 181.5336734404387 | Punkte4 = 0.2838048974898632 | Alter = 206928.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1685.0Team = 2 wurde vernichtet durch Unit 125.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 27.0] ===
+System.currentTimeMillis() = 1786625493451
+Zeitschritt = 3006186
+Id = 125.0 | Team = 1 | konstruktionsZeit = 1.786625285965E12
+Position -> posX: 74948.01050324869, posY: 48031.03985778648, posZ: 5016.366367423798
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 199.97757469070973 | MaxLeben199.97757469070973 | Damage = 3.438174302906122 | Speed = 13.00107543372068 | Reichweite = 203.5382829232215
+Kills = 3 | points
+Punkte1 = 47.76447640818691 | Punkte2 = 145.55413865773252 | Punkte3 = 47.76447640818691 | Punkte4 = 145.55413865773252 | Alter = 207486.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1685.0] ===
+System.currentTimeMillis() = 1786625493451
+Zeitschritt = 3006186
+Id = 1685.0 | Team = 2 | konstruktionsZeit = 1.786625286676E12
+Position -> posX: 75102.45929355163, posY: 47997.35294694339, posZ: 5005.720078547527
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -3.3829468970787127 | MaxLeben0.055227405827409315 | Damage = 3.2019742078367557 | Speed = 13.64099261244961 | Reichweite = 10.776706075949663
+Kills = 0 | points
+Punkte1 = 3.7013736627702234 | Punkte2 = 0.0020796702148801 | Punkte3 = 3.7013736627702234 | Punkte4 = 0.0020796702148801 | Alter = 206775.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1111.0Team = 2 wurde vernichtet durch Unit 125.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 27.0] ===
+System.currentTimeMillis() = 1786625493515
+Zeitschritt = 3006720
+Id = 125.0 | Team = 1 | konstruktionsZeit = 1.786625285965E12
+Position -> posX: 74948.01050324869, posY: 48031.03985778648, posZ: 5016.366367423798
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 199.97757469070973 | MaxLeben199.97757469070973 | Damage = 3.438174302906122 | Speed = 13.00107543372068 | Reichweite = 203.5382829232215
+Kills = 4 | points
+Punkte1 = 47.76447640818691 | Punkte2 = 145.55413865773252 | Punkte3 = 47.76447640818691 | Punkte4 = 145.55413865773252 | Alter = 207550.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1111.0] ===
+System.currentTimeMillis() = 1786625493515
+Zeitschritt = 3006720
+Id = 1111.0 | Team = 2 | konstruktionsZeit = 1.786625286258E12
+Position -> posX: 75109.21735538157, posY: 47980.18849326699, posZ: 5005.321460057623
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -1.5111075501295996 | MaxLeben15.022491446052117 | Damage = 0.5397690734001542 | Speed = 13.71514742531601 | Reichweite = 106.81729737387477
+Kills = 0 | points
+Punkte1 = 5.954916258594393 | Punkte2 = 0.9503465790763002 | Punkte3 = 5.954916258594393 | Punkte4 = 0.9503465790763002 | Alter = 207257.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 195.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 226.0] ===
+System.currentTimeMillis() = 1786625493669
+Zeitschritt = 3007784
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 78088.25777721318, posY: 46928.459251816654, posZ: 5152.739998893286
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 41 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 207416.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 195.0] ===
+System.currentTimeMillis() = 1786625493669
+Zeitschritt = 3007784
+Id = 195.0 | Team = 1 | konstruktionsZeit = 1.786625285993E12
+Position -> posX: 75075.00578593076, posY: 48013.775189203385, posZ: 5007.9957399845425
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -1.1509493471680021 | MaxLeben102.03857689576644 | Damage = 0.3849398849205415 | Speed = 12.639852434870582 | Reichweite = 70.59738763914308
+Kills = 0 | points
+Punkte1 = 22.457400065554104 | Punkte2 = 2.803999467131739 | Punkte3 = 22.457400065554104 | Punkte4 = 2.803999467131739 | Alter = 207676.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1336.0Team = 2 wurde vernichtet durch Unit 119.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 25.0] ===
+System.currentTimeMillis() = 1786625493997
+Zeitschritt = 3010156
+Id = 119.0 | Team = 1 | konstruktionsZeit = 1.786625285964E12
+Position -> posX: 66843.67549048687, posY: 59552.75954392974, posZ: 4936.956795715357
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 22.713674013391973 | MaxLeben22.713674013391973 | Damage = 18.47303417057002 | Speed = 22.93677015674657 | Reichweite = 38.392795237336685
+Kills = 2 | points
+Punkte1 = 24.24236028113008 | Punkte2 = 29.55953543950839 | Punkte3 = 24.24236028113008 | Punkte4 = 29.55953543950839 | Alter = 208033.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1336.0] ===
+System.currentTimeMillis() = 1786625493997
+Zeitschritt = 3010156
+Id = 1336.0 | Team = 2 | konstruktionsZeit = 1.78662528627E12
+Position -> posX: 66841.81641765374, posY: 59514.41709518591, posZ: 4937.594916914163
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -14.414826246156943 | MaxLeben4.058207924413077 | Damage = 1.497711142684969 | Speed = 10.83649874644434 | Reichweite = 53.72613098110866
+Kills = 0 | points
+Punkte1 = 3.6006053221186445 | Punkte2 = 0.2830915420163148 | Punkte3 = 3.6006053221186445 | Punkte4 = 0.2830915420163148 | Alter = 207727.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 488.0Team = 1 wurde vernichtet durch Unit 1148.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 228.0] ===
+System.currentTimeMillis() = 1786625495401
+Zeitschritt = 3019951
+Id = 1148.0 | Team = 2 | konstruktionsZeit = 1.78662528626E12
+Position -> posX: 64167.48585871371, posY: 57880.96537434817, posZ: 5038.493983443138
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.993878975853711 | MaxLeben12.993878975853711 | Damage = 0.8098090344655452 | Speed = 10.33426806914607 | Reichweite = 221.5466909923879
+Kills = 3 | points
+Punkte1 = 8.046204010866967 | Punkte2 = 1.9273314699290063 | Punkte3 = 8.046204010866967 | Punkte4 = 1.9273314699290063 | Alter = 209141.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 488.0] ===
+System.currentTimeMillis() = 1786625495401
+Zeitschritt = 3019951
+Id = 488.0 | Team = 1 | konstruktionsZeit = 1.786625286032E12
+Position -> posX: 64095.43757846535, posY: 57886.44978181063, posZ: 5038.943294645002
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.06543434573063855 | MaxLeben4.141011919955109 | Damage = 4.094447737583175 | Speed = 17.574870066804905 | Reichweite = 72.25811575536888
+Kills = 0 | points
+Punkte1 = 6.719309838017672 | Punkte2 = 1.7225449157299122 | Punkte3 = 6.719309838017672 | Punkte4 = 1.7225449157299122 | Alter = 209369.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1429.0Team = 2 wurde vernichtet durch Unit 119.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 25.0] ===
+System.currentTimeMillis() = 1786625495619
+Zeitschritt = 3021446
+Id = 119.0 | Team = 1 | konstruktionsZeit = 1.786625285964E12
+Position -> posX: 67596.7704786196, posY: 58814.418571282404, posZ: 4967.263011787079
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 22.713674013391973 | MaxLeben22.713674013391973 | Damage = 18.47303417057002 | Speed = 22.93677015674657 | Reichweite = 38.392795237336685
+Kills = 3 | points
+Punkte1 = 24.24236028113008 | Punkte2 = 29.55953543950839 | Punkte3 = 24.24236028113008 | Punkte4 = 29.55953543950839 | Alter = 209655.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1429.0] ===
+System.currentTimeMillis() = 1786625495619
+Zeitschritt = 3021446
+Id = 1429.0 | Team = 2 | konstruktionsZeit = 1.786625286276E12
+Position -> posX: 67621.25395024184, posY: 58790.41475963021, posZ: 4968.2482810995325
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -8.42227671174361 | MaxLeben28.52379162939643 | Damage = 0.8895695931413546 | Speed = 14.509746206197313 | Reichweite = 26.072063616148714
+Kills = 0 | points
+Punkte1 = 7.405964115467561 | Punkte2 = 0.7679136635894257 | Punkte3 = 7.405964115467561 | Punkte4 = 0.7679136635894257 | Alter = 209343.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1305.0Team = 2 wurde vernichtet durch Unit 125.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 27.0] ===
+System.currentTimeMillis() = 1786625496559
+Zeitschritt = 3027859
+Id = 125.0 | Team = 1 | konstruktionsZeit = 1.786625285965E12
+Position -> posX: 75870.45252777246, posY: 47838.66987894755, posZ: 5047.474975473022
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 105.50825140403109 | MaxLeben199.97757469070973 | Damage = 3.438174302906122 | Speed = 13.00107543372068 | Reichweite = 203.5382829232215
+Kills = 5 | points
+Punkte1 = 47.76447640818691 | Punkte2 = 145.55413865773252 | Punkte3 = 47.76447640818691 | Punkte4 = 145.55413865773252 | Alter = 210594.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1305.0] ===
+System.currentTimeMillis() = 1786625496559
+Zeitschritt = 3027859
+Id = 1305.0 | Team = 2 | konstruktionsZeit = 1.786625286269E12
+Position -> posX: 76003.9321397317, posY: 47810.83366125219, posZ: 5051.976209388873
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -1.2125778820691826 | MaxLeben19.847959571945776 | Damage = 0.08901640070778467 | Speed = 13.289417826510556 | Reichweite = 136.4255215534706
+Kills = 0 | points
+Punkte1 = 7.052907102696562 | Punkte2 = 0.2562580178262672 | Punkte3 = 7.052907102696562 | Punkte4 = 0.2562580178262672 | Alter = 210290.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1817.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 161.0] ===
+System.currentTimeMillis() = 1786625496591
+Zeitschritt = 3028111
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 80587.98723600332, posY: 70582.45438202615, posZ: 5453.352527421694
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 11.738573919393502 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 153 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 210468.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1817.0] ===
+System.currentTimeMillis() = 1786625496591
+Zeitschritt = 3028111
+Id = 1817.0 | Team = 2 | konstruktionsZeit = 1.786625286685E12
+Position -> posX: 83005.75000804267, posY: 68712.51536290125, posZ: 5566.170560667769
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -5.649365709012283 | MaxLeben1.5182542998215773 | Damage = 3.1862098684283624 | Speed = 8.89028911972092 | Reichweite = 42.7326760340892
+Kills = 0 | points
+Punkte1 = 4.5223200314688805 | Punkte2 = 0.147022857832451 | Punkte3 = 4.5223200314688805 | Punkte4 = 0.147022857832451 | Alter = 209906.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 919.0Team = 1 wurde vernichtet durch Unit 1148.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 227.0] ===
+System.currentTimeMillis() = 1786625497105
+Zeitschritt = 3031081
+Id = 1148.0 | Team = 2 | konstruktionsZeit = 1.78662528626E12
+Position -> posX: 63802.81403538425, posY: 57951.7799706554, posZ: 5018.2753950703
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.993878975853711 | MaxLeben12.993878975853711 | Damage = 0.8098090344655452 | Speed = 10.33426806914607 | Reichweite = 221.5466909923879
+Kills = 4 | points
+Punkte1 = 8.046204010866967 | Punkte2 = 1.9273314699290063 | Punkte3 = 8.046204010866967 | Punkte4 = 1.9273314699290063 | Alter = 210845.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 919.0] ===
+System.currentTimeMillis() = 1786625497105
+Zeitschritt = 3031081
+Id = 919.0 | Team = 1 | konstruktionsZeit = 1.786625286211E12
+Position -> posX: 63607.79821359637, posY: 57989.64954491362, posZ: 5007.463085550681
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.47388737605109443 | MaxLeben1.955539727345541 | Damage = 0.8886571126184181 | Speed = 15.751533805265282 | Reichweite = 22.562943460303206
+Kills = 0 | points
+Punkte1 = 2.046054603398896 | Punkte2 = 0.04940938589771607 | Punkte3 = 2.046054603398896 | Punkte4 = 0.04940938589771607 | Alter = 210894.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 420.0Team = 1 wurde vernichtet durch Unit 1148.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 226.0] ===
+System.currentTimeMillis() = 1786625499002
+Zeitschritt = 3043730
+Id = 1148.0 | Team = 2 | konstruktionsZeit = 1.78662528626E12
+Position -> posX: 63581.054082887174, posY: 57627.69213125771, posZ: 5020.420903183774
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.993878975853711 | MaxLeben12.993878975853711 | Damage = 0.8098090344655452 | Speed = 10.33426806914607 | Reichweite = 221.5466909923879
+Kills = 5 | points
+Punkte1 = 8.046204010866967 | Punkte2 = 1.9273314699290063 | Punkte3 = 8.046204010866967 | Punkte4 = 1.9273314699290063 | Alter = 212742.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 420.0] ===
+System.currentTimeMillis() = 1786625499002
+Zeitschritt = 3043730
+Id = 420.0 | Team = 1 | konstruktionsZeit = 1.786625286025E12
+Position -> posX: 63481.97260985031, posY: 57482.89096152755, posZ: 5021.379507755534
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.1614829041032515 | MaxLeben5.940529264430887 | Damage = 24.04268436451214 | Speed = 14.870544069976697 | Reichweite = 175.45778973047277
+Kills = 0 | points
+Punkte1 = 29.037356893407306 | Punkte2 = 29.81244493423227 | Punkte3 = 29.037356893407306 | Punkte4 = 29.81244493423227 | Alter = 212977.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 483.0Team = 1 wurde vernichtet durch Unit 1148.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 225.0] ===
+System.currentTimeMillis() = 1786625499531
+Zeitschritt = 3047304
+Id = 1148.0 | Team = 2 | konstruktionsZeit = 1.78662528626E12
+Position -> posX: 63549.88112158365, posY: 57600.6488460147, posZ: 5022.80013651269
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.993878975853711 | MaxLeben12.993878975853711 | Damage = 0.8098090344655452 | Speed = 10.33426806914607 | Reichweite = 221.5466909923879
+Kills = 6 | points
+Punkte1 = 8.046204010866967 | Punkte2 = 1.9273314699290063 | Punkte3 = 8.046204010866967 | Punkte4 = 1.9273314699290063 | Alter = 213271.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 483.0] ===
+System.currentTimeMillis() = 1786625499532
+Zeitschritt = 3047304
+Id = 483.0 | Team = 1 | konstruktionsZeit = 1.786625286031E12
+Position -> posX: 63519.08155431122, posY: 57684.60486024541, posZ: 5023.66228700453
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.7354653968770158 | MaxLeben1.6466858608868356 | Damage = 0.6956116448883232 | Speed = 17.950815808060263 | Reichweite = 89.43136459400671
+Kills = 0 | points
+Punkte1 = 3.17259242510703 | Punkte2 = 0.14710981027201264 | Punkte3 = 3.17259242510703 | Punkte4 = 0.14710981027201264 | Alter = 213501.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1494.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 159.0] ===
+System.currentTimeMillis() = 1786625500168
+Zeitschritt = 3051708
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 81246.9890276851, posY: 64723.911013804056, posZ: 5492.308324202945
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.274910696378171 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 154 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 214045.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1494.0] ===
+System.currentTimeMillis() = 1786625500168
+Zeitschritt = 3051708
+Id = 1494.0 | Team = 2 | konstruktionsZeit = 1.786625286667E12
+Position -> posX: 81589.3254709817, posY: 61680.5309731244, posZ: 5512.5449746706945
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -5.279121903291384 | MaxLeben1.888498105542476 | Damage = 0.756945334788783 | Speed = 6.865437515105971 | Reichweite = 39.40467767214849
+Kills = 0 | points
+Punkte1 = 2.060047259642367 | Punkte2 = 0.030937631008697255 | Punkte3 = 2.060047259642367 | Punkte4 = 0.030937631008697255 | Alter = 213501.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1138.0Team = 2 wurde vernichtet durch Unit 828.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 176.0] ===
+System.currentTimeMillis() = 1786625500790
+Zeitschritt = 3055825
+Id = 828.0 | Team = 1 | konstruktionsZeit = 1.786625286152E12
+Position -> posX: 81154.65834889436, posY: 44027.58457125159, posZ: 5583.958016079855
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 1.5965307469575842 | MaxLeben1.5965307469575842 | Damage = 0.23692605220422874 | Speed = 8.76865548814992 | Reichweite = 45.479513151173336
+Kills = 1 | points
+Punkte1 = 1.6411955743822106 | Punkte2 = 0.012067822294066513 | Punkte3 = 1.6411955743822106 | Punkte4 = 0.012067822294066513 | Alter = 214638.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1138.0] ===
+System.currentTimeMillis() = 1786625500790
+Zeitschritt = 3055825
+Id = 1138.0 | Team = 2 | konstruktionsZeit = 1.786625286259E12
+Position -> posX: 81142.97643297167, posY: 44046.0328677049, posZ: 5582.046694081583
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.12417743464699338 | MaxLeben0.3496746697614641 | Damage = 0.2645476906546971 | Speed = 10.872702197475164 | Reichweite = 21.919396739759804
+Kills = 0 | points
+Punkte1 = 0.9903246033516893 | Punkte2 = 0.0017636980123616746 | Punkte3 = 0.9903246033516893 | Punkte4 = 0.0017636980123616746 | Alter = 214531.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1481.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 159.0] ===
+System.currentTimeMillis() = 1786625501148
+Zeitschritt = 3058028
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 81101.00139961056, posY: 63657.53829069933, posZ: 5439.60331124611
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.447197242548377 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 155 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 215025.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1481.0] ===
+System.currentTimeMillis() = 1786625501148
+Zeitschritt = 3058028
+Id = 1481.0 | Team = 2 | konstruktionsZeit = 1.786625286667E12
+Position -> posX: 80684.23412269932, posY: 60613.24431974575, posZ: 5289.140391755472
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -4.474140386211152 | MaxLeben2.693479622622708 | Damage = 0.4404851834498867 | Speed = 83.1326494206637 | Reichweite = 15943.253981032884
+Kills = 53 | points
+Punkte1 = 321.5069137170454 | Punkte2 = 125.80084901853938 | Punkte3 = 321.5069137170454 | Punkte4 = 125.80084901853938 | Alter = 214481.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1330.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 159.0] ===
+System.currentTimeMillis() = 1786625501631
+Zeitschritt = 3061488
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 80376.77731332998, posY: 63033.34614688595, posZ: 5337.276246917511
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 156 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 215508.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1330.0] ===
+System.currentTimeMillis() = 1786625501631
+Zeitschritt = 3061488
+Id = 1330.0 | Team = 2 | konstruktionsZeit = 1.78662528627E12
+Position -> posX: 78064.56873014302, posY: 61040.506555075066, posZ: 5010.5796886077505
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -3.06489142812553 | MaxLeben4.10272858070833 | Damage = 2.1811863740552226 | Speed = 6.444696387956084 | Reichweite = 127.07041820659401
+Kills = 0 | points
+Punkte1 = 5.67203438208789 | Punkte2 = 0.5862764796498616 | Punkte3 = 5.67203438208789 | Punkte4 = 0.5862764796498616 | Alter = 215361.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 125.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 221.0] ===
+System.currentTimeMillis() = 1786625502055
+Zeitschritt = 3064260
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 78088.25777721318, posY: 46928.459251816654, posZ: 5152.739998893286
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 42 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 215802.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 125.0] ===
+System.currentTimeMillis() = 1786625502055
+Zeitschritt = 3064260
+Id = 125.0 | Team = 1 | konstruktionsZeit = 1.786625285965E12
+Position -> posX: 77720.91004714725, posY: 47079.222628286705, posZ: 5135.304352810953
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.7295303955791811 | MaxLeben199.97757469070973 | Damage = 3.438174302906122 | Speed = 13.00107543372068 | Reichweite = 203.5382829232215
+Kills = 5 | points
+Punkte1 = 47.76447640818691 | Punkte2 = 145.55413865773252 | Punkte3 = 47.76447640818691 | Punkte4 = 145.55413865773252 | Alter = 216090.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 366.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 220.0] ===
+System.currentTimeMillis() = 1786625502165
+Zeitschritt = 3065076
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 78088.25777721318, posY: 46928.459251816654, posZ: 5152.739998893286
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 43 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 215912.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 366.0] ===
+System.currentTimeMillis() = 1786625502165
+Zeitschritt = 3065076
+Id = 366.0 | Team = 1 | konstruktionsZeit = 1.786625286017E12
+Position -> posX: 76921.37638823953, posY: 47002.622679339154, posZ: 5167.09657816962
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.11113732944613086 | MaxLeben2.2887874672716686 | Damage = 2.2567359356232597 | Speed = 15.3898642709188 | Reichweite = 49.563814303913404
+Kills = 0 | points
+Punkte1 = 4.013567000574238 | Punkte2 = 0.31519237965077956 | Punkte3 = 4.013567000574238 | Punkte4 = 0.31519237965077956 | Alter = 216148.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 304.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 219.0] ===
+System.currentTimeMillis() = 1786625502210
+Zeitschritt = 3065175
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 78088.25777721318, posY: 46928.459251816654, posZ: 5152.739998893286
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 44 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 215957.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 304.0] ===
+System.currentTimeMillis() = 1786625502210
+Zeitschritt = 3065175
+Id = 304.0 | Team = 1 | konstruktionsZeit = 1.78662528601E12
+Position -> posX: 76229.07375351239, posY: 45191.86102874831, posZ: 5235.283586753844
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -1.171782045732953 | MaxLeben1.4157196027616596 | Damage = 2.4422772929558003 | Speed = 11.514389472653653 | Reichweite = 26.828608579536628
+Kills = 0 | points
+Punkte1 = 3.4922811745519375 | Punkte2 = 0.08544787540841309 | Punkte3 = 3.4922811745519375 | Punkte4 = 0.08544787540841309 | Alter = 216200.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1856.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 156.0] ===
+System.currentTimeMillis() = 1786625502570
+Zeitschritt = 3067524
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 80266.95771228042, posY: 61420.05285185756, posZ: 5283.5875058276915
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 157 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 216447.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1856.0] ===
+System.currentTimeMillis() = 1786625502570
+Zeitschritt = 3067524
+Id = 1856.0 | Team = 2 | konstruktionsZeit = 1.786625286686E12
+Position -> posX: 80059.09744531666, posY: 58366.50346913593, posZ: 5181.9685238861275
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -5.488029886063967 | MaxLeben1.6795901227698928 | Damage = 3.1847269903101147 | Speed = 7.03439367732733 | Reichweite = 11.168101842216052
+Kills = 0 | points
+Punkte1 = 3.8846949252549607 | Punkte2 = 0.03361797446236087 | Punkte3 = 3.8846949252549607 | Punkte4 = 0.03361797446236087 | Alter = 215884.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 500.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 218.0] ===
+System.currentTimeMillis() = 1786625503705
+Zeitschritt = 3074715
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 78088.25777721318, posY: 46928.459251816654, posZ: 5152.739998893286
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 45 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 217452.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 500.0] ===
+System.currentTimeMillis() = 1786625503705
+Zeitschritt = 3074715
+Id = 500.0 | Team = 1 | konstruktionsZeit = 1.786625286036E12
+Position -> posX: 75212.34277725776, posY: 48196.28176536363, posZ: 5097.51394107169
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.7481921852350911 | MaxLeben18.288044407702166 | Damage = 1.6878413988951906 | Speed = 12.426984602454437 | Reichweite = 258.81122624689095
+Kills = 0 | points
+Punkte1 = 10.770214497422531 | Punkte2 = 7.942144058069821 | Punkte3 = 10.770214497422531 | Punkte4 = 7.942144058069821 | Alter = 217669.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 591.0Team = 1 wurde vernichtet durch Unit 1148.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 219.0] ===
+System.currentTimeMillis() = 1786625504708
+Zeitschritt = 3081326
+Id = 1148.0 | Team = 2 | konstruktionsZeit = 1.78662528626E12
+Position -> posX: 63549.88112158365, posY: 57600.6488460147, posZ: 5022.80013651269
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.993878975853711 | MaxLeben12.993878975853711 | Damage = 0.8098090344655452 | Speed = 10.33426806914607 | Reichweite = 221.5466909923879
+Kills = 7 | points
+Punkte1 = 8.046204010866967 | Punkte2 = 1.9273314699290063 | Punkte3 = 8.046204010866967 | Punkte4 = 1.9273314699290063 | Alter = 218448.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 591.0] ===
+System.currentTimeMillis() = 1786625504708
+Zeitschritt = 3081326
+Id = 591.0 | Team = 1 | konstruktionsZeit = 1.7866252861E12
+Position -> posX: 63544.571753141405, posY: 57596.04284263101, posZ: 5023.205366745079
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.13029479510247222 | MaxLeben45.927055480047294 | Damage = 1.2429855125403189 | Speed = 12.981539784657983 | Reichweite = 7.04051645600258
+Kills = 0 | points
+Punkte1 = 10.828837733362988 | Punkte2 = 0.4174028237703087 | Punkte3 = 10.828837733362988 | Punkte4 = 0.4174028237703087 | Alter = 218608.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1148.0Team = 2 wurde vernichtet durch Unit 953.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 202.0] ===
+System.currentTimeMillis() = 1786625505332
+Zeitschritt = 3085472
+Id = 953.0 | Team = 1 | konstruktionsZeit = 1.786625286213E12
+Position -> posX: 63542.81151494562, posY: 57607.479707861254, posZ: 5023.398524960447
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 2.575621117486434 | MaxLeben4.431219184484826 | Damage = 2.032884423629476 | Speed = 15.115923303249893 | Reichweite = 9.848760344201647
+Kills = 1 | points
+Punkte1 = 3.418421933475472 | Punkte2 = 0.10728577849328318 | Punkte3 = 3.418421933475472 | Punkte4 = 0.10728577849328318 | Alter = 219119.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1148.0] ===
+System.currentTimeMillis() = 1786625505332
+Zeitschritt = 3085472
+Id = 1148.0 | Team = 2 | konstruktionsZeit = 1.78662528626E12
+Position -> posX: 63549.88112158365, posY: 57600.6488460147, posZ: 5022.80013651269
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.19026330318603835 | MaxLeben12.993878975853711 | Damage = 0.8098090344655452 | Speed = 10.33426806914607 | Reichweite = 221.5466909923879
+Kills = 7 | points
+Punkte1 = 8.046204010866967 | Punkte2 = 1.9273314699290063 | Punkte3 = 8.046204010866967 | Punkte4 = 1.9273314699290063 | Alter = 219072.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 828.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 216.0] ===
+System.currentTimeMillis() = 1786625505332
+Zeitschritt = 3085530
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 78634.49180485136, posY: 46411.71121991497, posZ: 5229.555127514507
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 46 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 219079.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 828.0] ===
+System.currentTimeMillis() = 1786625505332
+Zeitschritt = 3085530
+Id = 828.0 | Team = 1 | konstruktionsZeit = 1.786625286152E12
+Position -> posX: 81154.65834889436, posY: 44027.58457125159, posZ: 5583.958016079855
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.9909709015370285 | MaxLeben1.5965307469575842 | Damage = 0.23692605220422874 | Speed = 8.76865548814992 | Reichweite = 45.479513151173336
+Kills = 1 | points
+Punkte1 = 1.6411955743822106 | Punkte2 = 0.012067822294066513 | Punkte3 = 1.6411955743822106 | Punkte4 = 0.012067822294066513 | Alter = 219180.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1882.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 154.0] ===
+System.currentTimeMillis() = 1786625505458
+Zeitschritt = 3086244
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 79780.09060142461, posY: 56603.574777744645, posZ: 5256.387219203758
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 158 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 219335.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1882.0] ===
+System.currentTimeMillis() = 1786625505458
+Zeitschritt = 3086244
+Id = 1882.0 | Team = 2 | konstruktionsZeit = 1.78662528669E12
+Position -> posX: 79462.76395771655, posY: 53551.10620707502, posZ: 5238.893336982177
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -2.6275208738036797 | MaxLeben4.5400991350301805 | Damage = 0.4926861253518947 | Speed = 7.402882277064781 | Reichweite = 25.28447182633773
+Kills = 0 | points
+Punkte1 = 2.054453034425981 | Punkte2 = 0.03349503101521401 | Punkte3 = 2.054453034425981 | Punkte4 = 0.03349503101521401 | Alter = 218768.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 766.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 215.0] ===
+System.currentTimeMillis() = 1786625507725
+Zeitschritt = 3100908
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 77844.58016601541, posY: 45924.97877651674, posZ: 5285.469908344845
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 47 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 221472.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 766.0] ===
+System.currentTimeMillis() = 1786625507725
+Zeitschritt = 3100908
+Id = 766.0 | Team = 1 | konstruktionsZeit = 1.786625286125E12
+Position -> posX: 74906.34488076251, posY: 44182.47499778064, posZ: 5487.48605952525
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.5033458705891816 | MaxLeben0.7904049536581248 | Damage = 0.6787833310935344 | Speed = 10.871292468398586 | Reichweite = 42.283422003484844
+Kills = 0 | points
+Punkte1 = 1.8999586112628282 | Punkte2 = 0.019729774267137522 | Punkte3 = 1.8999586112628282 | Punkte4 = 0.019729774267137522 | Alter = 221600.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 104.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 214.0] ===
+System.currentTimeMillis() = 1786625508412
+Zeitschritt = 3105411
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 77628.95285060139, posY: 45716.55081746454, posZ: 5286.941346295958
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 48 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 222159.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 104.0] ===
+System.currentTimeMillis() = 1786625508412
+Zeitschritt = 3105411
+Id = 104.0 | Team = 1 | konstruktionsZeit = 1.786625285961E12
+Position -> posX: 75150.93738479735, posY: 43321.271234977394, posZ: 5303.85129109044
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.43885438613786576 | MaxLeben2.148647262356747 | Damage = 0.6549554114522365 | Speed = 10.327626559853597 | Reichweite = 12.070486590882004
+Kills = 0 | points
+Punkte1 = 1.5326471269382977 | Punkte2 = 0.014034345046036052 | Punkte3 = 1.5326471269382977 | Punkte4 = 0.014034345046036052 | Alter = 222451.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1745.0Team = 2 wurde vernichtet durch Unit 652.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 137.0] ===
+System.currentTimeMillis() = 1786625508582
+Zeitschritt = 3106612
+Id = 652.0 | Team = 1 | konstruktionsZeit = 1.786625286117E12
+Position -> posX: 74047.69660039319, posY: 46611.31690060487, posZ: 5309.602734884719
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 3.1905738441520892 | MaxLeben3.1905738441520892 | Damage = 3.0710830399399134 | Speed = 12.165418098734284 | Reichweite = 1585.331954535605
+Kills = 1 | points
+Punkte1 = 35.65914526145712 | Punkte2 = 15.118113447207218 | Punkte3 = 35.65914526145712 | Punkte4 = 15.118113447207218 | Alter = 222465.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1745.0] ===
+System.currentTimeMillis() = 1786625508582
+Zeitschritt = 3106612
+Id = 1745.0 | Team = 2 | konstruktionsZeit = 1.786625286678E12
+Position -> posX: 75146.88206301785, posY: 47677.592262955295, posZ: 5163.142275517949
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.8339255771239626 | MaxLeben4.087316649081052 | Damage = 3.036454176269812 | Speed = 11.738844132289454 | Reichweite = 133.03715363439218
+Kills = 0 | points
+Punkte1 = 6.749437461419655 | Punkte2 = 1.5505768059699632 | Punkte3 = 6.749437461419655 | Punkte4 = 1.5505768059699632 | Alter = 221904.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1063.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 153.0] ===
+System.currentTimeMillis() = 1786625508786
+Zeitschritt = 3107801
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 77601.62702231658, posY: 52498.68298254072, posZ: 5197.204837080805
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 159 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 222663.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1063.0] ===
+System.currentTimeMillis() = 1786625508786
+Zeitschritt = 3107801
+Id = 1063.0 | Team = 2 | konstruktionsZeit = 1.78662528625E12
+Position -> posX: 76135.99048865167, posY: 49806.28671936022, posZ: 5170.58621087302
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.7319564492876625 | MaxLeben6.435663559546198 | Damage = 0.5591523518700479 | Speed = 10.788618550931323 | Reichweite = 59.95155010922158
+Kills = 0 | points
+Punkte1 = 3.2610884369823454 | Punkte2 = 0.1862000228818975 | Punkte3 = 3.2610884369823454 | Punkte4 = 0.1862000228818975 | Alter = 222536.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1652.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 153.0] ===
+System.currentTimeMillis() = 1786625508897
+Zeitschritt = 3108333
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 77601.62702231658, posY: 52498.68298254072, posZ: 5197.204837080805
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 160 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 222775.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1652.0] ===
+System.currentTimeMillis() = 1786625508898
+Zeitschritt = 3108333
+Id = 1652.0 | Team = 2 | konstruktionsZeit = 1.786625286674E12
+Position -> posX: 75762.50675381205, posY: 50036.43061344085, posZ: 5147.774784727337
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -4.884527004796113 | MaxLeben2.283093004037747 | Damage = 0.19399687196981305 | Speed = 8.606641735863441 | Reichweite = 124.60243476224974
+Kills = 0 | points
+Punkte1 = 3.3147970027396263 | Punkte2 = 0.03799868534667867 | Punkte3 = 3.3147970027396263 | Punkte4 = 0.03799868534667867 | Alter = 222224.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 652.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 212.0] ===
+System.currentTimeMillis() = 1786625508945
+Zeitschritt = 3108581
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 77491.38187408267, posY: 45750.673730049646, posZ: 5287.85276688211
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 49 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 222692.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 652.0] ===
+System.currentTimeMillis() = 1786625508945
+Zeitschritt = 3108581
+Id = 652.0 | Team = 1 | konstruktionsZeit = 1.786625286117E12
+Position -> posX: 74176.04583555742, posY: 46680.40104420483, posZ: 5301.5107525407175
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.061644260398281414 | MaxLeben3.1905738441520892 | Damage = 3.0710830399399134 | Speed = 12.165418098734284 | Reichweite = 1585.331954535605
+Kills = 1 | points
+Punkte1 = 35.65914526145712 | Punkte2 = 15.118113447207218 | Punkte3 = 35.65914526145712 | Punkte4 = 15.118113447207218 | Alter = 222828.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 725.0Team = 1 wurde vernichtet durch Unit 1073.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 211.0] ===
+System.currentTimeMillis() = 1786625509599
+Zeitschritt = 3112918
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 77308.08746652323, posY: 45799.60020352993, posZ: 5270.671684679932
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.143284183568284 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 50 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 223346.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 725.0] ===
+System.currentTimeMillis() = 1786625509599
+Zeitschritt = 3112918
+Id = 725.0 | Team = 1 | konstruktionsZeit = 1.786625286122E12
+Position -> posX: 73990.91836995259, posY: 46741.23036421603, posZ: 4964.115346863667
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.5321222242753262 | MaxLeben2.8200103270058694 | Damage = 0.018743553235309802 | Speed = 10.94861471776709 | Reichweite = 0.25443862261659134
+Kills = 0 | points
+Punkte1 = 0.8068066854441575 | Punkte2 = 1.1779715966456039E-5 | Punkte3 = 0.8068066854441575 | Punkte4 = 1.1779715966456039E-5 | Alter = 223477.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1508.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 151.0] ===
+System.currentTimeMillis() = 1786625510021
+Zeitschritt = 3115511
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 76855.1572183614, posY: 50984.88227486652, posZ: 5182.174036167656
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 161 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 223898.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1508.0] ===
+System.currentTimeMillis() = 1786625510021
+Zeitschritt = 3115511
+Id = 1508.0 | Team = 2 | konstruktionsZeit = 1.786625286668E12
+Position -> posX: 75446.08627626736, posY: 48250.34285768265, posZ: 5152.625925501764
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -5.684989417703944 | MaxLeben1.4826305911299165 | Damage = 0.010253749520256875 | Speed = 9.470007762998453 | Reichweite = 0.2481765600665449
+Kills = 0 | points
+Punkte1 = 0.5011435542075401 | Punkte2 = 2.8583588008843935E-6 | Punkte3 = 0.5011435542075401 | Punkte4 = 2.8583588008843935E-6 | Alter = 223353.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1231.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 151.0] ===
+System.currentTimeMillis() = 1786625510116
+Zeitschritt = 3116155
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 76818.8001779853, posY: 50888.09888672256, posZ: 5182.319117875652
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 162 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 223993.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1231.0] ===
+System.currentTimeMillis() = 1786625510116
+Zeitschritt = 3116155
+Id = 1231.0 | Team = 2 | konstruktionsZeit = 1.786625286265E12
+Position -> posX: 75731.42495654893, posY: 48010.31261291275, posZ: 5186.915301951942
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -6.141509399635871 | MaxLeben1.0261106091979892 | Damage = 0.19929118529155046 | Speed = 11.037297098042437 | Reichweite = 80.30448590626341
+Kills = 0 | points
+Punkte1 = 2.231348967217265 | Punkte2 = 0.014500226765580026 | Punkte3 = 2.231348967217265 | Punkte4 = 0.014500226765580026 | Alter = 223851.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1941.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 151.0] ===
+System.currentTimeMillis() = 1786625510915
+Zeitschritt = 3121163
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 76429.34306017363, posY: 50001.29530763281, posZ: 5185.437030400472
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 12.379978961757592 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 163 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 224792.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1941.0] ===
+System.currentTimeMillis() = 1786625510915
+Zeitschritt = 3121163
+Id = 1941.0 | Team = 2 | konstruktionsZeit = 1.786625286694E12
+Position -> posX: 75105.19924769235, posY: 47224.51881872332, posZ: 5200.1111347007845
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -6.983678630675532 | MaxLeben7.351561386992189 | Damage = 0.4009859579043901 | Speed = 11.747456881932168 | Reichweite = 205.05346513127827
+Kills = 0 | points
+Punkte1 = 6.207316675567037 | Punkte2 = 0.5680802774162987 | Punkte3 = 6.207316675567037 | Punkte4 = 0.5680802774162987 | Alter = 224221.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1073.0Team = 2 wurde vernichtet durch Unit 739.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 151.0] ===
+System.currentTimeMillis() = 1786625511596
+Zeitschritt = 3125250
+Id = 739.0 | Team = 1 | konstruktionsZeit = 1.786625286123E12
+Position -> posX: 76636.0762130019, posY: 48746.004963243315, posZ: 5204.562573037241
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 9.960287237223085 | MaxLeben12.379978961757592 | Damage = 7.16762000883386 | Speed = 55.33576922762559 | Reichweite = 3076.3712121312687
+Kills = 164 | points
+Punkte1 = 72.27775542836326 | Punkte2 = 1208.4524234409894 | Punkte3 = 72.27775542836326 | Punkte4 = 1208.4524234409894 | Alter = 225473.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1073.0] ===
+System.currentTimeMillis() = 1786625511596
+Zeitschritt = 3125250
+Id = 1073.0 | Team = 2 | konstruktionsZeit = 1.786625286253E12
+Position -> posX: 77135.93169301038, posY: 45710.86643291908, posZ: 5250.805796072991
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -4.762114401982072 | MaxLeben9.143284183568284 | Damage = 1.2937508242473064 | Speed = 14.994959019360836 | Reichweite = 3487.248298301109
+Kills = 50 | points
+Punkte1 = 73.16727280737035 | Punkte2 = 49.484706531145946 | Punkte3 = 73.16727280737035 | Punkte4 = 49.484706531145946 | Alter = 225344.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1749.0Team = 2 wurde vernichtet durch Unit 478.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 99.0] ===
+System.currentTimeMillis() = 1786625513856
+Zeitschritt = 3139306
+Id = 478.0 | Team = 1 | konstruktionsZeit = 1.78662528603E12
+Position -> posX: 81160.25370490248, posY: 40977.46912216595, posZ: 5211.612071210329
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 3.930323409329784 | MaxLeben3.930323409329784 | Damage = 6.352133000892386 | Speed = 7.877324995183352 | Reichweite = 123.12677783094212
+Kills = 1 | points
+Punkte1 = 9.758279739280852 | Punkte2 = 1.9371762491185098 | Punkte3 = 9.758279739280852 | Punkte4 = 1.9371762491185098 | Alter = 227826.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1749.0] ===
+System.currentTimeMillis() = 1786625513856
+Zeitschritt = 3139306
+Id = 1749.0 | Team = 2 | konstruktionsZeit = 1.786625286678E12
+Position -> posX: 81159.56292667528, posY: 41042.7668985766, posZ: 5219.443587020706
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -3.029180790719421 | MaxLeben27.77366007337667 | Damage = 0.9313468995393729 | Speed = 12.817648940100911 | Reichweite = 32.880417258206855
+Kills = 0 | points
+Punkte1 = 7.400040238180862 | Punkte2 = 0.8721280779227704 | Punkte3 = 7.400040238180862 | Punkte4 = 0.8721280779227704 | Alter = 227178.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 1104.0Team = 2 wurde vernichtet durch Unit 436.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 92.0] ===
+System.currentTimeMillis() = 1786625517533
+Zeitschritt = 3161988
+Id = 436.0 | Team = 1 | konstruktionsZeit = 1.786625286026E12
+Position -> posX: 69955.14379882812, posY: 60247.63921567374, posZ: 4964.922292778449
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 3.52602393333812 | MaxLeben3.52602393333812 | Damage = 0.7756624771196549 | Speed = 37.554034938684595 | Reichweite = 700.0303479595829
+Kills = 9 | points
+Punkte1 = 16.232554921752627 | Punkte2 = 5.752034731798394 | Punkte3 = 16.232554921752627 | Punkte4 = 5.752034731798394 | Alter = 231507.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1104.0] ===
+System.currentTimeMillis() = 1786625517533
+Zeitschritt = 3161988
+Id = 1104.0 | Team = 2 | konstruktionsZeit = 1.786625286257E12
+Position -> posX: 69756.34060558394, posY: 59628.523897406005, posZ: 4976.668796973716
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.5201304581677626 | MaxLeben3.7105466709353574 | Damage = 0.3816000745438694 | Speed = 7.096166220826415 | Reichweite = 35.22943282293889
+Kills = 0 | points
+Punkte1 = 1.970221389606247 | Punkte2 = 0.02831820800952697 | Punkte3 = 1.970221389606247 | Punkte4 = 0.02831820800952697 | Alter = 231277.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Unit 972.0Team = 1 wurde vernichtet durch Unit 1839.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 212.0] ===
+System.currentTimeMillis() = 1786625518269
+Zeitschritt = 3166301
+Id = 1839.0 | Team = 2 | konstruktionsZeit = 1.786625286686E12
+Position -> posX: 69146.53880614444, posY: 58951.85573162875, posZ: 5039.883790942442
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 26467.424111486325 | MaxLeben36398.141789816545 | Damage = 1.5621155466978274 | Speed = 12.359066556903464 | Reichweite = 32.486166475021335
+Kills = 1 | points
+Punkte1 = 7282.087378170645 | Punkte2 = 1826.2763313678836 | Punkte3 = 7282.087378170645 | Punkte4 = 1826.2763313678836 | Alter = 231583.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 972.0] ===
+System.currentTimeMillis() = 1786625518269
+Zeitschritt = 3166301
+Id = 972.0 | Team = 1 | konstruktionsZeit = 1.786625286215E12
+Position -> posX: 69119.4191168427, posY: 58948.92220607913, posZ: 5039.819050639989
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.5885435725650036 | MaxLeben1.7160971826466538 | Damage = 0.7706940121674275 | Speed = 18.76396148081281 | Reichweite = 27.277963840425535
+Kills = 0 | points
+Punkte1 = 2.034751955121525 | Punkte2 = 0.05415646795009972 | Punkte3 = 2.034751955121525 | Punkte4 = 0.05415646795009972 | Alter = 232054.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 953.0Team = 1 wurde vernichtet durch Unit 1839.0 Team = 2
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 211.0] ===
+System.currentTimeMillis() = 1786625518460
+Zeitschritt = 3167393
+Id = 1839.0 | Team = 2 | konstruktionsZeit = 1.786625286686E12
+Position -> posX: 69146.53880614444, posY: 58951.85573162875, posZ: 5039.883790942442
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 26320.976265313762 | MaxLeben36398.141789816545 | Damage = 1.5621155466978274 | Speed = 12.359066556903464 | Reichweite = 32.486166475021335
+Kills = 2 | points
+Punkte1 = 7282.087378170645 | Punkte2 = 1826.2763313678836 | Punkte3 = 7282.087378170645 | Punkte4 = 1826.2763313678836 | Alter = 231774.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 953.0] ===
+System.currentTimeMillis() = 1786625518460
+Zeitschritt = 3167393
+Id = 953.0 | Team = 1 | konstruktionsZeit = 1.786625286213E12
+Position -> posX: 69128.34803984888, posY: 58947.491630952376, posZ: 5039.830276628626
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -1.3689152683794013 | MaxLeben4.431219184484826 | Damage = 2.032884423629476 | Speed = 15.115923303249893 | Reichweite = 9.848760344201647
+Kills = 1 | points
+Punkte1 = 3.418421933475472 | Punkte2 = 0.10728577849328318 | Punkte3 = 3.418421933475472 | Punkte4 = 0.10728577849328318 | Alter = 232248.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+Unit 1631.0Team = 2 wurde vernichtet durch Unit 132.0 Team = 1
+unit.printWerte(rand, zeitSchritt);
+=== UNIT REPORT [Index: 29.0] ===
+System.currentTimeMillis() = 1786625521430
+Zeitschritt = 3185255
+Id = 132.0 | Team = 1 | konstruktionsZeit = 1.786625285966E12
+Position -> posX: 69205.31030888138, posY: 59084.92594279535, posZ: 5040.657837415152
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = 7.87733141335721 | MaxLeben7.87733141335721 | Damage = 1.1229130526799573 | Speed = 35.012069442806244 | Reichweite = 113.58006719785162
+Kills = 1 | points
+Punkte1 = 5.670222068164556 | Punkte2 = 2.814071559143863 | Punkte3 = 5.670222068164556 | Punkte4 = 2.814071559143863 | Alter = 235464.0
+Rot = 254.0| grün = 254.0| blau = 254.0| size = 10.0
+============================================
+gegner.printWerte(gegner.id, zeitSchritt);
+=== UNIT REPORT [Index: 1631.0] ===
+System.currentTimeMillis() = 1786625521430
+Zeitschritt = 3185255
+Id = 1631.0 | Team = 2 | konstruktionsZeit = 1.786625286674E12
+Position -> posX: 69170.74799607272, posY: 58976.77371309139, posZ: 5043.653402144191
+Algorithmus = NEAREST_ENEMY | Selectable: true | Influencable: true
+Leben = -0.16109301485638217 | MaxLeben10.14320265400176 | Damage = 0.37126260425691504 | Speed = 8.613170929077542 | Reichweite = 63.213162641283205
+Kills = 0 | points
+Punkte1 = 3.8364298064644817 | Punkte2 = 0.16402758143888035 | Punkte3 = 3.8364298064644817 | Punkte4 = 0.16402758143888035 | Alter = 234756.0
+Rot = 50.0| grün = 50.0| blau = 50.0| size = 10.0
+============================================
+Team 1 hat gewonnen!
+
+
+
+Noch einmal die leicht veränderten 3 java Klassen des aktuellen Simulators der den letzten Bericht simuliert und produzuert und in der Konsole im
+KI-Game und Matrixgame Style basierend auf meinen aktuellen Möglichkeiten und Erkenntnissen sher gut geeigneten Möglichkeit des Kopieren und Einfügens von Textblöcken zwischen Dateien, Eclipse Konsole, ... ,Und den Konsolen der 
+Großen Sprachmodelle die auf vielen Ebenen neu sind und wo die Didaktik aus meiner Sicht noch schöner werden sollte, wie in vielen weiteren Matrixgame Dokumenten von mir beschrieben und Weiteres:
+package ordner1;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.BasicStroke; // Wird für die dicke Rand-Markierung benötigt
+
+//Basis Unit Fight Sim To Chess Vision 16v16 Konsolnausgabe in Eclipse für LLMs Kopierbar und analysierbar für KI-Games Matrixgame AlphaZero Didaktik und Entscheidungsalgorithmen für Zielerreichungen geplant und sehr sinnvoll 16.07.2026,14:15UhrAndreasSchneider zuHause
+public class MainGame extends JPanel {
+
+    // --- Instanzvariablen (NICHT static) ---
+    private int FRAME_WIDTH = 1920;
+    private int FRAME_HEIGHT = 1080;
+    private double zoomFactor = 0.0001;
+    private double zoomCenterX = 0;
+    private double zoomCenterY = 0;
+    private static final double ZOOM_STEP = 1.2;
+    private double feinheit = 70;
+    private int pause = 30;
+    private double PAN_STEP = 0.0001;
+    
+    int team1Num=0;
+    int team2Num=0;
+
+    // Wichtig: unitList als Instanzvariable
+    private List<Unit> unitList = new ArrayList<>();
+
+    // --- NEU: Temporäre Liste für neu erschaffene Einheiten und Gebäude ---
+    private List<Unit> unitsToAdd = new ArrayList<>();
+
+    // --- Konstruktor ---
+    public MainGame() {
+        initializeSettings();
+        initializeUnits();
+        setupPanel();
+    }
+
+    private void initializeSettings() {
+        PAN_STEP = feinheit / zoomFactor;
+    }
+
+    // Variablen für das zeitgesteuerte Logging (oben in der Klasse deklarieren)
+    private long lastConsolePrintTime = 0;
+
+    private void initializeUnits() {
+        int counterId = 0;
+        // Units hier hinzufügen - nicht in main!
+        // public Unit(size, red, green, blue, posX, double posY, double posZ,double vx,
+        // double vy, double vz)
+
+//        Unit test=new Unit();
+//        test.team=1;
+//        test.posX=0;
+//        test.posY=0;
+//        test.posZ-=0;
+//        test.blue=254;
+//        test.red=254;
+//        test.green=254;
+//        test.speed=200000;
+//        test.id=counterId;
+//        unitList.add(test);
+//        counterId++;
+        
+//        double loopSizeN = 100 + Math.random()/Math.random()-Math.random()/Math.random();
+//        for (int i = 0; i < loopSizeN; i++) {
+//            Unit Unit1 = new Unit();
+//            Unit1.team = 0;
+//            Unit1.posX = 100000* Math.random()/Math.random()- 100000*Math.random()/Math.random();
+//            Unit1.posY =100000* Math.random()/Math.random()- 100000*Math.random()/Math.random();
+//            Unit1.posZ = 100000* Math.random()/Math.random()- 100000*Math.random()/Math.random();
+//            Unit1.blue = 256*Math.random();
+//            Unit1.red = 256*Math.random();
+//            Unit1.green = 256*Math.random();
+//            Unit1.team = (int) ((Unit1.red+Unit1.green+Unit1.blue)*Math.random()/Math.random()/100);
+//            Unit1.id = counterId;
+//            unitList.add(Unit1);
+//            Unit1.printWerte(Unit1.id, 0);
+//            counterId++;}
+
+        
+        double loopSizeI = 500 + Math.random()/Math.random()-Math.random()/Math.random();
+        
+         team1Num=(int)(loopSizeI)*2;
+        for (int i = 0; i < loopSizeI; i++) {
+            Unit Unit1 = new Unit();
+            Unit1.team = 1;
+            Unit1.posX = 100000 * Math.random()+Math.random()/Math.random()-Math.random()/Math.random();
+            Unit1.posY = Math.random()/Math.random()-Math.random()/Math.random()+Math.random()*10000-10000*Math.random();
+            Unit1.posZ = 10000*Math.random()-Math.random()/Math.random()+Math.random()/Math.random();
+            Unit1.blue = 254;
+            Unit1.red = 254;
+            Unit1.green = 254;
+            Unit1.id = counterId;
+            unitList.add(Unit1);
+            Unit1.printWerte(Unit1.id, 0);
+            counterId++;
+        
+
+            Unit Reihe2 = new Unit();
+            Reihe2.team = 1;
+            Reihe2.posX = 100000 * Math.random()+Math.random()/Math.random()-Math.random()/Math.random();
+            Reihe2.posY = 10000+Math.random()/Math.random()-Math.random()/Math.random()+Math.random()*10000-10000*Math.random();;
+            Reihe2.posZ =  10000*Math.random()-Math.random()/Math.random()+Math.random()/Math.random();
+            Reihe2.blue = 254;
+            Reihe2.red = 254;
+            Reihe2.green = 254;
+            Reihe2.id = counterId;
+            unitList.add(Reihe2);
+            counterId++;
+        }
+
+//            Unit Unit2=new Unit();
+//            Unit2.team=2;
+//            Unit2.red=0;
+//            Unit2.green=0;
+//            Unit2.blue=255*Math.random();
+//            Unit2.posX+=500000*Math.random();
+//            Unit2.posY+=500000*Math.random();
+//            Unit2.posZ+=500000*Math.random();
+//            Unit2.red=0;
+        double loopSizej = 500 + Math.random()/Math.random()-Math.random()/Math.random();
+        
+         team2Num=(int)(loopSizej)*2;
+        for (int j = 0; j < loopSizej; j++) {
+            Unit Unit3 = new Unit();
+            Unit3.team = 2;
+            Unit3.red = 50;
+            Unit3.green = 50;
+            Unit3.blue = 50;
+            Unit3.posX = 100000 * Math.random()+Math.random()/Math.random()-Math.random()/Math.random();
+            Unit3.posY = 90000+Math.random()/Math.random()-Math.random()/Math.random()+Math.random()*10000-10000*Math.random();;
+            Unit3.posZ =  10000*Math.random()-Math.random()/Math.random()+Math.random()/Math.random();
+            Unit3.id = counterId;
+            unitList.add(Unit3);
+            Unit3.printWerte(Unit3.id, 0);
+            counterId++;
+
+            Unit Row7 = new Unit();
+            Row7.team = 2;
+            Row7.red = 50;
+            Row7.green = 50;
+            Row7.blue = 50;
+            Row7.posX = 100000 * Math.random()+Math.random()/Math.random()-Math.random()/Math.random();
+            Row7.posY = 100000+Math.random()/Math.random()-Math.random()/Math.random()+Math.random()*10000-10000*Math.random();;
+            Row7.posZ = 10000*Math.random()-Math.random()/Math.random()+Math.random()/Math.random();
+            Row7.id = counterId;
+            unitList.add(Row7);
+            counterId++;
+
+        }
+    }
+
+//        unitList.add(new Unit(22, 285, 33, 232, 55, 99, 151, -21, 4, 1));
+//        unitList.add(new Unit(20, 55, 143, 22, 55, 7659, 1231));
+//        unitList.add(new Unit(23, 145, 113, 232, 595, 99, 151));}
+
+    private void setupPanel() {
+        setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+        setBackground(Color.BLACK);
+
+        // --- MOUSELISTENER FÜR SELEKTION UND BEFEHLE ---
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // 1. Linksklick: Einheiten selektieren
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    int mouseX = e.getX();
+                    int mouseY = e.getY();
+                    boolean unitFound = false;
+
+                    for (Unit u : unitList) {
+                        double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0;
+                        double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0;
+                        double radius = Math.abs(u.size);
+
+                        if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) {
+                            u.isSelected = true;
+                            unitFound = true;
+                        } else if (!e.isShiftDown()) {
+                            u.isSelected = false;
+                        }
+                    }
+
+                    if (!unitFound && !e.isShiftDown()) {
+                        for (Unit u : unitList) {
+                            u.isSelected = false;
+                        }
+                    }
+                    repaint();
+                }
+                // 2. Rechtsklick: Befehle an ausgewählte Einheiten verteilen
+                // 2. Rechtsklick: Befehle an ausgewählte Einheiten verteilen
+                else if (SwingUtilities.isRightMouseButton(e)) {
+                    int mouseX = e.getX();
+                    int mouseY = e.getY();
+                    double worldTargetX = (mouseX - getWidth() / 2.0) / zoomFactor - zoomCenterX;
+                    double worldTargetY = (mouseY - getHeight() / 2.0) / zoomFactor - zoomCenterY;
+
+                    Unit clickedEnemy = null;
+                    for (Unit u : unitList) {
+                        double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0;
+                        double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0;
+                        double radius = Math.abs(u.size);
+                        if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) {
+                            clickedEnemy = u;
+                            break;
+                        }
+                    }
+
+                    for (Unit u : unitList) {
+                        if (u.isSelected) {
+
+//                            // --- NEU: Logik für den Gebäude-Bau ---
+//                            if (u.decisionAlgorithm.equals("BUILDING_MODE")) {
+//                                // Einheit "baut" ein Gebäude an der berechneten Weltkoordinate
+//                                Building newBuilding = new Building(worldTargetX, worldTargetY, u.team);
+//                                newBuilding.id = unitList.size() + unitsToAdd.size() + 1000; // Eindeutige ID
+//                                unitsToAdd.add(newBuilding);
+//
+//                                // Nach dem Bauauftrag kehrt die Einheit in einen Ruhezustand zurück
+//                                u.decisionAlgorithm = "STAND_STILL";
+//                                System.out.println("Gebäude für Team " + u.team + " gebaut bei X:" + worldTargetX
+//                                        + " Y:" + worldTargetY);
+//                                continue; // Springe direkt zur nächsten Einheit, um Angriffslogik zu überspringen
+//                            }
+
+                            if (clickedEnemy != null) {
+                                // Angriffsbefehl auf spezifischen Gegner
+                                u.manualTarget = clickedEnemy;
+                                u.targetPosX = null;
+                                u.targetPosY = null;
+                                u.decisionAlgorithm = "NEAREST_ENEMY";
+                            } else {
+                                // Bewegungs-Befehl ins Leere
+                                u.targetPosX = worldTargetX;
+                                u.targetPosY = worldTargetY;
+                                u.manualTarget = null;
+                                u.decisionAlgorithm = "TARGET_POINT";
+                            }
+                        }
+                    }
+                    repaint();
+                }
+            }
+        });
+    }
+
+    // --- Game Loop als Instanzmethode ---
+    public void startGameLoop() {
+        Thread gameThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(pause);
+                    GameLoop();
+                    repaint(); // Kann jetzt aufgerufen werden, da Instanzmethode
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        });
+        gameThread.setDaemon(true); // Wird beendet wenn Fenster geschlossen
+        gameThread.start();
+    }
+
+    public Unit nextGegner(Unit current) {
+        Unit gegner = null;
+        double min = 999999999;
+        for (Unit unit : unitList) {
+            if (current.getDistance(unit) < min && current.team != unit.team) {
+                min = current.getDistance(unit);
+                gegner = unit;
+            }
+        }
+        return gegner;
+
+    }
+
+    int zeitSchritt = 0;
+    int team1Kills=0;
+    int team2Kills=0;
+    int team1Points=0;
+    int team2Ponts=0;
+
+    private void GameLoop() {
+        if (ende)
+            return;
+        zeitSchritt++;
+        
+//        double counterId=0;
+//        double loopSizeN = 100 + Math.random()/Math.random()-Math.random()/Math.random();
+//        for (int i = 0; i < loopSizeN; i++) {
+//            Unit Unit1 = new Unit();
+//            Unit1.team = 0;
+//            Unit1.posX = 100000* Math.random()/Math.random()- 100000*Math.random()/Math.random();
+//            Unit1.posY =100000* Math.random()/Math.random()- 100000*Math.random()/Math.random();
+//            Unit1.posZ = 100000* Math.random()/Math.random()- 100000*Math.random()/Math.random();
+//            Unit1.blue = 256*Math.random();
+//            Unit1.red = 256*Math.random();
+//            Unit1.green = 256*Math.random();
+//            Unit1.team = (int) ((Unit1.red+Unit1.green+Unit1.blue)*Math.random()/Math.random()/100);
+//            Unit1.id = counterId;
+//            unitList.add(Unit1);
+//            Unit1.printWerte(Unit1.id, 0);
+//            counterId++;}
+
+        
+        
+        
+        
+        int survive1 = team1Num-team2Kills;
+        int survive2 =  team2Num-team1Kills;
+        
+//        System.out.println("survive1 ");
+//        System.out.println(survive1);
+//        
+//        System.out.println("survive2 ");
+//        System.out.println(survive2);
+        
+        
+
+        for (int i = 0; i < unitList.size(); i++) {
+            zeitSchritt++;
+            int rand=(int)(Math.random()*unitList.size());
+            Unit unit = unitList.get(rand);
+
+            // Statistik-Zählung für Teams am Leben erhalten
+            if(unit.leben<=0)return;
+//            if (unit.team == 1)
+//                survive1++;
+//            if (unit.team == 2)
+//                survive2++;
+            unit.leben=Math.min(unit.maxLeben, unit.leben+Math.random());
+//            if(unit.points3<0&&unit.points4<0) {unit.leben-=Math.random();unit.team=(int) (unit.team+Math.random()/Math.random()-Math.random()/Math.random());}
+//            unit.points3-=Math.random();
+//            unit.points4-=Math.random();
+            // Konsolenausgabe alle 10 Schritte
+            if (zeitSchritt % 100 == 0) {
+//                unit.printWerte(i, zeitSchritt);
+            }
+            // In deiner Schleife / deinem Loop aufrufen:
+            long now = System.currentTimeMillis();
+//            long CONSOLE_PRINT_INTERVAL_MS = 10000;
+//            if (now - lastConsolePrintTime >= CONSOLE_PRINT_INTERVAL_MS) {
+//                // Hier kommt gleich nur deine Konsolenausgabe rein
+//                System.out.println(System.currentTimeMillis());
+//                for (int j = 0; j < unitList.size(); j++) {
+//                    unitList.get(j).printWerte(j, zeitSchritt);
+//                }
+//                lastConsolePrintTime = now;
+//            }
+
+            // Priorität 1: Manueller Angriffsbefehl auf ein bestimmtes Ziel
+            if (unit.manualTarget != null && unit.manualTarget.leben > 0) {
+                Unit gegner = unit.manualTarget;
+                if (unit.getDistance(gegner) <= unit.distance) {
+                    gegner.leben -= unit.damage;
+                    System.out.println("Unit " + unit.id + " attackiert manuelles Ziel " + gegner.id + " | Restleben: "
+                            + gegner.leben);
+                    if (gegner.leben <= 0) {
+                        unitList.remove(gegner);
+                        unit.kills++;
+                        unit.points3+=gegner.points1;
+                        unit.points4+=gegner.points2;
+//                        if(gegner.team==1)survive1--;
+//                        if(gegner.team==2)survive2--;
+                        if(unit.team==1) {team1Kills++; team1Points+=gegner.points2; team2Ponts-=gegner.points2;}
+                        if(unit.team==2) {team2Kills++; team2Ponts+=gegner.points1;team1Points-=gegner.points2; }
+                        System.out.println("Unit " + gegner.id +"Team = "+gegner.team+" wurde vernichtet durch Unit "+unit.id+" Team = "+unit.team);
+                        System.out.println("unit.printWerte(rand, zeitSchritt);");
+                        
+                        unit.printWerte(rand, zeitSchritt);
+                        System.out.println("gegner.printWerte(gegner.id, zeitSchritt);");
+                        gegner.printWerte(gegner.id, zeitSchritt);
+//                        System.out.println("Team1 Punkte =  " + team1Points);
+//                        System.out.println("Team2 Punkte =  " + team2Ponts);
+//                        System.out.println("Lebende Units aus Team 1 = " + survive1);
+//                        System.out.println("Lebende Units aus Team 2 = " + survive2);
+                        unit.manualTarget = null;
+                    }
+                } else {
+                    unit.moveTo(gegner);
+                    unit.move(1);
+                }
+                continue;
+            }
+
+            // Priorität 2: Ausführung basierend auf dem aktiven Entscheidungs-Algorithmus
+            switch (unit.decisionAlgorithm) {
+
+            // --- NEU: Produktions-Algorithmus für Gebäude ---
+//            case "PRODUCE_UNITS":
+//                if (unit instanceof Building) {
+//                    Building b = (Building) unit;
+//                    b.spawnCooldown++; // Timer hochzählen
+//
+//                    if (b.spawnCooldown >= b.SPAWN_RATE) {
+//                        Unit spawned = b.spawnUnit();
+//                        spawned.id = unitList.size() + unitsToAdd.size() + 2000;
+//                        unitsToAdd.add(spawned); // Sicher der Zwischenliste hinzufügen
+//                        b.spawnCooldown = 0; // Timer reset für den Zyklus
+//                        System.out.println(
+//                                "Gebäude (ID: " + b.id + ") hat eine neue Einheit (Team " + b.team + ") produziert!");
+//                    }
+//                }
+//                break;
+
+            case "TARGET_POINT":
+                // Bewege zu den manuellen Zielkoordinaten
+                if (unit.targetPosX != null && unit.targetPosY != null) {
+                    double tZ = (unit.targetPosZ != null) ? unit.targetPosZ : 0.0;
+
+                    double distQ = Math.pow(unit.posX - unit.targetPosX, 2) + Math.pow(unit.posY - unit.targetPosY, 2);
+                    if (distQ <= 1.0) {
+                        unit.targetPosX = null;
+                        unit.targetPosY = null;
+                        unit.vx = 0;
+                        unit.vy = 0;
+                        unit.decisionAlgorithm = "STAND_STILL";
+                    } else {
+                        unit.moveTo(unit.targetPosX, unit.targetPosY, tZ, unit.speed);
+                        unit.move(1);
+                    }
+                } else {
+                    unit.decisionAlgorithm = "NEAREST_ENEMY";
+                }
+                break;
+
+            case "STAND_STILL":
+                unit.vx = 0;
+                unit.vy = 0;
+                unit.vz = 0;
+                break;
+
+            case "NEAREST_ENEMY":
+            default:
+                // Suche nächsten Gegner und bekämpfe ihn
+                Unit gegner = nextGegner(unit);
+                if (gegner != null) {
+                    if (unit.getDistance(gegner) <= unit.distance) {
+                        gegner.leben -= unit.damage;
+                        if (gegner.leben <= 0) {
+                            unit.kills++;
+                            System.out.println("Unit " + gegner.id +"Team = "+gegner.team+" wurde vernichtet durch Unit "+unit.id+" Team = "+unit.team);
+                            System.out.println("unit.printWerte(rand, zeitSchritt);");
+                            
+                            unit.printWerte(rand, zeitSchritt);
+                            System.out.println("gegner.printWerte(gegner.id, zeitSchritt);");
+                            gegner.printWerte(gegner.id, zeitSchritt);
+                            
+                            
+                            if(unit.team==1) {team1Kills++;team1Points+=gegner.points2; team2Ponts-=gegner.points2;}
+                            if(unit.team==2) {team2Kills++;team2Ponts+=gegner.points1;team1Points-=gegner.points2; }
+                            
+                            
+//                            System.out.println("Team1 Punkte =  " + team1Points);
+//                            System.out.println("Team2 Punkte =  " + team2Ponts);
+                            
+                            unitList.remove(gegner);
+                        }
+                    } else {
+                        unit.moveTo(gegner);
+                        unit.move(1); // Physik-Vektoren ausführen
+                    }
+                }
+                break;
+            }
+        }
+
+        // --- NEU: Führe am Ende des Zeitschritts alle neu gebauten Einheiten & Gebäude
+        // ein ---
+        if (!unitsToAdd.isEmpty()) {
+            unitList.addAll(unitsToAdd);
+            unitsToAdd.clear(); // Liste leeren für den nächsten Takt
+        }
+
+    
+
+        // Win/Loss Conditions
+        if (ende == false) {
+//            System.out.println("Lebende Units aus Team 1 = " + survive1);
+//            System.out.println("Lebende Units aus Team 2 = " + survive2);
+            if (survive1 <= 0 && survive2 > 0) {
+                System.out.println("Team 2 hat gewonnen!");
+                System.out.println();
+                System.out.println();
+                System.out.println();
+                
+                ende = true;
+            }
+            if (survive2 <= 0 && survive1 > 0) {
+                System.out.println("Team 1 hat gewonnen!");
+                System.out.println();
+                System.out.println();
+                System.out.println();
+                ende = true;
+            }
+            if (survive1 <= 0 && survive2 <= 0) {
+                System.out.println("Alle Tod");
+                System.out.println();
+                System.out.println();
+                System.out.println();
+                ende = true;
+            }
+        }
+    }
+
+    private void processUnitClickSelection(double worldMouseX, double worldMouseY) {
+        boolean clickedAny = false;
+        for (Unit u : unitList) {
+            // Berechne Abstand vom Klick zur Einheit (unter Berücksichtigung eines
+            // Klick-Radius)
+            double distance = Math.hypot(u.posX - worldMouseX, u.posY - worldMouseY);
+            double hitRadius = 25.0; // Toleranzradius für den Klick
+
+            if (distance <= hitRadius) {
+                u.isSelected = !u.isSelected; // Status umschalten (oder direkt auf true setzen)
+                clickedAny = true;
+
+                if (u.isSelected) {
+                    System.out.println("[SPIELER-AKTION] Spieler hat Einheit ausgewählt -> " + "ID: " + u.id
+                            + " | Team: " + u.team + " | Position: (" + String.format("%.1f", u.posX) + ", "
+                            + String.format("%.1f", u.posY) + ")");
+                } else {
+                    System.out.println("[SPIELER-AKTION] Spieler hat Auswahl aufgehoben für Einheit ID: " + u.id);
+                }
+            }
+        }
+        if (!clickedAny) {
+            System.out.println("[SPIELER-AKTION] Klick ins Leere – Auswahl auf dem Feld angepasst.");
+        }
+    }
+
+    private void triggerActionOnSelectedUnits(String algorithmState) {
+        int updatedCount = 0;
+        for (Unit u : unitList) {
+            if (u.isSelected) {
+                u.decisionAlgorithm = algorithmState;
+                updatedCount++;
+            }
+        }
+        System.out.println(
+                "Aktion ausgeführt: Zustand '" + algorithmState + "' auf " + updatedCount + " Einheit(en) angewendet.");
+    }
+
+    boolean ende = false;
+
+    // --- Pan-Methoden ---
+    public void panLeft() {
+        zoomCenterX += PAN_STEP;
+        repaint();
+    }
+
+    public void panRight() {
+        zoomCenterX -= PAN_STEP;
+        repaint();
+    }
+
+    public void panUp() {
+        zoomCenterY += PAN_STEP;
+        repaint();
+    }
+
+    public void panDown() {
+        zoomCenterY -= PAN_STEP;
+        repaint();
+    }
+
+    // --- Zoom-Methoden ---
+    public void zoomIn() {
+        zoomFactor *= ZOOM_STEP;
+        updatePanStep();
+        repaint();
+    }
+
+    public void zoomOut() {
+        zoomFactor /= ZOOM_STEP;
+        updatePanStep();
+        repaint();
+    }
+
+    private void updatePanStep() {
+        PAN_STEP = feinheit / zoomFactor;
+    }
+
+    private static JPanel createActionControlPanel(MainGame simPanel) {
+        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 6));
+        actionPanel.setBackground(new Color(45, 45, 45));
+
+        JButton btnHeal = new JButton("Heilen");
+        JButton btnBuild = new JButton("Gebäude Bauen"); // Text verdeutlicht
+        JButton btnProduce = new JButton("Einheit Produzieren"); // --- NEUER BUTTON ---
+        JButton btnSpell = new JButton("Zaubern");
+        JButton btnAttack = new JButton("Angriff");
+
+        // Event-Verknüpfungen (Lambda-Expressions für saubere Übergaben)
+        btnHeal.addActionListener(e -> simPanel.triggerActionOnSelectedUnits("HEALING_MODE"));
+        btnBuild.addActionListener(e -> simPanel.triggerActionOnSelectedUnits("BUILDING_MODE"));
+        btnProduce.addActionListener(e -> simPanel.triggerActionOnSelectedUnits("PRODUCE_UNITS"));
+        btnSpell.addActionListener(e -> simPanel.triggerActionOnSelectedUnits("CASTING_SPELL"));
+        btnAttack.addActionListener(e -> simPanel.triggerActionOnSelectedUnits("FOCUSED_ATTACK"));
+
+        actionPanel.add(btnHeal);
+        actionPanel.add(btnBuild);
+        actionPanel.add(btnProduce); // Im UI anmelden
+        actionPanel.add(btnSpell);
+        actionPanel.add(btnAttack);
+
+        return actionPanel;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+
+        for (KreisObjekt current : unitList) {
+            double radius = Math.abs(current.size);
+            Color color = new Color((int) Math.abs(current.red % 255), (int) Math.abs(current.green % 255),
+                    (int) Math.abs(current.blue % 255));
+
+            double sx = (zoomCenterX + current.posX) * zoomFactor + getWidth() / 2.0;
+            double sy = (zoomCenterY + current.posY) * zoomFactor + getHeight() / 2.0;
+
+            // ... dein bestehender Code in paintComponent ...
+            g2.setColor(color);
+            g2.fillOval((int) (sx - radius), (int) (sy - radius), (int) (radius * 2), (int) (radius * 2));
+
+            // --- NEU: Zeichne den Ring, falls die Einheit ausgewählt ist ---
+            if (current.isSelected) { // Hinweis: Falls 'current' als KreisObjekt deklariert ist, caste es zu
+                                        // (Unit)current
+                g2.setColor(Color.YELLOW); // Matrix-Gelb für klare Sichtbarkeit
+                g2.setStroke(new BasicStroke(3)); // Strichstärke auf 3 Pixel setzen
+
+                // Zeichne einen etwas größeren Ring um die Einheit herum
+                g2.drawOval((int) (sx - radius - 2), (int) (sy - radius - 2), (int) (radius * 2 + 4),
+                        (int) (radius * 2 + 4));
+
+                g2.setStroke(new BasicStroke(1)); // Strichstärke für das nächste Objekt zurücksetzen
+            }
+            // ... Ende deiner for-Schleife ...
+        }
+    }
+
+    // --- MAIN METHODE - Nur Einstiegspunkt ---
+    public static void main(String[] args) {
+        // Best Practice: main nur für Swing-invokeLater und Objekterstellung
+        SwingUtilities.invokeLater(() -> {
+            createAndShowGUI();
+        });
+    }
+
+    private static void createAndShowGUI() {
+        // 1. Hauptpanel erstellen
+        MainGame simPanel = new MainGame();
+
+        // 2. Frame erstellen und konfigurieren
+        JFrame frame = new JFrame("N-Body Sonnensystem-Simulation");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+        frame.add(simPanel, BorderLayout.CENTER);
+
+        // 3. Steuerelemente hinzufügen
+        frame.add(createControlPanel(simPanel), BorderLayout.NORTH);
+
+        // 4. Frame anzeigen
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+        // 5. Game Loop starten
+        simPanel.startGameLoop();
+    }
+
+    private static JPanel createControlPanel(MainGame simPanel) {
+        JPanel mainControlPanel = new JPanel();
+        mainControlPanel.setLayout(new BoxLayout(mainControlPanel, BoxLayout.Y_AXIS));
+
+        // 1. Unteres Panel für Zoom- und Pan-Steuerung
+        JPanel navPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        JButton zoomIn = new JButton("Zoom In");
+        JButton zoomOut = new JButton("Zoom Out");
+        JButton panLeft = new JButton("← Links");
+        JButton panRight = new JButton("Rechts →");
+        JButton panUp = new JButton("↑ Hoch");
+        JButton panDown = new JButton("↓ Runter");
+
+        zoomIn.addActionListener(e -> simPanel.zoomIn());
+        zoomOut.addActionListener(e -> simPanel.zoomOut());
+        panLeft.addActionListener(e -> simPanel.panLeft());
+        panRight.addActionListener(e -> simPanel.panRight());
+        panUp.addActionListener(e -> simPanel.panUp());
+        panDown.addActionListener(e -> simPanel.panDown());
+
+        navPanel.add(zoomIn);
+        navPanel.add(zoomOut);
+        navPanel.add(panLeft);
+        navPanel.add(panRight);
+        navPanel.add(panUp);
+        navPanel.add(panDown);
+
+        // 2. Aktions-Panel für Einheiten-Befehle (Heilen, Bauen, Zaubern, Angriff)
+        JPanel actionPanel = createActionControlPanel(simPanel);
+
+        // Beide Panels in das Haupt-Steuerungselement integrieren
+        mainControlPanel.add(navPanel);
+        mainControlPanel.add(actionPanel);
+
+        return mainControlPanel;
+    }
+}
+package ordner1;
+
+public class Unit extends KreisObjekt {
+    double maxLeben;
+    double leben;
+    double damage;
+    double distance;
+    double speed;
+    int team;
+    int kills;
+    double points1;
+    double points2;
+    double points3;
+    double points4;
+    double konstruktionszeit=System.currentTimeMillis();
+    public Unit target = null;
+    
+    // Neue Variablen für Entscheidungsalgorithmen und Steuerung
+    public String decisionAlgorithm = "NEAREST_ENEMY"; // "TARGET_POINT", "STAND_STILL", "NEAREST_ENEMY"
+    public boolean isSelectable = true;
+    public boolean isInfluencable = true;
+    
+    public double maxCarryCapacity = 50.0; // statt 10.0 – Träger sollen echte Transportarbeit leisten können
+
+    // Zielkoordinaten im 3D-Raum (x, y, z) für manuelle oder algorithmische Bewegung
+    public Double targetPosX = null;
+    public Double targetPosY = null;
+    public Double targetPosZ = null;
+
+    // Spezifisches Ziel für einen manuellen Angriffsbefehl
+    public Unit manualTarget = null;
+    
+    
+    double id;
+    
+
+    public void moveTo(KreisObjekt oponent) {
+        double distQ = (this.posX - oponent.posX) * (this.posX - oponent.posX)
+                + (this.posY - oponent.posY) * (this.posY - oponent.posY)
+                + (this.posZ - oponent.posZ) * (this.posZ - oponent.posZ);
+        double dist = Math.pow(distQ, 0.5);
+        
+        double dx=posX-oponent.posX;
+        double dy=posY-oponent.posY;
+        double dz=posZ-oponent.posZ;
+        
+        double movDist=Math.min(speed, Math.abs(dist-distance));
+        
+        vx=-dx/dist*movDist;
+        vy=-dy/dist*movDist;
+        vz=-dz/dist*movDist;
+
+    }
+    
+    public void moveTo(double posX, double posY, double posZ, double speedManuel) {
+        double distQ = (this.posX - posX) * (this.posX - posX)
+                + (this.posY - posY) * (this.posY - posY)
+                + (this.posZ - posZ) * (this.posZ - posZ);
+        if(distQ<=0.00001) {targetPosX = null; targetPosY=null;}
+        double dist = Math.pow(distQ, 0.5);
+        
+        double dx=this.posX-posX;
+        double dy=this.posY -posY;
+        double dz=this.posZ -posZ;
+        
+        double movDist=Math.min(speedManuel, Math.min(speed, Math.abs(dist-0.0000005)));
+        
+        vx=-dx/dist*movDist;
+        vy=-dy/dist*movDist;
+        vz=-dz/dist*movDist;
+
+    }
+    
+    public double getDistance(Unit oponent) {
+        double distQ = (this.posX - oponent.posX) * (this.posX - oponent.posX)
+                + (this.posY - oponent.posY) * (this.posY - oponent.posY)
+                + (this.posZ - oponent.posZ) * (this.posZ - oponent.posZ);
+        double dist = Math.pow(distQ, 0.5);
+        return dist;
+    }
+
+    public Unit() {
+        super();
+        this.leben = 5*Math.random()/Math.random();
+        this.maxLeben=leben;
+        this.damage = Math.random()/Math.random();
+        this.distance = 50*Math.random()/Math.random();
+        this.speed = 50*Math.random()/Math.random();
+        this.team = (int)(Math.random()*2);
+        this.size=10;
+        this.id=(int)(Math.random()*1000);
+        this.points1=leben/5+damage+speed/50+distance/50;
+        this.points2=leben/5*damage*speed/50*distance/50;
+        this.points3=leben/5+damage+speed/50+distance/50;
+        this.points4=leben/5*damage*speed/50*distance/50;
+//        this.größePerLive(1);
+//        this.größePerKills(1);
+    }
+    
+    public void printWerte(double id2, int zeitSchritt) {
+
+            System.out.println("=== UNIT REPORT [Index: " + id2 + "] ===");
+            System.out.println("System.currentTimeMillis() = " + System.currentTimeMillis());
+            System.out.println("Zeitschritt = " + zeitSchritt);
+            System.out.println("Id = " + id + " | Team = " + team+" | konstruktionsZeit = "+konstruktionszeit);
+            System.out.println("Position -> posX: " + posX + ", posY: " + posY + ", posZ: " + posZ);
+            System.out.println("Algorithmus = " + decisionAlgorithm + " | Selectable: " + isSelectable + " | Influencable: " + isInfluencable);
+            System.out.println("Leben = " + leben + " | MaxLeben" + maxLeben + " | Damage = " + damage + " | Speed = " + speed + " | Reichweite = " + distance);
+            System.out.println("Kills = "+kills+" | points");
+            System.out.println("Punkte1 = "+points1+" | Punkte2 = "+points2+" | Punkte3 = "+points3+" | Punkte4 = "+points4+" | Alter = "+(System.currentTimeMillis()-konstruktionszeit));
+            System.out.println("Rot = "+red+"| grün = "+green+"| blau = "+blue+"| size = "+size);
+            System.out.println("============================================");
+            
+        
+        
+        
+        
+//        if(this.target != null) {
+//        System.out.println("TargetId = "+target.id);
+//        System.out.println("TargetX = "+target.posX);
+//        System.out.println("TargetY = "+target.posY);
+//        System.out.println("TargetZ = "+target.posZ);}
+//        System.out.println("Geschwindigkeit vx = "+vx);
+//        System.out.println("Geschwindigkeit vy = "+vy);
+//        System.out.println("Geschwindigkeit vz = "+vz);
+//        System.out.println("Masse = "+mass);
+//        System.out.println("Farbe = "+color);
+    }
+    
+    public void choseRandColorTeam() {
+        if (Math.random() < 0.3)
+            if (red + green + blue < 300)
+                team = 1;
+            else if (red + green + blue < 500)
+            team = 2;
+            else
+                team = 1;
+        if (Math.random() < 0.5) {
+            if (red > green && green > blue)
+                team=1;
+        if (red < green && green < blue)
+            team=3;}
+        
+        if (Math.random() < 0.3) {
+            if (red > green || green > blue)
+                team=1;
+        if (red < green || green < blue)
+            team=2;}
+    }
+    
+//    public void größePerLive(double div) {
+//        double size=Math.pow(leben/div, 0.3333);
+//        size=Math.min(size, 20);
+//        this.size=size;
+//    }
+//    
+//    public void größePerKills(double div) {
+//        double size=3+Math.pow(kills/div, 0.3333);
+//        size=Math.min(size, 20);
+//        this.size=size;
+//    }
+    
+    
+}
+package ordner1;
+
+public class KreisObjekt {
+    double size;
+    double red;
+    double green;
+    double blue;
+    
+    // 3 Angaben zum Aufenthaltsort im Raum
+    double posX;
+    double posY;
+    double posZ;
+    
+    // Geschwindigkeitsvektoren
+    double vx;
+    double vy;
+    double vz;
+    
+    public boolean isSelected = false;
+    
+    public KreisObjekt(double size, double red, double green, double blue, double posX, double posY, double posZ, double vx, double vy, double vz) {
+        this.size = size;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.posX = posX;
+        this.posY = posY;
+        this.posZ = posZ;
+        this.vx = vx;
+        this.vy = vy;
+        this.vz = vz;
+    }
+    
+    public KreisObjekt(double size, double red, double green, double blue, double posX, double posY, double posZ) {
+        this.size = size;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.posX = posX;
+        this.posY = posY;
+        this.posZ = posZ;
+    }
+
+    public KreisObjekt(double posX, double posY) {
+        this.posX = posX;
+        this.posY = posY;
+        this.size = 10.0;
+        this.red = 255;
+        this.green = 0;
+        this.blue = 0;
+        this.posZ = 0;
+    }
+
+    // Default mit interessantem Random (für die Initialisierung des Kindes)
+    public KreisObjekt() {
+        this.posX = 0;
+        this.posY = 0;
+        this.posZ = 0;
+        this.vx = 0;
+        this.vy = 0;
+        this.vz = 0;
+        this.size = 10;
+    }
+
+    // Mathematische Vektor-Addition für den Zeitschritt (Kausalkette)
+    public void move(double dt) {
+        this.posX += this.vx * dt;
+        this.posY += this.vy * dt;
+        this.posZ += this.vz * dt;
+    }
+}
+
+
+// Anmerkung: Das Programm hat sich leider wie ein Paradoxon aus der Quantenphysik wenn es um die Korrektur einiger kleiner Fehler zur Herstellung von besseren Modular aufbaubaren oder Rational zielführenden Simulatoren oder Gamifizierungen wie in letzter Zeit so oft und wie es nach dem Matrixgame mehr ein Problem von künstlichen wie auch natürlichen Neuronalen Netzwerken sein könnte und weiters das auch ohne Begrenzung durch c kommunizieren könnte, basierend auf meinen Hypothesen im Matrixgame und den Kollektiven KI-Games die ich unter anderem sehr gerne besser erforschen möchte und so das es für alle paradiesischer wird und wie ich hier mal angebe und warne, so das ich meinen Willen so gut es geht realisieren kann und mich dabei Glücklich fühle und das so lang wie möglich und da sind noch weitaus mehr Phänomene beteiligt und das sollte alles besser erforscht werden und ich hoffe hier auch sehr intensiv das es schnell besser wird und bleibt.
+Gemini Chat: https://share.gemini.google/hz8RiLIvqNWs
+Fragment des Übergangs 6:
+https://docs.google.com/document/d/1VIEINT69AqQbLZ66iTAUlLH1q5Av51JvDzKioHKTKc4/edit?usp=sharing
