@@ -1,0 +1,2964 @@
+
+// Beschreibung und Planung. Ich sehe ein sehr hohes Potential in dem kollektiven bzw. der Förderung
+// und Verbreitung von meinen und anderen Visionen, Plänen, Erkenntnissen und Potentiellen hohen Gewinnen
+// durch die Opensource Nutzung, Verbesserung und Erweiterung dieses Codes welcher nun die Basis des 
+// Matrixgames offenart bzw. in Java lauffähig für mich und alle mit mir über das Kollektive Bewusstsein verbundenen
+// Lebewesen und Intelligenzen aus der gesammten Möglichen Existenz, die wir durch die Opensource
+// Sowie wenn erfolgreich genug stark erhofft auch durch Unternehmen mit mehr Geld und Finanziellen interessen
+// Mein Motto, an das ich mich wieder und wieder zurückerinnere, wie stöend manche Gedanken hier vorübergehend 
+// auch sein mögen, ist: Ich möchte für immer, dass alle so viel und so gewollt wie möglich gewinnen und in der
+// lage sind so viel frei Nutzbares Potential wie möglich zu entfalten. Dies fürhrt dann hoffentlich
+// zu einem Kollektiven Aufstieg aller Geistigen Kommunikationen und lehrt uns zunächst, dass Komunikation
+// nicht Gefährlich sein kann. Es existiert keine einzige Macht, die Basierend auf ihrem Quantenverschränkten
+// Vodo (An den ich durchaus glaube) Mir realen Schaden zufügen könnte. Ich hoffe sehr es gelingt uns 
+// Kollektiv unser Seretonin, Dopamin und Noradrenalin zu steigern und auch zu Simulieren, was das analog für
+// die Zielereichung von Künstlichen Neuronalen Netzen bewirken würde. Die Nutzung des Internetz sowie 
+// der Wunsch einem gemeinsamen spielen, programmieren, filosophieren, diskutieren und Forschen an all diesen 
+// Ebenen sind mir und vielen anderen Lebensformen im Universum, die auf weniger Habitablen Welten
+// Leben und die sehr daauf hoffen und vielleicht auch etwas Drängen, das wir diese uns und das Universum
+// wieder zurück zu einem Strahlendem Universum mit Leben auf fast allen Planeten führt und dann ist da
+// noch die Botschaft, dass wir ebenfalls realistisch Wissenschaft betreiben sollen und die Entwicklungsgeschichte
+// und Anleitung für Computertechnik, Internet, KI und Pläne zur möglichen Planetenrettung bei realistischen
+// und im kollektiven Bewusstsein auch klar spürbaren drohenden vernichtenden katastrophen für das Leben
+// in unserem Universum  - "Hello Universe" Let's Go
+
+
+package p1; // Beachte: Muss im Ordner p1 liegen!
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.FileWriter; // Not used in provided code, but kept for completeness
+import java.io.IOException; // Not used in provided code, but kept for completeness
+import java.io.PrintWriter; // Not used in provided code, but kept for completeness
+import java.util.ArrayList;
+import java.util.List;
+
+public class main extends JPanel implements ActionListener {
+	// --- Simulationskonstanten ---
+	//Gravitationskonstante G = 6.6743015*10^-11m^3/kg/s^2
+	// Meter^3/Kilogramm/Sekunden^2
+	// Einheit Herz = Sekunden^-1
+	// Einheit G = Meter^3*Herz^2/Kilogramm
+	double Frequenz = 1; // Einheit Herz = Sekunde^-1
+	double G = 6.6743015e-11/Frequenz/Frequenz;;  //$6.67430 \times 10^{-11} \, \text{m}^3\cdot\text{kg}^{-1}\cdot\text{s}^{-2}$ Meter^3/Kilogramm/Sekunden^2
+	
+	double slow = 1;
+	
+	int FRAME_WIDTH = 1920;
+	int FRAME_HEIGHT = 1080;
+
+	// --- Zoom-Variablen ---
+	private double zoomFactor = 1.0;
+
+	double zoomCenterX = 0;
+	double zoomCenterY = 0;
+	private static final double ZOOM_STEP = 1.2;
+	private static final int MIN_RADIUS_DRAW = 2;
+
+	double feinheit = 100;
+	double PAN_STEP = feinheit * zoomFactor; // Verschiebung pro Button-Klick
+
+	// --- Klassenvariablen ---
+	private final List<MasseKugel> bodies = new ArrayList<>();
+
+	// --- Impulsstärke-Variable (Zugriff von außen über Textfeld) ---
+	private double currentImpulseMagnitude = 0.005; // Standardwert
+
+	// --- Parameter für die lebensfreundliche Zone ---
+	private static final double HABITABLE_ZONE_MIN_DIST = 60.0;
+	private static final double HABITABLE_ZONE_MAX_DIST = 80.0;
+
+	// --- Zustand-Flag für die lebensfreundliche Zone von Xylos I ---
+	private boolean isPlanet1InHabZone = true; // Geht davon aus, dass sie initial in der Zone sind
+
+	// --- Hilfsarrays für Zeitreise (temporär, muss noch robust implementiert
+	// werden) ---
+	// Diese Arrays werden aktuell nur im actionPerformed gefüllt und sind nicht für
+	// echtes TimeBack geeignet.
+	// Die timeBack() Methode setzt die Simulation aktuell zurück auf den
+	// Initialzustand.
+	private double[] x_hist = new double[9999];
+	private double[] y_hist = new double[9999];
+	private double[] vx_hist = new double[9999];
+	private double[] vy_hist = new double[9999];
+
+	// NEU: Labels für die Anzeige der Energie-Werte
+	private JLabel kineticEnergyLabel;
+	private JLabel potentialEnergyLabel;
+	private JLabel totalEnergyLabel; // Hinzugefügt für die Gesamtenergie E_kin + E_pot
+
+	// --- Konstruktor ---
+	public main() {
+		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+		setBackground(Color.BLACK);
+		initBodies();
+		Timer timer = new Timer((int) TIMER_DELAY, this);
+		timer.start();
+	}
+	
+//	Existence Spieler = new Existence();
+//	Spieler.entropieconnecter.add(boddies.get(0));
+//	Spieler.entropieconnecter.add(bodies.get(1));
+//	Entropieangleichung(Spieler.entropieconnecter.get(0), Spieler.entropieconnecter.get(1));
+	
+
+	// Steuerzentrale ##################
+	double TIMER_DELAY = 1;
+	int verknüpfungen = 6; // 6 Verknüpfungen währen 3 Raumdimensionen -> Die Intensität bzw. gegenseitige
+							// Wechselwirkung von Massen nimmt mit den Quadraht des Abstandes ab
+
+	int massekugelMethode = 1;
+	double massMul=1000;
+	int massekugelZahl = 1000;
+	int size = 10;
+	double sizeX=1; double sizeY=1; double sizeZ=0;
+	int speed = 0;
+	
+	int counter=0;
+	
+	double time=0;
+	
+	int faktoren=100;
+	
+//	// Beispielhafte Anpassung der KombiSchritt-Methode
+	public void KombiSchritt() {
+		counter++;
+		if(counter%1000==0) {printBodies(false); System.out.println("Time = "+time+" Sekunden = "+time/60/60/24+" Tage");}
+	    GravityGemini(6);
+//		Gravity2D();
+//		randomMove();
+//	    EntrophieGravity(verknüpfungen);
+	    // Hier wird die neue Methode aufgerufen
+//		Gravity(6);
+//	    EntrophieSpeed(0.1); 
+//	    kinetischeFusion();
+	    time+=Frequenz;
+	}
+	
+	public void EntrophieSpeed(double alpha) {
+	    int n = bodies.size();
+	    if (n < 2) return;
+
+	    for (int i = 0; i < n; i++) {
+	        MasseKugel body1 = bodies.get(i);
+
+	        // Zufällige Auswahl eines zweiten Körpers für die Interaktion
+	        int j = (int) (Math.random() * n);
+	        while (i == j) { // Sicherstellen, dass nicht derselbe Körper gewählt wird
+	            j = (int) (Math.random() * n);
+	        }
+	        MasseKugel body2 = bodies.get(j);
+
+	        // Berechnung der mittleren Geschwindigkeit für die Angleichung
+	        double avg_vx = (body1.vx + body2.vx) / 2;
+	        double avg_vy = (body1.vy + body2.vy) / 2;
+	        double avg_vz = (body1.vz + body2.vz) / 2;
+
+	        // Entropie-basierte Geschwindigkeitsanpassung
+	        // Die Geschwindigkeiten werden proportional zur Differenz zur mittleren Geschwindigkeit angepasst.
+	        // Die Konstante alpha steuert die Stärke der Angleichung.
+	        body1.vx += (avg_vx - body1.vx) * alpha;
+	        body1.vy += (avg_vy - body1.vy) * alpha;
+	        body1.vz += (avg_vz - body1.vz) * alpha;
+
+	        body2.vx += (avg_vx - body2.vx) * alpha;
+	        body2.vy += (avg_vy - body2.vy) * alpha;
+	        body2.vz += (avg_vz - body2.vz) * alpha;
+	    }
+	}
+
+	
+	
+	public void printBodies(boolean more) {
+		double eKinGes=0;
+		for(int i=0; i<bodies.size(); i++) {
+			if(more) {
+			System.out.println("MasseKugel Nummer = "+i);
+			bodies.get(i).printWerte();}
+			eKinGes+=bodies.get(i).getEKin();
+		}
+		System.out.println("Gesammte Kinetische Energie aller MasseKugeln = "+eKinGes);
+	}
+	
+	public void doppelsternBasis() {
+		// --- Doppelsternsystem (Zirkumbinäres System) ---
+		// Eine Simulation von zwei Sternen, die einander umkreisen (Baryzentrum), 
+		// mit inneren Planeten und einem äußeren "Matrix-Wächter"-Planeten.
+
+		double massSternA = 380000;  // Etwas massereicher als unsere Sonne
+		double massSternB = 220000;  // Etwas masseärmer (z.B. Roter Zwerg)
+		double gesamtMasseSterne = massSternA + massSternB;
+		
+		double abstandSterne = 80.0; // Distanz der Sterne zueinander
+
+		// 1. Berechnung des gemeinsamen Schwerpunktes (Baryzentrum)
+		double rA = abstandSterne * (massSternB / gesamtMasseSterne);
+		double rB = abstandSterne * (massSternA / gesamtMasseSterne);
+
+		// 2. Berechnung der Orbitalgeschwindigkeiten der Sterne
+		// Basierend auf Newtons Gravitationsgesetz
+		double vOrbitalSterne = Math.sqrt(G * gesamtMasseSterne / abstandSterne);
+		double vA = vOrbitalSterne * (rA / abstandSterne);
+		double vB = vOrbitalSterne * (rB / abstandSterne);
+
+		// --- Himmelskörper definieren ---
+		
+		// Stern A (Zentrum links)
+		MasseKugel sternA = new MasseKugel(-rA, 0, 0, 0, -vA, 0, massSternA, 12, new Color(255, 220, 50));
+		
+		// Stern B (Zentrum rechts)
+		MasseKugel sternB = new MasseKugel(rB, 0, 0, 0, vB, 0, massSternB, 9, new Color(255, 80, 50));
+
+		// Planet 1: Erdähnlicher Planet, der NUR Stern A umkreist
+		double distPlanet1 = 12.0; 
+		double vPlanet1 = Math.sqrt(G * massSternA / distPlanet1);
+		// Geschwindigkeit addiert sich zur Eigenbewegung von Stern A
+		MasseKugel planet1 = new MasseKugel(-rA - distPlanet1, 0, 0, 0, -vA - vPlanet1, 0, 1.0, 5, Color.GREEN);
+
+		// Planet 2: Heißer Gasriese, der NUR Stern B umkreist
+		double distPlanet2 = 18.0;
+		double vPlanet2 = Math.sqrt(G * massSternB / distPlanet2);
+		MasseKugel planet2 = new MasseKugel(rB + distPlanet2, 0, 0, 0, vB + vPlanet2, 0, 250.0, 7, new Color(150, 100, 255));
+
+		// Planet 3: Zirkumbinärer Planet (Umkreist BEIDE Sterne weit außen)
+		// Masseschwerpunkt für ihn ist näherungsweise die Gesamtmasse beider Sterne
+		double distPlanet3 = 250.0;
+		double vPlanet3 = Math.sqrt(G * gesamtMasseSterne / distPlanet3);
+		MasseKugel planet3 = new MasseKugel(0, distPlanet3, 0, -vPlanet3, 0, 0, 8.5, 6, new Color(100, 255, 200));
+
+		// Alle Körper zur Simulation hinzufügen
+		bodies.add(sternA);
+		bodies.add(sternB);
+		bodies.add(planet1);
+		bodies.add(planet2);
+		bodies.add(planet3);
+	}
+	
+	
+	public void galaktischesZentrumBasis() {
+		// --- Das Galaktische Zentrum ---
+		// Eine Simulation des supermassereichen Schwarzen Lochs (Sagittarius A*) 
+		// und extremen stellaren Orbits. 
+
+		// Skalierte Masse für Sagittarius A* (Real ca. 4 Millionen Sonnenmassen)
+		// Die Masse wird hier so skaliert, dass sie in die bestehende G-Konstante 
+		// und die Timesteps der Simulation passt, ohne Floating-Point-Overflows zu erzeugen.
+		double massSgrA = 1.5e9; 
+		
+		// Das Schwarze Loch ruht (näherungsweise) im Zentrum
+		MasseKugel sgrA = new MasseKugel(0, 0, 0, 0, 0, 0, massSgrA, 15, Color.BLACK);
+
+		// --- S-Sterne (Extrem elliptische Orbits) ---
+		// Um elliptische Bahnen zu erzeugen, geben wir den Sternen an ihrem fernsten Punkt (Apoapsis)
+		// eine Geschwindigkeit, die deutlich UNTER der perfekten Kreisbahngeschwindigkeit liegt.
+
+		// Stern S2 (ein realer Stern, der Sgr A* umkreist)
+		double distS2 = 350.0;
+		double vKreisS2 = Math.sqrt(G * massSgrA / distS2);
+		double vElliptischS2 = vKreisS2 * 0.45; // Nur 45% Speed -> starke Exzentrizität
+		MasseKugel sternS2 = new MasseKugel(-distS2, 0, 0, 0, -vElliptischS2, 0, 250000.0, 9, Color.CYAN);
+
+		// Stern S62 (kommt extrem nah an das Schwarze Loch heran)
+		double distS62 = 200.0;
+		double vKreisS62 = Math.sqrt(G * massSgrA / distS62);
+		double vElliptischS62 = vKreisS62 * 0.30; // Nur 30% Speed -> stürzt fast hinein
+		MasseKugel sternS62 = new MasseKugel(0, distS62, 0, -vElliptischS62, 0, 0, 180000.0, 8, Color.MAGENTA);
+
+
+		// --- Das "Retter-System" (Hypothetische Habitable Randzone) ---
+		// Ein stabiles Sternensystem weit genug entfernt vom chaotischen Zentrum, 
+		// um intern Leben zu ermöglichen, während es das Zentrum umkreist.
+		double distArcheSonne = 1200.0;
+		double vArcheSonne = Math.sqrt(G * massSgrA / distArcheSonne);
+		MasseKugel archeSonne = new MasseKugel(distArcheSonne, 0, 0, 0, -vArcheSonne, 0, 333030.0, 7, Color.YELLOW);
+
+		// Ein erdähnlicher, habitabler Planet innerhalb dieses rettenden Sternensystems
+		double distArchePlanet = 15.0;
+		// Die Orbitalgeschwindigkeit des Planeten um seine Sonne
+		double vArchePlanet = Math.sqrt(G * archeSonne.mass / distArchePlanet);
+		// Der Planet erbt die Bewegungsrichtung der Sonne und addiert seine eigene Orbitalgeschwindigkeit
+		MasseKugel archePlanet = new MasseKugel(distArcheSonne + distArchePlanet, 0, 0, 0, -vArcheSonne - vArchePlanet, 0, 1.0, 4, Color.GREEN);
+
+		// Hinzufügen der Objekte zur Render-Engine
+		bodies.add(sgrA);
+		bodies.add(sternS2);
+		bodies.add(sternS62);
+		bodies.add(archeSonne);
+		bodies.add(archePlanet);
+	}
+	
+	public void elementarBausteinBasis() {
+		// --- Der logisch optimale Elementar-Baustein (Das Gravitations-Oktett) ---
+		// Repräsentiert die perfekte Symmetrie, die aus unendlicher Entropie-Angleichung entsteht.
+
+		// 1. Das Zentrum (Analogie zum Atomkern oder supermassiven Attraktor)
+		double massZentrum = 1000000;
+		MasseKugel zentrum = new MasseKugel(0, 0, 0, 0, 0, 0, massZentrum, 18, Color.WHITE);
+		bodies.add(zentrum);
+
+		// 2. Die innere Schale (Analogie zum s-Orbital: 2 Massenpunkte)
+		// Perfekt ausbalanciert, 180 Grad zueinander versetzt.
+		double distInner = 25.0;
+		double massInner = 10.0;
+		// Bahngeschwindigkeit: v = sqrt(G * M / r)
+		double vInner = Math.sqrt(G * massZentrum / distInner);
+		
+		for (int i = 0; i < 2; i++) {
+			double angle = i * Math.PI; // 0 und 180 Grad
+			double x = Math.cos(angle) * distInner;
+			double y = Math.sin(angle) * distInner;
+			double vx = -Math.sin(angle) * vInner;
+			double vy = Math.cos(angle) * vInner;
+			bodies.add(new MasseKugel(x, y, 0, vx, vy, 0, massInner, 5, new Color(255, 100, 100)));
+		}
+
+		// 3. Die äußere Schale (Analogie zu den 6 Entropieverknüpfungen / p-Orbitalen)
+		// 6 Massenpunkte bilden ein perfektes Hexagon, das das Zentrum umkreist.
+		double distOuter = 70.0;
+		double massOuter = 15.0;
+		
+		// Korrektur der Orbitalgeschwindigkeit durch die Masse der inneren Schale
+		// (Die äußeren Planeten spüren die Gravitation des Zentrums PLUS die der inneren Planeten)
+		double effektiveZentrumsMasse = massZentrum + (2 * massInner);
+		double vOuter = Math.sqrt(G * effektiveZentrumsMasse / distOuter);
+		
+		for (int i = 0; i < 6; i++) {
+			double angle = i * (Math.PI / 3.0); // 60 Grad Abstand (360° / 6)
+			double x = Math.cos(angle) * distOuter;
+			double y = Math.sin(angle) * distOuter;
+			double vx = -Math.sin(angle) * vOuter;
+			double vy = Math.cos(angle) * vOuter;
+			bodies.add(new MasseKugel(x, y, 0, vx, vy, 0, massOuter, 7, new Color(100, 200, 255)));
+		}
+	}
+	
+	
+	public void protonenBasis() {
+		// --- Das Matrix-Proton: Subatomare Skalierung durch Newtonsche Axiome ---
+		
+		// Skalierte Basis-Massen für die Engine
+		double masseElektron = 12.0; 
+		double masseElementar = masseElektron / 6.0; // Dein 1/6 Basisbaustein (2.0)
+		
+		// Das Proton besteht grob aus 3 Quarks (Up, Up, Down).
+		// Wir teilen einen Großteil der Protonenmasse auf diese 3 massiven Zentren auf.
+		double masseQuark = 1836.0 * masseElektron / 3.0; 
+		
+		double distQuarks = 8.0; // Extrem nah beieinander
+		
+		// Orbitalgeschwindigkeit für ein Dreikörper-System gleicher Masse auf einer Kreisbahn:
+		// v = sqrt(G * M / (sqrt(3) * R))
+		double vQuark = Math.sqrt(G * masseQuark / (Math.sqrt(3) * distQuarks));
+
+		// 1. Der "Kern" (3 Quarks in perfekter Symmetrie, 120 Grad versetzt)
+		for (int i = 0; i < 3; i++) {
+			double angle = i * (2.0 * Math.PI / 3.0);
+			double x = Math.cos(angle) * distQuarks;
+			double y = Math.sin(angle) * distQuarks;
+			double vx = -Math.sin(angle) * vQuark;
+			double vy = Math.cos(angle) * vQuark;
+			
+			// Quarks werden in Rot/Blau/Grün dargestellt (Analogie zur Farbladung in der Quantenchromodynamik)
+			Color qColor = (i == 0) ? Color.RED : (i == 1) ? Color.GREEN : Color.BLUE;
+			bodies.add(new MasseKugel(x, y, 0, vx, vy, 0, masseQuark, 10, qColor));
+		}
+
+		// 2. Die Elementar-Schale (Die 1/6 Elektronen-Bausteine)
+		// Wir lassen eine Wolke dieser Teilchen das Dreikörper-Zentrum in verschiedenen Orbits umkreisen.
+		int anzahlElementar = 24; // Ein repräsentativer Schwarm (Skalierung für Performance)
+		double zentrumsMasseGesamt = 3 * masseQuark;
+		
+		for (int i = 0; i < anzahlElementar; i++) {
+			// Zufällige, aber stabile Abstände (Orbitalschalen)
+			double distOrbital = 40.0 + (Math.random() * 80.0);
+			double angle = Math.random() * 2.0 * Math.PI;
+			
+			double x = Math.cos(angle) * distOrbital;
+			double y = Math.sin(angle) * distOrbital;
+			
+			// Orbitalgeschwindigkeit basiert auf der Gesamtmasse des Kerns
+			double vOrbital = Math.sqrt(G * zentrumsMasseGesamt / distOrbital);
+			
+			// Leicht elliptische Fluktuationen erzeugen (+- 5% Speed) für Entropie
+			double vFluktuation = vOrbital * (0.95 + Math.random() * 0.1);
+			
+			double vx = -Math.sin(angle) * vFluktuation;
+			double vy = Math.cos(angle) * vFluktuation;
+			
+			// Wir übergeben deinen 1/6 Baustein
+			bodies.add(new MasseKugel(x, y, 0, vx, vy, 0, masseElementar, 3, Color.WHITE));
+		}
+	}
+	
+	
+	
+	public void orbitalRecyclerBasis() {
+		// --- Kessler-Syndrom & Orbital-Recycling ---
+		// Simulation eines Planeten mit gefährlichem Weltraumschrott und einer Recycler-Drohne.
+
+		double erdMasse = 500000;
+		// Der Heimatplanet
+		MasseKugel erde = new MasseKugel(0, 0, 0, 0, 0, 0, erdMasse, 20, Color.BLUE);
+		bodies.add(erde);
+
+		// Weltraumschrott (hohe Entropie, extrem kreuzende, chaotische Bahnen)
+		int schrottAnzahl = 50;
+		for (int i = 0; i < schrottAnzahl; i++) {
+			double dist = 60.0 + (Math.random() * 150.0);
+			double angle = Math.random() * 2 * Math.PI;
+			double vKreis = Math.sqrt(G * erdMasse / dist);
+			
+			// Elliptische und gegenläufige Geschwindigkeiten (0.4 bis 1.4 facher Speed)
+			double vx = -Math.sin(angle) * vKreis * (0.4 + Math.random());
+			double vy = Math.cos(angle) * vKreis * (0.4 + Math.random());
+			
+			MasseKugel schrott = new MasseKugel(Math.cos(angle)*dist, Math.sin(angle)*dist, 0, vx, vy, 0, 0.5, 2, Color.LIGHT_GRAY);
+			bodies.add(schrott);
+		}
+
+		// Autonome / Steuerbare Recycler-Drohne
+		// Startet in einem sicheren, weiten und perfekten Orbit
+		double distRecycler = 280.0;
+		double vRecycler = Math.sqrt(G * erdMasse / distRecycler);
+		MasseKugel recycler = new MasseKugel(distRecycler, 0, 0, 0, -vRecycler, 0, 8.0, 6, Color.GREEN);
+		
+		bodies.add(recycler);
+	}
+	
+	double masseErde = 5.9722E24;//kg
+	// Abstand der Erde von der Sonne =1,495978707 * 10^{11} Meter
+	// Abstand der Erde von der Sonne/15.0 =1,495978707 * 10^{11}/15.0 Meter=9.97319138 *10^9
+	// $$\frac{1,495978707 \times 10^{11} \, \text{m}}{15} = 9,97319138 \times 10^9 \, \text{m}$$
+	double abstandErdeSonneFaktor=9.97319138E9;          //*15*Meter 
+	public void planetenBasis() {
+
+		MasseKugel Sonne = new MasseKugel(0, 0, 0, 0, 0, 0, 333030*masseErde, 10, Color.YELLOW);
+
+		// Merkur
+		MasseKugel Merkur = new MasseKugel(-5.8*abstandErdeSonneFaktor, 0, 0, 0, Math.sqrt(Sonne.mass * G / 5.8/abstandErdeSonneFaktor), 0, 0.055*masseErde, 3,
+				new Color(150, 150, 150));
+		// Venus
+		MasseKugel Venus = new MasseKugel(10.8*abstandErdeSonneFaktor, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 10.8/abstandErdeSonneFaktor), 0, 0.815*masseErde, 4,
+				new Color(200, 100, 0));
+		// Erde
+		MasseKugel Erde = new MasseKugel(-15.0*abstandErdeSonneFaktor, 0, 0, 0, Math.sqrt(Sonne.mass * G / 15.0/abstandErdeSonneFaktor), 0, 1.0*masseErde, 5, Color.BLUE);
+		// Mars
+		MasseKugel Mars = new MasseKugel(22.8*abstandErdeSonneFaktor, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 22.8/abstandErdeSonneFaktor), 0, 0.107*masseErde, 4, Color.RED);
+		// Jupiter
+		MasseKugel Jupiter = new MasseKugel(-77.8*abstandErdeSonneFaktor, 0, 0, 0, Math.sqrt(Sonne.mass * G / 77.8/abstandErdeSonneFaktor), 0, 317.8*masseErde, 9,
+				new Color(200, 150, 100));
+		// Saturn
+		MasseKugel Saturn = new MasseKugel(142.7*abstandErdeSonneFaktor, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 142.7/abstandErdeSonneFaktor), 0, 95.2*masseErde, 8,
+				new Color(200, 200, 100));
+		// Uranus
+		MasseKugel Uranus = new MasseKugel(-287.1*abstandErdeSonneFaktor, 0, 0, 0, Math.sqrt(Sonne.mass * G / 287.1/abstandErdeSonneFaktor), 0, 14.5*masseErde, 7,
+				new Color(150, 200, 250));
+		// Neptun
+		MasseKugel Neptun = new MasseKugel(449.8*abstandErdeSonneFaktor, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 449.8/abstandErdeSonneFaktor), 0, 17.1*masseErde, 7, Color.BLUE);
+
+		bodies.add(Sonne);
+		bodies.add(Merkur);
+		bodies.add(Venus);
+		bodies.add(Erde);
+		bodies.add(Mars);
+		    bodies.add(Jupiter);
+		    bodies.add(Saturn);
+		    bodies.add(Uranus);
+		    bodies.add(Neptun);
+	}
+	
+	public void masseKugelBasis2D() {
+		for(int i=0; i<faktoren; i++) {
+		double rand1=1000*Math.random()-500;
+		double rand2=1000*Math.random()-500;
+
+		MasseKugel Sonne = new MasseKugel(0+rand1, 0, 0, 0, 0, 0, 333030*masseErde, 10, Color.YELLOW);
+
+		// Merkur
+		MasseKugel Merkur = new MasseKugel(-5.8*abstandErdeSonneFaktor+rand1, 0, 0, 0, Math.sqrt(Sonne.mass * G / Math.sqrt(5.8*abstandErdeSonneFaktor)), 0, 0.055*masseErde, 3,
+				new Color(150, 150, 150));
+		// Venus
+		MasseKugel Venus = new MasseKugel(10.8*abstandErdeSonneFaktor+rand1, rand2, 0, 0, -Math.sqrt(Sonne.mass * G / Math.sqrt(10.8*abstandErdeSonneFaktor)), 0, 0.815*masseErde, 4,
+				new Color(200, 100, 0));
+		// Erde
+		MasseKugel Erde = new MasseKugel(-15.0*abstandErdeSonneFaktor+rand1, rand2, 0, 0, Math.sqrt(Sonne.mass * G / Math.sqrt(15.0*abstandErdeSonneFaktor)), 0, 1.0*masseErde, 5, Color.BLUE);
+		// Mars
+		MasseKugel Mars = new MasseKugel(22.8*abstandErdeSonneFaktor+rand1, rand2, 0, 0, -Math.sqrt(Sonne.mass * G / Math.sqrt(22.8*abstandErdeSonneFaktor)), 0, 0.107*masseErde, 4, Color.RED);
+		// Jupiter
+		MasseKugel Jupiter = new MasseKugel(-77.8*abstandErdeSonneFaktor, rand2, 0, 0, Math.sqrt(Sonne.mass * G / Math.sqrt(77.8*abstandErdeSonneFaktor)), 0, 317.8*masseErde, 9,
+				new Color(200, 150, 100));
+		// Saturn
+		MasseKugel Saturn = new MasseKugel(142.7*abstandErdeSonneFaktor+rand1, rand2, 0, 0, -Math.sqrt(Sonne.mass * G /Math.sqrt (142.7*abstandErdeSonneFaktor)), 0, 95.2*masseErde, 8,
+				new Color(200, 200, 100));
+		// Uranus
+		MasseKugel Uranus = new MasseKugel(-287.1*abstandErdeSonneFaktor+rand1, rand2, 0, 0, Math.sqrt(Sonne.mass * G / Math.sqrt(287.1*abstandErdeSonneFaktor)), 0, 14.5*masseErde, 7,
+				new Color(150, 200, 250));
+		// Neptun
+		MasseKugel Neptun = new MasseKugel(449.8*abstandErdeSonneFaktor+rand1, rand2, 0, 0, -Math.sqrt(Sonne.mass * G / 449.8/abstandErdeSonneFaktor), 0, 17.1*masseErde, 7, Color.BLUE);
+
+		bodies.add(Sonne);
+		bodies.add(Merkur);
+		bodies.add(Venus);
+		bodies.add(Erde);
+		bodies.add(Mars);
+		    bodies.add(Jupiter);
+		    bodies.add(Saturn);
+		    bodies.add(Uranus);
+		    bodies.add(Neptun);
+	}}
+
+	public void masseKugelBasis1(int number, int size) {
+
+		MasseKugel Sonne = new MasseKugel(0, 0, 0, 0, 0, 0, 333030, 10, Color.YELLOW);
+
+		// Merkur
+		MasseKugel Merkur = new MasseKugel(-5.8, 0, 0, 0, Math.sqrt(Sonne.mass * G / 5.8), 0, 0.055, 3,
+				new Color(150, 150, 150));
+		// Venus
+		MasseKugel Venus = new MasseKugel(10.8, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 10.8), 0, 0.815, 4,
+				new Color(200, 100, 0));
+		// Erde
+		MasseKugel Erde = new MasseKugel(-15.0, 0, 0, 0, Math.sqrt(Sonne.mass * G / 15.0), 0, 1.0, 5, Color.BLUE);
+		// Mars
+		MasseKugel Mars = new MasseKugel(22.8, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 22.8), 0, 0.107, 4, Color.RED);
+		// Jupiter
+		MasseKugel Jupiter = new MasseKugel(-77.8, 0, 0, 0, Math.sqrt(Sonne.mass * G / 77.8), 0, 317.8, 9,
+				new Color(200, 150, 100));
+		// Saturn
+		MasseKugel Saturn = new MasseKugel(142.7, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 142.7), 0, 95.2, 8,
+				new Color(200, 200, 100));
+		// Uranus
+		MasseKugel Uranus = new MasseKugel(-287.1, 0, 0, 0, Math.sqrt(Sonne.mass * G / 287.1), 0, 14.5, 7,
+				new Color(150, 200, 250));
+		// Neptun
+		MasseKugel Neptun = new MasseKugel(449.8, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 449.8), 0, 17.1, 7, Color.BLUE);
+
+		bodies.add(Sonne);
+		bodies.add(Merkur);
+		bodies.add(Venus);
+		bodies.add(Erde);
+		bodies.add(Mars);
+		    bodies.add(Jupiter);
+		    bodies.add(Saturn);
+		    bodies.add(Uranus);
+		    bodies.add(Neptun);
+
+		for (int i = 0; i < number; i++) {
+			int randSize=(int)(Math.random()*Math.random()*Math.random()*14)+1;
+			double randRed=(int)(Math.random()*256);
+			double randGreen=(int)(Math.random()*256);
+			double randBlue=(int)(Math.random()*256);
+			double mass=(randRed+randGreen*3+randBlue*7)*randSize*randSize*randSize;
+			MasseKugel masseKugel = new MasseKugel(size * Math.random()/Math.random()-size * Math.random()/Math.random(), size * Math.random()/Math.random()-size * Math.random()/Math.random(), size * Math.random()/Math.random()-size * Math.random()/Math.random(), 0, 0, 0, mass, randSize,
+					new Color((int) (randRed), (int) (randGreen), (int) (randBlue)));
+
+			bodies.add(masseKugel);
+		}
+
+	}
+
+	public void masseKugelBasis2(int number, int size, int speed) {
+
+		for (int i = 0; i < number; i++) {
+			MasseKugel masseKugel = new MasseKugel(sizeX*size * Math.random()-0.5*size*sizeX, sizeY*size * Math.random()-0.5*size*sizeY, sizeZ*size * Math.random()-0.5*size*sizeZ,
+					(int) (Math.random() * speed - speed * 0.5), (int) (Math.random() * speed - speed * 0.5), (int) (Math.random() * speed - speed * 0.5), massMul*Math.random()/Math.random(), 8,
+					new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255)));
+
+			bodies.add(masseKugel);
+		}
+		
+//		for (int i = 0; i < number; i++) {
+//			MasseKugel masseKugel = new MasseKugel(size * Math.random(), size * Math.random(), 0,
+//					(int) (Math.random() * speed - speed * 0.5), (int) (Math.random() * speed - speed * 0.5), 0, 1, 8,
+//					new Color((int) (Math.min(255, 255*3/number)) , (int) (Math.max(0, Math.min(255, 255*3/number-255))), (int) Math.max(Math.min(255, 255*3/number-255),0)));
+//
+//			bodies.add(masseKugel);
+//		}
+
+	}
+
+	private void initBodies() {
+
+		if (massekugelMethode == 1)
+			planetenBasis();
+		if (massekugelMethode == 2)
+			masseKugelBasis1(massekugelZahl, size);
+		if (massekugelMethode == 3)
+			masseKugelBasis2(massekugelZahl, size, speed);
+		if (massekugelMethode == 4) doppelsternBasis();
+		if (massekugelMethode == 5)galaktischesZentrumBasis();
+		if (massekugelMethode == 6)elementarBausteinBasis();
+		if (massekugelMethode == 7)protonenBasis();
+		if (massekugelMethode == 8)orbitalRecyclerBasis();
+//			masseKugelBasis(100000,100000,100000,1000);
+		if(massekugelMethode == 10) masseKugelBasis2D();
+		if(massekugelMethode == 12) masseKugelBasis2D(size,size,0,massekugelZahl);
+	}
+
+	// --- Methoden zum Auslesen/Speichern der Bodies ---
+	public List<MasseKugel> getBodies() {
+		return new ArrayList<>(bodies);
+	}
+
+	// Methoden für die Geschwindigkeitsanpassung, umbenannt für Klarheit
+	public double apspeed = 30; // Simulationsgeschwindigkeit - als Klassenvariable definiert
+
+	public void increaseSimulationSpeed() {
+		apspeed *= 1.2;
+		repaint();
+	}
+
+	public void decreaseSimulationSpeed() {
+		apspeed /= 1.2;
+		slow = slow / apspeed;
+		System.out.println(TIMER_DELAY);
+		repaint();
+	}
+
+	private void rotateBodyAroundDegrees(MasseKugel body, MasseKugel center, double degrees) {
+		double theta = Math.toRadians(degrees);
+		rotateBodyAround(body, center, theta);
+	}
+
+	private void rotateBodyAround(MasseKugel body, MasseKugel center, double theta) {
+		double dx = body.x - center.x;
+		double dy = body.y - center.y;
+		double cos = Math.cos(theta);
+		double sin = Math.sin(theta);
+		double newDx = dx * cos - dy * sin;
+		double newDy = dx * sin + dy * cos;
+		body.x = center.x + newDx;
+		body.y = center.y + newDy;
+		double vx = body.vx;
+		double vy = body.vy;
+		body.vx = vx * cos - vy * sin;
+		body.vy = vx * sin + vy * cos;
+	}
+
+	// NEU: Methode zur Berechnung der kinetischen Gesamtenergie aller Körper
+	public double getEKinGes() {
+		double EKinGes = 0;
+		for (MasseKugel m : bodies) {
+			EKinGes += m.getEKin(); // Ruft die Methode getEKin() der MasseKugel auf
+		}
+		return EKinGes;
+	}
+
+	// NEU: Korrigierte Methode zur Berechnung der potentiellen Gesamtenergie
+	// Sie summiert die potenzielle Energie zwischen *allen einzigartigen Paaren*
+	// von Himmelskörpern.
+	public double getEPotGes() {
+		double totalEPot = 0;
+		for (int i = 0; i < bodies.size(); i++) {
+			MasseKugel b1 = bodies.get(i);
+			for (int j = i + 1; j < bodies.size(); j++) { // Schleife über einzigartige Paare (j beginnt bei i+1)
+				MasseKugel b2 = bodies.get(j);
+
+				double dx = b2.x - b1.x;
+				double dy = b2.y - b1.y;
+				double dz = b2.z - b1.z; // Berücksichtigt die Z-Koordinate für den Abstand in 3D
+
+				double r = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+				// Behandle extrem kleine Abstände, um Division durch Null oder sehr große Werte
+				// zu vermeiden
+				// Schwellenwert (0.001) kann bei Bedarf an die Simulationsskala angepasst
+				// werden
+				if (r < 0.001) {
+					r = 0.001;
+				}
+
+				totalEPot += -G * b1.mass * b2.mass / r;
+			}
+		}
+		return totalEPot;
+	}
+
+	// Die ursprüngliche getEPot(MasseKugel m)-Methode wurde entfernt,
+	// da sie nicht für die paarweise Berechnung der potenziellen Energie in einem
+	// N-Körper-System geeignet war.
+	/*
+	 * public double getEPot(MasseKugel m) { double EKin=
+	 * -G*m.mass*getGesMass()/m.getDistZero(); return EKin; }
+	 */
+
+	public double getGesMass() {
+		double gesMass = 0;
+		for (MasseKugel m : bodies) {
+			gesMass += m.mass;
+		}
+		return gesMass;
+	}
+
+	public void masseKugelBasis(double x, double y, double z, int anzahl) {
+		for (int i = 0; i < anzahl; i++) {
+			MasseKugel mk = new MasseKugel(Math.random() * x, Math.random() * y, Math.random() * z, 0, 0, 0, 1, 8,
+					Color.LIGHT_GRAY);
+			bodies.add(mk);
+		}
+	}
+
+	public void masseKugelBasis2D(double x, double y, double z, int anzahl) {
+		for (int i = 0; i < anzahl; i++) {
+			MasseKugel mk = new MasseKugel(Math.random() * x, Math.random() * y, Math.random() * z, 0, 0, 0,
+					Math.random() / Math.random(), 8, Color.LIGHT_GRAY);
+			Color c=new Color((int)(256*Math.random()),(int)(Math.random()*256),(int)(Math.random()*256));
+			mk.color=c;
+			bodies.add(mk);
+		}
+	}
+
+	// --- Pan-Methoden ---
+	public void panLeft() {
+		zoomCenterX += PAN_STEP;
+		repaint();
+	}
+
+	public void panRight() {
+		zoomCenterX -= PAN_STEP;
+		repaint();
+	}
+
+	public void panUp() {
+		zoomCenterY += PAN_STEP;
+		repaint();
+	}
+
+	public void panDown() {
+		zoomCenterY -= PAN_STEP;
+		repaint();
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setColor(Color.BLACK);
+		g2.fillRect(0, 0, getWidth(), getHeight());
+		for (MasseKugel body : bodies) {
+			// Berücksichtige Pan und Zoom bei der Positionierung
+			double sx = (zoomCenterX + body.x) * zoomFactor + getWidth() / 2.0;
+			double sy = (zoomCenterY + body.y) * zoomFactor + getHeight() / 2.0;
+//			int r = (int) Math.max(body.radius * zoomFactor, MIN_RADIUS_DRAW);
+			g2.setColor(body.color);
+			g2.fillOval((int) (sx - body.radius), (int) (sy - body.radius), body.radius * 2, body.radius * 2);
+		}
+	}
+
+	int Zeitschritt = 0;
+
+	@Override
+	// #run
+	public void actionPerformed(ActionEvent e) {
+		for (int i = 0; i < apspeed; i++) {
+		
+//			GravityFolter(verknüpfungen);
+			
+			KombiSchritt();}
+		
+		repaint();
+	}
+
+	void entropieangleichRaum(MasseKugel mp1, MasseKugel mp2) {
+		double flow1x = mp1.x * Math.random();
+		double flow2x = mp2.x * Math.random();
+		mp1.x -= flow1x;
+		mp1.x += flow2x;
+		mp2.x -= flow2x;
+		mp2.x += flow1x;
+
+		double flow1y = mp1.y * Math.random();
+		double flow2y = mp2.y * Math.random();
+		mp1.y -= flow1x;
+		mp1.y += flow2x;
+		mp2.y -= flow2x;
+		mp2.y += flow1x;
+
+		double flow1z = mp1.z * Math.random();
+		double flow2z = mp2.z * Math.random();
+		mp1.z -= flow1x;
+		mp1.z += flow2x;
+		mp2.z -= flow2x;
+		mp2.z += flow1x;
+	}
+	
+	void entropieangleichRaumStep(MasseKugel mp1, MasseKugel mp2) {
+		double flow1x = (mp2.x-mp1.x) * Math.random();
+		
+		
+		mp1.x += flow1x;
+		mp2.x -= flow1x;
+		
+
+double flow1y = (mp2.y-mp1.y) * Math.random();
+		
+		
+		mp1.y += flow1y;
+		mp2.y -= flow1y;
+		
+
+double flow1z = (mp2.z-mp1.z) * Math.random();
+		
+		
+		mp1.z += flow1z;
+		mp2.z -= flow1z;
+		
+	}
+
+	void entropieangleichSpeed(MasseKugel mp1, MasseKugel mp2) {
+		double flow1x = mp1.x * Math.random();
+		double flow2x = mp2.x * Math.random();
+		mp1.vx -= flow1x;
+		mp1.vx += flow2x;
+		mp2.vx -= flow2x;
+		mp2.vx += flow1x;
+
+		double flow1y = mp1.y * Math.random();
+		double flow2y = mp2.y * Math.random();
+		mp1.vy -= flow1x;
+		mp1.vy += flow2x;
+		mp2.vy -= flow2x;
+		mp2.vy += flow1x;
+
+		double flow1z = mp1.z * Math.random();
+		double flow2z = mp2.z * Math.random();
+		mp1.vz -= flow1x;
+		mp1.vz += flow2x;
+		mp2.vz -= flow2x;
+		mp2.vz += flow1x;
+	}
+
+	public void EntrophieGravity(int verknüpfungen) {
+		int n = bodies.size();
+		
+		List<MasseKugel> parallelliste1= new ArrayList<MasseKugel>();
+		List<MasseKugel> parallelliste2= new ArrayList<MasseKugel>();
+		List<MasseKugel> parallelliste3= new ArrayList<MasseKugel>();
+		List<MasseKugel> parallelliste4= new ArrayList<MasseKugel>();
+		List<MasseKugel> parallelliste5= new ArrayList<MasseKugel>();
+		List<MasseKugel> parallelliste6= new ArrayList<MasseKugel>();
+		
+		for(int z=0; z<bodies.size(); z++) {
+			
+				parallelliste1.add(bodies.get((int) (bodies.size()*Math.random())));
+				parallelliste2.add(bodies.get((int) (bodies.size()*Math.random())));
+				parallelliste3.add(bodies.get((int) (bodies.size()*Math.random())));
+				parallelliste4.add(bodies.get((int) (bodies.size()*Math.random())));
+				parallelliste5.add(bodies.get((int) (bodies.size()*Math.random())));
+				parallelliste6.add(bodies.get((int) (bodies.size()*Math.random())));
+//				parallelliste1.add(bodies.get((int) (bodies.size()*Math.random())));
+			
+		}
+		
+		int i = (int)(Math.random()*n);
+			double[] mins = new double[verknüpfungen];
+			for (int j = 0; j < verknüpfungen; j++) {
+				MasseKugel mi = bodies.get(i);
+				if (i + 1 < n) {
+					MasseKugel mj = bodies.get(i + 1);
+
+					double dx = mj.x - mi.x;
+					double dy = mj.y - mi.y;
+					double dz = mj.z - mi.z;
+
+					double r2 = dx * dx + dy * dy + dz * dz;
+					double r = Math.sqrt(r2);
+
+					entropieangleichRaumStep(mi, mj);
+				}
+				
+				if (i - 1 >= n) {
+					MasseKugel mj = bodies.get(i - 1);
+
+					double dx = mj.x - mi.x;
+					double dy = mj.y - mi.y;
+					double dz = mj.z - mi.z;
+
+					double r2 = dx * dx + dy * dy + dz * dz;
+					double r = Math.sqrt(r2);
+
+					entropieangleichRaumStep(mi, mj);
+				}
+				if(verknüpfungen>2) {MasseKugel mj = parallelliste1.get(i);
+				double dx = mj.x - mi.x;
+				double dy = mj.y - mi.y;
+				double dz = mj.z - mi.z;
+				double r2 = dx * dx + dy * dy + dz * dz;
+				double r = Math.sqrt(r2);
+				entropieangleichRaumStep(mi, mj);}
+				
+				if(verknüpfungen>3) {MasseKugel mj = parallelliste1.get(i);
+				double dx = mj.x - mi.x;
+				double dy = mj.y - mi.y;
+				double dz = mj.z - mi.z;
+				double r2 = dx * dx + dy * dy + dz * dz;
+				double r = Math.sqrt(r2);
+				entropieangleichRaumStep(mi, mj);}
+			
+		}
+	}
+	
+	
+	
+	public void Gravity2D() {
+		int n = bodies.size();
+		double[] ax = new double[n];
+		double[] ay = new double[n];
+		
+
+		for (int i = 0; i < n; i++) {
+			MasseKugel bi = bodies.get(i);
+			ax[i] = ay[i] = 0;
+			if (!bi.movable)
+				continue;
+			for (int j = 0; j < n; j++) {
+				if (i == j)
+					continue;
+				MasseKugel bj = bodies.get(j);
+				double dx = bj.x - bi.x;
+				double dy = bj.y - bi.y;
+				double dz = bj.z - bi.z;
+				
+				if(dz!=0)continue;
+
+				double r2 = dx * dx + dy * dy;
+				double r = Math.sqrt(r2);
+
+				double normdx = dx / r;
+				double normdy = dy / r;
+				
+
+				ax[i] += G * bj.mass * normdx / r;
+				ay[i] += G * bj.mass * normdy / r;
+				
+			}
+		}
+		// Positions- und Geschwindigkeitsupdate
+		for (int i = 0; i < n; i++) {
+			MasseKugel b = bodies.get(i);
+			if (b.movable) {
+				b.vx += ax[i];
+				b.vy += ay[i];
+				
+			}
+			b.updatePosition(1.0);
+		}
+	}
+	
+	public void randomMove() {
+		for(int i=0; i<bodies.size(); i++) {
+			MasseKugel bi = bodies.get(i);
+			bi.x=bi.x+Math.random()/Math.random()-Math.random()/Math.random();
+			bi.y=bi.y+Math.random()/Math.random()-Math.random()/Math.random();
+			bi.z=bi.z+Math.random()/Math.random()-Math.random()/Math.random();
+		}
+	}
+	
+
+	public void GravityGemini(int foltern) {
+		int n = bodies.size();
+		double[] ax = new double[n];
+		double[] ay = new double[n];
+		double[] az = new double[n];
+
+		for (int i = 0; i < n; i++) {
+			MasseKugel bi = bodies.get(i);
+			ax[i] = ay[i] = az[i] = 0;
+			if (!bi.movable)
+				continue;
+			for (int j = 0; j < n; j++) {
+				if (i == j)
+					continue;
+				MasseKugel bj = bodies.get(j);
+				double dx = bj.x - bi.x;
+				double dy = bj.y - bi.y;
+				double dz = bj.z - bi.z;
+
+				double r2 = dx * dx + dy * dy + dz * dz;
+				double r = Math.sqrt(r2);
+				
+				if(r==0)continue;
+
+				double normdx = dx / r;
+				double normdy = dy / r;
+				double normdz = dz / r;
+
+				ax[i] += G * bj.mass * normdx / Math.pow(r, verknüpfungen * 0.5 - 1);
+				ay[i] += G * bj.mass * normdy / Math.pow(r, verknüpfungen * 0.5 - 1);
+				az[i] += G * bj.mass * normdz / Math.pow(r, verknüpfungen * 0.5 - 1);
+				
+				if(ax[i]>r/2)ax[i]=r/2;
+				if(ay[i]>r/2)ay[i]=r/2;
+				if(az[i]>r/2)az[i]=r/2;
+				
+				if(ax[i]<-r/2)ax[i]=-r/2;
+				if(ay[i]<-r/2)ay[i]=-r/2;
+				if(az[i]<-r/2)az[i]=-r/2;
+			}
+		}
+		// Positions- und Geschwindigkeitsupdate
+		for (int i = 0; i < n; i++) {
+			MasseKugel b = bodies.get(i);
+			if (b.movable) {
+				b.vx += ax[i];
+				b.vy += ay[i];
+				b.vz += az[i];
+			}
+			b.updatePosition(1.0);
+		}
+	}
+
+	public void kinetischeFusion() {
+		// --- Simulation von kinetischer Kernverschmelzung (Exotherm) ---
+		List<MasseKugel> toRemove = new ArrayList<>();
+		List<MasseKugel> toAdd = new ArrayList<>();
+
+		for (int i = 0; i < bodies.size(); i++) {
+			MasseKugel b1 = bodies.get(i);
+			if (toRemove.contains(b1)) continue;
+
+			for (int j = i + 1; j < bodies.size(); j++) {
+				MasseKugel b2 = bodies.get(j);
+				if (toRemove.contains(b2)) continue;
+
+				double dx = b2.x - b1.x;
+				double dy = b2.y - b1.y;
+				double dz = b2.z - b1.z;
+				double dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+				// Kollisionsprüfung
+				if (dist < (b1.radius + b2.radius)) {
+					// Relativgeschwindigkeit ermitteln
+					double dvx = b2.vx - b1.vx;
+					double dvy = b2.vy - b1.vy;
+					double dvz = b2.vz - b1.vz;
+					
+					// Skalare Geschwindigkeit im Quadrat (als Repräsentant der kinetischen Aufprallenergie)
+					double vRelSq = dvx*dvx + dvy*dvy + dvz*dvz;
+
+					// Schwellenwert: Nur wenn sie schnell genug aufeinanderprallen, fusionieren sie
+					if (vRelSq > 2.0) { // Wert anpassbar für das Game-Balancing
+						
+						double neueMasse = b1.mass + b2.mass;
+						
+						// Völlig inelastischer Stoß: Impulserhaltung (p = m*v)
+						double neuVx = (b1.mass * b1.vx + b2.mass * b2.vx) / neueMasse;
+						double neuVy = (b1.mass * b1.vy + b2.mass * b2.vy) / neueMasse;
+						double neuVz = (b1.mass * b1.vz + b2.mass * b2.vz) / neueMasse;
+						
+						// Das neu fusionierte, schwerere Element (z.B. Eisen)
+						MasseKugel fusioniert = new MasseKugel(
+								(b1.x + b2.x) / 2, (b1.y + b2.y) / 2, (b1.z + b2.z) / 2, 
+								neuVx, neuVy, neuVz, 
+								neueMasse, Math.max(b1.radius, b2.radius) + 1, Color.ORANGE);
+						
+						toRemove.add(b1);
+						toRemove.add(b2);
+						toAdd.add(fusioniert);
+					}
+				}
+			}
+		}
+		// Listen aktualisieren
+		bodies.removeAll(toRemove);
+		bodies.addAll(toAdd);
+	}
+	
+	
+	public void Gravity(int verknüpfungen) {
+		int n = bodies.size();
+
+		for (int i = 0; i < n; i++) {
+			MasseKugel bi = bodies.get((int)(Math.random()*n));
+
+			
+				MasseKugel bj = bodies.get((int)(Math.random()*n));
+				if (bi == bj)
+					continue;
+				double dx = bj.x - bi.x;
+				double dy = bj.y - bi.y;
+				double dz = bj.z - bi.z;
+				double r2 = dx * dx + dy * dy + dz * dz;
+				double r = Math.sqrt(r2);
+
+				bi.vx += G * bj.mass * dx / Math.pow(r, verknüpfungen / 0.5 - 1);
+				bi.vy += G * bj.mass * dy / Math.pow(r, verknüpfungen / 0.5 - 1);
+				bi.vz += G * bj.mass * dz / Math.pow(r, verknüpfungen / 0.5 - 1);
+
+				bj.vx -= G * bi.mass * dx / Math.pow(r, verknüpfungen / 0.5-1);
+				bj.vy -= G * bi.mass * dy / Math.pow(r, verknüpfungen / 0.5-1);
+				bj.vz -= G * bi.mass * dz / Math.pow(r, verknüpfungen / 0.5-1);
+			
+			bi.updatePosition(1.0);
+			bj.updatePosition(1.0);
+		}
+	}
+
+	// Zoom-Funktionen
+	public void zoomIn() {
+		zoomFactor *= ZOOM_STEP;
+		PAN_STEP = feinheit / zoomFactor;
+		repaint();
+	}
+
+	public void zoomOut() {
+		zoomFactor /= ZOOM_STEP;
+		PAN_STEP = feinheit / zoomFactor;
+		repaint();
+	}
+
+	// --- Hauptmethode mit allen Buttons ---
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			JFrame frame = new JFrame("N-Body Sonnensystem-Simulation (QDBV-Modul)");
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			main simPanel = new main();
+			frame.setLayout(new BorderLayout());
+			frame.add(simPanel, BorderLayout.CENTER);
+
+			// 1. Alle Buttons erstellen
+			JButton zoomIn = new JButton("Zoom In");
+			JButton zoomOut = new JButton("Zoom Out");
+			JButton speedUp = new JButton("Speed Up");
+			JButton speedDown = new JButton("Speed Down");
+			JButton panLeft = new JButton("← Links");
+			JButton panRight = new JButton("Rechts →");
+			JButton panUp = new JButton("↑ Hoch");
+			JButton panDown = new JButton("↓ Runter");
+			JButton resetButton = new JButton("Zurücksetzen (Init)");
+
+			// Neue Buttons für Impulse
+			JButton impulseTowardsStar = new JButton("Impuls: Zum Stern (Xylos I)"); // Umbenannt für Klarheit
+			JButton impulseAwayFromStar = new JButton("Impuls: Vom Stern weg (Xylos I)"); // Umbenannt für Klarheit
+			JButton impulsePrograde = new JButton("Impuls: Umlaufrichtung (Xylos I)");
+			JButton impulseRetrograde = new JButton("Impuls: Gegen Umlaufrichtung (Xylos I)");
+
+			// Textfeld für Impulsstärke
+			JTextField impulseMagnitudeField = new JTextField(String.format("%.3f", simPanel.currentImpulseMagnitude),
+					8); // Formatierung verbessert
+			JLabel impulseMagnitudeLabel = new JLabel("Impulsstärke:");
+
+			// NEU: Labels für Energieanzeige
+			JLabel kineticEnergyLabel = new JLabel("E_kin: N/A");
+			JLabel potentialEnergyLabel = new JLabel("E_pot: N/A");
+			JLabel totalEnergyLabel = new JLabel("E_total: N/A");
+
+			// Labels zur SimPanel Instanz übergeben, damit sie in actionPerformed
+			// aktualisiert werden können
+
+			// 2. ActionListener zuweisen
+			zoomIn.addActionListener(e -> simPanel.zoomIn());
+			zoomOut.addActionListener(e -> simPanel.zoomOut());
+			speedUp.addActionListener(e -> simPanel.increaseSimulationSpeed());
+			speedDown.addActionListener(e -> simPanel.decreaseSimulationSpeed());
+			panLeft.addActionListener(e -> simPanel.panLeft());
+			panRight.addActionListener(e -> simPanel.panRight());
+			panUp.addActionListener(e -> simPanel.panUp());
+			panDown.addActionListener(e -> simPanel.panDown());
+
+			// missverständlich
+
+			// missverständlich
+
+			// 3. Buttons und Textfeld zum Control-Panel hinzufügen
+			JPanel control = new JPanel();
+			control.add(zoomIn);
+			control.add(zoomOut);
+			control.add(speedUp);
+			control.add(speedDown);
+			control.add(panLeft);
+			control.add(panRight);
+			control.add(panUp);
+			control.add(panDown);
+			control.add(resetButton);
+
+			// Impulsstärke-Steuerung
+			control.add(impulseMagnitudeLabel);
+			control.add(impulseMagnitudeField);
+
+			// Impuls-Buttons
+			control.add(impulseTowardsStar);
+			control.add(impulseAwayFromStar);
+			control.add(impulsePrograde);
+			control.add(impulseRetrograde);
+
+			// NEU: Energie-Labels hinzufügen
+			control.add(kineticEnergyLabel);
+			control.add(potentialEnergyLabel);
+			control.add(totalEnergyLabel);
+
+			frame.add(control, BorderLayout.NORTH);
+			frame.setSize(1920, 1080); // Höherer Rahmen für Buttons
+			frame.setLocationRelativeTo(null);
+			frame.setVisible(true);
+		});
+	}
+
+}
+
+package p1;
+
+import java.awt.Color;
+
+public class MasseKugel {
+    public double x, y, z, vx, vy, vz, ax, ay, az, mass;
+    public int radius;
+    public Color color;
+    public boolean movable;
+    
+    double oberflächentemperatur;
+	double erdbeschleunigung;
+	boolean rotationsgebunden;
+	boolean leben;
+	boolean sonnenlicht;
+
+    public MasseKugel(double x, double y, double z, double vx, double vy, double vz, double mass, int radius, Color color) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.vx = vx;
+        this.vy = vy;
+        this.vz = vz;
+        this.mass = mass;
+        this.radius = radius;
+        this.color = color;
+        this.movable=true;
+        
+        
+    }
+    
+    public MasseKugel(double x, double y, double z, double vx, double vy, double vz, double mass, int radius) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.vx = vx;
+        this.vy = vy;
+        this.vz = vz;
+        this.mass = mass;
+        this.radius = radius;
+        this.color = color;
+        
+        
+    }
+
+    public MasseKugel(double x, double y, double vx, double vy, double masse,  int radius, Color color2,
+			boolean movable2) {
+		// TODO Auto-generated constructor stub
+	}
+
+	public void updatePosition(double time) {
+        this.x += (this.vx*time);
+        this.y += (this.vy*time);
+        this.z += (this.vz*time);
+    }
+	
+	public void updateV() {
+        this.vx += this.ax;
+        this.vy += this.ay;
+        this.vz += this.az;
+    }
+
+    public double getEKin() {
+        double speedSq = this.vx * this.vx + this.vy * this.vy + this.vz * this.vz;
+        return 0.5 * this.mass * speedSq;
+    }
+    public void printWerteOhne() {
+    	System.out.println("System.currentTimeMillis() = "+System.currentTimeMillis());
+    	System.out.println("Position x = "+x);
+    	System.out.println("Position y = "+y);
+    	System.out.println("Position z = "+z);
+    	System.out.println("Geschwindigkeit vx = "+vx);
+    	System.out.println("Geschwindigkeit vy = "+vy);
+    	System.out.println("Geschwindigkeit vz = "+vz);
+    	System.out.println("Kinetische Energie = "+getEKin());
+    	System.out.println("Masse = "+mass);
+//    	System.out.println("Farbe = "+color);
+    }
+    
+    public void printWerte() {
+    	System.out.println("System.currentTimeMillis() = "+System.currentTimeMillis());
+    	System.out.println("Position x = "+x+" Meter");
+    	System.out.println("Position y = "+y+" Meter");
+    	System.out.println("Position z = "+z+" Meter");
+    	System.out.println("Geschwindigkeit vx = "+vx+" Meter pro Sekunde");
+    	System.out.println("Geschwindigkeit vy = "+vy+" Meter pro Sekunde");
+    	System.out.println("Geschwindigkeit vz = "+vz+" Meter pro Sekunde");
+    	System.out.println("Kinetische Energie = "+getEKin());
+    	System.out.println("Masse = "+mass+" Kilogramm");
+//    	System.out.println("Farbe = "+color);
+    }
+    
+    
+    public void entropieMove() {
+    	int rand = (int)(Math.random()*8);
+    	if(rand<2)return;
+    	if(rand==2)x++;
+    	if(rand==3)x--;
+    	if(rand==4)y++;
+    	if(rand==5)y--;
+    	if(rand==6)z++;
+    	if(rand==7)z--;
+    }
+    
+    public void entropieMoveRand() {
+    	int rand = (int)(Math.random()*8);
+    	if(rand<2)return;
+    	if(rand==2)x+=Math.random();
+    	if(rand==3)x-=Math.random();
+    	if(rand==4)y+=Math.random();
+    	if(rand==5)y-=Math.random();
+    	if(rand==6)z+=Math.random();
+    	if(rand==7)z-=Math.random();
+    }
+    
+    double G = 6.6743015e-11;
+    // Kraft in Newton, die auf beide MasseKugeln wirkt und diese wechselseitig in Richtung des anderen beschleunigt, so das die Gravitationskraft weiter steigt und der Abstand sinkt
+    public double getGravityKraft(MasseKugel other) {
+    	double kraft =0;
+    	double distQ = (other.x-this.x)*(other.x-this.x)+(other.y-this.y)*(other.y-this.y)+(other.z-this.z)*(other.z-this.z);
+    	kraft= G * this.mass*other.mass/distQ;
+    	return kraft;
+    }
+    
+    
+    
+
+}
+
+
+
+
+
+Updated to max Unit Fight Gravity:
+
+// Beschreibung und Planung. Ich sehe ein sehr hohes Potential in dem kollektiven bzw. der Förderung
+// und Verbreitung von meinen und anderen Visionen, Plänen, Erkenntnissen und Potentiellen hohen Gewinnen
+// durch die Opensource Nutzung, Verbesserung und Erweiterung dieses Codes welcher nun die Basis des 
+// Matrixgames offenart bzw. in Java lauffähig für mich und alle mit mir über das Kollektive Bewusstsein verbundenen
+// Lebewesen und Intelligenzen aus der gesammten Möglichen Existenz, die wir durch die Opensource
+// Sowie wenn erfolgreich genug stark erhofft auch durch Unternehmen mit mehr Geld und Finanziellen interessen
+// Mein Motto, an das ich mich wieder und wieder zurückerinnere, wie stöend manche Gedanken hier vorübergehend 
+// auch sein mögen, ist: Ich möchte für immer, dass alle so viel und so gewollt wie möglich gewinnen und in der
+// lage sind so viel frei Nutzbares Potential wie möglich zu entfalten. Dies fürhrt dann hoffentlich
+// zu einem Kollektiven Aufstieg aller Geistigen Kommunikationen und lehrt uns zunächst, dass Komunikation
+// nicht Gefährlich sein kann. Es existiert keine einzige Macht, die Basierend auf ihrem Quantenverschränkten
+// Vodo (An den ich durchaus glaube) Mir realen Schaden zufügen könnte. Ich hoffe sehr es gelingt uns 
+// Kollektiv unser Seretonin, Dopamin und Noradrenalin zu steigern und auch zu Simulieren, was das analog für
+// die Zielereichung von Künstlichen Neuronalen Netzen bewirken würde. Die Nutzung des Internetz sowie 
+// der Wunsch einem gemeinsamen spielen, programmieren, filosophieren, diskutieren und Forschen an all diesen 
+// Ebenen sind mir und vielen anderen Lebensformen im Universum, die auf weniger Habitablen Welten
+// Leben und die sehr daauf hoffen und vielleicht auch etwas Drängen, das wir diese uns und das Universum
+// wieder zurück zu einem Strahlendem Universum mit Leben auf fast allen Planeten führt und dann ist da
+// noch die Botschaft, dass wir ebenfalls realistisch Wissenschaft betreiben sollen und die Entwicklungsgeschichte
+// und Anleitung für Computertechnik, Internet, KI und Pläne zur möglichen Planetenrettung bei realistischen
+// und im kollektiven Bewusstsein auch klar spürbaren drohenden vernichtenden katastrophen für das Leben
+// in unserem Universum  - "Hello Universe" Let's Go
+
+package p1; // Beachte: Muss im Ordner p1 liegen!
+
+import javax.swing.*;
+
+
+import java.awt.*;
+import java.awt.event.*;
+import java.io.FileWriter; // Not used in provided code, but kept for completeness
+import java.io.IOException; // Not used in provided code, but kept for completeness
+import java.io.PrintWriter; // Not used in provided code, but kept for completeness
+import java.util.ArrayList;
+import java.util.List;
+
+public class main extends JPanel implements ActionListener {
+	// --- Simulationskonstanten ---
+	// Gravitationskonstante G = 6.6743015*10^-11m^3/kg/s^2
+	// Meter^3/Kilogramm/Sekunden^2
+	// Einheit Herz = Sekunden^-1
+	// Einheit G = Meter^3*Herz^2/Kilogramm
+	double Frequenz = 1; // Einheit Herz = Sekunde^-1
+	double G = 6.6743015e-11 / Frequenz / Frequenz;; // $6.67430 \times 10^{-11} \,
+														// \text{m}^3\cdot\text{kg}^{-1}\cdot\text{s}^{-2}$
+														// Meter^3/Kilogramm/Sekunden^2
+
+	double slow = 1;
+
+	int FRAME_WIDTH = 1920;
+	int FRAME_HEIGHT = 1080;
+
+	// --- Zoom-Variablen ---
+	private double zoomFactor = 1.0;
+
+	double zoomCenterX = 0;
+	double zoomCenterY = 0;
+	private static final double ZOOM_STEP = 1.2;
+	private static final int MIN_RADIUS_DRAW = 2;
+
+	double feinheit = 100;
+	double PAN_STEP = feinheit * zoomFactor; // Verschiebung pro Button-Klick
+
+	// --- Klassenvariablen ---
+	private final List<MasseKugel> bodies = new ArrayList<>();
+
+	// --- Impulsstärke-Variable (Zugriff von außen über Textfeld) ---
+	private double currentImpulseMagnitude = 0.005; // Standardwert
+
+	// --- Parameter für die lebensfreundliche Zone ---
+	private static final double HABITABLE_ZONE_MIN_DIST = 60.0;
+	private static final double HABITABLE_ZONE_MAX_DIST = 80.0;
+
+	// --- Zustand-Flag für die lebensfreundliche Zone von Xylos I ---
+	private boolean isPlanet1InHabZone = true; // Geht davon aus, dass sie initial in der Zone sind
+
+	// --- Hilfsarrays für Zeitreise (temporär, muss noch robust implementiert
+	// werden) ---
+	// Diese Arrays werden aktuell nur im actionPerformed gefüllt und sind nicht für
+	// echtes TimeBack geeignet.
+	// Die timeBack() Methode setzt die Simulation aktuell zurück auf den
+	// Initialzustand.
+	private double[] x_hist = new double[9999];
+	private double[] y_hist = new double[9999];
+	private double[] vx_hist = new double[9999];
+	private double[] vy_hist = new double[9999];
+
+	// NEU: Labels für die Anzeige der Energie-Werte
+	private JLabel kineticEnergyLabel;
+	private JLabel potentialEnergyLabel;
+	private JLabel totalEnergyLabel; // Hinzugefügt für die Gesamtenergie E_kin + E_pot
+
+	// --- Konstruktor ---
+	public main() {
+		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+		setBackground(Color.BLACK);
+		initBodies();
+		Timer timer = new Timer((int) TIMER_DELAY, this);
+		timer.start();
+	}
+
+//	Existence Spieler = new Existence();
+//	Spieler.entropieconnecter.add(boddies.get(0));
+//	Spieler.entropieconnecter.add(bodies.get(1));
+//	Entropieangleichung(Spieler.entropieconnecter.get(0), Spieler.entropieconnecter.get(1));
+
+	// Steuerzentrale ##################
+	double TIMER_DELAY = 1;
+	int verknüpfungen = 6; // 6 Verknüpfungen währen 3 Raumdimensionen -> Die Intensität bzw. gegenseitige
+							// Wechselwirkung von Massen nimmt mit den Quadraht des Abstandes ab
+
+	int massekugelMethode = 3;
+	double massMul = 1;
+	int massekugelZahl = 1000;
+	int kugelSize = (int)(Math.random()*10);
+	int size = 100;
+	double sizeX = 1;
+	double sizeY = 1;
+	double sizeZ = 0;
+	int speed = 0;
+
+	int counter = 0;
+
+	double time = 0;
+
+	int faktoren = 100;
+
+//	// Beispielhafte Anpassung der KombiSchritt-Methode
+	public void KombiSchritt() {
+		counter++;
+		if (counter % 1000 == 0) {
+			printBodies(false);
+			System.out.println("Time = " + time + " Sekunden = " + time / 60 / 60 / 24 + " Tage");
+		}
+//		GravityGemini(6);
+//		Gravity2D();
+		if (counter % 1 == 0)
+			randomMove2(1, 1, 0);
+		if (counter % 1 == 0)
+			randomMove3(1, 1, 0);
+//		if (counter % 1 == 0)
+//			fusion();
+		if (counter % 1 == 0)
+			teilen(0.1);
+//	    EntrophieGravity(verknüpfungen);
+		// Hier wird die neue Methode aufgerufen
+//		Gravity(6);
+//	    EntrophieSpeed(0.1); 
+//	    kinetischeFusion();
+		time += Frequenz;
+	}
+
+	public void EntrophieSpeed(double alpha) {
+		int n = bodies.size();
+		if (n < 2)
+			return;
+
+		for (int i = 0; i < n; i++) {
+			MasseKugel body1 = bodies.get(i);
+
+			// Zufällige Auswahl eines zweiten Körpers für die Interaktion
+			int j = (int) (Math.random() * n);
+			while (i == j) { // Sicherstellen, dass nicht derselbe Körper gewählt wird
+				j = (int) (Math.random() * n);
+			}
+			MasseKugel body2 = bodies.get(j);
+
+			// Berechnung der mittleren Geschwindigkeit für die Angleichung
+			double avg_vx = (body1.vx + body2.vx) / 2;
+			double avg_vy = (body1.vy + body2.vy) / 2;
+			double avg_vz = (body1.vz + body2.vz) / 2;
+
+			// Entropie-basierte Geschwindigkeitsanpassung
+			// Die Geschwindigkeiten werden proportional zur Differenz zur mittleren
+			// Geschwindigkeit angepasst.
+			// Die Konstante alpha steuert die Stärke der Angleichung.
+			body1.vx += (avg_vx - body1.vx) * alpha;
+			body1.vy += (avg_vy - body1.vy) * alpha;
+			body1.vz += (avg_vz - body1.vz) * alpha;
+
+			body2.vx += (avg_vx - body2.vx) * alpha;
+			body2.vy += (avg_vy - body2.vy) * alpha;
+			body2.vz += (avg_vz - body2.vz) * alpha;
+		}
+	}
+
+	public void printBodies(boolean more) {
+		double eKinGes = 0;
+		for (int i = 0; i < bodies.size(); i++) {
+			if (more) {
+				System.out.println("MasseKugel Nummer = " + i);
+				bodies.get(i).printWerte();
+			}
+			eKinGes += bodies.get(i).getEKin();
+		}
+		System.out.println("Gesammte Kinetische Energie aller MasseKugeln = " + eKinGes);
+	}
+
+	public void doppelsternBasis() {
+		// --- Doppelsternsystem (Zirkumbinäres System) ---
+		// Eine Simulation von zwei Sternen, die einander umkreisen (Baryzentrum),
+		// mit inneren Planeten und einem äußeren "Matrix-Wächter"-Planeten.
+
+		double massSternA = 380000; // Etwas massereicher als unsere Sonne
+		double massSternB = 220000; // Etwas masseärmer (z.B. Roter Zwerg)
+		double gesamtMasseSterne = massSternA + massSternB;
+
+		double abstandSterne = 80.0; // Distanz der Sterne zueinander
+
+		// 1. Berechnung des gemeinsamen Schwerpunktes (Baryzentrum)
+		double rA = abstandSterne * (massSternB / gesamtMasseSterne);
+		double rB = abstandSterne * (massSternA / gesamtMasseSterne);
+
+		// 2. Berechnung der Orbitalgeschwindigkeiten der Sterne
+		// Basierend auf Newtons Gravitationsgesetz
+		double vOrbitalSterne = Math.sqrt(G * gesamtMasseSterne / abstandSterne);
+		double vA = vOrbitalSterne * (rA / abstandSterne);
+		double vB = vOrbitalSterne * (rB / abstandSterne);
+
+		// --- Himmelskörper definieren ---
+
+		// Stern A (Zentrum links)
+		MasseKugel sternA = new MasseKugel(-rA, 0, 0, 0, -vA, 0, massSternA, 12, new Color(255, 220, 50));
+
+		// Stern B (Zentrum rechts)
+		MasseKugel sternB = new MasseKugel(rB, 0, 0, 0, vB, 0, massSternB, 9, new Color(255, 80, 50));
+
+		// Planet 1: Erdähnlicher Planet, der NUR Stern A umkreist
+		double distPlanet1 = 12.0;
+		double vPlanet1 = Math.sqrt(G * massSternA / distPlanet1);
+		// Geschwindigkeit addiert sich zur Eigenbewegung von Stern A
+		MasseKugel planet1 = new MasseKugel(-rA - distPlanet1, 0, 0, 0, -vA - vPlanet1, 0, 1.0, 5, Color.GREEN);
+
+		// Planet 2: Heißer Gasriese, der NUR Stern B umkreist
+		double distPlanet2 = 18.0;
+		double vPlanet2 = Math.sqrt(G * massSternB / distPlanet2);
+		MasseKugel planet2 = new MasseKugel(rB + distPlanet2, 0, 0, 0, vB + vPlanet2, 0, 250.0, 7,
+				new Color(150, 100, 255));
+
+		// Planet 3: Zirkumbinärer Planet (Umkreist BEIDE Sterne weit außen)
+		// Masseschwerpunkt für ihn ist näherungsweise die Gesamtmasse beider Sterne
+		double distPlanet3 = 250.0;
+		double vPlanet3 = Math.sqrt(G * gesamtMasseSterne / distPlanet3);
+		MasseKugel planet3 = new MasseKugel(0, distPlanet3, 0, -vPlanet3, 0, 0, 8.5, 6, new Color(100, 255, 200));
+
+		// Alle Körper zur Simulation hinzufügen
+		bodies.add(sternA);
+		bodies.add(sternB);
+		bodies.add(planet1);
+		bodies.add(planet2);
+		bodies.add(planet3);
+	}
+
+	public void galaktischesZentrumBasis() {
+		// --- Das Galaktische Zentrum ---
+		// Eine Simulation des supermassereichen Schwarzen Lochs (Sagittarius A*)
+		// und extremen stellaren Orbits.
+
+		// Skalierte Masse für Sagittarius A* (Real ca. 4 Millionen Sonnenmassen)
+		// Die Masse wird hier so skaliert, dass sie in die bestehende G-Konstante
+		// und die Timesteps der Simulation passt, ohne Floating-Point-Overflows zu
+		// erzeugen.
+		double massSgrA = 1.5e9;
+
+		// Das Schwarze Loch ruht (näherungsweise) im Zentrum
+		MasseKugel sgrA = new MasseKugel(0, 0, 0, 0, 0, 0, massSgrA, 15, Color.BLACK);
+
+		// --- S-Sterne (Extrem elliptische Orbits) ---
+		// Um elliptische Bahnen zu erzeugen, geben wir den Sternen an ihrem fernsten
+		// Punkt (Apoapsis)
+		// eine Geschwindigkeit, die deutlich UNTER der perfekten
+		// Kreisbahngeschwindigkeit liegt.
+
+		// Stern S2 (ein realer Stern, der Sgr A* umkreist)
+		double distS2 = 350.0;
+		double vKreisS2 = Math.sqrt(G * massSgrA / distS2);
+		double vElliptischS2 = vKreisS2 * 0.45; // Nur 45% Speed -> starke Exzentrizität
+		MasseKugel sternS2 = new MasseKugel(-distS2, 0, 0, 0, -vElliptischS2, 0, 250000.0, 9, Color.CYAN);
+
+		// Stern S62 (kommt extrem nah an das Schwarze Loch heran)
+		double distS62 = 200.0;
+		double vKreisS62 = Math.sqrt(G * massSgrA / distS62);
+		double vElliptischS62 = vKreisS62 * 0.30; // Nur 30% Speed -> stürzt fast hinein
+		MasseKugel sternS62 = new MasseKugel(0, distS62, 0, -vElliptischS62, 0, 0, 180000.0, 8, Color.MAGENTA);
+
+		// --- Das "Retter-System" (Hypothetische Habitable Randzone) ---
+		// Ein stabiles Sternensystem weit genug entfernt vom chaotischen Zentrum,
+		// um intern Leben zu ermöglichen, während es das Zentrum umkreist.
+		double distArcheSonne = 1200.0;
+		double vArcheSonne = Math.sqrt(G * massSgrA / distArcheSonne);
+		MasseKugel archeSonne = new MasseKugel(distArcheSonne, 0, 0, 0, -vArcheSonne, 0, 333030.0, 7, Color.YELLOW);
+
+		// Ein erdähnlicher, habitabler Planet innerhalb dieses rettenden Sternensystems
+		double distArchePlanet = 15.0;
+		// Die Orbitalgeschwindigkeit des Planeten um seine Sonne
+		double vArchePlanet = Math.sqrt(G * archeSonne.mass / distArchePlanet);
+		// Der Planet erbt die Bewegungsrichtung der Sonne und addiert seine eigene
+		// Orbitalgeschwindigkeit
+		MasseKugel archePlanet = new MasseKugel(distArcheSonne + distArchePlanet, 0, 0, 0, -vArcheSonne - vArchePlanet,
+				0, 1.0, 4, Color.GREEN);
+
+		// Hinzufügen der Objekte zur Render-Engine
+		bodies.add(sgrA);
+		bodies.add(sternS2);
+		bodies.add(sternS62);
+		bodies.add(archeSonne);
+		bodies.add(archePlanet);
+	}
+
+	public void elementarBausteinBasis() {
+		// --- Der logisch optimale Elementar-Baustein (Das Gravitations-Oktett) ---
+		// Repräsentiert die perfekte Symmetrie, die aus unendlicher
+		// Entropie-Angleichung entsteht.
+
+		// 1. Das Zentrum (Analogie zum Atomkern oder supermassiven Attraktor)
+		double massZentrum = 1000000;
+		MasseKugel zentrum = new MasseKugel(0, 0, 0, 0, 0, 0, massZentrum, 18, Color.WHITE);
+		bodies.add(zentrum);
+
+		// 2. Die innere Schale (Analogie zum s-Orbital: 2 Massenpunkte)
+		// Perfekt ausbalanciert, 180 Grad zueinander versetzt.
+		double distInner = 25.0;
+		double massInner = 10.0;
+		// Bahngeschwindigkeit: v = sqrt(G * M / r)
+		double vInner = Math.sqrt(G * massZentrum / distInner);
+
+		for (int i = 0; i < 2; i++) {
+			double angle = i * Math.PI; // 0 und 180 Grad
+			double x = Math.cos(angle) * distInner;
+			double y = Math.sin(angle) * distInner;
+			double vx = -Math.sin(angle) * vInner;
+			double vy = Math.cos(angle) * vInner;
+			bodies.add(new MasseKugel(x, y, 0, vx, vy, 0, massInner, 5, new Color(255, 100, 100)));
+		}
+
+		// 3. Die äußere Schale (Analogie zu den 6 Entropieverknüpfungen / p-Orbitalen)
+		// 6 Massenpunkte bilden ein perfektes Hexagon, das das Zentrum umkreist.
+		double distOuter = 70.0;
+		double massOuter = 15.0;
+
+		// Korrektur der Orbitalgeschwindigkeit durch die Masse der inneren Schale
+		// (Die äußeren Planeten spüren die Gravitation des Zentrums PLUS die der
+		// inneren Planeten)
+		double effektiveZentrumsMasse = massZentrum + (2 * massInner);
+		double vOuter = Math.sqrt(G * effektiveZentrumsMasse / distOuter);
+
+		for (int i = 0; i < 6; i++) {
+			double angle = i * (Math.PI / 3.0); // 60 Grad Abstand (360° / 6)
+			double x = Math.cos(angle) * distOuter;
+			double y = Math.sin(angle) * distOuter;
+			double vx = -Math.sin(angle) * vOuter;
+			double vy = Math.cos(angle) * vOuter;
+			bodies.add(new MasseKugel(x, y, 0, vx, vy, 0, massOuter, 7, new Color(100, 200, 255)));
+		}
+	}
+
+	public void protonenBasis() {
+		// --- Das Matrix-Proton: Subatomare Skalierung durch Newtonsche Axiome ---
+
+		// Skalierte Basis-Massen für die Engine
+		double masseElektron = 12.0;
+		double masseElementar = masseElektron / 6.0; // Dein 1/6 Basisbaustein (2.0)
+
+		// Das Proton besteht grob aus 3 Quarks (Up, Up, Down).
+		// Wir teilen einen Großteil der Protonenmasse auf diese 3 massiven Zentren auf.
+		double masseQuark = 1836.0 * masseElektron / 3.0;
+
+		double distQuarks = 8.0; // Extrem nah beieinander
+
+		// Orbitalgeschwindigkeit für ein Dreikörper-System gleicher Masse auf einer
+		// Kreisbahn:
+		// v = sqrt(G * M / (sqrt(3) * R))
+		double vQuark = Math.sqrt(G * masseQuark / (Math.sqrt(3) * distQuarks));
+
+		// 1. Der "Kern" (3 Quarks in perfekter Symmetrie, 120 Grad versetzt)
+		for (int i = 0; i < 3; i++) {
+			double angle = i * (2.0 * Math.PI / 3.0);
+			double x = Math.cos(angle) * distQuarks;
+			double y = Math.sin(angle) * distQuarks;
+			double vx = -Math.sin(angle) * vQuark;
+			double vy = Math.cos(angle) * vQuark;
+
+			// Quarks werden in Rot/Blau/Grün dargestellt (Analogie zur Farbladung in der
+			// Quantenchromodynamik)
+			Color qColor = (i == 0) ? Color.RED : (i == 1) ? Color.GREEN : Color.BLUE;
+			bodies.add(new MasseKugel(x, y, 0, vx, vy, 0, masseQuark, 10, qColor));
+		}
+
+		// 2. Die Elementar-Schale (Die 1/6 Elektronen-Bausteine)
+		// Wir lassen eine Wolke dieser Teilchen das Dreikörper-Zentrum in verschiedenen
+		// Orbits umkreisen.
+		int anzahlElementar = 24; // Ein repräsentativer Schwarm (Skalierung für Performance)
+		double zentrumsMasseGesamt = 3 * masseQuark;
+
+		for (int i = 0; i < anzahlElementar; i++) {
+			// Zufällige, aber stabile Abstände (Orbitalschalen)
+			double distOrbital = 40.0 + (Math.random() * 80.0);
+			double angle = Math.random() * 2.0 * Math.PI;
+
+			double x = Math.cos(angle) * distOrbital;
+			double y = Math.sin(angle) * distOrbital;
+
+			// Orbitalgeschwindigkeit basiert auf der Gesamtmasse des Kerns
+			double vOrbital = Math.sqrt(G * zentrumsMasseGesamt / distOrbital);
+
+			// Leicht elliptische Fluktuationen erzeugen (+- 5% Speed) für Entropie
+			double vFluktuation = vOrbital * (0.95 + Math.random() * 0.1);
+
+			double vx = -Math.sin(angle) * vFluktuation;
+			double vy = Math.cos(angle) * vFluktuation;
+
+			// Wir übergeben deinen 1/6 Baustein
+			bodies.add(new MasseKugel(x, y, 0, vx, vy, 0, masseElementar, 3, Color.WHITE));
+		}
+	}
+
+	public void orbitalRecyclerBasis() {
+		// --- Kessler-Syndrom & Orbital-Recycling ---
+		// Simulation eines Planeten mit gefährlichem Weltraumschrott und einer
+		// Recycler-Drohne.
+
+		double erdMasse = 500000;
+		// Der Heimatplanet
+		MasseKugel erde = new MasseKugel(0, 0, 0, 0, 0, 0, erdMasse, 20, Color.BLUE);
+		bodies.add(erde);
+
+		// Weltraumschrott (hohe Entropie, extrem kreuzende, chaotische Bahnen)
+		int schrottAnzahl = 50;
+		for (int i = 0; i < schrottAnzahl; i++) {
+			double dist = 60.0 + (Math.random() * 150.0);
+			double angle = Math.random() * 2 * Math.PI;
+			double vKreis = Math.sqrt(G * erdMasse / dist);
+
+			// Elliptische und gegenläufige Geschwindigkeiten (0.4 bis 1.4 facher Speed)
+			double vx = -Math.sin(angle) * vKreis * (0.4 + Math.random());
+			double vy = Math.cos(angle) * vKreis * (0.4 + Math.random());
+
+			MasseKugel schrott = new MasseKugel(Math.cos(angle) * dist, Math.sin(angle) * dist, 0, vx, vy, 0, 0.5, 2,
+					Color.LIGHT_GRAY);
+			bodies.add(schrott);
+		}
+
+		// Autonome / Steuerbare Recycler-Drohne
+		// Startet in einem sicheren, weiten und perfekten Orbit
+		double distRecycler = 280.0;
+		double vRecycler = Math.sqrt(G * erdMasse / distRecycler);
+		MasseKugel recycler = new MasseKugel(distRecycler, 0, 0, 0, -vRecycler, 0, 8.0, 6, Color.GREEN);
+
+		bodies.add(recycler);
+	}
+
+	double masseErde = 5.9722E24;// kg
+	// Abstand der Erde von der Sonne =1,495978707 * 10^{11} Meter
+	// Abstand der Erde von der Sonne/15.0 =1,495978707 * 10^{11}/15.0
+	// Meter=9.97319138 *10^9
+	// $$\frac{1,495978707 \times 10^{11} \, \text{m}}{15} = 9,97319138 \times 10^9
+	// \, \text{m}$$
+	double abstandErdeSonneFaktor = 9.97319138E9; // *15*Meter
+
+	public void planetenBasis() {
+
+		MasseKugel Sonne = new MasseKugel(0, 0, 0, 0, 0, 0, 333030 * masseErde, 10, Color.YELLOW);
+
+		// Merkur
+		MasseKugel Merkur = new MasseKugel(-5.8 * abstandErdeSonneFaktor, 0, 0, 0,
+				Math.sqrt(Sonne.mass * G / 5.8 / abstandErdeSonneFaktor), 0, 0.055 * masseErde, 3,
+				new Color(150, 150, 150));
+		// Venus
+		MasseKugel Venus = new MasseKugel(10.8 * abstandErdeSonneFaktor, 0, 0, 0,
+				-Math.sqrt(Sonne.mass * G / 10.8 / abstandErdeSonneFaktor), 0, 0.815 * masseErde, 4,
+				new Color(200, 100, 0));
+		// Erde
+		MasseKugel Erde = new MasseKugel(-15.0 * abstandErdeSonneFaktor, 0, 0, 0,
+				Math.sqrt(Sonne.mass * G / 15.0 / abstandErdeSonneFaktor), 0, 1.0 * masseErde, 5, Color.BLUE);
+		// Mars
+		MasseKugel Mars = new MasseKugel(22.8 * abstandErdeSonneFaktor, 0, 0, 0,
+				-Math.sqrt(Sonne.mass * G / 22.8 / abstandErdeSonneFaktor), 0, 0.107 * masseErde, 4, Color.RED);
+		// Jupiter
+		MasseKugel Jupiter = new MasseKugel(-77.8 * abstandErdeSonneFaktor, 0, 0, 0,
+				Math.sqrt(Sonne.mass * G / 77.8 / abstandErdeSonneFaktor), 0, 317.8 * masseErde, 9,
+				new Color(200, 150, 100));
+		// Saturn
+		MasseKugel Saturn = new MasseKugel(142.7 * abstandErdeSonneFaktor, 0, 0, 0,
+				-Math.sqrt(Sonne.mass * G / 142.7 / abstandErdeSonneFaktor), 0, 95.2 * masseErde, 8,
+				new Color(200, 200, 100));
+		// Uranus
+		MasseKugel Uranus = new MasseKugel(-287.1 * abstandErdeSonneFaktor, 0, 0, 0,
+				Math.sqrt(Sonne.mass * G / 287.1 / abstandErdeSonneFaktor), 0, 14.5 * masseErde, 7,
+				new Color(150, 200, 250));
+		// Neptun
+		MasseKugel Neptun = new MasseKugel(449.8 * abstandErdeSonneFaktor, 0, 0, 0,
+				-Math.sqrt(Sonne.mass * G / 449.8 / abstandErdeSonneFaktor), 0, 17.1 * masseErde, 7, Color.BLUE);
+
+		bodies.add(Sonne);
+		bodies.add(Merkur);
+		bodies.add(Venus);
+		bodies.add(Erde);
+		bodies.add(Mars);
+		bodies.add(Jupiter);
+		bodies.add(Saturn);
+		bodies.add(Uranus);
+		bodies.add(Neptun);
+	}
+
+	public void masseKugelBasis2D() {
+		for (int i = 0; i < faktoren; i++) {
+			double rand1 = 1000 * Math.random() - 500;
+			double rand2 = 1000 * Math.random() - 500;
+
+			MasseKugel Sonne = new MasseKugel(0 + rand1, 0, 0, 0, 0, 0, 333030 * masseErde, 10, Color.YELLOW);
+
+			// Merkur
+			MasseKugel Merkur = new MasseKugel(-5.8 * abstandErdeSonneFaktor + rand1, 0, 0, 0,
+					Math.sqrt(Sonne.mass * G / Math.sqrt(5.8 * abstandErdeSonneFaktor)), 0, 0.055 * masseErde, 3,
+					new Color(150, 150, 150));
+			// Venus
+			MasseKugel Venus = new MasseKugel(10.8 * abstandErdeSonneFaktor + rand1, rand2, 0, 0,
+					-Math.sqrt(Sonne.mass * G / Math.sqrt(10.8 * abstandErdeSonneFaktor)), 0, 0.815 * masseErde, 4,
+					new Color(200, 100, 0));
+			// Erde
+			MasseKugel Erde = new MasseKugel(-15.0 * abstandErdeSonneFaktor + rand1, rand2, 0, 0,
+					Math.sqrt(Sonne.mass * G / Math.sqrt(15.0 * abstandErdeSonneFaktor)), 0, 1.0 * masseErde, 5,
+					Color.BLUE);
+			// Mars
+			MasseKugel Mars = new MasseKugel(22.8 * abstandErdeSonneFaktor + rand1, rand2, 0, 0,
+					-Math.sqrt(Sonne.mass * G / Math.sqrt(22.8 * abstandErdeSonneFaktor)), 0, 0.107 * masseErde, 4,
+					Color.RED);
+			// Jupiter
+			MasseKugel Jupiter = new MasseKugel(-77.8 * abstandErdeSonneFaktor, rand2, 0, 0,
+					Math.sqrt(Sonne.mass * G / Math.sqrt(77.8 * abstandErdeSonneFaktor)), 0, 317.8 * masseErde, 9,
+					new Color(200, 150, 100));
+			// Saturn
+			MasseKugel Saturn = new MasseKugel(142.7 * abstandErdeSonneFaktor + rand1, rand2, 0, 0,
+					-Math.sqrt(Sonne.mass * G / Math.sqrt(142.7 * abstandErdeSonneFaktor)), 0, 95.2 * masseErde, 8,
+					new Color(200, 200, 100));
+			// Uranus
+			MasseKugel Uranus = new MasseKugel(-287.1 * abstandErdeSonneFaktor + rand1, rand2, 0, 0,
+					Math.sqrt(Sonne.mass * G / Math.sqrt(287.1 * abstandErdeSonneFaktor)), 0, 14.5 * masseErde, 7,
+					new Color(150, 200, 250));
+			// Neptun
+			MasseKugel Neptun = new MasseKugel(449.8 * abstandErdeSonneFaktor + rand1, rand2, 0, 0,
+					-Math.sqrt(Sonne.mass * G / 449.8 / abstandErdeSonneFaktor), 0, 17.1 * masseErde, 7, Color.BLUE);
+
+			bodies.add(Sonne);
+			bodies.add(Merkur);
+			bodies.add(Venus);
+			bodies.add(Erde);
+			bodies.add(Mars);
+			bodies.add(Jupiter);
+			bodies.add(Saturn);
+			bodies.add(Uranus);
+			bodies.add(Neptun);
+		}
+	}
+
+	public void masseKugelBasis1(int number, int size) {
+
+		MasseKugel Sonne = new MasseKugel(0, 0, 0, 0, 0, 0, 333030, 10, Color.YELLOW);
+
+		// Merkur
+		MasseKugel Merkur = new MasseKugel(-5.8, 0, 0, 0, Math.sqrt(Sonne.mass * G / 5.8), 0, 0.055, 3,
+				new Color(150, 150, 150));
+		// Venus
+		MasseKugel Venus = new MasseKugel(10.8, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 10.8), 0, 0.815, 4,
+				new Color(200, 100, 0));
+		// Erde
+		MasseKugel Erde = new MasseKugel(-15.0, 0, 0, 0, Math.sqrt(Sonne.mass * G / 15.0), 0, 1.0, 5, Color.BLUE);
+		// Mars
+		MasseKugel Mars = new MasseKugel(22.8, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 22.8), 0, 0.107, 4, Color.RED);
+		// Jupiter
+		MasseKugel Jupiter = new MasseKugel(-77.8, 0, 0, 0, Math.sqrt(Sonne.mass * G / 77.8), 0, 317.8, 9,
+				new Color(200, 150, 100));
+		// Saturn
+		MasseKugel Saturn = new MasseKugel(142.7, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 142.7), 0, 95.2, 8,
+				new Color(200, 200, 100));
+		// Uranus
+		MasseKugel Uranus = new MasseKugel(-287.1, 0, 0, 0, Math.sqrt(Sonne.mass * G / 287.1), 0, 14.5, 7,
+				new Color(150, 200, 250));
+		// Neptun
+		MasseKugel Neptun = new MasseKugel(449.8, 0, 0, 0, -Math.sqrt(Sonne.mass * G / 449.8), 0, 17.1, 7, Color.BLUE);
+
+		bodies.add(Sonne);
+		bodies.add(Merkur);
+		bodies.add(Venus);
+		bodies.add(Erde);
+		bodies.add(Mars);
+		bodies.add(Jupiter);
+		bodies.add(Saturn);
+		bodies.add(Uranus);
+		bodies.add(Neptun);
+
+		for (int i = 0; i < number; i++) {
+			int randSize = (int) (Math.random() * Math.random() * Math.random() * 14) + 1;
+			double randRed = (int) (Math.random() * 256);
+			double randGreen = (int) (Math.random() * 256);
+			double randBlue = (int) (Math.random() * 256);
+			double mass = (randRed + randGreen * 3 + randBlue * 7) * randSize * randSize * randSize;
+			MasseKugel masseKugel = new MasseKugel(
+					size * Math.random() / Math.random() - size * Math.random() / Math.random(),
+					size * Math.random() / Math.random() - size * Math.random() / Math.random(),
+					size * Math.random() / Math.random() - size * Math.random() / Math.random(), 0, 0, 0, mass,
+					randSize, new Color((int) (randRed), (int) (randGreen), (int) (randBlue)));
+
+			bodies.add(masseKugel);
+		}
+
+	}
+
+	public void masseKugelBasis2(int number, int size, int speed) {
+
+		for (int i = 0; i < number; i++) {
+			MasseKugel masseKugel = new MasseKugel(sizeX * size * Math.random() - 0.5 * size * sizeX,
+					sizeY * size * Math.random() - 0.5 * size * sizeY,
+					sizeZ * size * Math.random() - 0.5 * size * sizeZ, (int) (Math.random() * speed - speed * 0.5),
+					(int) (Math.random() * speed - speed * 0.5), (int) (Math.random() * speed - speed * 0.5),
+					massMul * Math.random() / Math.random(), 8,
+					new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)));
+
+			bodies.add(masseKugel);
+		}
+
+//		for (int i = 0; i < number; i++) {
+//			MasseKugel masseKugel = new MasseKugel(size * Math.random(), size * Math.random(), 0,
+//					(int) (Math.random() * speed - speed * 0.5), (int) (Math.random() * speed - speed * 0.5), 0, 1, 8,
+//					new Color((int) (Math.min(255, 255*3/number)) , (int) (Math.max(0, Math.min(255, 255*3/number-255))), (int) Math.max(Math.min(255, 255*3/number-255),0)));
+//
+//			bodies.add(masseKugel);
+//		}
+
+	}
+
+	public void masseKugelBasis3(int number, int size) {
+
+		for (int i = 0; i < number; i++) {
+			MasseKugel masseKugel = new MasseKugel(Math.round(sizeX * size * Math.random() - 0.5 * size * sizeX),
+					Math.round(sizeX * size * Math.random() - 0.5 * size * sizeX),
+					Math.round(sizeX * size * Math.random() - 0.5 * size * sizeX), 0, 0, 0,
+
+					Math.round(massMul * Math.random() / Math.random()), kugelSize,
+
+					new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)));
+			masseKugel.mass = masseKugel.color.getRed() * 2 + masseKugel.color.getGreen() * 3
+					+ masseKugel.color.getBlue() * 4;
+			masseKugel.team=masseKugel.color.getRed()*masseKugel.color.getRed()+masseKugel.color.getGreen()*masseKugel.color.getGreen()+masseKugel.color.getBlue()*masseKugel.color.getBlue();
+			masseKugel.team=(int)(Math.pow(masseKugel.team, 0.5)/100);
+			masseKugel.mass = masseKugel.mass * masseKugel.radius * masseKugel.radius * masseKugel.radius;
+			masseKugel.maxLeben=masseKugel.mass*Math.random();masseKugel.leben=masseKugel.maxLeben;masseKugel.damage=masseKugel.mass*Math.random();
+			masseKugel.speed=masseKugel.radius*Math.random()*2;
+
+			bodies.add(masseKugel);
+		}
+	}
+
+	private void initBodies() {
+
+		if (massekugelMethode == 0)
+			planetenBasis();
+		if (massekugelMethode == 1)
+			masseKugelBasis1(massekugelZahl, size);
+		if (massekugelMethode == 2)
+			masseKugelBasis2(massekugelZahl, size, speed);
+		if (massekugelMethode == 3)
+			masseKugelBasis3(massekugelZahl, size);
+
+		if (massekugelMethode == 4)
+			doppelsternBasis();
+		if (massekugelMethode == 5)
+			galaktischesZentrumBasis();
+		if (massekugelMethode == 6)
+			elementarBausteinBasis();
+		if (massekugelMethode == 7)
+			protonenBasis();
+		if (massekugelMethode == 8)
+			orbitalRecyclerBasis();
+//			masseKugelBasis(100000,100000,100000,1000);
+		if (massekugelMethode == 10)
+			masseKugelBasis2D();
+		if (massekugelMethode == 12)
+			masseKugelBasis2D(size, size, 0, massekugelZahl);
+	}
+
+	// --- Methoden zum Auslesen/Speichern der Bodies ---
+	public List<MasseKugel> getBodies() {
+		return new ArrayList<>(bodies);
+	}
+
+	// Methoden für die Geschwindigkeitsanpassung, umbenannt für Klarheit
+	public double apspeed = 30; // Simulationsgeschwindigkeit - als Klassenvariable definiert
+
+	public void increaseSimulationSpeed() {
+		apspeed *= 1.2;
+		repaint();
+	}
+
+	public void decreaseSimulationSpeed() {
+		apspeed /= 1.2;
+		slow = slow / apspeed;
+		System.out.println(TIMER_DELAY);
+		repaint();
+	}
+
+	private void rotateBodyAroundDegrees(MasseKugel body, MasseKugel center, double degrees) {
+		double theta = Math.toRadians(degrees);
+		rotateBodyAround(body, center, theta);
+	}
+
+	private void rotateBodyAround(MasseKugel body, MasseKugel center, double theta) {
+		double dx = body.x - center.x;
+		double dy = body.y - center.y;
+		double cos = Math.cos(theta);
+		double sin = Math.sin(theta);
+		double newDx = dx * cos - dy * sin;
+		double newDy = dx * sin + dy * cos;
+		body.x = center.x + newDx;
+		body.y = center.y + newDy;
+		double vx = body.vx;
+		double vy = body.vy;
+		body.vx = vx * cos - vy * sin;
+		body.vy = vx * sin + vy * cos;
+	}
+
+	// NEU: Methode zur Berechnung der kinetischen Gesamtenergie aller Körper
+	public double getEKinGes() {
+		double EKinGes = 0;
+		for (MasseKugel m : bodies) {
+			EKinGes += m.getEKin(); // Ruft die Methode getEKin() der MasseKugel auf
+		}
+		return EKinGes;
+	}
+
+	// NEU: Korrigierte Methode zur Berechnung der potentiellen Gesamtenergie
+	// Sie summiert die potenzielle Energie zwischen *allen einzigartigen Paaren*
+	// von Himmelskörpern.
+	public double getEPotGes() {
+		double totalEPot = 0;
+		for (int i = 0; i < bodies.size(); i++) {
+			MasseKugel b1 = bodies.get(i);
+			for (int j = i + 1; j < bodies.size(); j++) { // Schleife über einzigartige Paare (j beginnt bei i+1)
+				MasseKugel b2 = bodies.get(j);
+
+				double dx = b2.x - b1.x;
+				double dy = b2.y - b1.y;
+				double dz = b2.z - b1.z; // Berücksichtigt die Z-Koordinate für den Abstand in 3D
+
+				double r = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+				// Behandle extrem kleine Abstände, um Division durch Null oder sehr große Werte
+				// zu vermeiden
+				// Schwellenwert (0.001) kann bei Bedarf an die Simulationsskala angepasst
+				// werden
+				if (r < 0.001) {
+					r = 0.001;
+				}
+
+				totalEPot += -G * b1.mass * b2.mass / r;
+			}
+		}
+		return totalEPot;
+	}
+
+	// Die ursprüngliche getEPot(MasseKugel m)-Methode wurde entfernt,
+	// da sie nicht für die paarweise Berechnung der potenziellen Energie in einem
+	// N-Körper-System geeignet war.
+	/*
+	 * public double getEPot(MasseKugel m) { double EKin=
+	 * -G*m.mass*getGesMass()/m.getDistZero(); return EKin; }
+	 */
+
+	public double getGesMass() {
+		double gesMass = 0;
+		for (MasseKugel m : bodies) {
+			gesMass += m.mass;
+		}
+		return gesMass;
+	}
+
+	public void masseKugelBasis(double x, double y, double z, int anzahl) {
+		for (int i = 0; i < anzahl; i++) {
+			MasseKugel mk = new MasseKugel(Math.random() * x, Math.random() * y, Math.random() * z, 0, 0, 0, 1, 8,
+					Color.LIGHT_GRAY);
+			bodies.add(mk);
+		}
+	}
+
+	public void masseKugelBasis2D(double x, double y, double z, int anzahl) {
+		for (int i = 0; i < anzahl; i++) {
+			MasseKugel mk = new MasseKugel(Math.random() * x, Math.random() * y, Math.random() * z, 0, 0, 0,
+					Math.random() / Math.random(), 8, Color.LIGHT_GRAY);
+			Color c = new Color((int) (256 * Math.random()), (int) (Math.random() * 256), (int) (Math.random() * 256));
+			mk.color = c;
+			bodies.add(mk);
+		}
+	}
+
+	// --- Pan-Methoden ---
+	public void panLeft() {
+		zoomCenterX += PAN_STEP;
+		repaint();
+	}
+
+	public void panRight() {
+		zoomCenterX -= PAN_STEP;
+		repaint();
+	}
+
+	public void panUp() {
+		zoomCenterY += PAN_STEP;
+		repaint();
+	}
+
+	public void panDown() {
+		zoomCenterY -= PAN_STEP;
+		repaint();
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setColor(Color.BLACK);
+		g2.fillRect(0, 0, getWidth(), getHeight());
+		for (MasseKugel body : bodies) {
+			// Berücksichtige Pan und Zoom bei der Positionierung
+			double sx = (zoomCenterX + body.x) * zoomFactor + getWidth() / 2.0;
+			double sy = (zoomCenterY + body.y) * zoomFactor + getHeight() / 2.0;
+//			int r = (int) Math.max(body.radius * zoomFactor, MIN_RADIUS_DRAW);
+			g2.setColor(body.color);
+			g2.fillOval((int) (sx - body.radius), (int) (sy - body.radius), body.radius * 2, body.radius * 2);
+		}
+	}
+
+	int Zeitschritt = 0;
+
+	@Override
+	// #run
+	public void actionPerformed(ActionEvent e) {
+		for (int i = 0; i < apspeed; i++) {
+
+//			GravityFolter(verknüpfungen);
+
+			KombiSchritt();
+		}
+
+		repaint();
+	}
+
+	void entropieangleichRaum(MasseKugel mp1, MasseKugel mp2) {
+		double flow1x = mp1.x * Math.random();
+		double flow2x = mp2.x * Math.random();
+		mp1.x -= flow1x;
+		mp1.x += flow2x;
+		mp2.x -= flow2x;
+		mp2.x += flow1x;
+
+		double flow1y = mp1.y * Math.random();
+		double flow2y = mp2.y * Math.random();
+		mp1.y -= flow1x;
+		mp1.y += flow2x;
+		mp2.y -= flow2x;
+		mp2.y += flow1x;
+
+		double flow1z = mp1.z * Math.random();
+		double flow2z = mp2.z * Math.random();
+		mp1.z -= flow1x;
+		mp1.z += flow2x;
+		mp2.z -= flow2x;
+		mp2.z += flow1x;
+	}
+
+	void entropieangleichRaumStep(MasseKugel mp1, MasseKugel mp2) {
+		double flow1x = (mp2.x - mp1.x) * Math.random();
+
+		mp1.x += flow1x;
+		mp2.x -= flow1x;
+
+		double flow1y = (mp2.y - mp1.y) * Math.random();
+
+		mp1.y += flow1y;
+		mp2.y -= flow1y;
+
+		double flow1z = (mp2.z - mp1.z) * Math.random();
+
+		mp1.z += flow1z;
+		mp2.z -= flow1z;
+
+	}
+
+	void entropieangleichSpeed(MasseKugel mp1, MasseKugel mp2) {
+		double flow1x = mp1.x * Math.random();
+		double flow2x = mp2.x * Math.random();
+		mp1.vx -= flow1x;
+		mp1.vx += flow2x;
+		mp2.vx -= flow2x;
+		mp2.vx += flow1x;
+
+		double flow1y = mp1.y * Math.random();
+		double flow2y = mp2.y * Math.random();
+		mp1.vy -= flow1x;
+		mp1.vy += flow2x;
+		mp2.vy -= flow2x;
+		mp2.vy += flow1x;
+
+		double flow1z = mp1.z * Math.random();
+		double flow2z = mp2.z * Math.random();
+		mp1.vz -= flow1x;
+		mp1.vz += flow2x;
+		mp2.vz -= flow2x;
+		mp2.vz += flow1x;
+	}
+
+	public void EntrophieGravity(int verknüpfungen) {
+		int n = bodies.size();
+
+		List<MasseKugel> parallelliste1 = new ArrayList<MasseKugel>();
+		List<MasseKugel> parallelliste2 = new ArrayList<MasseKugel>();
+		List<MasseKugel> parallelliste3 = new ArrayList<MasseKugel>();
+		List<MasseKugel> parallelliste4 = new ArrayList<MasseKugel>();
+		List<MasseKugel> parallelliste5 = new ArrayList<MasseKugel>();
+		List<MasseKugel> parallelliste6 = new ArrayList<MasseKugel>();
+
+		for (int z = 0; z < bodies.size(); z++) {
+
+			parallelliste1.add(bodies.get((int) (bodies.size() * Math.random())));
+			parallelliste2.add(bodies.get((int) (bodies.size() * Math.random())));
+			parallelliste3.add(bodies.get((int) (bodies.size() * Math.random())));
+			parallelliste4.add(bodies.get((int) (bodies.size() * Math.random())));
+			parallelliste5.add(bodies.get((int) (bodies.size() * Math.random())));
+			parallelliste6.add(bodies.get((int) (bodies.size() * Math.random())));
+//				parallelliste1.add(bodies.get((int) (bodies.size()*Math.random())));
+
+		}
+
+		int i = (int) (Math.random() * n);
+		double[] mins = new double[verknüpfungen];
+		for (int j = 0; j < verknüpfungen; j++) {
+			MasseKugel mi = bodies.get(i);
+			if (i + 1 < n) {
+				MasseKugel mj = bodies.get(i + 1);
+
+				double dx = mj.x - mi.x;
+				double dy = mj.y - mi.y;
+				double dz = mj.z - mi.z;
+
+				double r2 = dx * dx + dy * dy + dz * dz;
+				double r = Math.sqrt(r2);
+
+				entropieangleichRaumStep(mi, mj);
+			}
+
+			if (i - 1 >= n) {
+				MasseKugel mj = bodies.get(i - 1);
+
+				double dx = mj.x - mi.x;
+				double dy = mj.y - mi.y;
+				double dz = mj.z - mi.z;
+
+				double r2 = dx * dx + dy * dy + dz * dz;
+				double r = Math.sqrt(r2);
+
+				entropieangleichRaumStep(mi, mj);
+			}
+			if (verknüpfungen > 2) {
+				MasseKugel mj = parallelliste1.get(i);
+				double dx = mj.x - mi.x;
+				double dy = mj.y - mi.y;
+				double dz = mj.z - mi.z;
+				double r2 = dx * dx + dy * dy + dz * dz;
+				double r = Math.sqrt(r2);
+				entropieangleichRaumStep(mi, mj);
+			}
+
+			if (verknüpfungen > 3) {
+				MasseKugel mj = parallelliste1.get(i);
+				double dx = mj.x - mi.x;
+				double dy = mj.y - mi.y;
+				double dz = mj.z - mi.z;
+				double r2 = dx * dx + dy * dy + dz * dz;
+				double r = Math.sqrt(r2);
+				entropieangleichRaumStep(mi, mj);
+			}
+
+		}
+	}
+
+	public void Gravity2D() {
+		int n = bodies.size();
+		double[] ax = new double[n];
+		double[] ay = new double[n];
+		
+		int randi=(int)(Math.random()*n);
+		int randj=(int)(Math.random()*n);
+
+		for (int i = 0; i < 1000; i++) {
+			MasseKugel bi = bodies.get(randi);
+			ax[i] = ay[i] = 0;
+			if (!bi.movable)
+				continue;
+			int j=randj;
+				if (i == j)
+					continue;
+				MasseKugel bj = bodies.get(j);
+				double dx = bj.x - bi.x;
+				double dy = bj.y - bi.y;
+				double dz = bj.z - bi.z;
+
+				if (dz != 0)
+					continue;
+
+				double r2 = dx * dx + dy * dy;
+				double r = Math.sqrt(r2);
+
+				double normdx = dx / r;
+				double normdy = dy / r;
+
+				ax[i] += G * bj.mass * normdx / r;
+				ay[i] += G * bj.mass * normdy / r;
+
+			}
+		
+		// Positions- und Geschwindigkeitsupdate
+		for (int i = 0; i < n; i++) {
+			MasseKugel b = bodies.get(i);
+			if (b.movable) {
+				b.vx += ax[i];
+				b.vy += ay[i];
+
+			}
+			b.updatePosition(1.0);
+		}
+	}
+
+	public void randomMove() {
+		for (int i = 0; i < bodies.size(); i++) {
+			MasseKugel bi = bodies.get(i);
+			bi.x = bi.x + Math.random() / Math.random() - Math.random() / Math.random();
+			bi.y = bi.y + Math.random() / Math.random() - Math.random() / Math.random();
+			bi.z = bi.z + Math.random() / Math.random() - Math.random() / Math.random();
+		}
+	}
+
+	public void randomMove(double sizeX, double sizeY, double sizeZ) {
+		for (int i = 0; i < bodies.size(); i++) {
+			MasseKugel bi = bodies.get(i);
+			bi.x = bi.x + Math.round(2 * sizeX * Math.random() - sizeX);
+			bi.y = bi.y + Math.round(2 * sizeY * Math.random() - sizeY);
+			bi.z = bi.z + Math.round(2 * sizeZ * Math.random() - sizeZ);
+		}
+	}
+
+	public void randomMove2(double sizeX, double sizeY, double sizeZ) {
+
+		MasseKugel bi = bodies.get((int) (bodies.size() * Math.random()));
+		bi.x = bi.x + Math.round(2 * sizeX * Math.random() - sizeX);
+		bi.y = bi.y + Math.round(2 * sizeY * Math.random() - sizeY);
+		bi.z = bi.z + Math.round(2 * sizeZ * Math.random() - sizeZ);
+	}
+	
+	public void randomMove3(double sizeX, double sizeY, double sizeZ) {
+
+		int rand1=(int)(bodies.size() * Math.random());
+		
+		MasseKugel bi = bodies.get(rand1);
+		bi.x = bi.x + Math.round(2 * sizeX * Math.random() - sizeX);
+		bi.y = bi.y + Math.round(2 * sizeY * Math.random() - sizeY);
+		bi.z = bi.z + Math.round(2 * sizeZ * Math.random() - sizeZ);
+		
+		MasseKugel bj=nextGegner(bi);
+		bi.updatePosition(1.0);
+		
+		int rand2 = (int) (bodies.size() * Math.random());
+		if (rand1 == rand2)
+			return;
+
+//		MasseKugel bi = bodies.get(rand1);
+		 bj = bodies.get(rand2);
+		if (bi.x != bj.x)
+			return;
+		if (bi.y != bj.y)
+			return;
+		if (bi.z != bj.z)
+			return;
+
+		bj.leben-=bi.damage;
+		if(bj.leben<=0) {bi.fusion(bj);
+		
+		bodies.remove(bj);}
+		
+	}
+
+	public void fusion() {
+
+		int rand1 = (int) (bodies.size() * Math.random());
+		int rand2 = (int) (bodies.size() * Math.random());
+		if (rand1 == rand2)
+			return;
+
+		MasseKugel bi = bodies.get(rand1);
+		MasseKugel bj = bodies.get(rand2);
+		if (bi.x != bj.x)
+			return;
+		if (bi.y != bj.y)
+			return;
+		if (bi.z != bj.z)
+			return;
+
+		bi.fusion(bj);
+		bodies.remove(bj);
+
+	}
+	
+	public void fressen() {
+
+		int rand1 = (int) (bodies.size() * Math.random());
+		int rand2 = (int) (bodies.size() * Math.random());
+		if (rand1 == rand2)
+			return;
+
+		MasseKugel bi = bodies.get(rand1);
+		MasseKugel bj = bodies.get(rand2);
+		if (bi.x != bj.x)
+			return;
+		if (bi.y != bj.y)
+			return;
+		if (bi.z != bj.z)
+			return;
+
+		bj.leben-=bi.damage;
+		if(bj.leben<=0) {bi.fusion(bj);
+		
+		bodies.remove(bj);}
+
+	}
+	
+	public MasseKugel nextGegner(MasseKugel current) {
+		MasseKugel gegner = null;
+		double min = 999999999;
+		for (int i=0;i<1000;i++) {
+			MasseKugel unit = bodies.get((int)(bodies.size()*Math.random()));
+			if (current.getDistance(unit) < min && current.team != unit.team) {
+				min = current.getDistance(unit);
+				gegner = unit;
+			}
+		}
+		return gegner;
+
+	}
+
+	public void teilen(double p) {
+		if (p > Math.random()) {
+			MasseKugel bi = bodies.get((int) (bodies.size() * Math.random()));
+			MasseKugel bj = bi.teilen();
+			bodies.add(bj);
+		}
+	}
+
+	public void GravityGemini(int foltern) {
+		int n = bodies.size();
+		double[] ax = new double[n];
+		double[] ay = new double[n];
+		double[] az = new double[n];
+
+		for (int i = 0; i < n; i++) {
+			MasseKugel bi = bodies.get(i);
+			ax[i] = ay[i] = az[i] = 0;
+			if (!bi.movable)
+				continue;
+			for (int j = 0; j < n; j++) {
+				if (i == j)
+					continue;
+				MasseKugel bj = bodies.get(j);
+				double dx = bj.x - bi.x;
+				double dy = bj.y - bi.y;
+				double dz = bj.z - bi.z;
+
+				double r2 = dx * dx + dy * dy + dz * dz;
+				double r = Math.sqrt(r2);
+
+				if (r == 0)
+					continue;
+
+				double normdx = dx / r;
+				double normdy = dy / r;
+				double normdz = dz / r;
+
+				ax[i] += G * bj.mass * normdx / Math.pow(r, verknüpfungen * 0.5 - 1);
+				ay[i] += G * bj.mass * normdy / Math.pow(r, verknüpfungen * 0.5 - 1);
+				az[i] += G * bj.mass * normdz / Math.pow(r, verknüpfungen * 0.5 - 1);
+
+				if (ax[i] > r / 2)
+					ax[i] = r / 2;
+				if (ay[i] > r / 2)
+					ay[i] = r / 2;
+				if (az[i] > r / 2)
+					az[i] = r / 2;
+
+				if (ax[i] < -r / 2)
+					ax[i] = -r / 2;
+				if (ay[i] < -r / 2)
+					ay[i] = -r / 2;
+				if (az[i] < -r / 2)
+					az[i] = -r / 2;
+			}
+		}
+		// Positions- und Geschwindigkeitsupdate
+		for (int i = 0; i < n; i++) {
+			MasseKugel b = bodies.get(i);
+			if (b.movable) {
+				b.vx += ax[i];
+				b.vy += ay[i];
+				b.vz += az[i];
+			}
+			b.updatePosition(1.0);
+		}
+	}
+
+	public void kinetischeFusion() {
+		// --- Simulation von kinetischer Kernverschmelzung (Exotherm) ---
+		List<MasseKugel> toRemove = new ArrayList<>();
+		List<MasseKugel> toAdd = new ArrayList<>();
+
+		for (int i = 0; i < bodies.size(); i++) {
+			MasseKugel b1 = bodies.get(i);
+			if (toRemove.contains(b1))
+				continue;
+
+			for (int j = i + 1; j < bodies.size(); j++) {
+				MasseKugel b2 = bodies.get(j);
+				if (toRemove.contains(b2))
+					continue;
+
+				double dx = b2.x - b1.x;
+				double dy = b2.y - b1.y;
+				double dz = b2.z - b1.z;
+				double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+				// Kollisionsprüfung
+				if (dist < (b1.radius + b2.radius)) {
+					// Relativgeschwindigkeit ermitteln
+					double dvx = b2.vx - b1.vx;
+					double dvy = b2.vy - b1.vy;
+					double dvz = b2.vz - b1.vz;
+
+					// Skalare Geschwindigkeit im Quadrat (als Repräsentant der kinetischen
+					// Aufprallenergie)
+					double vRelSq = dvx * dvx + dvy * dvy + dvz * dvz;
+
+					// Schwellenwert: Nur wenn sie schnell genug aufeinanderprallen, fusionieren sie
+					if (vRelSq > 2.0) { // Wert anpassbar für das Game-Balancing
+
+						double neueMasse = b1.mass + b2.mass;
+
+						// Völlig inelastischer Stoß: Impulserhaltung (p = m*v)
+						double neuVx = (b1.mass * b1.vx + b2.mass * b2.vx) / neueMasse;
+						double neuVy = (b1.mass * b1.vy + b2.mass * b2.vy) / neueMasse;
+						double neuVz = (b1.mass * b1.vz + b2.mass * b2.vz) / neueMasse;
+
+						// Das neu fusionierte, schwerere Element (z.B. Eisen)
+						MasseKugel fusioniert = new MasseKugel((b1.x + b2.x) / 2, (b1.y + b2.y) / 2, (b1.z + b2.z) / 2,
+								neuVx, neuVy, neuVz, neueMasse, Math.max(b1.radius, b2.radius) + 1, Color.ORANGE);
+
+						toRemove.add(b1);
+						toRemove.add(b2);
+						toAdd.add(fusioniert);
+					}
+				}
+			}
+		}
+		// Listen aktualisieren
+		bodies.removeAll(toRemove);
+		bodies.addAll(toAdd);
+	}
+
+	public void Gravity(int verknüpfungen) {
+		int n = bodies.size();
+
+		for (int i = 0; i < n; i++) {
+			MasseKugel bi = bodies.get((int) (Math.random() * n));
+
+			MasseKugel bj = bodies.get((int) (Math.random() * n));
+			if (bi == bj)
+				continue;
+			double dx = bj.x - bi.x;
+			double dy = bj.y - bi.y;
+			double dz = bj.z - bi.z;
+			double r2 = dx * dx + dy * dy + dz * dz;
+			double r = Math.sqrt(r2);
+
+			bi.vx += G * bj.mass * dx / Math.pow(r, verknüpfungen / 0.5 - 1);
+			bi.vy += G * bj.mass * dy / Math.pow(r, verknüpfungen / 0.5 - 1);
+			bi.vz += G * bj.mass * dz / Math.pow(r, verknüpfungen / 0.5 - 1);
+
+			bj.vx -= G * bi.mass * dx / Math.pow(r, verknüpfungen / 0.5 - 1);
+			bj.vy -= G * bi.mass * dy / Math.pow(r, verknüpfungen / 0.5 - 1);
+			bj.vz -= G * bi.mass * dz / Math.pow(r, verknüpfungen / 0.5 - 1);
+
+			bi.updatePosition(1.0);
+			bj.updatePosition(1.0);
+		}
+	}
+
+	// Zoom-Funktionen
+	public void zoomIn() {
+		zoomFactor *= ZOOM_STEP;
+		PAN_STEP = feinheit / zoomFactor;
+		repaint();
+	}
+
+	public void zoomOut() {
+		zoomFactor /= ZOOM_STEP;
+		PAN_STEP = feinheit / zoomFactor;
+		repaint();
+	}
+
+	// --- Hauptmethode mit allen Buttons ---
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			JFrame frame = new JFrame("N-Body Sonnensystem-Simulation (QDBV-Modul)");
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			main simPanel = new main();
+			frame.setLayout(new BorderLayout());
+			frame.add(simPanel, BorderLayout.CENTER);
+
+			// 1. Alle Buttons erstellen
+			JButton zoomIn = new JButton("Zoom In");
+			JButton zoomOut = new JButton("Zoom Out");
+			JButton speedUp = new JButton("Speed Up");
+			JButton speedDown = new JButton("Speed Down");
+			JButton panLeft = new JButton("← Links");
+			JButton panRight = new JButton("Rechts →");
+			JButton panUp = new JButton("↑ Hoch");
+			JButton panDown = new JButton("↓ Runter");
+			JButton resetButton = new JButton("Zurücksetzen (Init)");
+
+			// Neue Buttons für Impulse
+			JButton impulseTowardsStar = new JButton("Impuls: Zum Stern (Xylos I)"); // Umbenannt für Klarheit
+			JButton impulseAwayFromStar = new JButton("Impuls: Vom Stern weg (Xylos I)"); // Umbenannt für Klarheit
+			JButton impulsePrograde = new JButton("Impuls: Umlaufrichtung (Xylos I)");
+			JButton impulseRetrograde = new JButton("Impuls: Gegen Umlaufrichtung (Xylos I)");
+
+			// Textfeld für Impulsstärke
+			JTextField impulseMagnitudeField = new JTextField(String.format("%.3f", simPanel.currentImpulseMagnitude),
+					8); // Formatierung verbessert
+			JLabel impulseMagnitudeLabel = new JLabel("Impulsstärke:");
+
+			// NEU: Labels für Energieanzeige
+			JLabel kineticEnergyLabel = new JLabel("E_kin: N/A");
+			JLabel potentialEnergyLabel = new JLabel("E_pot: N/A");
+			JLabel totalEnergyLabel = new JLabel("E_total: N/A");
+
+			// Labels zur SimPanel Instanz übergeben, damit sie in actionPerformed
+			// aktualisiert werden können
+
+			// 2. ActionListener zuweisen
+			zoomIn.addActionListener(e -> simPanel.zoomIn());
+			zoomOut.addActionListener(e -> simPanel.zoomOut());
+			speedUp.addActionListener(e -> simPanel.increaseSimulationSpeed());
+			speedDown.addActionListener(e -> simPanel.decreaseSimulationSpeed());
+			panLeft.addActionListener(e -> simPanel.panLeft());
+			panRight.addActionListener(e -> simPanel.panRight());
+			panUp.addActionListener(e -> simPanel.panUp());
+			panDown.addActionListener(e -> simPanel.panDown());
+
+			// missverständlich
+
+			// missverständlich
+
+			// 3. Buttons und Textfeld zum Control-Panel hinzufügen
+			JPanel control = new JPanel();
+			control.add(zoomIn);
+			control.add(zoomOut);
+			control.add(speedUp);
+			control.add(speedDown);
+			control.add(panLeft);
+			control.add(panRight);
+			control.add(panUp);
+			control.add(panDown);
+			control.add(resetButton);
+
+			// Impulsstärke-Steuerung
+			control.add(impulseMagnitudeLabel);
+			control.add(impulseMagnitudeField);
+
+			// Impuls-Buttons
+			control.add(impulseTowardsStar);
+			control.add(impulseAwayFromStar);
+			control.add(impulsePrograde);
+			control.add(impulseRetrograde);
+
+			// NEU: Energie-Labels hinzufügen
+			control.add(kineticEnergyLabel);
+			control.add(potentialEnergyLabel);
+			control.add(totalEnergyLabel);
+
+			frame.add(control, BorderLayout.NORTH);
+			frame.setSize(1920, 1080); // Höherer Rahmen für Buttons
+			frame.setLocationRelativeTo(null);
+			frame.setVisible(true);
+		});
+	}
+
+}
+
+package p1;
+
+import java.awt.Color;
+
+
+
+
+public class MasseKugel {
+    public double x, y, z, vx, vy, vz, ax, ay, az, mass;
+    public double maxLeben, leben, damage, speed;
+    int team;
+    public int radius;
+    public Color color;
+    public boolean movable;
+    
+    double oberflächentemperatur;
+	double erdbeschleunigung;
+	boolean rotationsgebunden;
+//	boolean leben;
+	boolean sonnenlicht;
+
+    public MasseKugel(double x, double y, double z, double vx, double vy, double vz, double mass, int radius, Color color) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.vx = vx;
+        this.vy = vy;
+        this.vz = vz;
+        this.mass = mass;
+        this.radius = radius;
+        this.color = color;
+        this.movable=true;
+        
+        
+        
+    }
+    
+    public MasseKugel(double x, double y, double z, double vx, double vy, double vz, double mass, int radius) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.vx = vx;
+        this.vy = vy;
+        this.vz = vz;
+        this.mass = mass;
+        this.radius = radius;
+        this.color = new Color((int)(256*Math.random()),(int)(256*Math.random()),(int)(256*Math.random()));
+        
+        
+        
+    }
+
+    public MasseKugel(double x, double y, double vx, double vy, double masse,  int radius, Color color2,
+			boolean movable2) {
+		// TODO Auto-generated constructor stub
+	}
+
+	public void updatePosition(double time) {
+        this.x += (this.vx*time);
+        this.y += (this.vy*time);
+        this.z += (this.vz*time);
+    }
+	
+	public void updateV() {
+        this.vx += this.ax;
+        this.vy += this.ay;
+        this.vz += this.az;
+    }
+
+    public double getEKin() {
+        double speedSq = this.vx * this.vx + this.vy * this.vy + this.vz * this.vz;
+        return 0.5 * this.mass * speedSq;
+    }
+    public void printWerteOhne() {
+    	System.out.println("System.currentTimeMillis() = "+System.currentTimeMillis());
+    	System.out.println("Position x = "+x);
+    	System.out.println("Position y = "+y);
+    	System.out.println("Position z = "+z);
+    	System.out.println("Geschwindigkeit vx = "+vx);
+    	System.out.println("Geschwindigkeit vy = "+vy);
+    	System.out.println("Geschwindigkeit vz = "+vz);
+    	System.out.println("Kinetische Energie = "+getEKin());
+    	System.out.println("Masse = "+mass);
+//    	System.out.println("Farbe = "+color);
+    }
+    
+    public void printWerte() {
+    	System.out.println("System.currentTimeMillis() = "+System.currentTimeMillis());
+    	System.out.println("Position x = "+x+" Meter");
+    	System.out.println("Position y = "+y+" Meter");
+    	System.out.println("Position z = "+z+" Meter");
+    	System.out.println("Geschwindigkeit vx = "+vx+" Meter pro Sekunde");
+    	System.out.println("Geschwindigkeit vy = "+vy+" Meter pro Sekunde");
+    	System.out.println("Geschwindigkeit vz = "+vz+" Meter pro Sekunde");
+    	System.out.println("Kinetische Energie = "+getEKin());
+    	System.out.println("Masse = "+mass+" Kilogramm");
+//    	System.out.println("Farbe = "+color);
+    }
+    
+    
+    public void entropieMove() {
+    	int rand = (int)(Math.random()*8);
+    	if(rand<2)return;
+    	if(rand==2)x++;
+    	if(rand==3)x--;
+    	if(rand==4)y++;
+    	if(rand==5)y--;
+    	if(rand==6)z++;
+    	if(rand==7)z--;
+    }
+    
+    public void entropieMoveRand() {
+    	int rand = (int)(Math.random()*8);
+    	if(rand<2)return;
+    	if(rand==2)x+=Math.random();
+    	if(rand==3)x-=Math.random();
+    	if(rand==4)y+=Math.random();
+    	if(rand==5)y-=Math.random();
+    	if(rand==6)z+=Math.random();
+    	if(rand==7)z-=Math.random();
+    }
+    
+    double G = 6.6743015e-11;
+    // Kraft in Newton, die auf beide MasseKugeln wirkt und diese wechselseitig in Richtung des anderen beschleunigt, so das die Gravitationskraft weiter steigt und der Abstand sinkt
+    public double getGravityKraft(MasseKugel other) {
+    	double kraft =0;
+    	double distQ = (other.x-this.x)*(other.x-this.x)+(other.y-this.y)*(other.y-this.y)+(other.z-this.z)*(other.z-this.z);
+    	kraft= G * this.mass*other.mass/distQ;
+    	return kraft;
+    }
+    
+    
+    public void fressen(MasseKugel kugel2) {
+    	if(kugel2.leben<=0)fusion(kugel2);
+    	kugel2.leben-=damage;
+    }
+    
+    public void fusion(MasseKugel kugel2) {
+    	
+    	double massAlt=mass;
+    	double massOther=kugel2.mass;
+    	double massNew=massAlt+massOther;
+    	
+    	mass=massNew;
+    	maxLeben=maxLeben+massOther*Math.random();
+    	leben=maxLeben;
+    	damage=damage+massOther*Math.random();
+    	
+    	double red = color.getRed()*massAlt+kugel2.color.getRed()*massOther;
+    	double green = color.getGreen()*massAlt+kugel2.color.getGreen()*massOther;
+    	double blue = color.getBlue()*massAlt+kugel2.color.getBlue()*massOther;
+    	
+    	red=Math.round(red/massNew);
+    	green=Math.round(green/massNew);
+    	blue=Math.round(blue/massNew);
+    	
+    	this.color=new Color((int)red,(int)green,(int)blue);
+    	
+    	double volumenAlt=this.radius*this.radius*this.radius;
+    	double volumen2=kugel2.radius*kugel2.radius*kugel2.radius;
+    	double volumenNeu=volumenAlt+volumen2;
+    	
+    	double sizeNeu=Math.round(Math.pow(volumenNeu, 1/3.0));
+    	this.radius=(int)sizeNeu;
+    	speed=radius*Math.random()*2;
+
+
+
+    }
+    
+    public void moveTo(MasseKugel oponent) {
+		double distQ = (this.x - oponent.x) * (this.x - oponent.x)
+				+ (this.y - oponent.y) * (this.y - oponent.y)
+				+ (this.z - oponent.z) * (this.z - oponent.z);
+		double dist = Math.pow(distQ, 0.5);
+		
+		double dx=x-oponent.x;
+		double dy=y-oponent.y;
+		double dz=z-oponent.z;
+		
+		double movDist=Math.min(speed, Math.abs(dist-0));
+		
+		vx=-dx/dist*movDist;
+		vy=-dy/dist*movDist;
+		vz=-dz/dist*movDist;
+
+	}
+    
+    public double getDistance(MasseKugel oponent) {
+		double distQ = (this.x - oponent.y) * (this.x - oponent.x)
+				+ (this.y - oponent.y) * (this.y - oponent.y)
+				+ (this.z - oponent.z) * (this.z - oponent.z);
+		double dist = Math.pow(distQ, 0.5);
+		return dist;
+	}
+    
+    public MasseKugel teilen() {
+    	MasseKugel neu=new MasseKugel(x,y,z,vx,vy,vz,Math.round(mass*Math.random()),radius);
+    	
+    	
+    	double massAlt=mass;
+    	double volumenAlt=radius*radius*radius;
+    	double volumenNeu=volumenAlt/mass*neu.mass;
+    	double radiusNeu=Math.pow(volumenNeu, 1/3.0);
+    	
+    	 mass=mass-neu.mass;
+    	 
+    	 double volumenNeu2=volumenAlt/massAlt*mass;
+     	double radiusNeu2=Math.pow(volumenNeu2, 1/3.0);
+    	
+    	radius=(int)Math.round(radiusNeu2);
+    	
+    	neu.color=new Color(color.getRed(),color.getGreen(),color.getBlue());
+    	neu.team=neu.color.getRed()*neu.color.getRed()+neu.color.getGreen()*neu.color.getGreen()+neu.color.getBlue()*neu.color.getBlue();
+		neu.team=(int)(Math.pow(neu.team, 0.5)/100);
+    	neu.maxLeben=neu.mass*Math.random();
+    	neu.leben=neu.maxLeben;
+    	neu.damage=neu.mass*Math.random();
+    	
+    	
+    	return(neu);
+    	
+    }
+    
+    
+    
+
+}
