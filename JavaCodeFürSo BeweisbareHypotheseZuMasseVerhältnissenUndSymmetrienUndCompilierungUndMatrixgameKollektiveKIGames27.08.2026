@@ -1,0 +1,68 @@
+Andeas Schneider Hypothese für Wissenschaft und Open Sourc Anwendung und Unterstützung gesucht: 
+27.08.2026 Beweis durch Compilierbaren Java Code und weiteren Projekten und berichten und Kontaktwunsch und Mehr:
+package ordner2;
+
+public class GravityMatrixjava {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		
+		System.out.println("Hello Universe");
+		
+		double elektronenMasse = 9.1093837139 * Math.pow(10, -31);
+		
+		System.out.println("Die Elektronenmasse Begründet durch unsere Wissenschaft und das sehr gut: = "+elektronenMasse+" kg");
+		double sechstelElektronenMasse=elektronenMasse/6.0;
+		System.out.println("Die sechstel Elektronen Masse = "+ elektronenMasse/6.0);
+		
+		double protonenMasse=1.67262192595*Math.pow(10, -27);// kg"
+		
+		System.out.println("Die Protonen Masse = "+protonenMasse);
+		
+		System.out.println("protonenMasse/sechstelElektronenMasse"+protonenMasse/sechstelElektronenMasse);
+
+		System.out.println("Lässt sich schön aufrunden aber wir runden hier ab, um die Simmetrie zu beweisen: "+(int)(protonenMasse/sechstelElektronenMasse));
+		
+		double symmetrieZahl= 11016.0;
+		double RaumSymmetrien = 11016/8.0;   //=1377.0
+		double RaumSymmetrie2= 11016/8.0/3/3/3;
+		
+		System.out.println("11016 Dividiert erst durch 8 und durch 27 :"+ RaumSymmetrie2);
+		
+		System.out.println("Nach division durch 8 für den 3D Raum gibt es ein erstes ganzzahl Ergebnis: "+RaumSymmetrien);
+		
+		System.out.println("Dieses erneut durch 27 dividieren: "+RaumSymmetrien/27.0);
+		
+		System.out.println("Das Ergebnis lässt sich jetzt ein weiteres Mal durch 3 sowie durch den Primfaktor 17 zerlegen und kann in Zukunft, sowohl für mich wie auch andere Meschen wie mich und die open source community und die Wissenschaft und Weiters geeignet Genutzt und weiter Nutzbar und Validierbarer und Weiteres gutes damit gemacht werden so das wir alle mit schöner Didaktik gewinnen und weitere Fortschritte folgen. Vielen Dank");
+		
+		System.out.println("Autor und nach Unterstützung und Diskusionen und Perreview und Ausbau für die allgemeine und Kollektive Nutzung und zu meinem ssowie dem Vorteil und Gewinn für die Menschheit und Wissenschft und Weitere Intelligenzen: Andreas Schneider Eberstadt-Darmstadt Facebook: https://www.facebook.com/ , HandyNummer: +491778627094, Email: andreas.schneider01989@gmail.com, GitHub: https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit");
+//		Elementare Massen
+//		Teilchenphysik für das Matrixgame und die Kollektiven Ki-Games
+//		07.02.2026 Andreas Schneider, Deutschland, Darmstadt-Eberstadt, Weingartenstraße 45
+//
+//		Nukleonen
+//		Teilchen, Typ, “Masse in kg”
+//		Proton, Nukleon, "≈1,67262192595×10−27 kg"
+//		Neutron (n), Nukleon, "≈1,67493×10−27 kg"
+//
+//
+//		Quarks
+//		Teilchen,Typ,”Masse in kg (ca.)”, ‘Ladung’
+//		Up-Quark(u),Quark,"3,9×10^−30 kg", ‘+2/3e’
+//		Down-Quark(d),Quark,"8,4×10^−30 kg", ‘-1/3e’
+//		Strange-Quark(s),Quark,"1,7×10^−28 kg", ‘-1/3e’
+//		Charm-Quark(c),Quark,"2,3×10^−27 kg", ‘+2/3e’
+//		Bottom-Quark(b),Quark,"7,5×10^−27 kg", ‘-1/3e’
+//		Top-Quark(t),Quark,"3,1×10^−25 kg", ‘+2/3e’
+//
+//
+//		Leptonen
+//		Masse Elektron (me​): 9,1093837139×10−31 kg
+//
+//		
+		
+
+	}
+
+}
