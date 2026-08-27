@@ -1,0 +1,1673 @@
+package ordner1; // Beachte: Muss im Ordner p1 liegen!
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.SwingUtilities;
+
+// Ziel: Das Optimieren der Entscheidungsfindung für die Unit Fight Simulationen um definierte Ziele wie das vernichten des gegnerischen Königs durch möglichst effiziente Algorithmen und Entscheidungsfindungen auf allen Ebenen der Matrix Kollektiv zu optimieren und zu Gamifizieren und mit den LLMs und allen weiteren Intelligenzen und Open Source so das alle gewinnen erlernen zu können und zu wollen und weiteres, ich hoffe sehr auf menschiche Unterstützung und Fusion von Projekten wie diesem und weiteren
+// Mein Facebook: https://www.facebook.com/andreas.schneider.7393264
+
+public class MainGame extends JPanel {
+
+	// Die Unit List als Basis für den GameLoop
+	public List<Unit> unitList = new ArrayList<>();
+
+	// --- Panalgrößen ---
+	int FRAME_WIDTH = 1920;
+	int FRAME_HEIGHT = 1080;
+
+	// --- Zoom-Variablen ---
+	double zoomFactor = 1.0;
+
+	double zoomCenterX = 0;
+	double zoomCenterY = 0;
+	static final double ZOOM_STEP = 1.2; // Feinheit beim Zoomen
+
+	double feinheit = 50;
+	double PAN_STEP = feinheit * zoomFactor; // Verschiebung pro Button-Klick
+
+	// --- Konstruktor --- init1
+	public MainGame() {
+		// Canvas mit schwarzem Hintergrund erstellen
+		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+		setBackground(Color.BLACK);
+
+		MouseAdapter mouseHandler = new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// 1. Linksklick: Einheiten selektieren
+				if (SwingUtilities.isLeftMouseButton(e)) {
+					int mouseX = e.getX();
+					int mouseY = e.getY();
+					boolean unitFound = false;
+
+					for (Unit u : unitList) {
+						double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0;
+						double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0;
+						double radius = Math.abs(u.size);
+
+						if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) {
+							u.isSelected = true;
+							System.out.println("Unit " + u.id + " Wurde vom Spieler ausgewählt");
+							unitFound = true;
+						} else if (!e.isShiftDown()) {
+							u.isSelected = false;
+						}
+					}
+
+					if (!unitFound && !e.isShiftDown()) {
+						for (Unit u : unitList) {
+							u.isSelected = false;
+						}
+					}
+					repaint();
+				}
+				// 2. Rechtsklick: Befehle an ausgewählte Einheiten verteilen
+				// 2. Rechtsklick: Befehle an ausgewählte Einheiten verteilen
+				else if (SwingUtilities.isRightMouseButton(e)) {// 2. Rechtsklick: Befehle an ausgewählte Einheiten
+																// verteilen
+
+					int mouseX = e.getX();
+					int mouseY = e.getY();
+
+					// KORRIGIERTE MATHEMATISCHE INVERSION: Screen -> World
+					double worldTargetX = (mouseX - getWidth() / 2.0) / zoomFactor - zoomCenterX;
+					double worldTargetY = (mouseY - getHeight() / 2.0) / zoomFactor - zoomCenterY;
+
+					System.out.println("--- Befehlsausgabe (Rechtsklick) ---");
+					System.out.println("Maus Screen-X: " + mouseX + " | Screen-Y: " + mouseY);
+					System.out.println("Berechnete Welt-X: " + worldTargetX + " | Welt-Y: " + worldTargetY);
+
+					Unit clickedEnemy = null;
+					for (Unit u : unitList) {
+						// Hier bleibt die World -> Screen Transformation korrekt,
+						// da wir prüfen, wo die Einheit auf dem Bildschirm gerendert wird.
+						double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0;
+						double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0;
+						double radius = Math.abs(u.size);
+
+						if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) {
+							clickedEnemy = u;
+							System.out.println("Gegnerische Einheit für Angriff anvisiert: ID " + u.id);
+							break;
+						}
+					}
+
+					for (Unit u : unitList) {
+						if (u.isSelected) {
+							if (clickedEnemy != null) {
+								// Angriffsbefehl
+								u.manualTarget = clickedEnemy;
+								u.targetPosX = null;
+								u.targetPosY = null;
+								u.decisionAlgorithm = "TARGET_ENEMY";
+							} else {
+								// Bewegungs-Befehl
+								u.targetPosX = worldTargetX;
+								u.targetPosY = worldTargetY;
+								u.manualTarget = null;
+								u.decisionAlgorithm = "TARGET_POINT";
+								System.out.println("Einheit ID " + u.id + " bewegt sich zu Zielpunkt.");
+							}
+						}
+					}
+					repaint();
+				}
+			}
+		};
+
+		this.addMouseListener(mouseHandler);
+		this.addMouseMotionListener(mouseHandler);
+	}
+
+	// Init Methode zum Füllen der UnitList
+	public void init() {
+		unitList.clear(); // Wichtig: Altes Aufräumen
+		java.util.Random rand = new java.util.Random(12345); // Fester Seed = Immer gleiches Match
+
+		int unitsPerTeam = 1;
+		double counterId = 0;
+
+		for (int i = 0; i < 100; i++) {
+			// 1. Stats WÜRFELN (Aber kontrolliert! Keine Division durch 0)
+//			double hp = 1; 
+//			double dmg = 1; 
+//			double spd =3*Math.random(); 
+//			double rng = 3*Math.random(); ; 
+//			double attackSpeed=1;
+//			double kritChance=0.25;
+//			double geschicklichkeit=1;
+//			double currentDefense=1;
+//			double moveSpeed=3*Math.random();;
+
+			
+
+			// --- TEAM 1 (Blau) ---
+			Unit u1 = new Unit();
+			u1.team = 1;
+			u1.typ = "Unit";
+			
+			u1.currentTime=System.currentTimeMillis();
+			u1.timeBefore=System.currentTimeMillis();
+			u1.posX = Math.random() * 50;
+			u1.posY = Math.random() * 50;
+			u1.posZ = Math.random() * 50;
+			u1.posXBefore=u1.posX;
+			u1.posYBefore=u1.posY;
+			u1.posZBefore=u1.posZ;
+			u1.maxLeben = 1;
+			u1.leben = 1; // WICHTIG: Auch leben setzen!
+			u1.damage = 1;
+			u1.attackSpeed=1;
+			u1.moveSpeed=8*Math.random();
+			u1.kritchance=0.2;
+			u1.maxSpeed = 3*Math.random();;
+			u1.reichweite = 3*Math.random();;
+			u1.geschicklichkeit=5*Math.random();
+			u1.currentDefense=5*Math.random();
+			u1.decisionAlgorithm = "TRIGONOMETRIC"; // <--- HIER: Taktik A
+			u1.red = 0;
+			u1.green = 0;
+			u1.blue = 255;
+			u1.id = counterId++;
+			u1.printWerte();
+			unitList.add(u1);}
+
+		for (int i = 0; i < 10; i++) {
+			// --- TEAM 2 (Rot) - EXAKTE KOPIE, NUR Y GESPIEGELT ---
+			Unit u2 = new Unit();
+			u2.team = 2;
+			u2.typ = "Unit";
+			u2.currentTime=System.currentTimeMillis();
+			u2.timeBefore=System.currentTimeMillis();
+			u2.posX = Math.random() * 50;
+			u2.posY = -Math.random() * 50;
+			u2.posZ = Math.random() * 50;// Spiegelung an der X-Achse
+			u2.posXBefore=u2.posX;
+			u2.posYBefore=u2.posY;
+			u2.posZBefore=u2.posZ;
+			u2.maxLeben = 1;
+			u2.leben = 1; // Exakt gleiche HP!
+			u2.damage = 1;
+			u2.attackSpeed=1;
+			u2.moveSpeed=8*Math.random();
+			u2.kritchance=0.2;
+			u2.currentDefense=5*Math.random();
+			u2.geschicklichkeit=6;
+			u2.maxSpeed = 4;
+			u2.reichweite = 9.5; // Exakt gleiche Stats!
+			u2.decisionAlgorithm = "NEAREST_ENEMY"; // <--- HIER: Taktik B
+			u2.red = 255;
+			u2.green = 0;
+			u2.blue = 0;
+			u2.id = counterId++;
+			u2.printWerte();
+			unitList.add(u2);
+		}
+
+		// Könige exakt gespiegelt spawnen
+		Unit king1 = new Unit();
+		king1.typ = "King";
+		king1.size = 15;
+		king1.team = 1;
+		king1.posX = 25;
+		king1.posY = 25;
+		king1.posZ = 25;
+		king1.posXBefore=king1.posX;
+		king1.posYBefore=king1.posY;
+		king1.posZBefore=king1.posZ;
+
+		king1.maxLeben = 3; 
+		king1.leben = king1.maxLeben;
+		king1.damage =1;
+		king1.attackSpeed=1;
+		king1.moveSpeed=3;
+		king1.kritchance=0.25;
+		king1.maxSpeed =5; ;
+		king1.reichweite = 5;
+		king1.currentDefense=3;
+		king1.geschicklichkeit=5;
+		king1.id = counterId++;
+		king1.grid = false;
+		king1.red = 0;
+		king1.green = 0;
+		king1.blue = 255;
+		king1.decisionAlgorithm = "NEAREST_ENEMY";
+		king1.printWerte();
+		unitList.add(king1);
+
+		Unit king2 = new Unit();
+		king2.typ = "King";
+		king2.size = 15;
+		king2.team = 2;
+		king2.posX = 25;
+		king2.posY = -25;
+		king2.posZ = 25;
+		king2.posXBefore=king2.posX;
+		king2.posYBefore=king2.posY;
+		king2.posZBefore=king2.posZ;
+		king2.maxLeben = 3; 
+		king2.leben = king2.maxLeben;
+		king2.damage =1; 
+		king2.kritchance=0.25;
+		king2.attackSpeed=1;
+		king2.moveSpeed=5;
+		king2.currentDefense=3;
+		king2.geschicklichkeit=3;
+		king2.maxSpeed = 5; 
+		king2.reichweite = 5; 
+		king2.id = counterId++;
+		king2.grid = false;
+		king2.red = 255;
+		king2.green = 0;
+		king2.blue = 0;
+		king2.printWerte();
+		king2.decisionAlgorithm = "NEAREST_ENEMY";
+		unitList.add(king2);
+
+		repaint();
+	}
+
+	// --- Pan-Methoden ---
+	public void panLeft() {
+		zoomCenterX += PAN_STEP;
+		repaint();
+	}
+
+	public void panRight() {
+		zoomCenterX -= PAN_STEP;
+		repaint();
+	}
+
+	public void panUp() {
+		zoomCenterY += PAN_STEP;
+		repaint();
+	}
+
+	public void panDown() {
+		zoomCenterY -= PAN_STEP;
+		repaint();
+	}
+
+	// Gelogene Methode
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setColor(Color.BLACK);
+		g2.fillRect(0, 0, getWidth(), getHeight());
+
+		// Loop für alle Units aus UnitList
+		for (int i = 0; i < unitList.size(); i++) {
+			Unit unit = unitList.get(i);
+			if (unit.leben <= 0)
+				continue;
+			double radius = unit.size;
+			Color color = new Color((int) (unit.red), (int) (unit.green), (int) (unit.blue));
+			double posX = unit.posX;
+			double posY = unit.posY;
+			// Berücksichtige Pan und Zoom bei der Positionierung
+			double sx = (zoomCenterX + posX) * zoomFactor + getWidth() / 2.0;
+			double sy = (zoomCenterY + posY) * zoomFactor + getHeight() / 2.0;
+//			int r = (int) Math.max(body.radius * zoomFactor, MIN_RADIUS_DRAW);
+			g2.setColor(color);
+			g2.fillOval((int) (sx - radius), (int) (sy - radius), (int) (radius * 2), (int) (radius * 2));
+			// Innerhalb von paintComponent(Graphics g) in der for-Schleife:
+			if (unit.isSelected) {
+				g2.setColor(Color.WHITE);
+				// Einen etwas größeren Ring um die Unit zeichnen
+				g2.drawOval((int) (sx - radius - 2), (int) (sy - radius - 2), (int) (radius * 2 + 4),
+						(int) (radius * 2 + 4));
+			}
+
+		}
+	}
+
+	// Zoom-Funktionen
+	public void zoomIn() {
+		zoomFactor *= ZOOM_STEP;
+		PAN_STEP = feinheit / zoomFactor;
+		repaint();
+	}
+
+	public void zoomOut() {
+		zoomFactor /= ZOOM_STEP;
+		PAN_STEP = feinheit / zoomFactor;
+		repaint();
+	}
+
+	long pasueTime = 10;
+	long kompletteRechenzeitDerSimulation = 0;
+	double avgRechenzeitProUnitProEinheitenZug = 0;
+	double count = 0;
+
+	public void gameLoop() {
+		while (true) {
+			repaint();
+
+			if (unitList.isEmpty())
+				break; // Sicherheitscheck
+
+			int randNumber = (int) (unitList.size() * Math.random());
+			Unit current = unitList.get(randNumber);
+
+			if (current.leben <= 0) {
+				if (current.typ != null && current.typ.equals("King")) {
+					System.out.println("--- GAME OVER ---");
+					System.out.println("Der König von Team " + current.team + " wurde vernichtet!");
+					System.out.println("Das andere Team hat gewonnen!");
+					return;
+				} else {
+					continue; // Tote Unit überspringen
+				}
+			}
+
+			current.leben *= 1.1;
+			if (current.leben > current.maxLeben)
+				current.leben = current.maxLeben;
+			current.currentDefense = current.defenseProTurn;
+
+			// --- 🚀 OPTIMIERUNG: DYNAMISCHES LOAD-BALANCING (SKIP LOGIC) ---
+			// Wir warten bis count > 50, damit sich der Durchschnitt erst mal einpendelt.
+			// Wenn eine Unit 50% mehr Zeit braucht als der Durchschnitt, wird sie mit 50%
+			// Wahrscheinlichkeit diesen Tick "übersprungen".
+			// Das spart CPU und simuliert z.B. "langsamere Reaktionszeiten" bei komplexen
+			// Einheiten.
+
+			double zugChance = avgRechenzeitProUnitProEinheitenZug / current.rechenzeitProZug;
+
+			if (Math.random() > zugChance) {
+				continue; // Skip! Die Unit behält ihren aktuellen Bewegungswert (vx, vy) bei.
+			}
+
+			// current.printWerte(); // TIPP: Für maximale Performance später
+			// auskommentieren!
+
+			long startTime = System.nanoTime();
+			count++;
+
+			// --- ENTSCHEIDUNGSLOGIK ---
+			if ("TARGET_POINT".equals(current.decisionAlgorithm) && current.targetPosX != null
+					&& current.targetPosY != null) {
+
+				current.moveTo(current.targetPosX, current.targetPosY, current.posZ, current.maxSpeed);
+				double distToTarget = current.getDistanceTo(current.targetPosX, current.targetPosY, current.posZ);
+				if (distToTarget < 1.5) {
+					current.decisionAlgorithm = "NEAREST_ENEMY";
+					current.targetPosX = null;
+					current.targetPosY = null;
+				}
+			} else if ("TARGET_ENEMY".equals(current.decisionAlgorithm) && current.manualTarget != null) {
+				if (current.manualTarget.leben <= 0) {
+					current.decisionAlgorithm = "NEAREST_ENEMY";
+					current.manualTarget = null;
+				} else {
+					current.target = current.manualTarget;
+					if (current.getDistance(current.target) <= current.reichweite) {
+						current.attackieren(current.target);
+					} else {
+						current.moveTo(current.target);
+					}
+				}
+			} else {
+
+				//////
+				// Standard KI
+				if (current.target == null || current.target.leben <= 0) {
+					current.target = nextGegner(current);
+				}
+				if (current.getDistance(current.target) > current.reichweite + current.maxSpeed)
+					current.target = nextGegner(current);
+				current.update();
+
+				if (current.target.typ != null && current.target.typ.equals("King") && current.target.leben <= 0) {
+					System.out.println("Der König von Team " + current.target.team + " wurde vernichtet!");
+					System.out.println("Team " + current.team + " hat gewonnen!");
+					return;
+				}
+
+			}
+
+			long endTime = System.nanoTime();
+			long zugZeit = endTime - startTime;
+
+			// Zeitmessung speichern (Gleitender Durchschnitt für stabile Werte)
+			current.rechenzeitProZug = (current.rechenzeitProZug * 0.8) + (zugZeit * 0.2);
+			current.kompletteRechenzeitInSimulation += zugZeit;
+			kompletteRechenzeitDerSimulation += zugZeit;
+			avgRechenzeitProUnitProEinheitenZug = kompletteRechenzeitDerSimulation / count;
+
+			// NEU: Kurze Pause (16ms = ca. 60 FPS Update-Rate für die Logik)
+			try {
+				Thread.sleep(pasueTime);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public Unit nextGegner(Unit current) {
+		Unit gegner = null;
+		double min = 999999999;
+		for (Unit ziel : unitList) {
+			if (current.getDistance(ziel) < min && current.team != ziel.team && ziel.leben > 0) {
+				min = current.getDistance(ziel);
+				gegner = ziel;
+			}
+		}
+		return gegner;
+	}
+
+	// --- Korrigierte Hauptmethode ---
+	// --- Korrigierte Hauptmethode ---
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			JFrame frame = new JFrame("N-Body Sonnensystem-Simulation (QDBV-Modul)");
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+			// 1. Zentrale Instanz erzeugen und initialisieren
+			MainGame simPanel = new MainGame();
+			simPanel.init();
+
+			frame.setLayout(new BorderLayout());
+			frame.add(simPanel, BorderLayout.CENTER);
+
+			// 2. Control-Panel und Buttons
+			JButton zoomIn = new JButton("Zoom In");
+			JButton zoomOut = new JButton("Zoom Out");
+			JButton speedUp = new JButton("Speed Up");
+			JButton speedDown = new JButton("Speed Down");
+			JButton panLeft = new JButton("← Links");
+			JButton panRight = new JButton("Rechts →");
+			JButton panUp = new JButton("↑ Hoch");
+			JButton panDown = new JButton("↓ Runter");
+
+			zoomIn.addActionListener(e -> simPanel.zoomIn());
+			zoomOut.addActionListener(e -> simPanel.zoomOut());
+			panLeft.addActionListener(e -> simPanel.panLeft());
+			panRight.addActionListener(e -> simPanel.panRight());
+			panUp.addActionListener(e -> simPanel.panUp());
+			panDown.addActionListener(e -> simPanel.panDown());
+
+			JPanel control = new JPanel();
+			control.add(zoomIn);
+			control.add(zoomOut);
+			control.add(speedUp);
+			control.add(speedDown);
+			control.add(panLeft);
+			control.add(panRight);
+			control.add(panUp);
+			control.add(panDown);
+
+			frame.add(control, BorderLayout.NORTH);
+			frame.setSize(1920, 1080);
+			frame.setLocationRelativeTo(null);
+			frame.setVisible(true);
+
+			// 3. SYNCHRONISATIONS-FIX: Den Loop strikt entkoppeln
+			Thread gameThread = new Thread(() -> {
+				simPanel.gameLoop();
+			});
+			gameThread.start();
+		});
+	}
+
+}
+
+package ordner1;
+
+public class Unit extends KreisObjekt {
+	String typ;
+
+	long currentTime = System.currentTimeMillis();
+
+	long timeBefore = System.currentTimeMillis();
+
+	long timeBeforeAttack = System.currentTimeMillis();
+
+	long deltaTime = currentTime - timeBefore;
+
+	double timeSeconds;
+	long lastAttackTime; // Zeitpunkt des letzten Angriffs (in Millisekunden)
+	long lastMoveTime;
+	
+	
+	double posXBefore;
+	double posYBefore;
+	double posZBefore;
+
+	double maxLeben;
+	double leben;
+	double damage;
+	double reichweite;
+	double maxSpeed;
+	double attackSpeed; // Aufladezeit in Sekunden 1.0 / attackSpeed
+	double moveSpeed;
+	double geschicklichkeit = Math.random();
+	double defenseProTurn = Math.random();
+	double currentDefense = defenseProTurn;
+	double kritchance = 0.2;
+
+	int team;
+	int kills;
+
+	double recheneffiziens;
+	double zuletztVerbrauchteZeit;
+	double kompletteRechenzeitInSimulation;
+	double rechenzeitProZug;
+
+	double points1;
+	double points2;
+	double points3;
+	double points4;
+	double konstruktionszeit = System.currentTimeMillis();
+	public Unit target = null;
+
+	// Neue Variablen für Entscheidungsalgorithmen und Steuerung
+	public String decisionAlgorithm = "NEAREST_ENEMY"; // "TARGET_POINT", "STAND_STILL", "NEAREST_ENEMY"
+	public boolean isSelectable = true;
+	public boolean isInfluencable = true;
+
+	public double maxCarryCapacity = 50.0; // statt 10.0 – Träger sollen echte Transportarbeit leisten können
+
+	// Zielkoordinaten im 3D-Raum (x, y, z) für manuelle oder algorithmische
+	// Bewegung
+	public Double targetPosX = null;
+	public Double targetPosY = null;
+	public Double targetPosZ = null;
+
+	// Spezifisches Ziel für einen manuellen Angriffsbefehl
+	public Unit manualTarget = null;
+
+	double id;
+
+	public void moveTo(KreisObjekt oponent) {
+		double distQ = (this.posX - oponent.posX) * (this.posX - oponent.posX)
+				+ (this.posY - oponent.posY) * (this.posY - oponent.posY)
+				+ (this.posZ - oponent.posZ) * (this.posZ - oponent.posZ);
+		double dist = Math.pow(distQ, 0.5);
+
+		double dx = posX - oponent.posX;
+		double dy = posY - oponent.posY;
+		double dz = posZ - oponent.posZ;
+
+		double movDist = Math.min(maxSpeed * ((System.currentTimeMillis() - timeBefore) / 1000.0),
+				Math.abs(dist - reichweite));
+		movDist /= 1.01;
+
+		vx = -dx / dist * movDist;
+		vy = -dy / dist * movDist;
+		vz = -dz / dist * movDist;
+
+		System.out.println("Move: " + vx + "," + vy + "," + vz);
+
+		move(1);
+
+	}
+
+	public void moveToAndKite(KreisObjekt oponent) {
+		double distQ = (this.posX - oponent.posX) * (this.posX - oponent.posX)
+				+ (this.posY - oponent.posY) * (this.posY - oponent.posY)
+				+ (this.posZ - oponent.posZ) * (this.posZ - oponent.posZ);
+		double dist = Math.pow(distQ, 0.5);
+
+		double dx = posX - oponent.posX;
+		double dy = posY - oponent.posY;
+		double dz = posZ - oponent.posZ;
+
+		double movDist = Math.min(maxSpeed,
+				Math.abs(dist - reichweite));
+
+		if (reichweite > dist) {
+			movDist = reichweite - dist;
+			movDist = -movDist;}
+		
+		
+			if(movDist>0)movDist = movDist+0.01;
+			else movDist= movDist+0.01;
+			
+		
+		
+
+		vx = -dx / dist * movDist;
+		vy = -dy / dist * movDist;
+		vz = -dz / dist * movDist;
+
+		System.out.println("Move: " + vx + "," + vy + "," + vz);
+
+		move(1);
+
+	}
+
+	void update() {
+		System.out.println("System.currentTimeMillis() = "+System.currentTimeMillis()+" this.id = " + this.id+" this.posX = "+this.posX+" this.posY = "+this.posY+" this.posZ = "+this.posZ);
+		deltaTime = currentTime - timeBefore;
+		timeSeconds = deltaTime / 1000.0;
+
+		if (!this.typ.equals("King") && this.target != null) {
+			
+			performMove();
+		}
+		
+if (this.typ.equals("King") && this.target != null &&this.target.reichweite>=getDistance(this.target)) {
+			
+	if( canMove())performMove();
+		}
+
+		if (!legalMove()) {
+			posX = posXBefore;
+			posY = posYBefore;
+			posZ = posZBefore;
+		}
+
+		// Angriff nur wenn bereit und in Reichweite
+		if (this.target != null) if( getDistance(this.target) <= reichweite) {
+			if( canAttack()) {
+				performAttack(this.target); // Neue Methode verwenden
+			}} else System.out.println("Reichweite  ist zu klein: Reichweite = "+reichweite+"Abstand = "+getDistance(this.target));
+		
+
+		posXBefore = posX;
+		posYBefore = posY;
+		posZBefore = posZ;
+		timeBefore = currentTime;
+
+	}
+
+	public void moveTo(double posX, double posY, double posZ, double speedManuel) {
+		System.out.println("Zug = moveTo(" + posX + "," + posY + "," + posZ + "," + speedManuel + ")");
+		double distQ = (this.posX - posX) * (this.posX - posX) + (this.posY - posY) * (this.posY - posY)
+				+ (this.posZ - posZ) * (this.posZ - posZ);
+
+		// FEHLER 3 BEHOBEN: targetPosX hier NICHT auf null setzen!
+		// Das macht der MainGame-Loop sicherer.
+
+		double dist = Math.pow(distQ, 0.5);
+
+		// Verhindert Division durch Null, falls wir exakt auf dem Punkt stehen
+		if (dist < 0.001) {
+			vx = 0;
+			vy = 0;
+			vz = 0;
+			move(1);
+			return;
+		}
+
+		double dx = this.posX - posX;
+		double dy = this.posY - posY;
+		double dz = this.posZ - posZ;
+
+		double movDist = Math.min(speedManuel, Math.min(maxSpeed, Math.abs(dist - 0.0000005)));
+
+		vx = -dx / dist * movDist;
+		vy = -dy / dist * movDist;
+		vz = -dz / dist * movDist;
+
+		System.out.println("Vektor = " + vx + "," + vy + "," + vz);
+
+		// FEHLER 1 BEHOBEN: Die Bewegung muss ausgeführt werden!
+		move(1);
+	}
+
+	// entropieMove das Objekt kann sich hier per Zufall in jeder Positionsvariable
+	// incrementiert oder decrementiert werden. Die Summe aller Differenzen
+	// multipliziert mit ihrer Wahrscheinlichkeit kann nicht größer als die
+	// Geschwindigkeit sein bzw. es darf nicht möglich sein, das sich ein Objekt per
+	// Zufall pro Zeitschritt in einer Art und Weise verändern kann die für die
+	// moveTo Methode zu schnell bzw. zu weit wäre
+	// Zufälliges Incrementieren oder decrementieren der x Position
+	public void entropieMoveX1(double px, double pxInv) {
+		if (px > Math.random())
+			this.posX++;
+		if (pxInv > Math.random())
+			this.posX--;
+	}
+
+	// Zufälliges Incrementieren oder decrementieren der y Position
+	public void entropieMoveY1(double py, double pyInv) {
+		if (py > Math.random())
+			this.posY++;
+		if (pyInv > Math.random())
+			this.posY--;
+	}
+
+	// Zufälliges Incrementieren oder decrementieren der z Position
+	public void entropieMoveZ1(double pz, double pzInv) {
+		if (pz > Math.random())
+			this.posZ++;
+		if (pzInv > Math.random())
+			this.posZ--;
+	}
+
+	public void entropieMove(double px, double pxInv, double py, double pyInv, double pz, double pzInv) {
+		entropieMoveX1(px, pxInv);
+		entropieMoveX1(py, pyInv);
+		entropieMoveX1(pz, pzInv);
+	}
+
+	public void moveTrigonometric(Unit target) {
+		if (target == null || target.leben <= 0)
+			return;
+
+		double dx = target.posX - this.posX;
+		double dy = target.posY - this.posY;
+		double dist = Math.hypot(dx, dy);
+
+		if (dist < 0.001)
+			return;
+
+		double angle = Math.atan2(dy, dx);
+		double moveAngle = angle;
+
+		// TAKTIK: Wenn wir Fernkämpfer sind, aber der Feind zu nah kommt ->
+		// Kiting/Orbit
+		if (this.reichweite > 3.0 && dist < this.reichweite * 1.5) {
+			// Wir laufen nicht direkt weg, sondern seitlich (Flanken)
+			moveAngle = angle + (Math.PI / 2.5);
+		}
+
+		this.vx = Math.cos(moveAngle) * this.maxSpeed;
+		this.vy = Math.sin(moveAngle) * this.maxSpeed;
+
+		move(1);
+	}
+
+	public double getDistance(Unit oponent) {
+		double distQ = (this.posX - oponent.posX) * (this.posX - oponent.posX)
+				+ (this.posY - oponent.posY) * (this.posY - oponent.posY)
+				+ (this.posZ - oponent.posZ) * (this.posZ - oponent.posZ);
+		double dist = Math.pow(distQ, 0.5);
+		return dist;
+	}
+
+	public double getDistanceTo(double x, double y, double z) {
+		double distQ = (this.posX - x) * (this.posX - x) + (this.posY - y) * (this.posY - y)
+				+ (this.posZ - z) * (this.posZ - z);
+		double dist = Math.pow(distQ, 0.5);
+		return dist;
+	}
+
+	/**
+	 * Prüft ob die Unit angreifen darf basierend auf attackSpeed
+	 * 
+	 * @return true wenn Angriff bereit, false wenn noch Cooldown
+	 */
+	public boolean canAttack() {
+		long currentTime = System.currentTimeMillis();
+
+		// Wenn noch nie angegriffen, sofort bereit
+		if (lastAttackTime == 0) {
+			return true;
+		}
+
+		// Berechne benötigte Wartezeit in Millisekunden
+		double cooldownMillis = (1.0 / attackSpeed) * 1000.0;
+
+		// Prüfe ob Cooldown abgelaufen ist
+		return (currentTime - lastAttackTime) >= cooldownMillis;
+	}
+	
+	public boolean canMove() {
+		long currentTime = System.currentTimeMillis();
+
+		// Wenn noch nie bewegt, sofort bereit
+		if (lastMoveTime == 0) {
+			return true;
+		}
+
+		// Berechne benötigte Wartezeit in Millisekunden
+		double cooldownMillis = (1.0 / moveSpeed) * 1000.0;
+
+		// Prüfe ob Cooldown abgelaufen ist
+		return (currentTime - lastMoveTime) >= cooldownMillis;
+	}
+
+	/**
+	 * Führt Angriff aus und setzt Timestamp
+	 */
+	public void performAttack(Unit target) {
+		if (canAttack()) {
+			// Angriff ausführen
+			attackieren(target);
+
+			// Timestamp aktualisieren
+			lastAttackTime = System.currentTimeMillis();
+		} else {
+			System.out.println("Illegaler Zug");
+			// Optional: Debug-Ausgabe
+			double remainingCooldown = ((1.0 / attackSpeed) * 1000.0) - (System.currentTimeMillis() - lastAttackTime);
+			System.out.println("Unit " + id + " muss noch " + String.format("%.2f", remainingCooldown / 1000.0)
+					+ "s warten bis nächster Angriff");
+		}
+	}
+	
+	/**
+	 * Führt Bewegung aus und setzt Timestep
+	 */
+	public void performMove() {
+		if (canMove()) {
+			// Angriff ausführen
+			moveToAndKite(target);
+
+			// Timestamp aktualisieren
+			lastMoveTime = System.currentTimeMillis();
+		} else {
+			System.out.println("Illegaler Zug");
+			// Optional: Debug-Ausgabe
+			double remainingCooldown = ((1.0 / moveSpeed) * 1000.0) - (System.currentTimeMillis() - lastMoveTime);
+			System.out.println("Unit " + id + " muss noch " + String.format("%.2f", remainingCooldown / 1000.0)
+					+ "s warten bis nächster Move");
+		}
+	}
+
+	public void attackieren(Unit target) {
+
+		if (getDistance(target) > reichweite)
+			return;
+//			{moveTo(target);System.out.println("Zug = moveTo("+target.id+")");}
+		else {
+
+			if (legalMove()) {
+				System.out.println("Zug = attackieren(" + target.id + ")");
+				double damage = this.damage;
+				if (this.kritchance > Math.random()) {
+					double rand = Math.random();
+					System.out.println("Kritischer Treffer! Schaden Multipliziert mit " + 1.0 / rand);
+					damage /= rand;
+				}
+				if (target.currentDefense * Math.random() > this.geschicklichkeit * Math.random()) {
+					target.currentDefense -= (this.geschicklichkeit / Math.random());
+					System.out.println("Attacke wurde geblockt und hat keinen Schaden gemacht");
+					return;
+				}
+				target.leben = target.leben - this.damage;
+				if (target.leben <= 0) {
+
+					System.out.println("Unit " + target.id + " Wurde vernichtet durch Unit " + this.id);
+					
+				}
+			}
+		}
+	}
+
+	public Unit() {
+		super();
+		this.typ = "Unit";
+		this.posX = (int) (Math.random() - Math.random() * 100);
+		this.posY = (int) (Math.random() - Math.random() * 100);
+		posXBefore = posX;
+		posYBefore = posY;
+		this.leben = 5 * Math.random() / Math.random();
+		this.maxLeben = leben;
+		this.damage = Math.random() / Math.random();
+		this.reichweite = 50 * Math.random() / Math.random();
+		this.maxSpeed = 50 * Math.random() / Math.random();
+		this.team = (int) (Math.random() * 2);
+		this.size = 10;
+		this.id = (int) (Math.random() * 1000);
+		this.points1 = leben / 5 + damage + maxSpeed / 50 + reichweite / 50;
+		this.points2 = leben / 5 * damage * maxSpeed / 50 * reichweite / 50;
+		this.points3 = leben / 5 + damage + maxSpeed / 50 + reichweite / 50;
+		this.points4 = leben / 5 * damage * maxSpeed / 50 * reichweite / 50;
+//		this.größePerLive(1);
+//		this.größePerKills(1);
+	}
+
+	public boolean legalMove() {
+		currentTime = System.currentTimeMillis();
+		deltaTime = currentTime - timeBefore;
+		timeSeconds = deltaTime / 1000.0;
+		timeBefore = currentTime;
+
+		double deltaX = posX - posXBefore;
+		double deltaY = posY - posYBefore;
+		double deltaZ = posZ - posZBefore;
+
+		double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+
+		// FIX: Nur prüfen wenn genug Zeit vergangen ist (mindestens 1ms)
+		if (timeSeconds > 0.001) {
+			double geschwindigkeit = distance / timeSeconds;
+			// FIX: 20% Toleranz hinzufügen
+			if (geschwindigkeit > maxSpeed*moveSpeed) {
+				System.out.println("Illegaler Zug (zu schnell): " + geschwindigkeit + " > " + maxSpeed);
+				return false;
+			}
+		}
+
+		// Grid-Prüfung bleibt
+		if (grid) {
+			if (deltaX != (int) (Math.round(deltaX)))
+				return false;
+			if (deltaY != (int) (Math.round(deltaY)))
+				return false;
+			if (deltaZ != (int) (Math.round(deltaZ)))
+				return false;
+		}
+
+		return true;
+	}
+
+	public void printWerte(double id2, int zeitSchritt) {
+
+		System.out.println("=== UNIT REPORT [Index: " + id2 + "] ===");
+		System.out.println("System.currentTimeMillis() = " + System.currentTimeMillis());
+		System.out.println("Zeitschritt = " + zeitSchritt);
+		System.out.println("Id = " + id + " | Team = " + team + " | konstruktionsZeit = " + konstruktionszeit);
+		System.out.println("Position -> posX: " + posX + ", posY: " + posY + ", posZ: " + posZ);
+		System.out.println("Algorithmus = " + decisionAlgorithm + " | Selectable: " + isSelectable + " | Influencable: "
+				+ isInfluencable);
+		System.out.println("Leben = " + leben + " | MaxLeben" + maxLeben + " | Damage = " + damage + " | Speed = "
+				+ maxSpeed + " | Reichweite = " + reichweite);
+		System.out.println("Kills = " + kills + " | points");
+		System.out.println("Punkte1 = " + points1 + " | Punkte2 = " + points2 + " | Punkte3 = " + points3
+				+ " | Punkte4 = " + points4 + " | Alter = " + (System.currentTimeMillis() - konstruktionszeit));
+		System.out.println("Rot = " + red + "| grün = " + green + "| blau = " + blue + "| size = " + size);
+		System.out.println("============================================");
+
+//    	if(this.target != null) {
+//    	System.out.println("TargetId = "+target.id);
+//    	System.out.println("TargetX = "+target.posX);
+//    	System.out.println("TargetY = "+target.posY);
+//    	System.out.println("TargetZ = "+target.posZ);}
+//    	System.out.println("Geschwindigkeit vx = "+vx);
+//    	System.out.println("Geschwindigkeit vy = "+vy);
+//    	System.out.println("Geschwindigkeit vz = "+vz);
+//    	System.out.println("Masse = "+mass);
+//    	System.out.println("Farbe = "+color);
+	}
+
+	public void printWerte() {
+		System.out.println("Zeit = " + System.currentTimeMillis() + " ID = " + id + " Team = " + team + " PosX = "
+				+ posX + " PosY = " + posY + " posZ = " + posZ);
+		System.out.println("Leben = " + leben + " | MaxLeben" + maxLeben + " | Damage = " + damage + " | Speed = "
+				+ maxSpeed + " | Reichweite = " + reichweite + " | decisionAlgorithm = " + decisionAlgorithm
+		+ "moveSpeed = "+moveSpeed+"attackSpeed = "+attackSpeed);
+	}
+
+	public void choseRandColorTeam() {
+		if (Math.random() < 0.3)
+			if (red + green + blue < 300)
+				team = 1;
+			else if (red + green + blue < 500)
+				team = 2;
+			else
+				team = 1;
+		if (Math.random() < 0.5) {
+			if (red > green && green > blue)
+				team = 1;
+			if (red < green && green < blue)
+				team = 3;
+		}
+
+		if (Math.random() < 0.3) {
+			if (red > green || green > blue)
+				team = 1;
+			if (red < green || green < blue)
+				team = 2;
+		}
+	}
+
+//	public void größePerLive(double div) {
+//		double size=Math.pow(leben/div, 0.3333);
+//		size=Math.min(size, 20);
+//		this.size=size;
+//	}
+//	
+//	public void größePerKills(double div) {
+//		double size=3+Math.pow(kills/div, 0.3333);
+//		size=Math.min(size, 20);
+//		this.size=size;
+//	}
+
+}
+
+package ordner1;
+
+public class KreisObjekt {
+	double size;
+	double red;
+	double green;
+	double blue;
+
+	// 3 Angaben zum Aufenthaltsort im Raum
+	boolean grid;
+	
+	
+	
+	
+	double posX;
+	double posY;
+	double posZ;
+	
+	
+
+
+	// Geschwindigkeitsvektoren
+	double vx;
+	double vy;
+	double vz;
+	
+	
+
+	public boolean isSelected = false;
+
+	public KreisObjekt(double size, double red, double green, double blue, double posX, double posY, double posZ,
+			double vx, double vy, double vz) {
+		this.size = size;
+		this.red = red;
+		this.green = green;
+		this.blue = blue;
+		this.posX = posX;
+		this.posY = posY;
+		this.posZ = posZ;
+		this.vx = vx;
+		this.vy = vy;
+		this.vz = vz;
+	}
+
+	public KreisObjekt(double size, double red, double green, double blue, double posX, double posY, double posZ) {
+		this.size = size;
+		this.red = red;
+		this.green = green;
+		this.blue = blue;
+		this.posX = posX;
+		this.posY = posY;
+		this.posZ = posZ;
+	}
+
+	public KreisObjekt(double posX, double posY) {
+		this.posX = posX;
+		this.posY = posY;
+		this.size = 10.0;
+		this.red = 255;
+		this.green = 0;
+		this.blue = 0;
+		this.posZ = 0;
+	}
+
+	// Default mit interessantem Random (für die Initialisierung des Kindes)
+	public KreisObjekt() {
+		this.posX = 0;
+		this.posY = 0;
+		this.posZ = 0;
+		this.vx = 0;
+		this.vy = 0;
+		this.vz = 0;
+		this.size = 10;
+	}
+
+	// Mathematische Vektor-Addition für den Zeitschritt (Kausalkette)
+	public void move(double dt) {
+		
+
+		
+		if (grid) {
+			// Grid-Logik (Snapping)
+			if (Math.abs(this.vx) < 0.5 && Math.abs(this.vy) < 0.5) {
+				if (Math.abs(this.vx) > Math.abs(this.vy)) {
+					vx = (this.vx > 0) ? 1 : -1; vy = 0;
+				} else {
+					vy = (this.vy > 0) ? 1 : -1; vx = 0;
+				}
+			}
+			this.posX += this.vx * dt;
+			this.posY += this.vy * dt;
+			this.posZ += this.vz * dt;
+
+			this.posX = Math.round(this.posX);
+			this.posY = Math.round(this.posY);
+			this.posZ = Math.round(this.posZ);
+		} else {
+			// FREIE BEWEGUNG (Der fehlende Else-Zweig!)
+			this.posX += this.vx * dt;
+			this.posY += this.vy * dt;
+			this.posZ += this.vz * dt;
+		}
+		
+		
+		
+	}
+}
+
+
+package ordner1; // Beachte: Muss im Ordner p1 liegen!
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.SwingUtilities;
+
+// Ziel: Das Optimieren der Entscheidungsfindung für die Unit Fight Simulationen um definierte Ziele wie das vernichten des gegnerischen Königs durch möglichst effiziente Algorithmen und Entscheidungsfindungen auf allen Ebenen der Matrix Kollektiv zu optimieren und zu Gamifizieren und mit den LLMs und allen weiteren Intelligenzen und Open Source so das alle gewinnen erlernen zu können und zu wollen und weiteres, ich hoffe sehr auf menschiche Unterstützung und Fusion von Projekten wie diesem und weiteren
+// Mein Facebook: https://www.facebook.com/andreas.schneider.7393264
+
+public class MainGame extends JPanel {
+
+	// Die Unit List als Basis für den GameLoop
+	public List<Unit> unitList = new ArrayList<>();
+
+	// --- Panalgrößen ---
+	int FRAME_WIDTH = 1920;
+	int FRAME_HEIGHT = 1080;
+
+	// --- Zoom-Variablen ---
+	double zoomFactor = 1.0;
+
+	double zoomCenterX = 0;
+	double zoomCenterY = 0;
+	static final double ZOOM_STEP = 1.2; // Feinheit beim Zoomen
+
+	double feinheit = 50;
+	double PAN_STEP = feinheit * zoomFactor; // Verschiebung pro Button-Klick
+
+	// --- Konstruktor --- init1
+	public MainGame() {
+		// Canvas mit schwarzem Hintergrund erstellen
+		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+		setBackground(Color.BLACK);
+
+		MouseAdapter mouseHandler = new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// 1. Linksklick: Einheiten selektieren
+				if (SwingUtilities.isLeftMouseButton(e)) {
+					int mouseX = e.getX();
+					int mouseY = e.getY();
+					boolean unitFound = false;
+
+					for (Unit u : unitList) {
+						double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0;
+						double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0;
+						double radius = Math.abs(u.size);
+
+						if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) {
+							u.isSelected = true;
+							System.out.println("Unit " + u.id + " Wurde vom Spieler ausgewählt");
+							unitFound = true;
+						} else if (!e.isShiftDown()) {
+							u.isSelected = false;
+						}
+					}
+
+					if (!unitFound && !e.isShiftDown()) {
+						for (Unit u : unitList) {
+							u.isSelected = false;
+						}
+					}
+					repaint();
+				}
+				// 2. Rechtsklick: Befehle an ausgewählte Einheiten verteilen
+				// 2. Rechtsklick: Befehle an ausgewählte Einheiten verteilen
+				else if (SwingUtilities.isRightMouseButton(e)) {// 2. Rechtsklick: Befehle an ausgewählte Einheiten
+																// verteilen
+
+					int mouseX = e.getX();
+					int mouseY = e.getY();
+
+					// KORRIGIERTE MATHEMATISCHE INVERSION: Screen -> World
+					double worldTargetX = (mouseX - getWidth() / 2.0) / zoomFactor - zoomCenterX;
+					double worldTargetY = (mouseY - getHeight() / 2.0) / zoomFactor - zoomCenterY;
+
+					System.out.println("--- Befehlsausgabe (Rechtsklick) ---");
+					System.out.println("Maus Screen-X: " + mouseX + " | Screen-Y: " + mouseY);
+					System.out.println("Berechnete Welt-X: " + worldTargetX + " | Welt-Y: " + worldTargetY);
+
+					Unit clickedEnemy = null;
+					for (Unit u : unitList) {
+						// Hier bleibt die World -> Screen Transformation korrekt,
+						// da wir prüfen, wo die Einheit auf dem Bildschirm gerendert wird.
+						double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0;
+						double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0;
+						double radius = Math.abs(u.size);
+
+						if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) {
+							clickedEnemy = u;
+							System.out.println("Gegnerische Einheit für Angriff anvisiert: ID " + u.id);
+							break;
+						}
+					}
+
+					for (Unit u : unitList) {
+						if (u.isSelected) {
+							if (clickedEnemy != null) {
+								// Angriffsbefehl
+								u.manualTarget = clickedEnemy;
+								u.targetPosX = null;
+								u.targetPosY = null;
+								u.decisionAlgorithm = "TARGET_ENEMY";
+							} else {
+								// Bewegungs-Befehl
+								u.targetPosX = worldTargetX;
+								u.targetPosY = worldTargetY;
+								u.manualTarget = null;
+								u.decisionAlgorithm = "TARGET_POINT";
+								System.out.println("Einheit ID " + u.id + " bewegt sich zu Zielpunkt.");
+							}
+						}
+					}
+					repaint();
+				}
+			}
+		};
+
+		this.addMouseListener(mouseHandler);
+		this.addMouseMotionListener(mouseHandler);
+	}
+
+	// Init Methode zum Füllen der UnitList
+	public void init() {
+		unitList.clear(); // Wichtig: Altes Aufräumen
+		java.util.Random rand = new java.util.Random(12345); // Fester Seed = Immer gleiches Match
+
+		int unitsPerTeam = 1;
+		double counterId = 0;
+
+		for (int i = 0; i < 3000; i++) {
+			// 1. Stats WÜRFELN (Aber kontrolliert! Keine Division durch 0)
+//			double hp = 1; 
+//			double dmg = 1; 
+//			double spd =3*Math.random(); 
+//			double rng = 3*Math.random(); ; 
+//			double attackSpeed=1;
+//			double kritChance=0.25;
+//			double geschicklichkeit=1;
+//			double currentDefense=1;
+//			double moveSpeed=3*Math.random();;
+
+			
+
+			// --- TEAM 1 (Blau) ---
+			Unit u1 = new Unit();
+			u1.team = 1+(int) (2*Math.random());
+			u1.typ = "Unit";
+			if(i<2) {u1.typ="King";u1.size+=5;u1.team=1+(i%2);}
+			u1.pPrint=0.001;
+			
+			u1.currentTime=System.currentTimeMillis();
+			u1.timeBefore=System.currentTimeMillis();
+			u1.posX = Math.random() * 1000;
+			u1.posY = Math.random() * 1000;
+			u1.posZ = Math.random() * 100;
+			u1.posXBefore=u1.posX;
+			u1.posYBefore=u1.posY;
+			u1.posZBefore=u1.posZ;
+			u1.maxLeben = Math.random()/Math.random();
+			u1.leben = u1.maxLeben; // WICHTIG: Auch leben setzen!
+			u1.damage = Math.random()/Math.random();;
+			u1.attackSpeed=5*Math.random()/Math.random();;
+			u1.moveSpeed=5*Math.random()/Math.random();
+			u1.kritchance=0.2*Math.random()/Math.random();;
+			u1.maxSpeed = Math.random()/Math.random();
+			u1.reichweite = Math.random()/Math.random();
+			u1.geschicklichkeit=Math.random()/Math.random();
+			u1.defenseProTurn=Math.random()/Math.random();
+			u1.currentDefense=Math.random()/Math.random();
+			u1.decisionAlgorithm = "TRIGONOMETRIC"; // <--- HIER: Taktik A
+			
+//			u1.red = (int)(Math.random()*256);
+//			u1.green = (int)(Math.random()*256);
+//			u1.blue = (int)(Math.random()*256);
+			
+			if(u1.team % 2==1)u1.red=255;
+			
+			if(u1.team % 2==0) {u1.blue=255;u1.posX=-u1.posX;u1.posXBefore=u1.posX;}
+			
+			if(u1.team % 4==0) {u1.green=255;u1.blue=255;u1.posY=-u1.posY;u1.posYBefore=u1.posY;}
+			
+			if(u1.team % 4==3) {u1.green=255;u1.posY=-u1.posY;u1.posYBefore=u1.posY;}
+			
+			
+			
+			u1.id = counterId++;
+//			u1.printWerte();
+			
+				unitList.add(u1);}
+
+		for (int i = 0; i < 0; i++) {
+			// --- TEAM 2 (Rot) - EXAKTE KOPIE, NUR Y GESPIEGELT ---
+			Unit u2 = new Unit();
+			u2.team = 2;
+			u2.typ = "Unit";
+			u2.currentTime=System.currentTimeMillis();
+			u2.timeBefore=System.currentTimeMillis();
+			u2.posX = Math.random() * 50;
+			u2.posY = -Math.random() * 50;
+			u2.posZ = Math.random() * 50;// Spiegelung an der X-Achse
+			u2.posXBefore=u2.posX;
+			u2.posYBefore=u2.posY;
+			u2.posZBefore=u2.posZ;
+			u2.maxLeben = 1;
+			u2.leben = 1; // Exakt gleiche HP!
+			u2.damage = 1;
+			u2.attackSpeed=1;
+			u2.moveSpeed=8*Math.random();
+			u2.kritchance=0.2;
+			u2.currentDefense=5*Math.random();
+			u2.geschicklichkeit=6;
+			u2.maxSpeed = 4;
+			u2.reichweite = 9.5; // Exakt gleiche Stats!
+			u2.decisionAlgorithm = "NEAREST_ENEMY"; // <--- HIER: Taktik B
+			u2.red = 255;
+			u2.green = 0;
+			u2.blue = 0;
+			u2.id = counterId++;
+			u2.printWerte();
+			unitList.add(u2);
+		}
+
+		// Könige exakt gespiegelt spawnen
+//		Unit king1 = new Unit();
+//		king1.typ = "King";
+//		king1.size = 15;
+//		king1.team = 1;
+//		king1.posX = 25000;
+//		king1.posY = 25;
+//		king1.posZ = 25;
+//		king1.posXBefore=king1.posX;
+//		king1.posYBefore=king1.posY;
+//		king1.posZBefore=king1.posZ;
+//
+//		king1.maxLeben = 3; 
+//		king1.leben = king1.maxLeben;
+//		king1.damage =1;
+//		king1.attackSpeed=1;
+//		king1.moveSpeed=3;
+//		king1.kritchance=0.25;
+//		king1.maxSpeed =5; ;
+//		king1.reichweite = 5;
+//		king1.currentDefense=3;
+//		king1.geschicklichkeit=5;
+//		king1.id = counterId++;
+//		king1.grid = false;
+//		king1.red = 0;
+//		king1.green = 0;
+//		king1.blue = 255;
+//		king1.decisionAlgorithm = "NEAREST_ENEMY";
+//		king1.printWerte();
+//		unitList.add(king1);
+//
+//		Unit king2 = new Unit();
+//		king2.typ = "King";
+//		king2.size = 15;
+//		king2.team = 2;
+//		king2.posX = 25;
+//		king2.posY = -25000;
+//		king2.posZ = 25;
+//		king2.posXBefore=king2.posX;
+//		king2.posYBefore=king2.posY;
+//		king2.posZBefore=king2.posZ;
+//		king2.maxLeben = 3; 
+//		king2.leben = king2.maxLeben;
+//		king2.damage =1; 
+//		king2.kritchance=0.25;
+//		king2.attackSpeed=1;
+//		king2.moveSpeed=5;
+//		king2.currentDefense=3;
+//		king2.geschicklichkeit=3;
+//		king2.maxSpeed = 5; 
+//		king2.reichweite = 5; 
+//		king2.id = counterId++;
+//		king2.grid = false;
+//		king2.red = 255;
+//		king2.green = 0;
+//		king2.blue = 0;
+//		king2.printWerte();
+//		king2.decisionAlgorithm = "NEAREST_ENEMY";
+//		unitList.add(king2);
+
+		repaint();
+	}
+
+	// --- Pan-Methoden ---
+	public void panLeft() {
+		zoomCenterX += PAN_STEP;
+		repaint();
+	}
+
+	public void panRight() {
+		zoomCenterX -= PAN_STEP;
+		repaint();
+	}
+
+	public void panUp() {
+		zoomCenterY += PAN_STEP;
+		repaint();
+	}
+
+	public void panDown() {
+		zoomCenterY -= PAN_STEP;
+		repaint();
+	}
+
+	// Gelogene Methode
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setColor(Color.BLACK);
+		g2.fillRect(0, 0, getWidth(), getHeight());
+
+		// Loop für alle Units aus UnitList
+		for (int i = 0; i < unitList.size(); i++) {
+			Unit unit = unitList.get(i);
+			if (unit.leben <= 0)
+				continue;
+			double radius = unit.size;
+			Color color = new Color((int) (unit.red), (int) (unit.green), (int) (unit.blue));
+			double posX = unit.posX;
+			double posY = unit.posY;
+			// Berücksichtige Pan und Zoom bei der Positionierung
+			double sx = (zoomCenterX + posX) * zoomFactor + getWidth() / 2.0;
+			double sy = (zoomCenterY + posY) * zoomFactor + getHeight() / 2.0;
+//			int r = (int) Math.max(body.radius * zoomFactor, MIN_RADIUS_DRAW);
+			g2.setColor(color);
+			g2.fillOval((int) (sx - radius), (int) (sy - radius), (int) (radius * 2), (int) (radius * 2));
+			// Innerhalb von paintComponent(Graphics g) in der for-Schleife:
+			if (unit.isSelected) {
+				g2.setColor(Color.WHITE);
+				// Einen etwas größeren Ring um die Unit zeichnen
+				g2.drawOval((int) (sx - radius - 2), (int) (sy - radius - 2), (int) (radius * 2 + 4),
+						(int) (radius * 2 + 4));
+			}
+
+		}
+	}
+
+	// Zoom-Funktionen
+	public void zoomIn() {
+		zoomFactor *= ZOOM_STEP;
+		PAN_STEP = feinheit / zoomFactor;
+		repaint();
+	}
+
+	public void zoomOut() {
+		zoomFactor /= ZOOM_STEP;
+		PAN_STEP = feinheit / zoomFactor;
+		repaint();
+	}
+
+	long pasueTime = 0;
+	long kompletteRechenzeitDerSimulation = 0;
+	double avgRechenzeitProUnitProEinheitenZug = 0;
+	double count = 0;
+
+	public void gameLoop() {
+		while (true) {
+			repaint();
+
+			if (unitList.isEmpty())
+				break; // Sicherheitscheck
+
+			int randNumber = (int) (unitList.size() * Math.random());
+			Unit current = unitList.get(randNumber);
+
+			if (current.leben <= 0) {
+				if (current.typ != null && current.typ.equals("King")) {
+					System.out.println("--- GAME OVER ---");
+					System.out.println("Der König von Team " + current.team + " wurde vernichtet!");
+					System.out.println("Das andere Team hat gewonnen!");
+					return;
+				} else {
+					continue; // Tote Unit überspringen
+				}
+			}
+
+			current.leben *= 1.1;
+			if (current.leben > current.maxLeben)
+				current.leben = current.maxLeben;
+			current.currentDefense = current.defenseProTurn;
+
+			// --- 🚀 OPTIMIERUNG: DYNAMISCHES LOAD-BALANCING (SKIP LOGIC) ---
+			// Wir warten bis count > 50, damit sich der Durchschnitt erst mal einpendelt.
+			// Wenn eine Unit 50% mehr Zeit braucht als der Durchschnitt, wird sie mit 50%
+			// Wahrscheinlichkeit diesen Tick "übersprungen".
+			// Das spart CPU und simuliert z.B. "langsamere Reaktionszeiten" bei komplexen
+			// Einheiten.
+
+			double zugChance = avgRechenzeitProUnitProEinheitenZug / current.rechenzeitProZug;
+
+			if (Math.random() > zugChance) {
+				continue; // Skip! Die Unit behält ihren aktuellen Bewegungswert (vx, vy) bei.
+			}
+
+			// current.printWerte(); // TIPP: Für maximale Performance später
+			// auskommentieren!
+
+			long startTime = System.nanoTime();
+			count++;
+
+			// --- ENTSCHEIDUNGSLOGIK ---
+			if ("TARGET_POINT".equals(current.decisionAlgorithm) && current.targetPosX != null
+					&& current.targetPosY != null) {
+
+				current.moveTo(current.targetPosX, current.targetPosY, current.posZ, current.maxSpeed);
+				double distToTarget = current.getDistanceTo(current.targetPosX, current.targetPosY, current.posZ);
+				if (distToTarget < 1.5) {
+					current.decisionAlgorithm = "NEAREST_ENEMY";
+					current.targetPosX = null;
+					current.targetPosY = null;
+				}
+			} else if ("TARGET_ENEMY".equals(current.decisionAlgorithm) && current.manualTarget != null) {
+				if (current.manualTarget.leben <= 0) {
+					current.decisionAlgorithm = "NEAREST_ENEMY";
+					current.manualTarget = null;
+				} else {
+					current.target = current.manualTarget;
+					if (current.getDistance(current.target) <= current.reichweite) {
+						current.attackieren(current.target);
+					} else {
+						current.moveTo(current.target);
+					}
+				}
+			} else {
+
+				//////
+				// Standard KI
+				current.pPrint=0.01+current.kills*0.01;
+				if (current.target == null || current.target.leben <= 0) {
+					current.target = nextGegner(current);
+				}
+				if (current.getDistance(current.target) > current.reichweite + current.maxSpeed)
+					current.target = nextGegner(current);
+				current.update();
+
+				if (current.target.typ != null && current.target.typ.equals("King") && current.target.leben <= 0) {
+					System.out.println("Der König von Team " + current.target.team + " wurde vernichtet!");
+					System.out.println("Team " + current.team + " hat gewonnen!");
+					return;
+				}
+
+			}
+
+			long endTime = System.nanoTime();
+			long zugZeit = endTime - startTime;
+
+			// Zeitmessung speichern (Gleitender Durchschnitt für stabile Werte)
+			current.rechenzeitProZug = (current.rechenzeitProZug * 0.8) + (zugZeit * 0.2);
+			current.kompletteRechenzeitInSimulation += zugZeit;
+			kompletteRechenzeitDerSimulation += zugZeit;
+			avgRechenzeitProUnitProEinheitenZug = kompletteRechenzeitDerSimulation / count;
+
+			// NEU: Kurze Pause (16ms = ca. 60 FPS Update-Rate für die Logik)
+			try {
+				Thread.sleep(pasueTime);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public Unit nextGegner(Unit current) {
+		Unit gegner = null;
+		double min = 999999999;
+		for (Unit ziel : unitList) {
+			if (current.getDistance(ziel) < min && current.team != ziel.team && ziel.leben > 0) {
+				min = current.getDistance(ziel);
+				gegner = ziel;
+			}
+		}
+		return gegner;
+	}
+
+	// --- Korrigierte Hauptmethode ---
+	// --- Korrigierte Hauptmethode ---
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			JFrame frame = new JFrame("N-Body Sonnensystem-Simulation (QDBV-Modul)");
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+			// 1. Zentrale Instanz erzeugen und initialisieren
+			MainGame simPanel = new MainGame();
+			simPanel.init();
+
+			frame.setLayout(new BorderLayout());
+			frame.add(simPanel, BorderLayout.CENTER);
+
+			// 2. Control-Panel und Buttons
+			JButton zoomIn = new JButton("Zoom In");
+			JButton zoomOut = new JButton("Zoom Out");
+			JButton speedUp = new JButton("Speed Up");
+			JButton speedDown = new JButton("Speed Down");
+			JButton panLeft = new JButton("← Links");
+			JButton panRight = new JButton("Rechts →");
+			JButton panUp = new JButton("↑ Hoch");
+			JButton panDown = new JButton("↓ Runter");
+
+			zoomIn.addActionListener(e -> simPanel.zoomIn());
+			zoomOut.addActionListener(e -> simPanel.zoomOut());
+			panLeft.addActionListener(e -> simPanel.panLeft());
+			panRight.addActionListener(e -> simPanel.panRight());
+			panUp.addActionListener(e -> simPanel.panUp());
+			panDown.addActionListener(e -> simPanel.panDown());
+
+			JPanel control = new JPanel();
+			control.add(zoomIn);
+			control.add(zoomOut);
+			control.add(speedUp);
+			control.add(speedDown);
+			control.add(panLeft);
+			control.add(panRight);
+			control.add(panUp);
+			control.add(panDown);
+
+			frame.add(control, BorderLayout.NORTH);
+			frame.setSize(1920, 1080);
+			frame.setLocationRelativeTo(null);
+			frame.setVisible(true);
+
+			// 3. SYNCHRONISATIONS-FIX: Den Loop strikt entkoppeln
+			Thread gameThread = new Thread(() -> {
+				simPanel.gameLoop();
+			});
+			gameThread.start();
+		});
+	}
+
+}
