@@ -1,0 +1,5240 @@
+heute 10:46
+
+svg
+
+image (image)
+AI Engineering Bootcamp for career switchers & professionals.
+
+Learn AI engineering in a structured bootcamp, with practical use cases, modern tools, and your own final project. In 8 months, fully funded if you're registered unemployed.
+
+Start Upskilling Now ↗
+
+svg
+Where our alumni work
+
+image
+
+image
+
+image
+
+image
+
+svg
+High demand for AI and data roles in Germany
+Top salary prospects for AI roles
+Junior / Entry
+
+55.000 – 70.000 € / Year
+
+Entry-level roles after boot camp or initial practical experience
+Mid-Level
+
+65.000 – 80.000 € / Year
+
+Data Scientist · Machine Learning Engineer · AI Engineer
+Senior / Leadership
+
+110.000 – 135.000 €+ / Year
+
+Senior Data Scientist · Senior ML Engineer · AI Specialist
+
+svg
+Why you should develop AI and data skills now
+
+AI engineering is changing how companies build intelligent systems, develop products, and automate processes. Developing the right skills now lays the foundation for new roles and long-term career opportunities in AI-driven environments.
+80%
+Companies are increasingly relying on data-based and AI-supported solutions
+
+AI is no longer an experiment. Companies are increasingly integrating data science and machine learning into products, services, and internal processes, from analysis to automation.
+30%
+More attractive salary prospects with AI and data skills
+
+Specialists with knowledge of data science, machine learning, and AI engineering are in high demand and are increasingly taking on positions of responsibility in technical fields.
+3x
+Stronger job growth in the data and AI environment
+
+Roles related to data analysis, machine learning, and AI are evolving faster than many other job profiles, especially in tech, product, and data-driven teams.
+
+Start Upskilling Now ↗
+What you will learn in 8 months at the AI Engineering Bootcamp
+
+Skills that you build up step by step to analyze data, develop machine learning models, and implement AI solutions in a practical way.
+🔍
+Analyzing and understanding data
+
+You will learn how to prepare, analyze, and visualize data. You will work with common data analysis tools and methods to identify patterns and prepare informed decisions.
+📊
+
+Develop machine learning models
+
+You will develop and train machine learning models, learn about different learning methods, and understand how models are evaluated and improved.
+🧭
+Implementing AI solutions technically
+
+You deal with the practical implementation of AI models—from integration into applications to deployment and engineering fundamentals.
+📈
+Evaluate and refine results
+
+You will learn to interpret the results of data analyses and machine learning models, classify key figures, and derive optimization potential.
+All content, the complete tech stack, and further information can be found here in the curriculum.
+
+Start Upskilling Now ↗
+
+svg
+
+image
+
+„The bootcamp helped me understand the entire process from data analysis to machine learning. The final project in particular showed me how AI solutions are created in practice.“
+
+image
+
+Vanessa J
+IT-Background ⟶ Machine Learning Engineer
+
+svg
+What you should bring with you
+
+You bring
+
+    Interest in data, AI, and technical topics
+    Basic analytical thinking and desire to understand complex relationships
+    Motivation to learn in a practical and structured way
+    Time and willingness to engage intensively with new content
+
+You don't need that
+
+    No programming knowledge or coding background
+    No computer science degree
+    No previous experience with machine learning models
+    No professional experience in the tech field
+
+svg
+Why neuefische
+7.000+ Alumni
+Tech, data, and project professionals from across Germany who upskilled hands-on with neuefische and now work in a wide range of digital roles.
+10+ Years Experience
+Years of experience in hands-on tech education, with proven learning formats, clear structure, and a strong focus on real-world business requirements.
+Hands-on focus
+You’ll work on concrete tasks, hands-on exercises, and your own capstone project, allowing you to clearly demonstrate your newly acquired skills instead of just learning theory.
+Ready for your next career step?
+
+Start Upskilling Now↗
+
+svg
+
+iframe
+
+© 2025 neuefische GmbH. Alle Rechte vorbehalten. // Infinit Canvas mit beliebigen Variablen und unendlich klein und groß Skalierbaren Bildschirmachsen und ausbau für Kollektive KI-Games Open Source mich und alle Intelligenzen er Existenz
+package ordner1;
+
+import javax.swing.;
+import java.awt.;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainGame extends JPanel {
+
+private List<Unit> unitList = new ArrayList<Unit>();
+private Unit selectedKugel = null;
+private Unit draggedKugel = null;
+private double zoom = 20.0;
+private StringBuilder infoText = new StringBuilder();
+
+private double kameraX = 0;
+private double kameraY = 0;
+
+private boolean isDraggingCamera = false;
+private boolean isDraggingObject = false;
+private int lastMouseX, lastMouseY;
+
+private String[] verfuegbareVariablen = { "x", "y", "z", "vx", "vy", "vz", "mass", "radius", "ekin" };
+private int indexAxisX = 0;
+private int indexAxisY = 1;
+
+private long startZeit;
+private int simulationsSchritte = 0;
+private Timer simulationTimer;
+private boolean achsenSichtbar = true;
+
+int randChar() {
+	return (int) (Math.random() * 256);
+}
+
+double randDouble(double faktor) {
+	return faktor*(Math.random()-Math.random());
+}
+
+double randDoublePos(double faktor) {
+	return faktor*(Math.random());
+}
+
+double randDouble2(double faktor) {
+	return faktor*(Math.random()-Math.random())/Math.random();
+}
+
+double randDoublePos2(double faktor) {
+	return faktor*(Math.random())/Math.random();
+}
+
+Color randColor() {
+	return new Color(randChar(), randChar(), randChar());
+}
+
+public void init() {
+
+	for (int i = 0; i < 2000; i++) {
+		// Konstruiere Unit mit (double x,double y,double z, double vx,double vy,double
+		// vz, double mass, int radius, Color)
+		// Konstruiert aber hier nicht so schön lesbar
+		// kugeln.add(new Unit(0, 0, 0, 0, 0, 0, 100*Math.random(), 10, randColor()));
+
+		// Hier lieber vom default Konstruktor der in der kasse natürlich von mir in seinem default für den Kontext wieder angelegt und modifiziert ist
+		Unit unit = new Unit();
+		unit.x= randDouble(10);
+		unit.y= randDouble(10);
+		unit.z= randDouble(10);
+		unit.vx= randDouble2(0);
+		unit.vy= randDouble2(0);
+		unit.vz= randDouble2(0);
+		unit.mass=100*Math.random()/Math.random();
+		unit.radius=8;
+		unit.color=randColor();
+		unit.pe4=0.5;
+		
+		// neue EntropieMove aktivierung in prozent
+		unit.entropieMoveSpeed2ProCent=70;
+		
+		
+
+// if(i==1)unit.vx=1000;
+
+		unitList.add(unit);
+	}
+
+}
+
+public MainGame() {
+	setPreferredSize(new Dimension(1000, 800));
+	setBackground(Color.BLACK);
+	startZeit = System.currentTimeMillis();
+
+	// Setzen der Units für den Start
+	init();
+
+	// ... (Maus-Events für Klick, Drag und Zoom bleiben exakt gleich wie im
+	// vorherigen Code) ...
+	addMouseListener(new MouseAdapter() {
+		public void mousePressed(MouseEvent e) {
+			if (SwingUtilities.isRightMouseButton(e)) {
+				isDraggingCamera = true;
+				lastMouseX = e.getX();
+				lastMouseY = e.getY();
+			} else if (SwingUtilities.isLeftMouseButton(e)) {
+				draggedKugel = null;
+				selectedKugel = null;
+				for (Unit k : unitList) {
+					double valX = k.getVariable(verfuegbareVariablen[indexAxisX]);
+					double valY = k.getVariable(verfuegbareVariablen[indexAxisY]);
+					int screenX = weltZuScreenX(valX);
+					int screenY = weltZuScreenY(valY);
+					int distanz = (int) Math
+							.sqrt(Math.pow(e.getX() - screenX, 2) + Math.pow(e.getY() - screenY, 2));
+					if (distanz <= k.radius + 5) {
+						selectedKugel = k;
+						draggedKugel = k;
+						isDraggingObject = true;
+						lastMouseX = e.getX();
+						lastMouseY = e.getY();
+						break;
+					}
+				}
+				updateInfoText();
+				repaint();
+			}
+		}
+
+		public void mouseReleased(MouseEvent e) {
+			if (SwingUtilities.isRightMouseButton(e))
+				isDraggingCamera = false;
+			else if (SwingUtilities.isLeftMouseButton(e)) {
+				isDraggingObject = false;
+				draggedKugel = null;
+			}
+		}
+	});
+
+	addMouseMotionListener(new MouseMotionAdapter() {
+		public void mouseDragged(MouseEvent e) {
+			if (isDraggingCamera) {
+				kameraX -= (e.getX() - lastMouseX) / zoom;
+				kameraY += (e.getY() - lastMouseY) / zoom;
+				lastMouseX = e.getX();
+				lastMouseY = e.getY();
+				repaint();
+			} else if (isDraggingObject && draggedKugel != null) {
+				int deltaX = e.getX() - lastMouseX;
+				int deltaY = e.getY() - lastMouseY;
+				double alterWertX = draggedKugel.getVariable(verfuegbareVariablen[indexAxisX]);
+				double alterWertY = draggedKugel.getVariable(verfuegbareVariablen[indexAxisY]);
+				draggedKugel.setVariable(verfuegbareVariablen[indexAxisX], alterWertX + (deltaX / zoom));
+				draggedKugel.setVariable(verfuegbareVariablen[indexAxisY], alterWertY - (deltaY / zoom));
+				lastMouseX = e.getX();
+				lastMouseY = e.getY();
+				updateInfoText();
+				repaint();
+			}
+		}
+	});
+
+	addMouseWheelListener(e -> {
+		if (e.getWheelRotation() < 0)
+			zoom *= 1.1;
+		else
+			zoom /= 1.1;
+		if (zoom < Double.MIN_VALUE)
+			zoom = Double.MIN_VALUE;
+		if (selectedKugel != null)
+			updateInfoText();
+		repaint();
+	});
+
+	// TASTATUR-STEUERUNG
+	setFocusable(true);
+	addKeyListener(new KeyAdapter() {
+		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_A) {
+				achsenSichtbar = !achsenSichtbar;
+				repaint();
+			} else if (e.getKeyCode() == KeyEvent.VK_H) {
+				indexAxisX = (indexAxisX + 1) % verfuegbareVariablen.length;
+				updateInfoText();
+				repaint();
+			} else if (e.getKeyCode() == KeyEvent.VK_V) {
+				indexAxisY = (indexAxisY + 1) % verfuegbareVariablen.length;
+				updateInfoText();
+				repaint();
+			}
+
+			// NEUE TASTEN FÜR DIE OBJEKT-STEUERUNG
+			else if (e.getKeyCode() == KeyEvent.VK_P) {
+				if (selectedKugel != null) {
+					selectedKugel.updatePositionAktiv = !selectedKugel.updatePositionAktiv;
+					updateInfoText();
+				}
+			} else if (e.getKeyCode() == KeyEvent.VK_E) {
+				if (selectedKugel != null) {
+					selectedKugel.entropieMoveAktiv = !selectedKugel.entropieMoveAktiv;
+					updateInfoText();
+				}
+			}
+		}
+	});
+
+	// DER SIMULATIONSTIMER
+	// Hier hat die KI was hin generiert was der gameloop sein könnte
+	simulationTimer = new Timer(100, e -> {
+		// Hier wird JETZT NUR NOCH update() aufgerufen!
+		for (Unit k : unitList) {
+			k.update();
+			k.randEntropie4(unitList.get((int)(unitList.size()*Math.random())));
+		}
+		simulationsSchritte++;
+		if (selectedKugel != null)
+			updateInfoText();
+		repaint();
+	});
+	simulationTimer.start();
+}
+
+private void updateInfoText() {
+	infoText.setLength(0);
+	long aktuelleZeit = System.currentTimeMillis();
+	long abgelaufeneZeit = aktuelleZeit - startZeit;
+	long sekunden = abgelaufeneZeit / 1000;
+	long millisekunden = abgelaufeneZeit % 1000;
+
+	infoText.append("=== SIMULATIONS-STATUS ===\n");
+	infoText.append(
+			String.format("Abgelaufen: %d.%03d s | Schritte: %d\n", sekunden, millisekunden, simulationsSchritte));
+	infoText.append(String.format("Achse H (H): %s | Achse V (V): %s\n", verfuegbareVariablen[indexAxisX],
+			verfuegbareVariablen[indexAxisY]));
+	infoText.append("\n");
+
+	if (selectedKugel != null) {
+		infoText.append("=== AUSGEWÄHLTE KUGEL ===\n");
+		infoText.append(String.format("Position Update (P): %s\n",
+				selectedKugel.updatePositionAktiv ? "AKTIV" : "inaktiv"));
+		infoText.append(
+				String.format("Entropie Move (E): %s\n", selectedKugel.entropieMoveAktiv ? "AKTIV" : "inaktiv"));
+		infoText.append("\n--- POSITIONEN ---\n");
+		infoText.append(
+				String.format("x: %.2f | y: %.2f | z: %.2f\n", selectedKugel.x, selectedKugel.y, selectedKugel.z));
+		infoText.append("\n--- GESCHWINDIGKEITEN ---\n");
+		infoText.append(String.format("vx: %.2f | vy: %.2f | vz: %.2f\n", selectedKugel.vx, selectedKugel.vy,
+				selectedKugel.vz));
+		infoText.append("\n--- EIGENSCHAFTEN ---\n");
+		infoText.append(String.format("Masse: %.2f | Radius: %d\n", selectedKugel.mass, selectedKugel.radius));
+	} else {
+		infoText.append("=== KEINE KUGEL AUSGEWÄHLT ===\n");
+	}
+}
+
+// ... (paintComponent, berechneSchrittweite, formatiereZahl und
+// Transformationsmethoden bleiben exakt gleich) ...
+protected void paintComponent(Graphics g) {
+	super.paintComponent(g);
+	Graphics2D g2 = (Graphics2D) g;
+	g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	int breite = getWidth();
+	int hoehe = getHeight();
+
+	if (achsenSichtbar) {
+		g2.setColor(Color.GREEN);
+		g2.setStroke(new BasicStroke(2));
+		g2.drawLine(0, weltZuScreenY(0), breite, weltZuScreenY(0));
+		g2.drawLine(weltZuScreenX(0), 0, weltZuScreenX(0), hoehe);
+		g2.setFont(new Font("Monospaced", Font.PLAIN, 11));
+		g2.setColor(Color.LIGHT_GRAY);
+		double schrittweite = berechneSchrittweite();
+		double startX = Math.floor(screenZuWeltX(0) / schrittweite) * schrittweite;
+		double startY = Math.floor(screenZuWeltY(hoehe) / schrittweite) * schrittweite;
+		for (double x = startX; x < screenZuWeltX(breite); x += schrittweite) {
+			if (Math.abs(x) > schrittweite / 10) {
+				int screenX = weltZuScreenX(x);
+				int achsenY = weltZuScreenY(0);
+				if (screenX >= 0 && screenX < breite) {
+					g2.drawLine(screenX, achsenY - 5, screenX, achsenY + 5);
+					g2.drawString(formatiereZahl(x), screenX - 20, achsenY + 18);
+				}
+			}
+		}
+		for (double y = startY; y < screenZuWeltY(0); y += schrittweite) {
+			if (Math.abs(y) > schrittweite / 10) {
+				int screenY = weltZuScreenY(y);
+				int achsenX = weltZuScreenX(0);
+				if (screenY >= 0 && screenY < hoehe) {
+					g2.drawLine(achsenX - 5, screenY, achsenX + 5, screenY);
+					g2.drawString(formatiereZahl(y), achsenX + 10, screenY + 5);
+				}
+			}
+		}
+		g2.setFont(new Font("Monospaced", Font.BOLD, 13));
+		g2.setColor(Color.YELLOW);
+		g2.drawString(verfuegbareVariablen[indexAxisX] + " →", breite - 100, weltZuScreenY(0) - 10);
+		g2.drawString("↑ " + verfuegbareVariablen[indexAxisY], weltZuScreenX(0) + 10, 20);
+	}
+
+	for (Unit k : unitList) {
+		double valX = k.getVariable(verfuegbareVariablen[indexAxisX]);
+		double valY = k.getVariable(verfuegbareVariablen[indexAxisY]);
+		int kugelX = weltZuScreenX(valX);
+		int kugelY = weltZuScreenY(valY);
+		g2.setColor(k.color);
+		g2.fillOval(kugelX - k.radius, kugelY - k.radius, k.radius * 2, k.radius * 2);
+		if (k == selectedKugel) {
+			g2.setColor(Color.YELLOW);
+			g2.setStroke(new BasicStroke(3));
+			g2.drawOval(kugelX - k.radius - 5, kugelY - k.radius - 5, (k.radius + 5) * 2, (k.radius + 5) * 2);
+		}
+	}
+
+	if (infoText.length() > 0) {
+		g2.setColor(Color.WHITE);
+		g2.setFont(new Font("Monospaced", Font.PLAIN, 12));
+		String[] zeilen = infoText.toString().split("\n");
+		for (int i = 0; i < zeilen.length; i++)
+			g2.drawString(zeilen[i], 20, 30 + i * 16);
+	}
+	g2.setColor(Color.GRAY);
+	g2.setFont(new Font("Monospaced", Font.PLAIN, 11));
+	g2.drawString("H/V: Achsen | P: Pos-Update | E: Entropie | A: Achsen ein/aus", 20, hoehe - 20);
+}
+
+private double berechneSchrittweite() {
+	double sichtbareBreite = getWidth() / zoom;
+	double roheSchrittweite = sichtbareBreite / 10.0;
+	if (roheSchrittweite < Double.MIN_VALUE * 100)
+		return Double.MIN_VALUE * 100;
+	double exponent = Math.floor(Math.log10(Math.abs(roheSchrittweite)));
+	double basis = Math.pow(10, exponent);
+	double faktor = roheSchrittweite / basis;
+	if (faktor < 2)
+		return basis;
+	if (faktor < 5)
+		return 2 * basis;
+	return 5 * basis;
+}
+
+private String formatiereZahl(double wert) {
+	if (wert == 0)
+		return "0";
+	double absWert = Math.abs(wert);
+	if (absWert >= 1e6 || absWert < 0.001) {
+		int exponent = (int) Math.floor(Math.log10(absWert));
+		double mantisse = wert / Math.pow(10, exponent);
+		return String.format("%.1fe%d", mantisse, exponent);
+	} else {
+		return String.format("%.1f", wert);
+	}
+}
+
+private int weltZuScreenX(double weltX) {
+	double e = getWidth() / 2.0 + (weltX - kameraX) * zoom;
+	return (int) e;
+}
+
+private int weltZuScreenY(double weltY) {
+	double e = getHeight() / 2.0 - (weltY - kameraY) * zoom;
+	return (int) e;
+}
+
+private double screenZuWeltX(int screenX) {
+	return (screenX - getWidth() / 2.0) / zoom + kameraX;
+}
+
+private double screenZuWeltY(int screenY) {
+	return -(screenY - getHeight() / 2.0) / zoom + kameraY;
+}
+
+public static void main(String[] args) {
+	JFrame frame = new JFrame("Matrixgame: Dynamische Achsen-Simulation");
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	frame.add(new MainGame());
+	frame.setSize(1200, 900);
+	frame.setLocationRelativeTo(null);
+	frame.setVisible(true);
+}
+
+}
+
+package ordner1;
+
+import java.awt.Color;
+import java.util.ArrayList;
+
+public class Unit {
+// --- BASIS & ENTROPIE ---
+public double basisEntroDouble;
+public double[] basisentros = new double[100];
+
+// --- PHYSIKALISCHE GRÖSSEN ---
+public double x, y, z;
+public double vx, vy, vz;
+public double ax, ay, az;
+public double mass;
+public int radius;
+
+public double maxSpeed=5*Math.random();
+
+public double EKin;
+public double Ex, Ey, Ez;
+public double time = 255.0;
+double pe4;
+
+// --- FARBEN & ZUSTAND ---
+public double rot, green, blue;
+public Color color;
+public boolean movable = true;
+public boolean leben = true;
+
+// --- SIMULATIONS-STEUERUNG (NEU) ---
+// Standardmäßig alles auf false, damit das Objekt ruhig ist
+public boolean updatePositionAktiv = false;
+public boolean entropieMoveAktiv = false;
+public String algorithmus = "HALTEN";
+// Ich finde es hier erst einmal allgemein gut den Wert als double ohne public
+// oder privat zu definieren oder zu setzen mit 0 im default und sichtbar und
+// änderbar in package
+double entropieMoveSpeed2ProCent;
+
+// --- KONSTRUKTOREN ---
+public Unit(double x, double y, double z, double vx, double vy, double vz, double mass, int radius, Color color) {
+	this.x = x;
+	this.y = y;
+	this.z = z;
+	this.vx = vx;
+	this.vy = vy;
+	this.vz = vz;
+	this.mass = mass;
+	this.radius = radius;
+	setColorSafe(color);
+}
+
+public Unit() {
+	this(0, 0, 0, 0, 0, 0, 10, 10, Color.CYAN);
+}
+
+private void setColorSafe(Color c) {
+	this.color = c != null ? c : Color.WHITE;
+	this.rot = this.color.getRed();
+	this.green = this.color.getGreen();
+	this.blue = this.color.getBlue();
+}
+
+// --- DYNAMISCHER ZUGRIFF ---
+public double getVariable(String name) {
+	switch (name.toLowerCase()) {
+	case "x":
+		return x;
+	case "y":
+		return y;
+	case "z":
+		return z;
+	case "vx":
+		return vx;
+	case "vy":
+		return vy;
+	case "vz":
+		return vz;
+	case "mass":
+	case "masse":
+		return mass;
+	case "radius":
+		return radius;
+	case "ekin":
+		return EKin;
+	case "time":
+		return time;
+	default:
+		return 0.0;
+	}
+}
+
+public void setVariable(String name, double wert) {
+	switch (name.toLowerCase()) {
+	case "x":
+		x = wert;
+		break;
+	case "y":
+		y = wert;
+		break;
+	case "z":
+		z = wert;
+		break;
+	case "vx":
+		vx = wert;
+		break;
+	case "vy":
+		vy = wert;
+		break;
+	case "vz":
+		vz = wert;
+		break;
+	case "mass":
+	case "masse":
+		mass = wert;
+		break;
+	case "radius":
+		radius = (int) wert;
+		break;
+	case "ekin":
+		EKin = wert;
+		break;
+	case "time":
+		time = wert;
+		break;
+	}
+}
+
+// --- DIE ZENTRALE UPDATE-METHODE ---
+// Wird einmal pro Zeitschritt vom Canvas aufgerufen
+public void update() {
+
+	if (entropieMoveSpeed2ProCent > (Math.random() * 100)) {
+		entropieMoveSpeed2();
+	}
+
+	// 1. Entropie-Bewegung (wenn aktiviert)
+	if (entropieMoveAktiv) {
+		entropieMove();
+	}
+
+	// 2. Positions-Update (wenn aktiviert)
+	if (updatePositionAktiv) {
+		updatePosition(1.0); // 1.0 als Standard-Zeitschritt-Faktor
+	}
+	
+	// 
+
+// if(randEntropie2ProCent>(Math.random() * 100)) {
+// randEntro();
+// }
+
+	// Hier können später weitere Updates folgen, z.B.:
+	// if (gravitationAktiv) { ... }
+	// if (colorUpdateAktiv) { updateColor(); }
+}
+
+// --- DIE EINZELNEN VERHALTENSMETHODEN ---
+
+public void updatePosition(double timeStep) {
+	this.x += (this.vx * timeStep);
+	this.y += (this.vy * timeStep);
+	this.z += (this.vz * timeStep);
+}
+
+public void entropieMove() {
+	int rand = (int) (Math.random() * 8);
+	if (rand < 2)
+		return;
+	if (rand == 2)
+		x++;
+	if (rand == 3)
+		x--;
+	if (rand == 4)
+		y++;
+	if (rand == 5)
+		y--;
+	if (rand == 6)
+		z++;
+	if (rand == 7)
+		z--;
+}
+
+public void entropieMoveSpeed2() {
+	// Bewege dich in jede Richtung per Random * Geschwindigkeit
+	x = x + vx * Math.random();
+	y = y + vy * Math.random();
+	z = z + vz * Math.random();
+}
+
+public void entropieMoveSpeed() {
+	// Bewege dich in jede Richtung per Random * Geschwindigkeit
+	x = x + vx * Math.random() + Math.random() - Math.random();
+	y = y + vy * Math.random() + Math.random() - Math.random();
+	z = z + vz * Math.random() + Math.random() - Math.random();
+}
+
+public void entropieMoveSpeedPyt() {
+	// Bewege dich in jede Richtung per Random * Geschwindigkeit
+	// vx^2+vy^2+vz^2 <= Geschwindigkeit^2
+	// später weiter
+
+	x = x + vx * Math.pow(Math.random(), 0.5);
+	y = y + vy * Math.random();
+	z = z + vz * Math.random();
+}
+
+// allgemein für zwei doubles
+void randEntro() {
+
+}
+
+public void randEntropie3(Unit other) {
+
+// if (Math.random() > 0.01) {
+// double x = Math.random() * this.x;
+// this.x = this.x + other.x * Math.random();
+// other.x = other.x + x;
+// }
+if (Math.random() > 0.0001) {
+double y1 = Math.random() * this.y;
+double y2=other.y * Math.random();
+this.y = this.y + y2;
+other.y = other.y + y1;
+this.y=this.y-y1;
+other.y=other.y-y2;
+}
+if (Math.random() > 0.0001) {
+double x1 = Math.random() * this.x;
+double x2=other.x * Math.random();
+this.x = this.x + x2;
+other.x = other.x + x1;
+this.x=this.x-x1;
+other.x=other.x-x2;
+}
+
+	if (Math.random() > 0.00001) {
+		double z1 = Math.random() * this.z;
+		double z2=other.z * Math.random();
+		this.z = this.z - z1;
+		other.z = other.z + z2;
+		this.z=this.z+z1;
+		
+		other.z=other.z-z2;
+	}
+	
+	
+
+	// Das mit allen Variablen der Unit
+
+}
+
+public void randEntropie4(Unit other) {
+
+// if (Math.random() > 0.01) {
+// double x = Math.random() * this.x;
+// this.x = this.x + other.x * Math.random();
+// other.x = other.x + x;
+// }
+double x1 = Math.random() * (other.x-this.x);
+double y1 = Math.random() * (other.y-this.y);
+double z1 = Math.random() * (other.z-this.z);
+while(x1x1+y1y1+z1z1>this.maxSpeedthis.maxSpeed/Math.random()Math.random()) {if(Math.random()>0.5)return;x1=Math.random();y1*=Math.random();z1*=Math.random();}
+if (Math.random() >pe4) {
+
+		this.vx = this.vx +x1;
+		other.vx = other.vx - x1;
+		this.x+=x1;
+		other.x-=x1;
+		
+	
+	
+	if (Math.random() > pe4) {
+		
+	
+		this.vy = this.vy +y1;
+		other.vy = other.vy - y1;
+		this.y+=y1;
+		other.y-=y1;
+		
+	
+	
+	if (Math.random() > pe4) {
+	
+	
+		this.vz = this.vz +z1;
+		this.z+=z1;
+		other.vz = other.vz - z1;
+		other.z-=z1;
+		
+	}}}
+
+// if (Math.random() > 0.0001) {
+// double x1 = Math.random() * this.x;
+// double x2=other.x * Math.random();
+// this.x = this.x + x2;
+// other.x = other.x + x1;
+// this.x=this.x-x1;
+// other.x=other.x-x2;
+// }
+//
+// if (Math.random() > 0.00001) {
+// double z1 = Math.random() * this.z;
+// double z2=other.z * Math.random();
+// this.z = this.z - z1;
+// other.z = other.z + z2;
+// this.z=this.z+z1;
+//
+// other.z=other.z-z2;
+}
+
+public void randEntropie2(Unit other) {
+
+	if (Math.random() > 0.1) {
+		if(this.x<other.x) {this.vx+=Math.random();other.vx-=Math.random();}
+		if(this.y<other.y) {this.vy+=Math.random();other.vy-=Math.random();}
+		if(this.z<other.z) {this.vz+=Math.random();other.vz-=Math.random();}
+	
+	
+	}}
+
+// (Die restlichen Methoden wie gravity, angleichen etc. bleiben hier
+// unverändert erhalten)
+
+}
+
+package ordner1;
+
+//ndeas Schneider Hypothese für Wissenschaft und Open Sourc Anwendung und Unterstützung gesucht:
+//27.08.2026 Beweis durch Compilierbaren Java Code und weiteren Projekten und berichten und Kontaktwunsch und Mehr:
+//package ordner2;
+
+public class ElementareMassenVerhältnisseZurValidierungUndSeriousGamifizierung {
+
+public static void main(String[] args) {
+	// TODO Auto-generated method stub
+
+	System.out.println("Hello Universe");
+
+	double elektronenMasse = 9.1093837139 * Math.pow(10, -31);
+
+	System.out.println("Die Elektronenmasse Begründet durch unsere Wissenschaft und das sehr gut: = "
+			+ elektronenMasse + " kg");
+	double sechstelElektronenMasse = elektronenMasse / 6.0;
+	System.out.println("Die sechstel Elektronen Masse = " + elektronenMasse / 6.0);
+
+	double protonenMasse = 1.67262192595 * Math.pow(10, -27);// kg"
+
+	System.out.println("Die Protonen Masse = " + protonenMasse);
+
+	System.out.println("protonenMasse/sechstelElektronenMasse" + protonenMasse / sechstelElektronenMasse);
+
+	System.out.println("Lässt sich schön aufrunden aber wir runden hier ab, um die Simmetrie zu beweisen: "
+			+ (int) (protonenMasse / sechstelElektronenMasse));
+
+	double symmetrieZahl = 11016.0;
+	double RaumSymmetrien = 11016 / 8.0; // =1377.0
+	double RaumSymmetrie2 = 11016 / 8.0 / 3 / 3 / 3;
+
+	System.out.println("11016 Dividiert erst durch 8 und durch 27 :" + RaumSymmetrie2);
+
+	System.out.println(
+			"Nach division durch 8 für den 3D Raum gibt es ein erstes ganzzahl Ergebnis: " + RaumSymmetrien);
+
+	System.out.println("Dieses erneut durch 27 dividieren: " + RaumSymmetrien / 27.0);
+
+	System.out.println(
+			"Das Ergebnis lässt sich jetzt ein weiteres Mal durch 3 sowie durch den Primfaktor 17 zerlegen und kann in Zukunft, sowohl für mich wie auch andere Meschen wie mich und die open source community und die Wissenschaft und Weiters geeignet Genutzt und weiter Nutzbar und Validierbarer und Weiteres gutes damit gemacht werden so das wir alle mit schöner Didaktik gewinnen und weitere Fortschritte folgen. Vielen Dank");
+
+	System.out.println(
+			"Autor und nach Unterstützung und Diskusionen und Perreview und Ausbau für die allgemeine und Kollektive Nutzung und zu meinem ssowie dem Vorteil und Gewinn für die Menschheit und Wissenschft und Weitere Intelligenzen: Andreas Schneider Eberstadt-Darmstadt Facebook: https://www.facebook.com/ , HandyNummer: +491778627094, Email: andreas.schneider01989@gmail.com, GitHub: https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit");
+
+// Elementare Massen
+// Teilchenphysik für das Matrixgame und die Kollektiven Ki-Games
+// 07.02.2026 Andreas Schneider, Deutschland, Darmstadt-Eberstadt, Weingartenstraße 45
+//
+// Nukleonen
+// Teilchen, Typ, “Masse in kg”
+// Proton, Nukleon, "≈1,67262192595×10−27 kg"
+// Neutron (n), Nukleon, "≈1,67493×10−27 kg"
+//
+//
+// Quarks
+// Teilchen,Typ,”Masse in kg (ca.)”, ‘Ladung’
+// Up-Quark(u),Quark,"3,9×10^−30 kg", ‘+2/3e’
+// Down-Quark(d),Quark,"8,4×10^−30 kg", ‘-1/3e’
+// Strange-Quark(s),Quark,"1,7×10^−28 kg", ‘-1/3e’
+// Charm-Quark(c),Quark,"2,3×10^−27 kg", ‘+2/3e’
+// Bottom-Quark(b),Quark,"7,5×10^−27 kg", ‘-1/3e’
+// Top-Quark(t),Quark,"3,1×10^−25 kg", ‘+2/3e’
+//
+//
+// Leptonen
+// Masse Elektron (me​): 9,1093837139×10−31 kg
+//
+//
+
+}
+
+}
+
+package ordner1;
+
+import java.awt.Color;
+import java.util.ArrayList;
+
+public class Unit {
+// --- BASIS & ENTROPIE ---
+public double basisEntroDouble;
+public double[] basisentros = new double[100];
+
+// --- PHYSIKALISCHE GRÖSSEN ---
+public double x, y, z;
+public double vx, vy, vz;
+public double ax, ay, az;
+public double mass;
+public int radius;
+
+public double maxSpeed=5*Math.random();
+
+public double EKin;
+public double Ex, Ey, Ez;
+public double time = 255.0;
+double pe4;
+
+// --- FARBEN & ZUSTAND ---
+public double rot, green, blue;
+public Color color;
+public boolean movable = true;
+public boolean leben = true;
+
+// --- SIMULATIONS-STEUERUNG (NEU) ---
+// Standardmäßig alles auf false, damit das Objekt ruhig ist
+public boolean updatePositionAktiv = false;
+public boolean entropieMoveAktiv = false;
+public String algorithmus = "HALTEN";
+// Ich finde es hier erst einmal allgemein gut den Wert als double ohne public
+// oder privat zu definieren oder zu setzen mit 0 im default und sichtbar und
+// änderbar in package
+double entropieMoveSpeed2ProCent;
+
+// --- KONSTRUKTOREN ---
+public Unit(double x, double y, double z, double vx, double vy, double vz, double mass, int radius, Color color) {
+	this.x = x;
+	this.y = y;
+	this.z = z;
+	this.vx = vx;
+	this.vy = vy;
+	this.vz = vz;
+	this.mass = mass;
+	this.radius = radius;
+	setColorSafe(color);
+}
+
+public Unit() {
+	this(0, 0, 0, 0, 0, 0, 10, 10, Color.CYAN);
+}
+
+private void setColorSafe(Color c) {
+	this.color = c != null ? c : Color.WHITE;
+	this.rot = this.color.getRed();
+	this.green = this.color.getGreen();
+	this.blue = this.color.getBlue();
+}
+
+// --- DYNAMISCHER ZUGRIFF ---
+public double getVariable(String name) {
+	switch (name.toLowerCase()) {
+	case "x":
+		return x;
+	case "y":
+		return y;
+	case "z":
+		return z;
+	case "vx":
+		return vx;
+	case "vy":
+		return vy;
+	case "vz":
+		return vz;
+	case "mass":
+	case "masse":
+		return mass;
+	case "radius":
+		return radius;
+	case "ekin":
+		return EKin;
+	case "time":
+		return time;
+	default:
+		return 0.0;
+	}
+}
+
+public void setVariable(String name, double wert) {
+	switch (name.toLowerCase()) {
+	case "x":
+		x = wert;
+		break;
+	case "y":
+		y = wert;
+		break;
+	case "z":
+		z = wert;
+		break;
+	case "vx":
+		vx = wert;
+		break;
+	case "vy":
+		vy = wert;
+		break;
+	case "vz":
+		vz = wert;
+		break;
+	case "mass":
+	case "masse":
+		mass = wert;
+		break;
+	case "radius":
+		radius = (int) wert;
+		break;
+	case "ekin":
+		EKin = wert;
+		break;
+	case "time":
+		time = wert;
+		break;
+	}
+}
+
+// --- DIE ZENTRALE UPDATE-METHODE ---
+// Wird einmal pro Zeitschritt vom Canvas aufgerufen
+public void update() {
+
+	if (entropieMoveSpeed2ProCent > (Math.random() * 100)) {
+		entropieMoveSpeed2();
+	}
+
+	// 1. Entropie-Bewegung (wenn aktiviert)
+	if (entropieMoveAktiv) {
+		entropieMove();
+	}
+
+	// 2. Positions-Update (wenn aktiviert)
+	if (updatePositionAktiv) {
+		updatePosition(1.0); // 1.0 als Standard-Zeitschritt-Faktor
+	}
+	
+	// 
+
+// if(randEntropie2ProCent>(Math.random() * 100)) {
+// randEntro();
+// }
+
+	// Hier können später weitere Updates folgen, z.B.:
+	// if (gravitationAktiv) { ... }
+	// if (colorUpdateAktiv) { updateColor(); }
+}
+
+// --- DIE EINZELNEN VERHALTENSMETHODEN ---
+
+public void updatePosition(double timeStep) {
+	this.x += (this.vx * timeStep);
+	this.y += (this.vy * timeStep);
+	this.z += (this.vz * timeStep);
+}
+
+public void entropieMove() {
+	int rand = (int) (Math.random() * 8);
+	if (rand < 2)
+		return;
+	if (rand == 2)
+		x++;
+	if (rand == 3)
+		x--;
+	if (rand == 4)
+		y++;
+	if (rand == 5)
+		y--;
+	if (rand == 6)
+		z++;
+	if (rand == 7)
+		z--;
+}
+
+public void entropieMoveSpeed2() {
+	// Bewege dich in jede Richtung per Random * Geschwindigkeit
+	x = x + vx * Math.random();
+	y = y + vy * Math.random();
+	z = z + vz * Math.random();
+}
+
+public void entropieMoveSpeed() {
+	// Bewege dich in jede Richtung per Random * Geschwindigkeit
+	x = x + vx * Math.random() + Math.random() - Math.random();
+	y = y + vy * Math.random() + Math.random() - Math.random();
+	z = z + vz * Math.random() + Math.random() - Math.random();
+}
+
+public void entropieMoveSpeedPyt() {
+	// Bewege dich in jede Richtung per Random * Geschwindigkeit
+	// vx^2+vy^2+vz^2 <= Geschwindigkeit^2
+	// später weiter
+
+	x = x + vx * Math.pow(Math.random(), 0.5);
+	y = y + vy * Math.random();
+	z = z + vz * Math.random();
+}
+
+// allgemein für zwei doubles
+void randEntro() {
+
+}
+
+public void randEntropie3(Unit other) {
+
+// if (Math.random() > 0.01) {
+// double x = Math.random() * this.x;
+// this.x = this.x + other.x * Math.random();
+// other.x = other.x + x;
+// }
+if (Math.random() > 0.0001) {
+double y1 = Math.random() * this.y;
+double y2=other.y * Math.random();
+this.y = this.y + y2;
+other.y = other.y + y1;
+this.y=this.y-y1;
+other.y=other.y-y2;
+}
+if (Math.random() > 0.0001) {
+double x1 = Math.random() * this.x;
+double x2=other.x * Math.random();
+this.x = this.x + x2;
+other.x = other.x + x1;
+this.x=this.x-x1;
+other.x=other.x-x2;
+}
+
+	if (Math.random() > 0.00001) {
+		double z1 = Math.random() * this.z;
+		double z2=other.z * Math.random();
+		this.z = this.z - z1;
+		other.z = other.z + z2;
+		this.z=this.z+z1;
+		
+		other.z=other.z-z2;
+	}
+	
+	
+
+	// Das mit allen Variablen der Unit
+
+}
+
+public void randEntropie4(Unit other) {
+
+// if (Math.random() > 0.01) {
+// double x = Math.random() * this.x;
+// this.x = this.x + other.x * Math.random();
+// other.x = other.x + x;
+// }
+double x1 = Math.random() * (other.x-this.x);
+double y1 = Math.random() * (other.y-this.y);
+double z1 = Math.random() * (other.z-this.z);
+while(x1x1+y1y1+z1z1>this.maxSpeedthis.maxSpeed/Math.random()Math.random()) {if(Math.random()>0.5)return;x1=Math.random();y1*=Math.random();z1*=Math.random();}
+if (Math.random() >pe4) {
+
+		this.vx = this.vx +x1;
+		other.vx = other.vx - x1;
+		this.x+=x1;
+		other.x-=x1;
+		
+	
+	
+	if (Math.random() > pe4) {
+		
+	
+		this.vy = this.vy +y1;
+		other.vy = other.vy - y1;
+		this.y+=y1;
+		other.y-=y1;
+		
+	
+	
+	if (Math.random() > pe4) {
+	
+	
+		this.vz = this.vz +z1;
+		this.z+=z1;
+		other.vz = other.vz - z1;
+		other.z-=z1;
+		
+	}}}
+
+// if (Math.random() > 0.0001) {
+// double x1 = Math.random() * this.x;
+// double x2=other.x * Math.random();
+// this.x = this.x + x2;
+// other.x = other.x + x1;
+// this.x=this.x-x1;
+// other.x=other.x-x2;
+// }
+//
+// if (Math.random() > 0.00001) {
+// double z1 = Math.random() * this.z;
+// double z2=other.z * Math.random();
+// this.z = this.z - z1;
+// other.z = other.z + z2;
+// this.z=this.z+z1;
+//
+// other.z=other.z-z2;
+}
+
+public void randEntropie2(Unit other) {
+
+	if (Math.random() > 0.1) {
+		if(this.x<other.x) {this.vx+=Math.random();other.vx-=Math.random();}
+		if(this.y<other.y) {this.vy+=Math.random();other.vy-=Math.random();}
+		if(this.z<other.z) {this.vz+=Math.random();other.vz-=Math.random();}
+	
+	
+	}}
+
+// (Die restlichen Methoden wie gravity, angleichen etc. bleiben hier
+// unverändert erhalten)
+
+}
+Bitte analsiere und versuche den Code zu erklären so gut und verständlich wie es möglich ist
+
+Datenschutz | Impressum
+
+image
+
+Ja. Ich würde deinen Code am besten nicht nur als „Java-Programm mit Kugeln“, sondern als bereits vorhandenen Prototypen für eine kleine dynamische Weltmaschine verstehen. Genau darin liegt die interessante Verbindung zu deiner Idee eines Infinite Canvas bzw. eines gemeinsamen KI-Game-Systems.
+1. Die Grundidee deines Programms
+
+Vereinfacht besteht dein System aus vier Ebenen:
+
+                    MATRIXGAME / KI-GAME
+                           │
+                           ▼
+                    ┌─────────────┐
+                    │  MainGame   │
+                    │   Canvas    │
+                    └──────┬──────┘
+                           │
+              erzeugt und aktualisiert
+                           │
+                           ▼
+                    ┌─────────────┐
+                    │    Unit     │
+                    │   Objekt     │
+                    └──────┬──────┘
+                           │
+             Zustand + Verhalten
+                           │
+                           ▼
+          ┌────────────────────────────────┐
+          │ x y z                          │
+          │ vx vy vz                       │
+          │ mass radius                    │
+          │ Energie / Entropie             │
+          │ Leben / Beweglichkeit          │
+          │ Algorithmus                     │
+          └────────────────────────────────┘
+
+MainGame ist dabei hauptsächlich die Welt, Darstellung und Steuerung.
+
+Unit ist dein allgemeiner Baustein für ein Objekt innerhalb dieser Welt.
+
+Das ist konzeptionell schon ziemlich nah an dem, was du für dein Matrixgame beschrieben hast:
+
+    Objekt → Zustand → Aktion → Interaktion → Messung → Veränderung
+
+2. MainGame – deine Welt
+
+public class MainGame extends JPanel {
+
+Damit wird MainGame zu einer grafischen Java-Swing-Komponente.
+
+Du benutzt also nicht etwa eine fertige Game Engine, sondern baust dir deine kleine Engine selbst.
+
+Das ist didaktisch sogar sehr interessant.
+3. Die wichtigsten Datenstrukturen
+
+private List<Unit> unitList = new ArrayList<Unit>();
+
+Hier befindet sich deine gesamte Population.
+
+Wenn du später hast:
+
+Unit 0
+Unit 1
+Unit 2
+...
+Unit 1999
+
+dann liegen diese Objekte alle in:
+
+unitList
+
+Das ist im Prinzip dein derzeitiger World State.
+Ausgewähltes Objekt
+
+private Unit selectedKugel = null;
+
+Damit weiß das Programm:
+
+    Welches Objekt betrachtet der Benutzer gerade?
+
+Das ist später für ein KI-Game sehr wichtig.
+
+Denn daraus kann beispielsweise werden:
+
+SELECT OBJECT
+      ↓
+READ STATE
+      ↓
+MODIFY VARIABLE
+      ↓
+EXECUTE ACTION
+      ↓
+MEASURE RESULT
+
+4. Dein Koordinatensystem
+
+Du hast:
+
+double kameraX = 0;
+double kameraY = 0;
+
+und
+
+double zoom = 20.0;
+
+Damit trennst du bereits zwischen:
+
+Weltkoordinaten
+
+und
+
+Bildschirmkoordinaten.
+
+Das ist ein sehr wichtiger Schritt.
+
+Zum Beispiel:
+
+Welt:
+x = 1000
+
+Bildschirm:
+x = vielleicht 750 Pixel
+
+Die Welt muss also nicht genauso groß sein wie das Fenster.
+5. Deine dynamischen Variablen
+
+Das ist einer der interessantesten Teile:
+
+private String[] verfuegbareVariablen = {
+    "x", "y", "z",
+    "vx", "vy", "vz",
+    "mass", "radius", "ekin"
+};
+
+Du behandelst Eigenschaften der Unit dadurch nicht ausschließlich fest programmiert.
+
+Statt:
+
+zeige x gegen y
+
+kannst du auswählen:
+
+x gegen y
+x gegen z
+vx gegen vy
+mass gegen radius
+ekin gegen x
+...
+
+Das ist bereits eine primitive Form eines variablenabhängigen Visualisierungsraums.
+
+Und genau hier sehe ich eine sehr gute Brücke zu deinem Infinite Canvas.
+6. Die Unit ist dein eigentliches Grundobjekt
+
+Deine Klasse beginnt mit:
+
+public class Unit {
+
+und enthält anschließend eine ganze Reihe von Eigenschaften.
+
+Man kann sie sinnvoll gruppieren.
+Raum
+
+x
+y
+z
+
+Bewegung
+
+vx
+vy
+vz
+
+ax
+ay
+az
+
+Materie
+
+mass
+radius
+
+Energie
+
+EKin
+Ex
+Ey
+Ez
+
+Zeit
+
+time
+
+Zustand
+
+movable
+leben
+
+Darstellung
+
+color
+rot
+green
+blue
+
+Verhalten
+
+updatePositionAktiv
+entropieMoveAktiv
+algorithmus
+
+Damit hast du eigentlich schon eine kleine Ontologie eines simulierten Objektes gebaut.
+7. Besonders wichtig: getVariable()
+
+public double getVariable(String name)
+
+Das ist eine sehr mächtige Idee.
+
+Du kannst schreiben:
+
+k.getVariable("x")
+
+und bekommst:
+
+k.x
+
+Oder:
+
+k.getVariable("mass")
+
+und bekommst:
+
+k.mass
+
+Dadurch kannst du Variablen zur Laufzeit auswählen.
+
+Das bedeutet:
+
+Variable
+   ↓
+String
+   ↓
+getVariable()
+   ↓
+physikalischer Wert
+
+Das ist eine primitive Form von Reflection / dynamischem Zugriff, allerdings von dir kontrolliert über einen switch.
+8. Noch wichtiger: setVariable()
+
+Du hast das Gegenstück:
+
+public void setVariable(String name, double wert)
+
+Dadurch kann beispielsweise:
+
+setVariable("x", 42)
+
+die Position verändern.
+
+Das bedeutet:
+
+Name + Wert
+      ↓
+setVariable()
+      ↓
+Unit-Zustand verändert sich
+
+Und genau daraus kann später eine allgemeine Matrixgame-Aktion entstehen:
+
+ACTION:
+set x = 42
+
+oder:
+
+ACTION:
+increase vx by 2
+
+oder:
+
+ACTION:
+mass = 100
+
+Das ist für deine Idee einer kompilierbaren bzw. ausführbaren gemeinsamen Grammatik sehr interessant.
+9. Deine zentrale update()-Methode
+
+Das ist momentan praktisch das Herzstück der Unit.
+
+public void update() {
+
+Du sagst damit:
+
+    „Unit, entwickle deinen Zustand um einen Simulationsschritt weiter.“
+
+Dann kommen mehrere mögliche Prozesse.
+10. Zufällige Geschwindigkeitsbewegung
+
+if (entropieMoveSpeed2ProCent > (Math.random() * 100)) {
+    entropieMoveSpeed2();
+}
+
+Wenn beispielsweise:
+
+entropieMoveSpeed2ProCent = 70;
+
+ist, wird die Bedingung ungefähr in 70 % der Fälle erfüllt.
+
+Denn:
+
+Math.random() * 100
+
+liefert:
+
+0 ... <100
+
+Damit hast du einen einfachen Wahrscheinlichkeitsmechanismus.
+11. entropieMoveAktiv
+
+if (entropieMoveAktiv) {
+    entropieMove();
+}
+
+Hier hast du einen Schalter.
+
+entropieMoveAktiv = false
+
+→ kein Entropie-Move.
+
+entropieMoveAktiv = true
+
+→ Entropie-Move.
+
+Das ist eigentlich bereits eine sehr einfache Rule Activation Architecture.
+12. Positionsupdate
+
+if (updatePositionAktiv) {
+    updatePosition(1.0);
+}
+
+Und:
+
+x += vx * timeStep;
+y += vy * timeStep;
+z += vz * timeStep;
+
+Das ist klassische diskrete Bewegung.
+
+Mathematisch:
+xt+Δt​=xt​+vx​Δt
+
+entsprechend für y und z.
+
+Das ist also nicht einfach „Kugel bewegen“, sondern eine diskrete Approximation einer Bewegungsgleichung.
+13. Deine Entropie-Bewegung
+
+public void entropieMove()
+
+Hier würfelst du zunächst:
+
+int rand = (int) (Math.random() * 8);
+
+Dadurch entstehen:
+
+0
+1
+2
+3
+4
+5
+6
+7
+
+Dann:
+
+0/1 → nichts
+
+2 → x++
+3 → x--
+
+4 → y++
+5 → y--
+
+6 → z++
+7 → z--
+
+Du hast also eine einfache diskrete Zufallsbewegung.
+
+Man kann sie als Zustandsübergang auffassen:
+St​→St+1​
+
+wobei die Aktion zufällig gewählt wird.
+14. Sehr interessant: randEntropie4()
+
+Hier wird es deutlich spannender.
+
+Du nimmst zwei Units:
+
+public void randEntropie4(Unit other)
+
+also:
+
+Unit A
+   ↕
+Unit B
+
+Dann bestimmst du einen zufälligen Unterschied:
+
+double x1 = Math.random() * (other.x-this.x);
+
+Das heißt vereinfacht:
+
+    Wie groß ist der Abstand zwischen den beiden Objekten und wie viel davon soll zufällig übertragen werden?
+
+Dasselbe machst du für:
+
+x
+y
+z
+
+15. Du verknüpfst Position und Geschwindigkeit
+
+Beispielsweise:
+
+this.vx = this.vx + x1;
+other.vx = other.vx - x1;
+
+Damit wird:
+
+A: +x1
+B: -x1
+
+Das ist interessant, weil du eine Gegenbewegung erzeugst.
+
+Wenn man beispielsweise abstrahiert:
+
+Δv_A = +δ
+Δv_B = -δ
+
+dann gilt:
+ΔvA​+ΔvB​=0
+
+zumindest für diesen künstlichen Austauschschritt.
+
+Das erinnert strukturell an Erhaltungsprinzipien.
+
+Aber wichtig: Das bedeutet noch nicht, dass dein Verfahren physikalisch Energie oder Impuls korrekt erhält. Dafür müsste man die genaue Dynamik mathematisch definieren und testen.
+16. Dein pe4
+
+Du setzt:
+
+unit.pe4=0.5;
+
+und später:
+
+if (Math.random() > pe4)
+
+Bei 0.5 bedeutet das ungefähr:
+
+50 % Wahrscheinlichkeit
+
+Damit hast du einen regelbaren Interaktionsparameter.
+
+Man könnte daraus später viel sauberer machen:
+
+interactionProbability
+
+statt:
+
+pe4
+
+Dann wäre die Bedeutung sofort verständlich.
+17. Dein Simulations-Loop
+
+In MainGame:
+
+simulationTimer = new Timer(100, e -> {
+
+100 Millisekunden bedeutet ungefähr:
+10
+
+Updates pro Sekunde.
+
+Dann:
+
+for (Unit k : unitList) {
+    k.update();
+}
+
+Damit bekommt jede Unit ihren Update-Schritt.
+
+Das ist deine momentan sehr einfache Simulation Engine.
+18. Danach kommt die Interaktion
+
+Du hast:
+
+k.randEntropie4(
+    unitList.get(
+        (int)(unitList.size()*Math.random())
+    )
+);
+
+Das bedeutet:
+
+Für jede Unit:
+
+    Nimm eine zufällige Unit.
+
+    Interagiere mit ihr.
+
+    Verändere deren Zustände.
+
+Damit entsteht ein zufälliges Netzwerk:
+
+        A
+       / \
+      /   \
+     C     D
+      \   /
+       \ /
+        B
+
+Die Verbindungen entstehen allerdings momentan zufällig und werden nicht gespeichert.
+19. Hier liegt eine große Erweiterungsmöglichkeit
+
+Statt:
+
+Unit → zufällige Unit
+
+könnte dein zukünftiges System haben:
+
+Unit
+ ↓
+Sensor
+ ↓
+Wahrnehmung
+ ↓
+Entscheidung
+ ↓
+Aktion
+ ↓
+Interaktion
+ ↓
+Messung
+ ↓
+Bewertung
+ ↓
+Lernen
+
+Das wäre bereits sehr nah an einem KI-Agenten-System.
+20. Dein Canvas ist tatsächlich schon ein kleiner Infinite-Canvas-Prototyp
+
+Besonders diese Funktionen:
+
+weltZuScreenX()
+weltZuScreenY()
+screenZuWeltX()
+screenZuWeltY()
+
+sind dafür entscheidend.
+
+Du hast nämlich eine Transformation:
+World→Screen
+
+und umgekehrt:
+Screen→World
+
+Das ist die technische Grundlage für Zoom und Kamera.
+Dein Zoom
+
+zoom *= 1.1;
+
+bzw.
+
+zoom /= 1.1;
+
+Damit kannst du hinein- und herauszoomen.
+
+Konzeptionell:
+
+Galaxy
+ ↓
+Planet
+ ↓
+Stadt
+ ↓
+Gebäude
+ ↓
+Mensch
+ ↓
+Zelle
+ ↓
+Molekül
+ ↓
+Atom
+
+Die Idee eines beliebig skalierbaren Canvas ist damit architektonisch grundsätzlich vereinbar.
+
+Aber dein derzeitiger Zoom ist noch nicht wirklich mathematisch „unendlich“: double, Bildschirmauflösung und numerische Genauigkeit setzen praktische Grenzen.
+21. Ein besonders schöner Teil: Achsen sind Variablen
+
+Mit:
+
+H
+
+wechselst du die horizontale Variable.
+
+Mit:
+
+V
+
+wechselst du die vertikale Variable.
+
+Damit kann dein Canvas beispielsweise darstellen:
+
+x ↔ y
+
+oder:
+
+vx ↔ vy
+
+oder:
+
+mass ↔ EKin
+
+Das ist mehr als reine Grafik.
+
+Es ist ein Ansatz für einen mehrdimensionalen Zustandsraum.
+22. Deine Kugeln sind deshalb eigentlich keine Kugeln
+
+Das ist eine wichtige gedankliche Abstraktion.
+
+Eine Kugel ist momentan nur die Darstellung einer Unit.
+
+Die Unit selbst ist:
+
+x
+y
+z
+vx
+vy
+vz
+mass
+radius
+EKin
+time
+leben
+movable
+algorithmus
+...
+
+Die Grafik zeigt davon momentan nur zwei Dimensionen.
+
+Daher könnte man später sagen:
+
+    Die Unit ist das Modell. Die Kugel ist nur eine Projektion des Modells auf den Canvas.
+
+Das ist für deine Matrixgame-Idee extrem wichtig.
+23. Dein wissenschaftlicher Testcode
+
+Der zweite Codeblock:
+
+ElementareMassenVerhältnisseZurValidierungUndSeriousGamifizierung
+
+verfolgt eine andere Idee.
+
+Du verwendest bekannte Größen wie:
+
+double elektronenMasse =
+    9.1093837139 * Math.pow(10, -31);
+
+und
+
+double protonenMasse =
+    1.67262192595 * Math.pow(10, -27);
+
+und bildest daraus Verhältnisse.
+
+Das ist als Computational Experiment sinnvoll:
+
+Messwert
+ ↓
+Zahl
+ ↓
+Transformation
+ ↓
+Verhältnis
+ ↓
+Ausgabe
+ ↓
+prüfbare Rechnung
+
+24. Aber hier müssen wir wissenschaftlich sehr sauber trennen
+
+Das ist vermutlich der wichtigste Punkt bei deinem gesamten Projekt.
+
+Wenn dein Programm ausrechnet:
+
+protonenMasse / (elektronenMasse / 6)
+
+dann ist das Ergebnis mathematisch überprüfbar.
+
+Aber daraus folgt nicht automatisch, dass die Zahl 11016 eine fundamentale Symmetriezahl der Natur ist.
+
+Ebenso:
+
+11016 / 8 = 1377
+
+ist selbstverständlich korrekt, wenn 11016 gegeben ist.
+
+Aber:
+
+    Eine ganzzahlige Zerlegung einer Zahl ist noch kein physikalischer Beweis.
+
+Für deine Open-Source-Wissenschaftsidee würde ich deshalb drei Ebenen strikt trennen:
+
+FACT
+    ↓
+gemessener / etablierter Wert
+
+MODEL
+    ↓
+mathematische Konstruktion
+
+HYPOTHESIS
+    ↓
+Vermutung über die physikalische Bedeutung
+
+Das passt übrigens hervorragend zu deiner bisherigen Matrixgame-Architektur.
+25. Ein wichtiger Fehler in deinem aktuellen Programm
+
+Hier:
+
+unit.vx= randDouble2(0);
+unit.vy= randDouble2(0);
+unit.vz= randDouble2(0);
+
+ist der Faktor:
+
+0
+
+Deshalb ist das Ergebnis immer 0.
+
+Denn:
+
+0 * irgendwas = 0
+
+Also:
+
+vx = 0
+vy = 0
+vz = 0
+
+bei jeder Unit.
+
+Das bedeutet, dass deine initiale Geschwindigkeit momentan nicht zufällig ist.
+26. Ein noch wichtigeres Problem
+
+Du hast:
+
+double randDouble2(double faktor) {
+    return faktor*(Math.random()-Math.random())/Math.random();
+}
+
+Wenn faktor != 0, kann das extrem große Werte erzeugen, weil:
+
+Math.random()
+
+im Nenner beliebig nahe an 0 kommen kann.
+
+Beispielsweise konzeptionell:
+0.00000010.5​=5000000
+
+Du bekommst also potentiell sehr große Ausreißer.
+
+Für eine physikalische Simulation ist das gefährlich.
+27. Noch kritischer: deine while-Bedingung
+
+while(x1*x1+y1*y1+z1*z1>
+      this.maxSpeed*this.maxSpeed/Math.random()*Math.random())
+
+Du hast dort zwei zufällige Faktoren.
+
+Dadurch wird deine zulässige Geschwindigkeit selbst zufällig skaliert.
+
+Außerdem kann die Schleife problematisch werden.
+
+Besser wäre konzeptionell:
+
+berechne Δv
+wenn |Δv| > maxSpeed:
+    normalisieren
+
+also mathematisch:
+∣v
+∣=vx2​+vy2​+vz2​
+​
+
+und anschließend:
+v
+neu​=v
+∣v
+∣vmax​​
+
+falls die Geschwindigkeit zu groß ist.
+
+Das wäre wesentlich kontrollierter.
+28. Ein weiterer wichtiger Punkt: EKin wird nicht berechnet
+
+Du hast:
+
+public double EKin;
+
+aber im gezeigten Code sehe ich keine Berechnung wie:
+Ekin​=21​mv2
+
+mit
+v2=vx2​+vy2​+vz2​.
+
+Das könnte eine sehr schöne nächste Erweiterung sein:
+
+public void updateKineticEnergy() {
+    double v2 = vx * vx + vy * vy + vz * vz;
+    EKin = 0.5 * mass * v2;
+}
+
+Dann wird EKin zu einer abgeleiteten Messgröße.
+
+Und genau daraus entsteht eine wichtige Struktur:
+
+Basiszustand
+    ↓
+Berechnung
+    ↓
+Messgröße
+    ↓
+Bewertung
+
+29. Genau hier kann dein Matrixgame entstehen
+
+Ich würde deine Architektur langfristig ungefähr so abstrahieren:
+
+                  WORLD
+                    │
+       ┌────────────┼────────────┐
+       ↓            ↓            ↓
+     OBJECT       RULE         SPACE
+       │            │            │
+       ↓            ↓            ↓
+     STATE        ACTION       TIME
+       │            │            │
+       └──────┬─────┘            │
+              ↓                  │
+          INTERACTION ←──────────┘
+              │
+              ↓
+          MEASUREMENT
+              │
+              ↓
+          EVALUATION
+              │
+              ↓
+            GOAL
+              │
+              ↓
+           AGENT/AI
+              │
+              └────────→ ACTION
+
+Das ist im Grunde deine gemeinsame Grammatik.
+30. Und dein Infinite Canvas wird zur Visualisierung dieser Grammatik
+
+Dann wäre eine Unit nicht mehr nur:
+
+new Unit()
+
+sondern beispielsweise konzeptionell:
+
+OBJECT
+{
+    position
+    velocity
+    mass
+    energy
+    state
+    rules
+    goals
+    actions
+    sensors
+    relationships
+}
+
+Und der Canvas kann unterschiedliche Aspekte darstellen:
+
+x/y
+x/z
+velocity/energy
+mass/energy
+time/state
+agent/reward
+population/entropy
+...
+
+31. Das könnte sogar mit dem Bootcamp-Konzept zusammenpassen
+
+Die von dir eingefügte Bootcamp-Werbung nennt unter anderem:
+
+    Daten analysieren
+
+    Machine Learning
+
+    AI-Lösungen technisch implementieren
+
+    Ergebnisse evaluieren
+
+    praktisches Abschlussprojekt
+
+Dein Projekt enthält bereits Ansatzpunkte für alle vier Bereiche:
+Bootcamp-Thema	Dein Projekt
+Data	Unit-Zustände
+Data Analysis	getVariable()
+Visualization	Swing Canvas
+Simulation	update()
+Probability	Math.random()
+Interaction	randEntropie4()
+Physics	Position/Geschwindigkeit/Masse
+Evaluation	EKin/Messwerte
+AI	algorithmus
+Final Project	Matrixgame/KI-Game
+
+Der entscheidende Unterschied ist: Dein jetziger Code ist noch keine Machine-Learning-Anwendung. Er ist momentan primär eine regelbasierte, zufallsgetriebene Simulation. Das ist aber eine sehr brauchbare Ausgangsbasis, um später Lernen darüberzusetzen.
+32. Was ich an deinem Ansatz besonders stark finde
+
+Nicht die zufällige Kugelbewegung an sich ist der interessante Teil.
+
+Sondern diese Kombination:
+
+getVariable(String)
+setVariable(String, double)
+
+plus
+
+update()
+
+plus
+
+randEntropie4(Unit other)
+
+plus
+
+weltZuScreen()
+screenZuWelt()
+
+Denn daraus ergeben sich vier fundamentale Mechanismen:
+
+1. Zustand lesen
+2. Zustand verändern
+3. Zustände interagieren lassen
+4. Zustand visualisieren
+
+Das ist bereits eine kleine universelle Simulationsstruktur.
+33. Der nächste große Schritt wäre deshalb nicht „mehr Kugeln“
+
+Sondern Trennung der Verantwortlichkeiten.
+
+Momentan macht MainGame sehr viel:
+
+GUI
+Kamera
+Input
+Simulation
+Scheduler
+Rendering
+Unit-Auswahl
+Interaktion
+
+und Unit macht ebenfalls sehr viel:
+
+Zustand
+Physik
+Entropie
+Interaktion
+Verhalten
+
+Für dein langfristiges System würde ich daraus machen:
+
+MainGame
+   │
+   ├── CanvasRenderer
+   ├── Camera
+   ├── InputController
+   │
+   └── SimulationEngine
+           │
+           ├── WorldState
+           ├── Scheduler
+           ├── PhysicsEngine
+           ├── RuleEngine
+           ├── InteractionEngine
+           ├── MeasurementEngine
+           ├── EvaluationEngine
+           └── AI/AgentEngine
+
+Die Unit wäre dann hauptsächlich:
+
+IDENTITY + STATE
+
+und nicht die gesamte Engine.
+34. Das wäre meiner Meinung nach die richtige Richtung für dein „SVG / Infinite Canvas“
+
+Wenn du irgendwann vom Java-Swing-Canvas zu einem echten skalierbaren Web-Canvas/SVG-System gehst, könntest du dieselbe Welt unabhängig vom Renderer darstellen:
+
+                WORLD MODEL
+                     │
+          ┌──────────┴──────────┐
+          ↓                     ↓
+       Java UI               SVG/Web
+          │                     │
+          ↓                     ↓
+      Desktop               Browser
+          │                     │
+          └──────────┬──────────┘
+                     ↓
+                gleiche Daten
+
+Noch besser:
+
+                    MATRIXGAME CORE
+                         │
+          ┌──────────────┼──────────────┐
+          ↓              ↓              ↓
+         Java           Web           Python
+          │              │              │
+       Renderer       SVG/Canvas      Analysis
+
+Dann wäre die Simulation nicht mehr an Java Swing gebunden.
+35. Meine Gesamtbewertung
+
+Ich würde deinen aktuellen Code ungefähr so einordnen:
+
+Als Physiksimulation:
+Noch experimentell und mathematisch nicht ausreichend sauber für physikalische Aussagen.
+
+Als Programmierprojekt:
+Sehr brauchbarer Prototyp, an dem sich Zustände, Objekte, Interaktionen, Wahrscheinlichkeiten und Visualisierung konkret untersuchen lassen.
+
+Als Matrixgame-Prototyp:
+Deutlich interessanter, weil du bereits eine allgemeine Objekt-/Zustands-/Interaktionsstruktur geschaffen hast.
+
+Als Grundlage für KI:
+Noch kein lernendes KI-System, aber eine gute Simulationsumgebung, auf die Agenten, Ziele, Aktionen, Rewards und Lernverfahren aufgesetzt werden können.
+
+Als Infinite-Canvas-Grundlage:
+Die Welt-/Screen-Transformation und die dynamische Achsenauswahl sind bereits sehr passende Bausteine.
+
+Und der wichtigste nächste Schritt wäre für mich:
+
+    Nicht sofort alles neu schreiben, sondern deinen funktionierenden Prototypen in eine kleine, sauber definierte „Matrixgame Core“-Architektur überführen.
+
+Dann könnte aus deiner jetzigen Kugel
+
+x y z vx vy vz mass EKin ...
+
+schrittweise ein universelles Objektmodell werden, das nicht nur Kugeln, sondern beispielsweise Teilchen, Roboter, Pflanzen, Spieler, Städte, Planeten, Agenten, Spielelemente oder abstrakte mathematische Objekte darstellen kann.
+
+Damit würde dein Infinite Canvas tatsächlich zu dem werden, was du beschreibst: eine gemeinsame visuelle und ausführbare Oberfläche, auf der unterschiedliche Modelle durch dieselbe Grundgrammatik beschrieben, simuliert, gemessen und miteinander verbunden werden können.
+
+heute 17:19
+
+Das klingt alles super gut und ist fast schon mehr Code, als ich hier gleichzeitig aktualisieren und verwalten kann mit dem aktuellen Gravity-Sim, wie er zurzeit ist. Ich bin gerade am Überlegen, wo wir am besten irgendwelche Funktionalitäten einfügen und austauschen und wie wir von hier aus am besten weitermachen und wie wir uns Open Source verknüpfen, wie wir mit gewissen Flusswiderständen umgehen, ob wir sie versuchen in Worte zu fassen, ob wir versuchen in Worte zu fassen, um was es dabei gehen könnte, ob es ums kollektive Bewusstsein oder um Amphetamine oder um beides geht oder um etwas in dieser Art, in dieser Kategorisierung, ob es hier um die Gamification, ob wir bei der Gamifizierung bleiben und nicht über diese Problematik reden und versuchen, die Problematik trotzdem bestmöglich zu lösen. And let me think about it. Das kannst du alles entscheiden. Du kannst es auch gerne alles modellieren. Du kannst auch gerne das Dopamin, Serotonin, Noradrenalin, die ganzen Neurotransmitter und alles, was sich da so logisch herleiten und aufeinander aufbauen und schlussfolgern und immer wieder mit guter geeigneter Didaktik reintegrieren lässt, versuchst weiter auf die Art und Weise einzubauen, wie es gut und passend sein könnte. Viel Erfolg und let's be! Die beiden habe ich eingebaut: public void printWerte() {
+
+	System.***out***.println("System.currentTimeMillis() = "+System.*currentTimeMillis*());
+
+	System.***out***.println("Position x = "+x+" Meter");
+
+	System.***out***.println("Position y = "+y+" Meter");
+
+	System.***out***.println("Position z = "+z+" Meter");
+
+	System.***out***.println("Geschwindigkeit vx = "+vx+" Meter pro Sekunde");
+
+	System.***out***.println("Geschwindigkeit vy = "+vy+" Meter pro Sekunde");
+
+	System.***out***.println("Geschwindigkeit vz = "+vz+" Meter pro Sekunde");
+
+	System.***out***.println("Kinetische Energie = "+getEKin());
+
+	System.***out***.println("Masse = "+mass+" Kilogramm");
+
+// System.out.println("Farbe = "+color);
+
+}
+
+
+
+public void entropieMove() {
+
+	int rand = (int)(Math.*random*()\*8);
+
+	if(rand<2)return;
+
+	if(rand==2)x++;
+
+	if(rand==3)x--;
+
+	if(rand==4)y++;
+
+	if(rand==5)y--;
+
+	if(rand==6)z++;
+
+	if(rand==7)z--;
+
+}
+
+public void entropieMoveRand() {
+
+	int rand = (int)(Math.*random*()\*8);
+
+	if(rand<2)return;
+
+	if(rand==2)x+=Math.*random*();
+
+	if(rand==3)x-=Math.*random*();
+
+	if(rand==4)y+=Math.*random*();
+
+	if(rand==5)y-=Math.*random*();
+
+	if(rand==6)z+=Math.*random*();
+
+	if(rand==7)z-=Math.*random*();
+
+}
+
+double G = 6.6743015e-11;
+
+// Kraft in Newton, die auf beide MasseKugeln wirkt und diese wechselseitig in Richtung des anderen beschleunigt, so das die Gravitationskraft weiter steigt und der Abstand sinkt
+
+public double getGravityKraft(MasseKugel other) {
+
+	double kraft =0;
+
+	double distQ = (other.x-this.x)\*(other.x-this.x)+(other.y-this.y)\*(other.y-this.y)+(other.z-this.z)\*(other.z-this.z);
+
+	kraft= G \* this.mass\*other.mass/distQ;
+
+	return kraft;
+
+}
+
+
+
+public void fressen(MasseKugel kugel2) {
+
+	if(kugel2.leben<=0)fusion(kugel2);
+
+	kugel2.leben-=damage;
+
+}
+
+public void fusion2D(MasseKugel kugel2) {
+
+	double massAlt=mass;
+
+	double massOther=kugel2.mass;
+
+	double massNew=massAlt+massOther;
+
+	mass=massNew;
+
+	maxLeben=maxLeben+massOther\*Math.*random*()/Math.*random*();
+
+	leben=maxLeben;
+
+	damage=damage+massOther\*Math.*random*()/Math.*random*();
+
+	double red = color.getRed()\*massAlt+kugel2.color.getRed()\*massOther;
+
+	double green = color.getGreen()\*massAlt+kugel2.color.getGreen()\*massOther;
+
+	double blue = color.getBlue()\*massAlt+kugel2.color.getBlue()\*massOther;
+
+	red=Math.*round*(red/massNew);
+
+	green=Math.*round*(green/massNew);
+
+	blue=Math.*round*(blue/massNew);
+
+	this.color=new Color((int)red,(int)green,(int)blue);
+
+	double flaecheAlt=this.radius\*this.radius;
+
+	double flaeche2=kugel2.radius\*kugel2.radius;
+
+	double flaechenNeu=flaecheAlt+flaeche2;
+
+	double sizeNeu=Math.*round*(Math.*pow*(flaechenNeu, 1/2.0));
+
+	this.radius=(int)sizeNeu;
+
+	speed=radius\*Math.*random*()\*2;
+
+
+
+
+
+}
+
+public void fusion(MasseKugel kugel2) {
+
+	double massAlt=mass;
+
+	double massOther=kugel2.mass;
+
+	double massNew=massAlt+massOther;
+
+	mass=massNew;
+
+	maxLeben=maxLeben+massOther\*Math.*random*()/Math.*random*();
+
+	leben=maxLeben;
+
+	damage=damage+massOther\*Math.*random*()/Math.*random*();
+
+	double red = color.getRed()\*massAlt+kugel2.color.getRed()\*massOther;
+
+	double green = color.getGreen()\*massAlt+kugel2.color.getGreen()\*massOther;
+
+	double blue = color.getBlue()\*massAlt+kugel2.color.getBlue()\*massOther;
+
+	red=Math.*round*(red/massNew);
+
+	green=Math.*round*(green/massNew);
+
+	blue=Math.*round*(blue/massNew);
+
+	this.color=new Color((int)red,(int)green,(int)blue);
+
+	double volumenAlt=this.radius\*this.radius\*this.radius;
+
+	double volumen2=kugel2.radius\*kugel2.radius\*kugel2.radius;
+
+	double volumenNeu=volumenAlt+volumen2;
+
+	double sizeNeu=Math.*round*(Math.*pow*(volumenNeu, 1/3.0));
+
+	this.radius=(int)sizeNeu;
+
+	speed=radius\*Math.*random*()\*2;
+
+
+
+
+
+}
+
+public void moveTo(MasseKugel oponent) {
+
+double distQ = (this.x - oponent.x) * (this.x - oponent.x)
+
++ (this.y - oponent.y) * (this.y - oponent.y)
+
++ (this.z - oponent.z) * (this.z - oponent.z);
+
+double dist = Math.pow(distQ, 0.5);
+
+double dx=x-oponent.x;
+
+double dy=y-oponent.y;
+
+double dz=z-oponent.z;
+
+double movDist=Math.min(speed, Math.abs(dist-0));
+
+vx=-dx/dist*movDist;
+
+vy=-dy/dist*movDist;
+
+vz=-dz/dist*movDist;
+
+}
+
+public double getDistance(MasseKugel oponent) {
+
+double distQ = (this.x - oponent.y) * (this.x - oponent.x)
+
++ (this.y - oponent.y) * (this.y - oponent.y)
+
++ (this.z - oponent.z) * (this.z - oponent.z);
+
+double dist = Math.pow(distQ, 0.5);
+
+return dist;
+
+}
+
+public MasseKugel teilen() {
+
+	MasseKugel neu=new MasseKugel(x,y,z,vx,vy,vz,Math.*round*(mass\*Math.*random*()),radius);
+
+
+
+	double massAlt=mass;
+
+	double volumenAlt=radius\*radius\*radius;
+
+	double volumenNeu=volumenAlt/mass\*neu.mass;
+
+	double radiusNeu=Math.*pow*(volumenNeu, 1/3.0);
+
+	 mass=mass-neu.mass;
+
+	 double volumenNeu2=volumenAlt/massAlt\*mass;
+
+ 	double radiusNeu2=Math.*pow*(volumenNeu2, 1/3.0);
+
+	radius=(int)Math.*round*(radiusNeu2);
+
+	neu.radius=(int)Math.*round*(radiusNeu);
+
+	double randr=Math.*random*();
+
+	double randg=Math.*random*();
+
+	double randb=Math.*random*();
+
+	int red = (int)Math.*min*(Math.*round*(color.getRed()\*randr\*2), 255);
+
+	int green = (int)Math.*min*(Math.*round*(color.getRed()\*randg\*2), 255);
+
+	int blue = (int)Math.*min*(Math.*round*(color.getRed()\*randb\*2), 255);
+
+	int red2 = (int)Math.*min*(Math.*round*(color.getRed()\*(1-randr)\*2), 255);
+
+	int green2 = (int)Math.*min*(Math.*round*(color.getRed()\*(1-randg)\*2), 255);
+
+	int blue2 = (int)Math.*min*(Math.*round*(color.getRed()\*(1-randb)\*2), 255);
+
+	neu.color=new Color(red,green,blue);
+
+	this.color=new Color(red2,green2,blue2);
+
+	neu.team=neu.color.getRed()\*neu.color.getRed()+neu.color.getGreen()\*neu.color.getGreen()+neu.color.getBlue()\*neu.color.getBlue();
+
+// neu.team=team;
+
+	neu.maxLeben=neu.mass\*Math.*random*()/Math.*random*();
+
+	neu.leben=neu.maxLeben;
+
+	neu.damage=neu.mass\*Math.*random*()/Math.*random*();
+
+
+
+	return(neu);
+
+}
+
+public MasseKugel teilen2D() {
+
+	MasseKugel neu=new MasseKugel(x,y,z,vx,vy,vz,Math.*round*(mass\*Math.*random*()),radius);
+
+
+
+	double massAlt=mass;
+
+	double flaecheAlt=radius\*radius;
+
+	double flaecheNeu=flaecheAlt/mass\*neu.mass;
+
+	double radiusNeu=Math.*pow*(flaecheNeu, 1/2.0);
+
+	 mass=mass-neu.mass;
+
+	 double flaecheNeu2=flaecheAlt/massAlt\*mass;
+
+ 	double radiusNeu2=Math.*pow*(flaecheNeu2, 1/2.0);
+
+	radius=(int)Math.*round*(radiusNeu2);
+
+	neu.radius=(int)Math.*round*(radiusNeu);
+
+	double randr=Math.*random*();
+
+	double randg=Math.*random*();
+
+	double randb=Math.*random*();
+
+	int red = (int)Math.*min*(Math.*round*(color.getRed()\*randr\*2), 255);
+
+	int green = (int)Math.*min*(Math.*round*(color.getRed()\*randg\*2), 255);
+
+	int blue = (int)Math.*min*(Math.*round*(color.getRed()\*randb\*2), 255);
+
+	int red2 = (int)Math.*min*(Math.*round*(color.getRed()\*(1-randr)\*2), 255);
+
+	int green2 = (int)Math.*min*(Math.*round*(color.getRed()\*(1-randg)\*2), 255);
+
+	int blue2 = (int)Math.*min*(Math.*round*(color.getRed()\*(1-randb)\*2), 255);
+
+	neu.color=new Color(red,green,blue);
+
+	this.color=new Color(red2,green2,blue2);
+
+	neu.team=neu.color.getRed()\*neu.color.getRed()+neu.color.getGreen()\*neu.color.getGreen()+neu.color.getBlue()\*neu.color.getBlue();
+
+// neu.team=team;
+
+	neu.maxLeben=neu.mass\*Math.*random*()/Math.*random*();
+
+	neu.leben=neu.maxLeben;
+
+	neu.damage=neu.mass\*Math.*random*()/Math.*random*();
+
+
+
+	return(neu);
+
+} package ordner1; // Beachte: Muss im Ordner p1 liegen!
+
+import javax.swing.;
+import java.awt.;
+import java.util.ArrayList;
+import java.util.List;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.SwingUtilities;
+
+// Ziel: Das Optimieren der Entscheidungsfindung für die Unit Fight Simulationen um definierte Ziele wie das vernichten des gegnerischen Königs durch möglichst effiziente Algorithmen und Entscheidungsfindungen auf allen Ebenen der Matrix Kollektiv zu optimieren und zu Gamifizieren und mit den LLMs und allen weiteren Intelligenzen und Open Source so das alle gewinnen erlernen zu können und zu wollen und weiteres, ich hoffe sehr auf menschiche Unterstützung und Fusion von Projekten wie diesem und weiteren
+// Mein Facebook: https://www.facebook.com/andreas.schneider.7393264
+
+/*
+
+    Elementare Massen
+    Teilchenphysik für das Matrixgame und die Kollektiven Ki-Games
+    07.02.2026 Andreas Schneider, Deutschland, Darmstadt-Eberstadt, Weingartenstraße 45
+
+Nukleonen
+Teilchen, Typ, “Masse in kg”
+Proton, Nukleon, "≈1,67262192595×10−27 kg"
+Neutron (n), Nukleon, "≈1,67493×10−27 kg"
+
+Quarks
+Teilchen,Typ,”Masse in kg (ca.)”, ‘Ladung’
+Up-Quark(u),Quark,"3,9×10^−30 kg", ‘+2/3e’
+Down-Quark(d),Quark,"8,4×10^−30 kg", ‘-1/3e’
+Strange-Quark(s),Quark,"1,7×10^−28 kg", ‘-1/3e’
+Charm-Quark(c),Quark,"2,3×10^−27 kg", ‘+2/3e’
+Bottom-Quark(b),Quark,"7,5×10^−27 kg", ‘-1/3e’
+Top-Quark(t),Quark,"3,1×10^−25 kg", ‘+2/3e’
+
+Leptonen
+Masse Elektron (me​): 9,1093837139×10−31 kg
+
+Rishonen-Modell
+https://de.wikipedia.org/wiki/Rishonen-Modell
+Im Rishonen-Modell gibt es zwei fundamentale Fermionen, die Rishonen genannt werden. Rishon bedeutet auf Hebräisch „primär“ oder „ursprünglich“. Diese zwei Rishonen sind das T oder Tohu Rishon mit drittelzahliger positiver elektrischer Elementarladung +⅓ e und das V oder Vohu Rishon, das elektrisch neutral ist. Die Namen Tohu (ungeformt, „wüst“) und Vohu (Bohu), Leere, stammen aus der hebräischen Genesis (siehe Tohuwabohu).[6]
+Alle Leptonen und alle Quarks bestehen aus drei Rishonen. Diese Gruppen von Triplets haben Spin-½. Es gibt folgende Kombinationen:
+TTT = Positron (Antielektron);
+VVV = Elektron-Neutrino;
+TTV, TVT und VTT = Up-Quark (mit drei Farben);
+TVV, VTV und VVT = Down-Antiquark (mit drei Farben).
+Zu jedem Rishon gibt es das zugehörige Antiteilchen. Daraus folgen:
+TTT = Elektron;
+VVV = Elektron-Antineutrino;
+TTV, TVT, VTT = Up-Antiquark (mit drei Farben);
+TVV, VTV, VVT = Down-Quark (mit drei Farben).
+Es dürfen dabei keine Rishonen zusammen mit Antirishonen auftauchen.
+Das W+ boson = TTTVVV; Das W− boson = TTTVVV.
+Baryonenzahl (B) und Leptonenzahl (L) werden nicht erhalten, aber die Größe B−L ist eine Erhaltungsgröße. Ein die Baryonenzahl verändernder Prozess (wie der Protonenzerfall) in diesem Modell wäre:
+u + u → d + e+
+/|\ /|\ /|\ /|
+TTV + TTV → TVV + TTT
+
+*/
+
+// MassePunkte aus 8 oder 27 oder weiteren Teilmassen dastellen und beschreiben und berechnen und mehr
+
+public class MainGame extends JPanel {
+
+// Die Unit List als Basis für den GameLoop
+public List<Unit> unitList = new ArrayList<>();
+
+// --- Panalgrößen ---
+int FRAME_WIDTH = 1920;
+int FRAME_HEIGHT = 1080;
+
+// --- Zoom-Variablen ---
+double zoomFactor = 1.0;
+
+double zoomCenterX = 0;
+double zoomCenterY = 0;
+static final double ZOOM_STEP = 1.2; // Feinheit beim Zoomen
+
+double feinheit = 50;
+double PAN_STEP = feinheit * zoomFactor; // Verschiebung pro Button-Klick
+
+// --- Konstruktor --- init1
+public MainGame() {
+	// Canvas mit schwarzem Hintergrund erstellen
+	setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+	setBackground(Color.BLACK);
+
+	MouseAdapter mouseHandler = new MouseAdapter() {
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// 1. Linksklick: Einheiten selektieren
+			if (SwingUtilities.isLeftMouseButton(e)) {
+				int mouseX = e.getX();
+				int mouseY = e.getY();
+				boolean unitFound = false;
+
+				for (Unit u : unitList) {
+					double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0;
+					double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0;
+					double radius = Math.abs(u.size);
+
+					if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) {
+						boolean b1,b2 = false,b3;
+						if(u.isSelected) {if(b2)u.algoChar++;    b2=true; u.printWerte();}
+						u.isSelected = true;
+						System.out.println("Unit " + u.id + " Wurde vom Spieler ausgewählt");
+						unitFound = true;
+					} else if (!e.isShiftDown()) {
+						u.isSelected = false;
+					}
+				}
+
+				if (!unitFound && !e.isShiftDown()) {
+					for (Unit u : unitList) {
+						u.isSelected = false;
+					}
+				}
+				repaint();
+			}
+			// 2. Rechtsklick: Befehle an ausgewählte Einheiten verteilen
+			// 2. Rechtsklick: Befehle an ausgewählte Einheiten verteilen
+			else if (SwingUtilities.isRightMouseButton(e)) {// 2. Rechtsklick: Befehle an ausgewählte Einheiten
+															// verteilen
+
+				int mouseX = e.getX();
+				int mouseY = e.getY();
+
+				// KORRIGIERTE MATHEMATISCHE INVERSION: Screen -> World
+				double worldTargetX = (mouseX - getWidth() / 2.0) / zoomFactor - zoomCenterX;
+				double worldTargetY = (mouseY - getHeight() / 2.0) / zoomFactor - zoomCenterY;
+
+				System.out.println("--- Befehlsausgabe (Rechtsklick) ---");
+				System.out.println("Maus Screen-X: " + mouseX + " | Screen-Y: " + mouseY);
+				System.out.println("Berechnete Welt-X: " + worldTargetX + " | Welt-Y: " + worldTargetY);
+
+				Unit clickedEnemy = null;
+				for (Unit u : unitList) {
+					// Hier bleibt die World -> Screen Transformation korrekt,
+					// da wir prüfen, wo die Einheit auf dem Bildschirm gerendert wird.
+					double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0;
+					double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0;
+					double radius = Math.abs(u.size);
+
+					if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) {
+						clickedEnemy = u;
+						System.out.println("Gegnerische Einheit für Angriff anvisiert: ID " + u.id);
+						break;
+					}
+				}
+
+				for (Unit u : unitList) {
+					if (u.isSelected) {
+						if (clickedEnemy != null) {
+							// Angriffsbefehl
+							u.manualTarget = clickedEnemy;
+							u.targetPosX = null;
+							u.targetPosY = null;
+							u.decisionAlgorithm = "TARGET_ENEMY";
+						} else {
+							// Bewegungs-Befehl
+							u.targetPosX = worldTargetX;
+							u.targetPosY = worldTargetY;
+							u.manualTarget = null;
+							u.decisionAlgorithm = "TARGET_POINT";
+							System.out.println("Einheit ID " + u.id + " bewegt sich zu Zielpunkt.");
+						}
+					}
+				}
+				repaint();
+			}
+		}
+	};
+
+	this.addMouseListener(mouseHandler);
+	this.addMouseMotionListener(mouseHandler);
+}
+
+// Init Methode zum Füllen der UnitList
+public void init() {
+	unitList.clear(); // Wichtig: Altes Aufräumen
+	java.util.Random rand = new java.util.Random(12345); // Fester Seed = Immer gleiches Match
+
+	int unitsPerTeam = 1;
+	double counterId = 0;
+
+for(int j=0; j<50; j++) {
+
+	for (int i = 0; i < 50; i++) {
+		// 1. Stats WÜRFELN (Aber kontrolliert! Keine Division durch 0)
+
+// double hp = 1;
+// double dmg = 1;
+// double spd =3Math.random();
+// double rng = 3Math.random(); ;
+// double attackSpeed=1;
+// double kritChance=0.25;
+// double geschicklichkeit=1;
+// double currentDefense=1;
+// double moveSpeed=3*Math.random();;
+
+		// --- TEAM 1 (Blau) ---
+		Unit u1 = new Unit();
+		
+		u1.typ = "Unit";
+		
+
+// u1.decisionAlgorithm="return";
+// u1.size=u1.getRandChar()/u1.getRandChar();
+u1.geschicklichkeit=100;
+u1.maxSpeed=100;
+u1.moveSpeed=100;
+
+// if(i==0) {u1.typ="King";u1.size+=5;}
+
+		u1.decisionAlgorithm="Player";
+		u1.team=j;
+		
+		u1.currentTime=System.currentTimeMillis();
+		u1.timeBefore=System.currentTimeMillis();
+		u1.red= u1.team*20; u1.green=u1.team*30; u1.blue=255-u1.team*7;//Es ist hier einfach schlecht wie der Compiler einem Damage für kleine Fehler zu genetrieren scheint und es halt alles nicht mehr ausführen kann so
+		
+		u1.posX = Math.random()*20 + 200*j;
+		u1.posY = Math.random()*20 + 200*i;
+		u1.posZ = Math.random() * 100;
+		u1.posXBefore=u1.posX;
+		u1.posYBefore=u1.posY;
+		u1.posZBefore=u1.posZ;
+		u1.maxLeben = Math.random()/Math.random()*5;
+		u1.leben = u1.maxLeben;
+		u1.damage = Math.random()/Math.random();;
+		u1.attackSpeed=Math.random()/Math.random();
+		u1.moveSpeed=8*Math.random()/Math.random();
+		u1.kritchance=0.2;
+		u1.maxSpeed = 3*Math.random()/Math.random()*5;
+		u1.reichweite = 3*Math.random()/Math.random()*8;
+		u1.geschicklichkeit=Math.random()/Math.random()*8;
+		u1.currentDefense=Math.random()/Math.random();
+		u1.decisionAlgorithm = "Wait"; // <--- HIER: Taktik A
+		u1.red = 0;
+		u1.green = 0;
+		u1.blue = 255;
+		u1.getRandColor();
+		u1.choseRandColorTeam();
+		u1.id = counterId++;
+		u1.printWerte();
+		unitList.add(u1);}}
+
+	for (int i = 0; i < 0; i++) {
+		// --- TEAM 2 (Rot) - EXAKTE KOPIE, NUR Y GESPIEGELT ---
+		Unit u2 = new Unit();
+		u2.team = 2;
+		u2.decisionAlgorithm="BotUpdate";
+		u2.typ = "Unit";
+		if(i==0) {u2.typ="King";u2.size+=5;}
+		
+		u2.currentTime=System.currentTimeMillis();
+		u2.timeBefore=System.currentTimeMillis();
+		u2.posX = Math.random() *10-200;
+		u2.posY = -Math.random() * 200;
+		u2.posZ = Math.random() * 80;// Spiegelung an der X-Achse
+		u2.posXBefore=u2.posX;
+		u2.posYBefore=u2.posY;
+		u2.posZBefore=u2.posZ;
+		u2.maxLeben = Math.random()/Math.random()*5;;
+		u2.leben = Math.random()/Math.random()*5;; // Exakt gleiche HP!
+		u2.damage = Math.random()/Math.random()*5;;
+		u2.attackSpeed=Math.random()/Math.random()*5;;
+		u2.moveSpeed=Math.random()/Math.random()*5;;
+		u2.kritchance=0.2;
+		u2.currentDefense=Math.random()/Math.random()*5;
+		u2.geschicklichkeit=Math.random()/Math.random()*5;
+		u2.maxSpeed = Math.random()/Math.random()*5;
+		u2.reichweite =Math.random()/Math.random()*5;
+		u2.decisionAlgorithm = "WAIT"; // <--- HIER: Taktik B
+		u2.red = 255;
+		u2.green = 0;
+		u2.blue = 0;
+		u2.id = counterId++;
+		u2.printWerte();
+		unitList.add(u2);
+	}
+
+// // Könige exakt gespiegelt spawnen
+// Unit king1 = new Unit();
+// king1.typ = "King";
+// king1.size = 15;
+// king1.team = 1;
+// king1.posX = Math.random() + 20;
+// king1.posY = Math.random() + 20;
+// king1.posZ = Math.random() * 0;
+// king1.posXBefore=king1.posX;
+// king1.posYBefore=king1.posY;
+// king1.posZBefore=king1.posZ;
+// king1.posY = 20;
+// king1.maxLeben = 1;
+// king1.leben = king1.maxLeben;
+// king1.damage =1;
+// king1.attackSpeed=1;
+// king1.moveSpeed=1;
+// king1.kritchance=0.25;
+// king1.maxSpeed =1; ;
+// king1.reichweite = 1;
+// king1.currentDefense=1;
+// king1.geschicklichkeit=1;
+// king1.id = counterId++;
+// king1.grid = false;
+// king1.red = 0;
+// king1.green = 0;
+// king1.blue = 255;
+// king1.decisionAlgorithm = "NEAREST_ENEMY";
+// king1.printWerte();
+// unitList.add(king1);
+//
+// Unit king2 = new Unit();
+// king2.typ = "King";
+// king2.size = 15;
+// king2.team = 2;
+// king2.posX = Math.random() *10+200;
+// king2.posY = -Math.random() * 20;
+// king2.posZ = Math.random() * 80;// Spie
+// king2.posXBefore=king2.posX;
+// king2.posYBefore=king2.posY;
+// king2.posZBefore=king2.posZ;
+// king2.maxLeben = 1;
+// king2.leben = king2.maxLeben;
+// king2.damage =1;
+// king2.kritchance=0.25;
+// king2.attackSpeed=1;
+// king2.moveSpeed=1;
+// king2.currentDefense=1;
+// king2.geschicklichkeit=1;
+// king2.maxSpeed = 1;
+// king2.reichweite = 1;
+// king2.id = counterId++;
+// king2.grid = false;
+// king2.red = 255;
+// king2.green = 0;
+// king2.blue = 0;
+// king2.printWerte();
+// king2.decisionAlgorithm = "NEAREST_ENEMY";
+// unitList.add(king2);
+
+	repaint();
+}
+
+// --- Pan-Methoden ---
+public void panLeft() {
+	zoomCenterX += PAN_STEP;
+	repaint();
+}
+
+public void panRight() {
+	zoomCenterX -= PAN_STEP;
+	repaint();
+}
+
+public void panUp() {
+	zoomCenterY += PAN_STEP;
+	repaint();
+}
+
+public void panDown() {
+	zoomCenterY -= PAN_STEP;
+	repaint();
+}
+
+// Gelogene Methode
+@Override
+protected void paintComponent(Graphics g) {
+	super.paintComponent(g);
+	Graphics2D g2 = (Graphics2D) g;
+	g2.setColor(Color.BLACK);
+	g2.fillRect(0, 0, getWidth(), getHeight());
+
+	// Loop für alle Units aus UnitList
+	for (int i = 0; i < unitList.size(); i++) {
+		Unit unit = unitList.get(i);
+		if (unit.leben <= 0)
+			continue;
+		double radius = unit.size;
+		Color color = new Color((int) (unit.red), (int) (unit.green), (int) (unit.blue));
+		double posX = unit.posX;
+		double posY = unit.posY;
+		// Berücksichtige Pan und Zoom bei der Positionierung
+		double sx = (zoomCenterX + posX) * zoomFactor + getWidth() / 2.0;
+		double sy = (zoomCenterY + posY) * zoomFactor + getHeight() / 2.0;
+
+// int r = (int) Math.max(body.radius * zoomFactor, MIN_RADIUS_DRAW);
+g2.setColor(color);
+g2.fillOval((int) (sx - radius), (int) (sy - radius), (int) (radius * 2), (int) (radius * 2));
+// Innerhalb von paintComponent(Graphics g) in der for-Schleife:
+if (unit.isSelected) {
+g2.setColor(Color.WHITE);
+// Einen etwas größeren Ring um die Unit zeichnen
+g2.drawOval((int) (sx - radius - 2), (int) (sy - radius - 2), (int) (radius * 2 + 4),
+(int) (radius * 2 + 4));
+}
+
+	}
+}
+
+// Zoom-Funktionen
+public void zoomIn() {
+	zoomFactor *= ZOOM_STEP;
+	PAN_STEP = feinheit / zoomFactor;
+	repaint();
+}
+
+public void zoomOut() {
+	zoomFactor /= ZOOM_STEP;
+	PAN_STEP = feinheit / zoomFactor;
+	repaint();
+}
+
+long pasueTime = 10;
+long kompletteRechenzeitDerSimulation = 0;
+double avgRechenzeitProUnitProEinheitenZug = 0;
+double count = 0;
+
+public void gameLoop() {
+	while (true) {
+		repaint();
+
+		if (unitList.isEmpty())
+			break; // Sicherheitscheck
+
+		int randNumber = (int) (unitList.size() * Math.random());
+		Unit current = unitList.get(randNumber);
+
+		if (current.leben <= 0) {
+			if (current.typ != null && current.typ.equals("King")) {
+				System.out.println("--- GAME OVER ---");
+				System.out.println("Der König von Team " + current.team + " wurde vernichtet!");
+				System.out.println("Das andere Team hat gewonnen!");
+				return;
+			} else {
+				continue; // Tote Unit überspringen
+			}
+		}
+
+		current.leben *= 1.1;
+		if (current.leben > current.maxLeben)
+			current.leben = current.maxLeben;
+		current.currentDefense = current.defenseProTurn;
+
+		// --- 🚀 OPTIMIERUNG: DYNAMISCHES LOAD-BALANCING (SKIP LOGIC) ---
+		// Wir warten bis count > 50, damit sich der Durchschnitt erst mal einpendelt.
+		// Wenn eine Unit 50% mehr Zeit braucht als der Durchschnitt, wird sie mit 50%
+		// Wahrscheinlichkeit diesen Tick "übersprungen".
+		// Das spart CPU und simuliert z.B. "langsamere Reaktionszeiten" bei komplexen
+		// Einheiten.
+
+		double zugChance = avgRechenzeitProUnitProEinheitenZug / current.rechenzeitProZug;
+
+		if (Math.random() > zugChance) {
+			continue; // Skip! Die Unit behält ihren aktuellen Bewegungswert (vx, vy) bei.
+		}
+
+		// current.printWerte(); // TIPP: Für maximale Performance später
+		// auskommentieren!
+
+		long startTime = System.nanoTime();
+		count++;
+
+		// --- ENTSCHEIDUNGSLOGIK ---
+		if ("TARGET_POINT".equals(current.decisionAlgorithm) && current.targetPosX != null
+				&& current.targetPosY != null) {
+
+			current.moveTo(current.targetPosX, current.targetPosY, current.posZ, current.maxSpeed);
+			double distToTarget = current.getDistanceTo(current.targetPosX, current.targetPosY, current.posZ);
+			if (distToTarget < 1.5) {
+				current.decisionAlgorithm = "NEAREST_ENEMY";
+				current.targetPosX = null;
+				current.targetPosY = null;
+			}
+		} else if ("TARGET_ENEMY".equals(current.decisionAlgorithm) && current.manualTarget != null) {
+			if (current.manualTarget.leben <= 0) {
+				current.decisionAlgorithm = "NEAREST_ENEMY";
+				current.manualTarget = null;
+			} else {
+				current.target = current.manualTarget;
+				if (current.getDistance(current.target) <= current.reichweite) {
+					current.attackieren(current.target);
+				} else {
+					current.moveTo(current.target);
+				}
+			}
+		} else 
+
+			//////
+			// Standard KI
+			if (current.target == null || current.target.leben <= 0) {
+				current.target = nextGegner(current);
+			}
+			if (current.getDistance(current.target) > current.reichweite + current.maxSpeed)
+				current.target = nextGegner(current);
+			
+			
+			
+			
+			// Es könnte hier ja auch mit der Farbe oder dem Team zusammenhängen was passiert und was in der Update wie interagiert
+			
+			
+			if(current.team!=444)current.update();
+			
+			
+			
+			
+
+			if (current.target.typ != null && current.target.typ.equals("King") && current.target.leben <= 0) {
+				System.out.println("Der König von Team " + current.target.team + " wurde vernichtet!");
+				System.out.println("Team " + current.team + " hat gewonnen!");
+				return;
+			}
+
+		
+
+		long endTime = System.nanoTime();
+		long zugZeit = endTime - startTime;
+
+		// Zeitmessung speichern (Gleitender Durchschnitt für stabile Werte)
+		current.rechenzeitProZug = (current.rechenzeitProZug * 0.8) + (zugZeit * 0.2);
+		current.kompletteRechenzeitInSimulation += zugZeit;
+		kompletteRechenzeitDerSimulation += zugZeit;
+		avgRechenzeitProUnitProEinheitenZug = kompletteRechenzeitDerSimulation / count;
+
+		// NEU: Kurze Pause (16ms = ca. 60 FPS Update-Rate für die Logik)
+		try {
+			Thread.sleep(pasueTime);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+public Unit nextGegner(Unit current) {
+	Unit gegner = null;
+	double min = 999999999;
+	for (Unit ziel : unitList) {
+		if (current.getDistance(ziel) < min && current.team != ziel.team && ziel.leben > 0) {
+			min = current.getDistance(ziel);
+			gegner = ziel;
+		}
+	}
+	return gegner;
+}
+
+// --- Korrigierte Hauptmethode ---
+// --- Korrigierte Hauptmethode ---
+public static void main(String[] args) {
+	
+	double elektronenMasse= 9.1093837139 *Math.pow(10, -31); //kg
+	System.out.println("ElektronenMasse = "+elektronenMasse+" kg");
+
+	
+	
+	SwingUtilities.invokeLater(() -> {
+		JFrame frame = new JFrame("N-Body Sonnensystem-Simulation (QDBV-Modul)");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// 1. Zentrale Instanz erzeugen und initialisieren
+		MainGame simPanel = new MainGame();
+		simPanel.init();
+
+		frame.setLayout(new BorderLayout());
+		frame.add(simPanel, BorderLayout.CENTER);
+
+		// 2. Control-Panel und Buttons
+		JButton zoomIn = new JButton("Zoom In");
+		JButton zoomOut = new JButton("Zoom Out");
+		JButton speedUp = new JButton("Speed Up");
+		JButton speedDown = new JButton("Speed Down");
+		JButton panLeft = new JButton("← Links");
+		JButton panRight = new JButton("Rechts →");
+		JButton panUp = new JButton("↑ Hoch");
+		JButton panDown = new JButton("↓ Runter");   // Hier sind Button Beschriftungen
+
+		zoomIn.addActionListener(e -> simPanel.zoomIn());           // Hier sind funktionen für diese und womöglich wird dem Button hier eine Funktion zu gewiesen. In diesem Fall würde sich auch etwas ausgeben lassen in der Konsole um das zu testen bb es leicht ist oder schwerer
+		zoomOut.addActionListener(e -> simPanel.zoomOut());
+		panLeft.addActionListener(e -> simPanel.panLeft());
+		panRight.addActionListener(e -> simPanel.panRight());
+		panUp.addActionListener(e -> simPanel.panUp());
+		panDown.addActionListener(e -> simPanel.panDown());
+		
+		
+
+// funktionsAufruf im Canvas, der jedes Mal andere oder eine bestimmten funktion aus dem Java Code im Canvas zu Laufzeit ausführbar macht.
+// Ziel wäre es die Units bessr zu steuern und erst einmal zwischen Entscheidungsalgorithmen wechseln zu können
+
+// panDown.addActionListener(e -> simPanel.helloUniverseFunktion());
+
+		JPanel control = new JPanel();
+		control.add(zoomIn);
+		control.add(zoomOut);
+		control.add(speedUp);
+		control.add(speedDown);
+		control.add(panLeft);
+		control.add(panRight);
+		control.add(panUp);
+		control.add(panDown);
+
+		frame.add(control, BorderLayout.NORTH);
+		frame.setSize(1920, 1080);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+
+		// 3. SYNCHRONISATIONS-FIX: Den Loop strikt entkoppeln
+		Thread gameThread = new Thread(() -> {
+			simPanel.gameLoop();
+		});
+		gameThread.start();
+	});
+}
+
+// Da ich hier offensichtlich draußen aus den Methoden bi hier erst einmal ein test der Buttons
+public void helloUniverseFunktion() {
+	System.out.println("Hello Universe");
+	System.out.println("Hello Universe");
+	System.out.println("Hello Universe");
+	System.out.println("Hello Universe");
+}
+
+
+} Bei den MasseKugeln die physikalische eigenschafen wie hauptsächlich die Gravitaionskraft und allem was sich hier compilieren lassen kann. Womöglich können wir an den Stellen wo das canvas und die update schleife in java eben zu langsam sein könnte und es etwas ausmacht, gezielt mehre Zeitschritte für alles relevante ausführen und die Zeit in der Simmulation wenn nötig verlangsamen um die Gravitationskraft und die Wechselwirkungen von MesseZentren im Raum relativ zu einander so präzise wie möglich und auch schnell und gut trainierbar und lernbar und lehrbar und für das Matrixgame und die Kollektiven KI-Games und die Erkenntnisnetzwerke der Unendlichkeit programmieren und hier den ersten gezielten Versuch einer tieferen Optimierung mit Zeitschritten für den Loop der Simulation die das potentiall haben wie zuvor die extrem präzisen double Variablen für diese Anwendung noch besser uund präziser rechnen zu können was iiich rechnen möchte basierend auf Computertechnik, Internet, Sprachmodellen, Open Source und Wissenschaft und Newton sagte er habe auf den Schultern von Riesen gesstanden und deshalb weiter sehen können als andere. Las uns sehen was wir kollektiv gutes und vieleicht gamifizierendes machen können. Was hältst du von einr einer Entwicklung iin richtung chach , Tak, Go Strategie Brettspiele um zielführende Entscheidungen für richtige oder schlechte Züge und sehr viele Szenarien kollektiv hofendluich immer besser und schöner und motiverter und geeigneter Spielen und integreiren und trainieren und für alle zu Molleieren und Nutzbar und analysierbar zu machen so wie open source und denke an Ludii und an den MinMax und Max Max und weitere Algorithmen und Kollektive hier zu und Visionen die alle wertvoll und gut sein könne wie es gesucht und bleiben sollte dankebesser und wiederkehren möglicheiten prüfend und mehr viel erfolg, lets be
+
+Ja — und ich glaube, jetzt ist ein sehr guter Zeitpunkt, nicht noch mehr einzelne Funktionen in Unit hineinzuschreiben, sondern aus deinem jetzigen Gravity-Sim schrittweise eine kleine experimentelle Simulations- und Spieleplattform zu machen.
+
+Der entscheidende Gedanke wäre:
+
+    Physik, Spielregeln und Entscheidungsintelligenz werden unterschiedliche Ebenen, die über gemeinsame Zustände und Aktionen miteinander verbunden sind.
+
+Damit können deine Massekugeln weiterhin Newton rechnen, während dieselbe Infrastruktur später Schach, Tak, Go, Evolution, Bots oder LLM-Agenten tragen kann.
+1. Deine beiden neuen Funktionen sind bereits ein wichtiger Schritt
+
+printWerte() ist mehr als Debugging. Es ist eine primitive Messschnittstelle:
+
+Zeit
+Position
+Geschwindigkeit
+kinetische Energie
+Masse
+
+Das ist genau die Richtung, die wir brauchen:
+
+Simulation
+   ↓
+Zustand
+   ↓
+Messung
+   ↓
+Entscheidung
+   ↓
+Aktion
+   ↓
+neuer Zustand
+
+entropieMove() und entropieMoveRand() würde ich dagegen zunächst nicht als echte physikalische Entropie bezeichnen. Sie sind momentan besser als:
+
+stochasticPerturbation()
+
+bzw.
+
+randomWalk()
+
+zu verstehen.
+
+Das ist didaktisch sogar wertvoll: Wir können später sauber unterscheiden zwischen
+
+    deterministischer Newton-Physik,
+
+    numerischem Fehler,
+
+    Zufallsprozess,
+
+    kontrollierter Störung,
+
+    thermischem Modell,
+
+    Entropiemodell.
+
+So bleibt das System wissenschaftlich überprüfbar.
+2. Eine wichtige Sache würde ich jetzt sofort korrigieren
+
+In deinem Code steckt hier ein echter Fehler:
+
+double distQ = (this.x - oponent.y) * (this.x - oponent.x)
+
+Das erste oponent.y muss sehr wahrscheinlich
+
+oponent.x
+
+sein.
+
+Also:
+
+public double getDistance(MasseKugel opponent) {
+
+    double dx = this.x - opponent.x;
+    double dy = this.y - opponent.y;
+    double dz = this.z - opponent.z;
+
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}
+
+Das ist ein schönes Beispiel dafür, warum deine Idee „kompilierbare Aussagen als überprüfbare Aussagen“ so stark ist: Der Compiler findet syntaktische Fehler, aber mathematische Fehler können wir zusätzlich durch Tests entdecken.
+3. Auch deine Gravitation braucht eine kleine Sicherheitsarchitektur
+
+Momentan:
+
+kraft = G * this.mass * other.mass / distQ;
+
+Wenn zwei Kugeln exakt auf derselben Position liegen:
+
+distQ = 0
+
+und du bekommst eine Division durch null.
+
+Besser zunächst:
+
+public double getGravityKraft(MasseKugel other) {
+
+    double dx = other.x - this.x;
+    double dy = other.y - this.y;
+    double dz = other.z - this.z;
+
+    double distQ = dx * dx + dy * dy + dz * dz;
+
+    if (distQ < 1e-20) {
+        return 0.0;
+    }
+
+    return G * this.mass * other.mass / distQ;
+}
+
+Noch wichtiger ist aber:
+
+Die Kraft allein bewegt noch nichts.
+
+Wir brauchen:
+
+F = G m1 m2 / r²
+F = m a
+a = F / m
+
+und daraus numerische Integration.
+4. Genau hier würde ich deine Idee mit den Zeitschritten einsetzen
+
+Das ist meiner Meinung nach der beste nächste große Schritt.
+
+Nicht:
+
+gameLoop()
+    -> Unit.update()
+
+sondern konzeptionell:
+
+Render-Frame
+     │
+     ├── Simulation Step
+     ├── Simulation Step
+     ├── Simulation Step
+     ├── Simulation Step
+     └── ...
+
+Beispielsweise:
+
+double dt = 0.001;
+int subSteps = 10;
+
+Dann:
+
+for (int step = 0; step < subSteps; step++) {
+    physicsStep(dt);
+}
+
+Der Bildschirm muss deshalb nicht zehnmal gezeichnet werden.
+
+Das ist ein ganz wichtiger Unterschied:
+
+PHYSIK:
+1000 Schritte
+
+RENDERING:
+60 Bilder
+
+Damit können wir eine wesentlich feinere Simulationszeit verwenden, ohne Swing für jeden einzelnen Mikroschritt zeichnen zu lassen.
+5. Ich würde sogar drei Zeiten unterscheiden
+
+Das könnte ein fundamentaler Bestandteil deines späteren Matrixgames werden:
+
+Wall Clock Time
+        │
+        ▼
+Simulation Time
+        │
+        ▼
+Decision Time
+
+Zum Beispiel:
+
+double dtPhysics = 0.001;
+int physicsStepsPerDecision = 10;
+
+Dann kann eine Unit beispielsweise nur alle 10 Physikschritte entscheiden:
+
+t=0.000  Physik
+t=0.001  Physik
+t=0.002  Physik
+...
+t=0.009  Physik
+t=0.010  Entscheidung
+
+Das eröffnet später unglaublich viel:
+
+    schnelle Physik,
+
+    langsame KI,
+
+    Echtzeit,
+
+    Zeitlupe,
+
+    Training,
+
+    Replay,
+
+    deterministische Experimente.
+
+6. Und genau dort entsteht die Brücke zu Schach, Tak und Go
+
+Das Faszinierende ist:
+
+Bei einer Massekugel ist der Zustand beispielsweise:
+
+Position
+Geschwindigkeit
+Masse
+Energie
+Leben
+Ziel
+Team
+
+Bei Go:
+
+Brett
+Steine
+Spieler
+Zugrecht
+Gebiet
+
+Bei Schach:
+
+Brett
+Figuren
+Positionen
+Spieler
+Rochaderechte
+etc.
+
+Bei Tak:
+
+Brett
+Steine
+Stacks
+Spieler
+Zugrecht
+
+Aber die abstrakte Struktur ist tatsächlich sehr ähnlich:
+
+STATE
+  ↓
+LEGAL ACTIONS
+  ↓
+ACTION
+  ↓
+TRANSITION
+  ↓
+NEW STATE
+  ↓
+EVALUATION
+
+Und das ist meiner Meinung nach der eigentliche Kern deines Matrixgame-Konzepts.
+7. Wir sollten deshalb nicht „Schach in den Gravity-Simulator einbauen“
+
+Das wäre architektonisch der falsche Weg.
+
+Stattdessen:
+
+                 MATRIXGAME CORE
+                       │
+          ┌────────────┼────────────┐
+          │            │            │
+       Physics       Board        Agents
+          │            │            │
+       Gravity       Chess        Minimax
+       N-Body          Go          MaxN
+       Biology        Tak        MCTS
+          │            │            │
+          └────────────┼────────────┘
+                       │
+                   Evaluation
+                       │
+                  Learning/Data
+
+Dann wird dein Gravity-Simulator ein Modul.
+
+Schach wird ein Modul.
+
+Tak wird ein Modul.
+
+Go wird ein Modul.
+
+Und ein LLM-Agent wird ebenfalls ein Modul.
+8. Minimax passt dort hervorragend hinein
+
+Für ein Zwei-Spieler-Spiel:
+
+             ROOT
+          /   |   \
+        A     B     C
+       /|\   /|\   /|\
+      ...   ...   ...
+
+Der Algorithmus fragt:
+
+    „Wenn ich diesen Zug mache, welche Antwort ist für meinen Gegner am besten und wie gut ist danach meine beste Antwort?“
+
+Formal ungefähr:
+
+MAX
+ │
+ ├── MIN
+ │    ├── MAX
+ │    ├── MAX
+ │    └── MAX
+ │
+ ├── MIN
+ │
+ └── MIN
+
+Und deine Matrixgame-Idee kann daraus einen universellen Decision Graph machen.
+9. Max^n ist für deine Vision sogar noch interessanter
+
+Minimax ist primär für:
+
+Spieler A
+gegen
+Spieler B
+
+Aber deine „kollektive“ Idee geht weiter.
+
+Bei drei oder vier Agenten kann man beispielsweise Zustände als Nutzenvektoren betrachten:
+
+A: +5
+B: +2
+C: -1
+
+statt nur:
+
++5 / -5
+
+Damit kommen wir zu:
+
+MAX^N
+
+und später zu kooperativen Spielen:
+
+Agent A
+Agent B
+Agent C
+Agent D
+
+       ↓
+
+gemeinsames Ziel
+
+Das ist eine wesentlich bessere mathematische Grundlage für „kollektive KI“ als einfach überall einen einzelnen globalen Score hineinzuschreiben.
+10. Und dann kommt Ludii ins Spiel
+
+Ludii ist für deine Idee besonders interessant, weil es gerade die Richtung verfolgt, Spiele über allgemeine Spielstrukturen und Regeln zu beschreiben, statt jedes Brettspiel vollständig individuell zu programmieren.
+
+Das sollten wir nicht kopieren.
+
+Wir können aber die Architekturidee übernehmen:
+
+Game
+ ├── State
+ ├── Rules
+ ├── Actions
+ ├── Players
+ ├── Moves
+ └── End Conditions
+
+Deine Physik erweitert das dann um:
+
+Space
+Time
+Mass
+Force
+Energy
+Field
+Causality
+Measurement
+
+Damit hätten wir tatsächlich eine gemeinsame Sprache für sehr unterschiedliche Modelle.
+11. Eine mögliche gemeinsame Matrixgame-Schnittstelle
+
+Ich würde langfristig ungefähr auf so etwas hinauswollen:
+
+public interface MatrixModel {
+
+    State getState();
+
+    List<Action> getLegalActions();
+
+    State simulate(Action action);
+
+    double evaluate(State state);
+
+    boolean isTerminal(State state);
+}
+
+Und dann:
+
+class ChessModel implements MatrixModel
+class GoModel implements MatrixModel
+class TakModel implements MatrixModel
+class GravityModel implements MatrixModel
+
+Das Entscheidende:
+
+Minimax muss nicht wissen, dass es Schach ist.
+
+Es sieht nur:
+
+State
+Actions
+Transition
+Evaluation
+Terminal
+
+Und genau dadurch wird dein Open-Source-Gedanke interessant.
+12. Für die Gravity-Simulation würde ich sogar einen zweiten Layer darüberlegen
+
+Nicht sofort deine gesamte bestehende Unit umbauen.
+
+Wir machen zunächst:
+
+MasseKugel
+     │
+     ├── Zustand
+     ├── Physikalische Eigenschaften
+     └── Messwerte
+
+PhysicsEngine
+     │
+     ├── Gravitation
+     ├── Kräfte
+     ├── Beschleunigungen
+     └── Integration
+
+SimulationEngine
+     │
+     ├── Zeit
+     ├── Substeps
+     ├── Scheduling
+     └── Reproduzierbarkeit
+
+DecisionEngine
+     │
+     ├── Random
+     ├── NearestEnemy
+     ├── Minimax
+     ├── MaxN
+     ├── MCTS
+     └── LLM
+
+Das bedeutet: Dein aktueller Code bleibt zunächst lauffähig.
+
+Wir ziehen nur nach und nach Funktionalität heraus.
+13. Ein sehr wichtiger wissenschaftlicher Punkt: double ist nicht automatisch „maximal präzise“
+
+Deine double-Variablen sind für diesen Simulator sinnvoll.
+
+Aber:
+
+mehr Nachkommastellen
+≠
+mehr physikalische Genauigkeit
+
+Bei numerischen Simulationen können beispielsweise entstehen:
+
+    Rundungsfehler
+
+    Integrationsfehler
+
+    Fehler durch zu große Zeitschritte
+
+    Fehler durch schlechte Kollisionsbehandlung
+
+    kumulierende Energiefehler
+
+Deshalb ist der spannendere Forschungsweg:
+
+double
++
+kleines dt
++
+guter Integrator
++
+Tests
++
+Energieüberwachung
++
+Reproduzierbarkeit
+
+14. Wir können daraus sogar einen „Numerical Laboratory Mode“ machen
+
+Zum Beispiel:
+
+Experiment 001
+
+Integrator: Euler
+dt:         0.01
+Steps:      100000
+
+Initial Energy:     E0
+Final Energy:       E1
+
+Relative Error:
+(E1-E0)/E0
+
+Dann:
+
+Euler
+vs.
+Velocity Verlet
+vs.
+Leapfrog
+
+Und die KI kann anschließend lernen:
+
+    „Welche numerische Methode eignet sich für welches dynamische System?“
+
+Das wäre echtes Lernen über Simulation, statt nur ein KI-Modell auf Textdaten zu trainieren.
+15. Dein fusion()-Modell ist ebenfalls sehr interessant
+
+Du hast bereits:
+
+Kugel A + Kugel B
+        ↓
+      Fusion
+        ↓
+neue Masse
+neuer Radius
+neue Farbe
+neues Leben
+neuer Schaden
+
+Das ist praktisch schon eine primitive Regel-Engine.
+
+Wir müssen aber unterscheiden:
+
+Physikalische Fusion
+
+von
+
+Game-Fusion
+
+Denn momentan sind beispielsweise:
+
+maxLeben=maxLeben+massOther*Math.random()/Math.random();
+
+und
+
+damage=damage+massOther*Math.random()/Math.random();
+
+keine physikalischen Gesetze.
+
+Das ist völlig okay — wenn wir es als Spielregel deklarieren.
+
+Damit entsteht eine wunderbare Trennung:
+
+PHYSICS
+F = G m1m2/r²
+
+GAME RULE
+Fusion increases HP
+
+RANDOMNESS
+Mutation factor
+
+EVALUATION
+How beneficial was fusion?
+
+Genau diese Trennung würde ich für das gesamte Matrixgame beibehalten.
+16. Und damit kommen wir auch zu Dopamin, Serotonin, Noradrenalin usw.
+
+Hier würde ich sehr bewusst nicht anfangen, echte Neurotransmitterkonzentrationen aus deinen Spielwerten abzuleiten.
+
+Das wäre wissenschaftlich schnell eine Scheingenauigkeit.
+
+Aber wir können etwas viel Interessanteres modellieren:
+
+Agent
+ │
+ ├── Motivation
+ ├── Reward
+ ├── Stress
+ ├── Uncertainty
+ ├── Exploration
+ ├── Exploitation
+ ├── Memory
+ └── Social interaction
+
+und diese Variablen zunächst als abstrakte Computational Variables definieren.
+
+Dann können wir wissenschaftliche Modelle darüberlegen, wenn eine konkrete empirische Grundlage existiert.
+
+So vermeiden wir:
+
+    „Dopamin = Score“
+
+und bekommen stattdessen:
+
+    „Reward signal beeinflusst Lern- und Entscheidungsverhalten.“
+
+Das ist wesentlich sauberer.
+17. Auch Amphetamin bzw. andere neurochemische Einflüsse würde ich auf derselben Abstraktionsebene behandeln
+
+Nicht:
+
+Amphetamin = +37 KI-Punkte
+
+sondern beispielsweise:
+
+Agent State
+
+baseline
+attention
+reward_sensitivity
+arousal
+fatigue
+risk_tendency
+exploration
+
+Dann kann ein wissenschaftlich begründetes Modell später bestimmte Parameter beeinflussen.
+
+Das Interessante daran:
+
+Wir müssen das Thema nicht einmal in den Vordergrund stellen.
+
+Es kann einfach eine mögliche Modellklasse sein.
+
+Das eigentliche Forschungsobjekt bleibt:
+
+Agent → Zustand → Entscheidung → Handlung → Konsequenz → Lernen
+
+18. Und daraus würde ich deine „Flusswiderstände“ entwickeln
+
+Ich finde deinen Begriff Flusswiderstand für das Matrixgame sogar sehr brauchbar — aber zunächst als abstrakte Kategorie.
+
+Ein Fluss kann sein:
+
+Energie
+Information
+Materie
+Geld
+Aufmerksamkeit
+Rechenzeit
+Kommunikation
+Bewegung
+Lernfortschritt
+
+Ein Widerstand bedeutet:
+
+Input
+  ↓
+[ RESISTANCE ]
+  ↓
+Output
+
+Zum Beispiel:
+
+Rechenzeit → langsamer Algorithmus
+
+Information → schlechte Schnittstelle
+
+Energie → Wärmeverluste
+
+Agent → Unsicherheit
+
+Team → Kommunikationskosten
+
+Das lässt sich mathematisch viel sauberer behandeln als die Frage:
+
+    „Ist das kollektives Bewusstsein oder Amphetamin?“
+
+Diese Dinge könnten Ursachen innerhalb verschiedener Modelle sein.
+19. Und jetzt sehe ich einen wirklich starken gemeinsamen Kern
+
+Wir können später praktisch jede Matrixgame-Welt auf diese 12 Fragen reduzieren:
+
+1. Was existiert?
+2. In welchem Zustand ist es?
+3. Wo befindet es sich?
+4. Welche Zeit gilt?
+5. Welche Ressourcen gibt es?
+6. Welche Informationen sind verfügbar?
+7. Welche Regeln gelten?
+8. Welche Aktionen sind möglich?
+9. Welche Wechselwirkungen entstehen?
+10. Wie messen wir den Zustand?
+11. Wie bewerten wir ihn?
+12. Welche Kausalität verändert den nächsten Zustand?
+
+Das ist praktisch deine gemeinsame Grammatik.
+
+Und dann:
+
+Gravity
+Chess
+Go
+Tak
+Biology
+Economics
+Learning
+AI Agents
+
+werden verschiedene Instanzen derselben Meta-Struktur.
+20. Mein konkreter Vorschlag für deinen nächsten Entwicklungszyklus
+
+Ich würde jetzt noch keinen riesigen Umbau machen.
+Phase 1 — Stabilisieren
+
+Deinen aktuellen Simulator behalten.
+
+Reparieren:
+
+getDistance()
+Gravitations-Singularität
+Null-Targets
+zufällige Divisionen durch 0
+Farbkanäle in teilen()
+
+Insbesondere sehe ich in teilen() außerdem:
+
+green = ... color.getRed() ...
+blue  = ... color.getRed() ...
+
+Dort verwendest du jeweils Rot statt Grün bzw. Blau.
+
+Das sollte vermutlich sein:
+
+color.getGreen()
+color.getBlue()
+
+Dasselbe bei red2, green2, blue2.
+Phase 2 — Zeitmaschine
+
+Dann:
+
+double simulationTime;
+double dt;
+int subSteps;
+
+und:
+
+physicsStep(dt);
+
+als eigene Methode.
+Phase 3 — Physik herauslösen
+
+PhysicsEngine
+
+mit:
+
+calculateGravity()
+calculateForces()
+integrate()
+
+Phase 4 — Messsystem
+
+Aus deinem printWerte() entsteht:
+
+Measurement
+
+mit:
+
+position
+velocity
+energy
+mass
+acceleration
+force
+time
+
+Dann können wir Daten speichern.
+Phase 5 — Replay
+
+Jeden Simulationszustand speichern:
+
+t0
+t1
+t2
+t3
+...
+
+Damit können wir ein Experiment zurückspulen.
+
+Das wird später für KI-Training extrem wertvoll.
+Phase 6 — Decision API
+
+Dann:
+
+interface DecisionAlgorithm {
+    Action decide(State state);
+}
+
+und:
+
+Random
+NearestEnemy
+MaxDamage
+Minimax
+MaxN
+MCTS
+Evolution
+LLM
+
+21. Und dann kommt der wirklich schöne Teil
+
+Wir können denselben Bewertungsmechanismus verwenden:
+
+                  EVALUATION
+                      │
+        ┌─────────────┼─────────────┐
+        │             │             │
+      Chess           Go           Gravity
+        │             │             │
+    material        territory      energy
+    king safety     influence      survival
+    position        mobility       momentum
+
+Eine Entscheidung wird dadurch zu:
+
+State S
+   ↓
+possible Actions
+   ↓
+simulate
+   ↓
+evaluate
+   ↓
+compare
+   ↓
+choose
+
+Das ist die Brücke von Newton zu Minimax.
+
+Nicht weil Gravitation und Schach dasselbe wären — sondern weil beide Zustandsübergänge mit Regeln, Aktionen und Bewertung besitzen.
+Und genau hier würde ich deine „kollektive“ Vision verankern
+
+Nicht in einem mystischen kollektiven Bewusstsein und auch nicht in einem einzelnen Neurotransmittermodell.
+
+Sondern in einer offenen Architektur:
+
+             MENSCH
+               │
+               ▼
+         ┌────────────┐
+         │ MATRIXGAME │
+         └────────────┘
+          │    │    │
+       Mensch KI   Open Source
+          │    │    │
+          └────┼────┘
+               ▼
+          gemeinsame
+          Zustände
+               │
+          gemeinsame
+           Regeln
+               │
+          gemeinsame
+         Experimente
+               │
+               ▼
+          Messbarkeit
+               │
+               ▼
+          Vergleichbarkeit
+               │
+               ▼
+            Lernen
+               │
+               ▼
+         bessere nächste
+           Entscheidungen
+
+Das wäre für mich momentan die stärkste Richtung.
+
+Dein Gravity-Simulator muss dafür nicht verschwinden. Im Gegenteil: Er kann unser erstes physikalisches Labor sein. Wir bauen dort zunächst saubere Zeitintegration, Kräfte, Zustände, Messungen und Replays. Danach hängen wir einen Decision-Layer darüber. Und wenn dieser funktioniert, können wir denselben Decision-Layer auf Tak, Go und Schach loslassen.
+
+Dann hätten wir tatsächlich einen ersten kleinen Beweis für die Idee:
+
+    Eine gemeinsame Maschine kann Physik simulieren, Spiele analysieren, Entscheidungen vergleichen und aus vielen unterschiedlichen Welten gemeinsame Strukturen lernen.
+
+Und genau dafür ist dein jetziger Code trotz seiner Unordnung schon erstaunlich brauchbar: Er enthält bereits Zustand, Zeit, Raum, Masse, Energie, Zufall, Interaktion, Ziele, Aktionen, Teams, Regeln, Messung und Entscheidung. Wir müssen ihn nicht wegwerfen — wir müssen diese bereits vorhandenen Konzepte nur nach und nach entkoppeln, benennen und testbar machen.
+Du schreibst Code? Entdecke Codex in der Desktop-App.
+Nutze Codex in deinem Terminal oder deiner IDE – für begrenzte Zeit kostenlos in deinem ChatGPT-Tarif.
+
+
+package ordner1;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainGame extends JPanel {
+
+	private List<Unit> unitList = new ArrayList<Unit>();
+	private Unit selectedKugel = null;
+	private Unit draggedKugel = null;
+	private double zoom = 20.0;
+	private StringBuilder infoText = new StringBuilder();
+
+	private double kameraX = 0;
+	private double kameraY = 0;
+
+	private boolean isDraggingCamera = false;
+	private boolean isDraggingObject = false;
+	private int lastMouseX, lastMouseY;
+
+	private String[] verfuegbareVariablen = { "x", "y", "z", "vx", "vy", "vz", "mass", "radius", "ekin" };
+	private int indexAxisX = 0;
+	private int indexAxisY = 1;
+
+	private long startZeit;
+	private int simulationsSchritte = 0;
+	private Timer simulationTimer;
+	private boolean achsenSichtbar = true;
+
+	int randChar() {
+		return (int) (Math.random() * 256);
+	}
+	
+	double randDouble(double faktor) {
+		return faktor*(Math.random()-Math.random());
+	}
+	
+	double randDoublePos(double faktor) {
+		return faktor*(Math.random());
+	}
+	
+	double randDouble2(double faktor) {
+		return faktor*(Math.random()-Math.random())/Math.random();
+	}
+	
+	double randDoublePos2(double faktor) {
+		return faktor*(Math.random())/Math.random();
+	}
+
+	Color randColor() {
+		return new Color(randChar(), randChar(), randChar());
+	}
+
+	public void init() {
+
+		for (int i = 0; i < 5000; i++) {
+			// Konstruiere Unit mit (double x,double y,double z, double vx,double vy,double
+			// vz, double mass, int radius, Color)
+			// Konstruiert aber hier nicht so schön lesbar
+			// kugeln.add(new Unit(0, 0, 0, 0, 0, 0, 100*Math.random(), 10, randColor()));
+
+			// Hier lieber vom default Konstruktor der in der kasse natürlich von mir in seinem default für den Kontext wieder angelegt und modifiziert ist
+			Unit unit = new Unit();
+			unit.x= randDouble(1);
+			unit.y= randDouble(1);
+			unit.z= randDouble(1);
+			unit.vx= randDouble2(0);
+			unit.vy= randDouble2(0);
+			unit.vz= randDouble2(0);
+			unit.mass=255*Math.random()/Math.random();
+			unit.radius=(int) Math.max(1, Math.pow(unit.mass, 1/3.0));
+			
+			unit.radius=(int) Math.min(8, Math.max(1, Math.pow(unit.mass, 1/3.0)));
+			
+			
+			unit.color=randColor();
+			
+			if(i!=0) {
+			unit.rot=256%i*5;
+			unit.green=256%i*2;
+			unit.blue=256%i*1;}
+			unit.pe4=0.5;
+			
+			// neue EntropieMove aktivierung in prozent
+			unit.entropieMoveSpeed2ProCent=70;
+			
+			
+//			if(i==1)unit.vx=1000;
+			
+			unitList.add(unit);
+		}
+
+	}
+
+	public MainGame() {
+		setPreferredSize(new Dimension(1000, 800));
+		setBackground(Color.BLACK);
+		startZeit = System.currentTimeMillis();
+
+		// Setzen der Units für den Start
+		init();
+
+		// ... (Maus-Events für Klick, Drag und Zoom bleiben exakt gleich wie im
+		// vorherigen Code) ...
+		addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					isDraggingCamera = true;
+					lastMouseX = e.getX();
+					lastMouseY = e.getY();
+				} else if (SwingUtilities.isLeftMouseButton(e)) {
+					draggedKugel = null;
+					selectedKugel = null;
+					for (Unit k : unitList) {
+						double valX = k.getVariable(verfuegbareVariablen[indexAxisX]);
+						double valY = k.getVariable(verfuegbareVariablen[indexAxisY]);
+						int screenX = weltZuScreenX(valX);
+						int screenY = weltZuScreenY(valY);
+						int distanz = (int) Math
+								.sqrt(Math.pow(e.getX() - screenX, 2) + Math.pow(e.getY() - screenY, 2));
+						if (distanz <= k.radius + 5) {
+							selectedKugel = k;
+							draggedKugel = k;
+							isDraggingObject = true;
+							lastMouseX = e.getX();
+							lastMouseY = e.getY();
+							break;
+						}
+					}
+					updateInfoText();
+					repaint();
+				}
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e))
+					isDraggingCamera = false;
+				else if (SwingUtilities.isLeftMouseButton(e)) {
+					isDraggingObject = false;
+					draggedKugel = null;
+				}
+			}
+		});
+
+		addMouseMotionListener(new MouseMotionAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				if (isDraggingCamera) {
+					kameraX -= (e.getX() - lastMouseX) / zoom;
+					kameraY += (e.getY() - lastMouseY) / zoom;
+					lastMouseX = e.getX();
+					lastMouseY = e.getY();
+					repaint();
+				} else if (isDraggingObject && draggedKugel != null) {
+					int deltaX = e.getX() - lastMouseX;
+					int deltaY = e.getY() - lastMouseY;
+					double alterWertX = draggedKugel.getVariable(verfuegbareVariablen[indexAxisX]);
+					double alterWertY = draggedKugel.getVariable(verfuegbareVariablen[indexAxisY]);
+					draggedKugel.setVariable(verfuegbareVariablen[indexAxisX], alterWertX + (deltaX / zoom));
+					draggedKugel.setVariable(verfuegbareVariablen[indexAxisY], alterWertY - (deltaY / zoom));
+					lastMouseX = e.getX();
+					lastMouseY = e.getY();
+					updateInfoText();
+					repaint();
+				}
+			}
+		});
+
+		addMouseWheelListener(e -> {
+			if (e.getWheelRotation() < 0)
+				zoom *= 1.1;
+			else
+				zoom /= 1.1;
+			if (zoom < Double.MIN_VALUE)
+				zoom = Double.MIN_VALUE;
+			if (selectedKugel != null)
+				updateInfoText();
+			repaint();
+		});
+
+		// TASTATUR-STEUERUNG
+		setFocusable(true);
+		addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_A) {
+					achsenSichtbar = !achsenSichtbar;
+					repaint();
+				} else if (e.getKeyCode() == KeyEvent.VK_H) {
+					indexAxisX = (indexAxisX + 1) % verfuegbareVariablen.length;
+					updateInfoText();
+					repaint();
+				} else if (e.getKeyCode() == KeyEvent.VK_V) {
+					indexAxisY = (indexAxisY + 1) % verfuegbareVariablen.length;
+					updateInfoText();
+					repaint();
+				}
+
+				// NEUE TASTEN FÜR DIE OBJEKT-STEUERUNG
+				else if (e.getKeyCode() == KeyEvent.VK_P) {
+					if (selectedKugel != null) {
+						selectedKugel.updatePositionAktiv = !selectedKugel.updatePositionAktiv;
+						updateInfoText();
+					}
+				} else if (e.getKeyCode() == KeyEvent.VK_E) {
+					if (selectedKugel != null) {
+						selectedKugel.entropieMoveAktiv = !selectedKugel.entropieMoveAktiv;
+						updateInfoText();
+					}
+				}
+			}
+		});
+
+		// DER SIMULATIONSTIMER
+		// Hier hat die KI was hin generiert was der gameloop sein könnte
+		simulationTimer = new Timer(100, e -> {
+			// Hier wird JETZT NUR NOCH update() aufgerufen!
+			
+			for ( int i=0;i<unitList.size(); i++) {
+				Unit k=unitList.get(i);
+				k.update();
+				
+				// sowohl die Massen Als auch die Abstände müssen mit intgriert werden
+				int posOther=0;
+				
+				
+				//Die Masse und in meinem fall die position in der Liste sind jetzt auch wichtig für die Entropie in unserem Matrixgame Universum
+				while (posOther<0||posOther>=unitList.size()) { posOther= (int)(i+k.mass*(Math.random()-Math.random()));}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				// Dr Aufruf der Aufruf
+				
+				k.randEntropie4(unitList.get(posOther));
+				
+				
+				if(Math.random()>0.999 && k.getDistance(unitList.get(posOther))<k.maxSpeed) k.fressen(unitList.get(posOther));
+				
+				
+//				if(Math.random()>0.1)k.fusion(unitList.get(posOther));
+				 if(Math.random()>0.9999) k.teilen();
+				
+			}
+			simulationsSchritte++;
+			if (selectedKugel != null)
+				updateInfoText();
+			repaint();
+		});
+		simulationTimer.start();
+	}
+
+	private void updateInfoText() {
+		infoText.setLength(0);
+		long aktuelleZeit = System.currentTimeMillis();
+		long abgelaufeneZeit = aktuelleZeit - startZeit;
+		long sekunden = abgelaufeneZeit / 1000;
+		long millisekunden = abgelaufeneZeit % 1000;
+
+		infoText.append("=== SIMULATIONS-STATUS ===\n");
+		infoText.append(
+				String.format("Abgelaufen: %d.%03d s | Schritte: %d\n", sekunden, millisekunden, simulationsSchritte));
+		infoText.append(String.format("Achse H (H): %s | Achse V (V): %s\n", verfuegbareVariablen[indexAxisX],
+				verfuegbareVariablen[indexAxisY]));
+		infoText.append("\n");
+
+		if (selectedKugel != null) {
+			infoText.append("=== AUSGEWÄHLTE KUGEL ===\n");
+			infoText.append(String.format("Position Update (P): %s\n",
+					selectedKugel.updatePositionAktiv ? "AKTIV" : "inaktiv"));
+			infoText.append(
+					String.format("Entropie Move (E): %s\n", selectedKugel.entropieMoveAktiv ? "AKTIV" : "inaktiv"));
+			infoText.append("\n--- POSITIONEN ---\n");
+			infoText.append(
+					String.format("x: %.2f | y: %.2f | z: %.2f\n", selectedKugel.x, selectedKugel.y, selectedKugel.z));
+			infoText.append("\n--- GESCHWINDIGKEITEN ---\n");
+			infoText.append(String.format("vx: %.2f | vy: %.2f | vz: %.2f\n", selectedKugel.vx, selectedKugel.vy,
+					selectedKugel.vz));
+			infoText.append("\n--- EIGENSCHAFTEN ---\n");
+			infoText.append(String.format("Masse: %.2f | Radius: %d\n", selectedKugel.mass, selectedKugel.radius));
+		} else {
+			infoText.append("=== KEINE KUGEL AUSGEWÄHLT ===\n");
+		}
+	}
+
+	// ... (paintComponent, berechneSchrittweite, formatiereZahl und
+	// Transformationsmethoden bleiben exakt gleich) ...
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		int breite = getWidth();
+		int hoehe = getHeight();
+
+		if (achsenSichtbar) {
+			g2.setColor(Color.GREEN);
+			g2.setStroke(new BasicStroke(2));
+			g2.drawLine(0, weltZuScreenY(0), breite, weltZuScreenY(0));
+			g2.drawLine(weltZuScreenX(0), 0, weltZuScreenX(0), hoehe);
+			g2.setFont(new Font("Monospaced", Font.PLAIN, 11));
+			g2.setColor(Color.LIGHT_GRAY);
+			double schrittweite = berechneSchrittweite();
+			double startX = Math.floor(screenZuWeltX(0) / schrittweite) * schrittweite;
+			double startY = Math.floor(screenZuWeltY(hoehe) / schrittweite) * schrittweite;
+			for (double x = startX; x < screenZuWeltX(breite); x += schrittweite) {
+				if (Math.abs(x) > schrittweite / 10) {
+					int screenX = weltZuScreenX(x);
+					int achsenY = weltZuScreenY(0);
+					if (screenX >= 0 && screenX < breite) {
+						g2.drawLine(screenX, achsenY - 5, screenX, achsenY + 5);
+						g2.drawString(formatiereZahl(x), screenX - 20, achsenY + 18);
+					}
+				}
+			}
+			for (double y = startY; y < screenZuWeltY(0); y += schrittweite) {
+				if (Math.abs(y) > schrittweite / 10) {
+					int screenY = weltZuScreenY(y);
+					int achsenX = weltZuScreenX(0);
+					if (screenY >= 0 && screenY < hoehe) {
+						g2.drawLine(achsenX - 5, screenY, achsenX + 5, screenY);
+						g2.drawString(formatiereZahl(y), achsenX + 10, screenY + 5);
+					}
+				}
+			}
+			g2.setFont(new Font("Monospaced", Font.BOLD, 13));
+			g2.setColor(Color.YELLOW);
+			g2.drawString(verfuegbareVariablen[indexAxisX] + " →", breite - 100, weltZuScreenY(0) - 10);
+			g2.drawString("↑ " + verfuegbareVariablen[indexAxisY], weltZuScreenX(0) + 10, 20);
+		}
+
+		for (Unit k : unitList) {
+			double valX = k.getVariable(verfuegbareVariablen[indexAxisX]);
+			double valY = k.getVariable(verfuegbareVariablen[indexAxisY]);
+			int kugelX = weltZuScreenX(valX);
+			int kugelY = weltZuScreenY(valY);
+			g2.setColor(k.color);
+			g2.fillOval(kugelX - k.radius, kugelY - k.radius, k.radius * 2, k.radius * 2);
+			if (k == selectedKugel) {
+				g2.setColor(Color.YELLOW);
+				g2.setStroke(new BasicStroke(3));
+				g2.drawOval(kugelX - k.radius - 5, kugelY - k.radius - 5, (k.radius + 5) * 2, (k.radius + 5) * 2);
+			}
+		}
+
+		if (infoText.length() > 0) {
+			g2.setColor(Color.WHITE);
+			g2.setFont(new Font("Monospaced", Font.PLAIN, 12));
+			String[] zeilen = infoText.toString().split("\n");
+			for (int i = 0; i < zeilen.length; i++)
+				g2.drawString(zeilen[i], 20, 30 + i * 16);
+		}
+		g2.setColor(Color.GRAY);
+		g2.setFont(new Font("Monospaced", Font.PLAIN, 11));
+		g2.drawString("H/V: Achsen | P: Pos-Update | E: Entropie | A: Achsen ein/aus", 20, hoehe - 20);
+	}
+
+	private double berechneSchrittweite() {
+		double sichtbareBreite = getWidth() / zoom;
+		double roheSchrittweite = sichtbareBreite / 10.0;
+		if (roheSchrittweite < Double.MIN_VALUE * 100)
+			return Double.MIN_VALUE * 100;
+		double exponent = Math.floor(Math.log10(Math.abs(roheSchrittweite)));
+		double basis = Math.pow(10, exponent);
+		double faktor = roheSchrittweite / basis;
+		if (faktor < 2)
+			return basis;
+		if (faktor < 5)
+			return 2 * basis;
+		return 5 * basis;
+	}
+
+	private String formatiereZahl(double wert) {
+		if (wert == 0)
+			return "0";
+		double absWert = Math.abs(wert);
+		if (absWert >= 1e6 || absWert < 0.001) {
+			int exponent = (int) Math.floor(Math.log10(absWert));
+			double mantisse = wert / Math.pow(10, exponent);
+			return String.format("%.1fe%d", mantisse, exponent);
+		} else {
+			return String.format("%.1f", wert);
+		}
+	}
+
+	private int weltZuScreenX(double weltX) {
+		double e = getWidth() / 2.0 + (weltX - kameraX) * zoom;
+		return (int) e;
+	}
+
+	private int weltZuScreenY(double weltY) {
+		double e = getHeight() / 2.0 - (weltY - kameraY) * zoom;
+		return (int) e;
+	}
+
+	private double screenZuWeltX(int screenX) {
+		return (screenX - getWidth() / 2.0) / zoom + kameraX;
+	}
+
+	private double screenZuWeltY(int screenY) {
+		return -(screenY - getHeight() / 2.0) / zoom + kameraY;
+	}
+
+	public static void main(String[] args) {
+		JFrame frame = new JFrame("Matrixgame: Dynamische Achsen-Simulation");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.add(new MainGame());
+		frame.setSize(1200, 900);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+	}
+}
+
+package ordner1;
+
+//ndeas Schneider Hypothese für Wissenschaft und Open Sourc Anwendung und Unterstützung gesucht: 
+//27.08.2026 Beweis durch Compilierbaren Java Code und weiteren Projekten und berichten und Kontaktwunsch und Mehr:
+//package ordner2;
+
+public class ElementareMassenVerhältnisseZurValidierungUndSeriousGamifizierung {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		System.out.println("Hello Universe");
+
+		double elektronenMasse = 9.1093837139 * Math.pow(10, -31);
+
+		System.out.println("Die Elektronenmasse Begründet durch unsere Wissenschaft und das sehr gut: = "
+				+ elektronenMasse + " kg");
+		double sechstelElektronenMasse = elektronenMasse / 6.0;
+		System.out.println("Die sechstel Elektronen Masse = " + elektronenMasse / 6.0);
+
+		double protonenMasse = 1.67262192595 * Math.pow(10, -27);// kg"
+
+		System.out.println("Die Protonen Masse = " + protonenMasse);
+
+		System.out.println("protonenMasse/sechstelElektronenMasse" + protonenMasse / sechstelElektronenMasse);
+
+		System.out.println("Lässt sich schön aufrunden aber wir runden hier ab, um die Simmetrie zu beweisen: "
+				+ (int) (protonenMasse / sechstelElektronenMasse));
+
+		double symmetrieZahl = 11016.0;
+		double RaumSymmetrien = 11016 / 8.0; // =1377.0
+		double RaumSymmetrie2 = 11016 / 8.0 / 3 / 3 / 3;
+
+		System.out.println("11016 Dividiert erst durch 8 und durch 27 :" + RaumSymmetrie2);
+
+		System.out.println(
+				"Nach division durch 8 für den 3D Raum gibt es ein erstes ganzzahl Ergebnis: " + RaumSymmetrien);
+
+		System.out.println("Dieses erneut durch 27 dividieren: " + RaumSymmetrien / 27.0);
+
+		System.out.println(
+				"Das Ergebnis lässt sich jetzt ein weiteres Mal durch 3 sowie durch den Primfaktor 17 zerlegen und kann in Zukunft, sowohl für mich wie auch andere Meschen wie mich und die open source community und die Wissenschaft und Weiters geeignet Genutzt und weiter Nutzbar und Validierbarer und Weiteres gutes damit gemacht werden so das wir alle mit schöner Didaktik gewinnen und weitere Fortschritte folgen. Vielen Dank");
+
+		System.out.println(
+				"Autor und nach Unterstützung und Diskusionen und Perreview und Ausbau für die allgemeine und Kollektive Nutzung und zu meinem ssowie dem Vorteil und Gewinn für die Menschheit und Wissenschft und Weitere Intelligenzen: Andreas Schneider Eberstadt-Darmstadt Facebook: https://www.facebook.com/ , HandyNummer: +491778627094, Email: andreas.schneider01989@gmail.com, GitHub: https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit");
+//		Elementare Massen
+//		Teilchenphysik für das Matrixgame und die Kollektiven Ki-Games
+//		07.02.2026 Andreas Schneider, Deutschland, Darmstadt-Eberstadt, Weingartenstraße 45
+//
+//		Nukleonen
+//		Teilchen, Typ, “Masse in kg”
+//		Proton, Nukleon, "≈1,67262192595×10−27 kg"
+//		Neutron (n), Nukleon, "≈1,67493×10−27 kg"
+//
+//
+//		Quarks
+//		Teilchen,Typ,”Masse in kg (ca.)”, ‘Ladung’
+//		Up-Quark(u),Quark,"3,9×10^−30 kg", ‘+2/3e’
+//		Down-Quark(d),Quark,"8,4×10^−30 kg", ‘-1/3e’
+//		Strange-Quark(s),Quark,"1,7×10^−28 kg", ‘-1/3e’
+//		Charm-Quark(c),Quark,"2,3×10^−27 kg", ‘+2/3e’
+//		Bottom-Quark(b),Quark,"7,5×10^−27 kg", ‘-1/3e’
+//		Top-Quark(t),Quark,"3,1×10^−25 kg", ‘+2/3e’
+//
+//
+//		Leptonen
+//		Masse Elektron (me​): 9,1093837139×10−31 kg
+//
+//		
+
+	}
+}
+
+
+package ordner1;
+
+
+import java.awt.Color;
+import java.util.ArrayList;
+
+//import MasseKugel;
+
+public class Unit {
+	// --- BASIS & ENTROPIE ---
+	public double basisEntroDouble;
+	public double[] basisentros = new double[100];
+
+	// --- PHYSIKALISCHE GRÖSSEN ---
+	public double x, y, z;
+	public double vx, vy, vz;
+	public double ax, ay, az;
+	public double mass;
+	public int radius;
+	
+	
+	
+	public double maxSpeed=5*Math.random();
+
+	public double EKin;
+	public double Ex, Ey, Ez;
+	public double time = 255.0;
+	double pe4;
+
+	// --- FARBEN & ZUSTAND ---
+	public double rot, green, blue;
+	public Color color;
+	public boolean movable = true;
+
+
+	// --- SIMULATIONS-STEUERUNG (NEU) ---
+	// Standardmäßig alles auf false, damit das Objekt ruhig ist
+	public boolean updatePositionAktiv = false;
+	public boolean entropieMoveAktiv = false;
+	public String algorithmus = "HALTEN";
+	// Ich finde es hier erst einmal allgemein gut den Wert als double ohne public
+	// oder privat zu definieren oder zu setzen mit 0 im default und sichtbar und
+	// änderbar in package
+	double entropieMoveSpeed2ProCent;
+
+	// --- KONSTRUKTOREN ---
+	public Unit(double x, double y, double z, double vx, double vy, double vz, double mass, int radius, Color color) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.vx = vx;
+		this.vy = vy;
+		this.vz = vz;
+		this.mass = mass;
+		this.radius = radius;
+		setColorSafe(color);
+	}
+
+	public Unit() {
+		this(0, 0, 0, 0, 0, 0, 10, 10, Color.CYAN);
+	}
+
+	public Unit(double x2, double y2, double z2, double vx2, double vy2, double vz2, long round, int radius2) {
+		// TODO Auto-generated constructor stub
+	}
+
+	private void setColorSafe(Color c) {
+		this.color = c != null ? c : Color.WHITE;
+		this.rot = this.color.getRed();
+		this.green = this.color.getGreen();
+		this.blue = this.color.getBlue();
+	}
+
+	// --- DYNAMISCHER ZUGRIFF ---
+	public double getVariable(String name) {
+		switch (name.toLowerCase()) {
+		case "x":
+			return x;
+		case "y":
+			return y;
+		case "z":
+			return z;
+		case "vx":
+			return vx;
+		case "vy":
+			return vy;
+		case "vz":
+			return vz;
+		case "mass":
+		case "masse":
+			return mass;
+		case "radius":
+			return radius;
+		case "ekin":
+			return EKin;
+		case "time":
+			return time;
+		default:
+			return 0.0;
+		}
+	}
+
+	public void setVariable(String name, double wert) {
+		switch (name.toLowerCase()) {
+		case "x":
+			x = wert;
+			break;
+		case "y":
+			y = wert;
+			break;
+		case "z":
+			z = wert;
+			break;
+		case "vx":
+			vx = wert;
+			break;
+		case "vy":
+			vy = wert;
+			break;
+		case "vz":
+			vz = wert;
+			break;
+		case "mass":
+		case "masse":
+			mass = wert;
+			break;
+		case "radius":
+			radius = (int) wert;
+			break;
+		case "ekin":
+			EKin = wert;
+			break;
+		case "time":
+			time = wert;
+			break;
+		}
+	}
+
+	// --- DIE ZENTRALE UPDATE-METHODE ---
+	// Wird einmal pro Zeitschritt vom Canvas aufgerufen
+	public void update() {
+
+		if (entropieMoveSpeed2ProCent > (Math.random() * 100)) {
+			entropieMoveSpeed2();
+		}
+
+		// 1. Entropie-Bewegung (wenn aktiviert)
+		if (entropieMoveAktiv) {
+			entropieMove();
+		}
+
+		// 2. Positions-Update (wenn aktiviert)
+		if (updatePositionAktiv) {
+			updatePosition(1.0); // 1.0 als Standard-Zeitschritt-Faktor
+		}
+		
+		// 
+//		if(randEntropie2ProCent>(Math.random() * 100)) {
+//			randEntro();
+//		}
+
+		// Hier können später weitere Updates folgen, z.B.:
+		// if (gravitationAktiv) { ... }
+		// if (colorUpdateAktiv) { updateColor(); }
+	}
+
+	// --- DIE EINZELNEN VERHALTENSMETHODEN ---
+
+	public void updatePosition(double timeStep) {
+		this.x += (this.vx * timeStep);
+		this.y += (this.vy * timeStep);
+		this.z += (this.vz * timeStep);
+	}
+
+//	public void entropieMove() {
+//		int rand = (int) (Math.random() * 8);
+//		if (rand < 2)
+//			return;
+//		if (rand == 2)
+//			x++;
+//		if (rand == 3)
+//			x--;
+//		if (rand == 4)
+//			y++;
+//		if (rand == 5)
+//			y--;
+//		if (rand == 6)
+//			z++;
+//		if (rand == 7)
+//			z--;
+//	}
+
+	public void entropieMoveSpeed2() {
+		// Bewege dich in jede Richtung per Random * Geschwindigkeit
+		x = x + vx * Math.random();
+		y = y + vy * Math.random();
+		z = z + vz * Math.random();
+	}
+
+	public void entropieMoveSpeed() {
+		// Bewege dich in jede Richtung per Random * Geschwindigkeit
+		x = x + vx * Math.random() + Math.random() - Math.random();
+		y = y + vy * Math.random() + Math.random() - Math.random();
+		z = z + vz * Math.random() + Math.random() - Math.random();
+	}
+
+	public void entropieMoveSpeedPyt() {
+		// Bewege dich in jede Richtung per Random * Geschwindigkeit
+		// vx^2+vy^2+vz^2 <= Geschwindigkeit^2
+		// später weiter
+
+		x = x + vx * Math.pow(Math.random(), 0.5);
+		y = y + vy * Math.random();
+		z = z + vz * Math.random();
+	}
+
+	// allgemein für zwei doubles
+	void randEntro() {
+
+	}
+
+	public void randEntropie3(Unit other) {
+
+//		if (Math.random() > 0.01) {
+//			double x = Math.random() * this.x;
+//			this.x = this.x + other.x * Math.random();
+//			other.x = other.x + x;
+//		}
+		if (Math.random() > 0.0001) {
+			double y1 = Math.random() * this.y;
+			double y2=other.y * Math.random();
+			this.y = this.y + y2;
+			other.y = other.y + y1;
+			this.y=this.y-y1;
+			other.y=other.y-y2;
+		}
+		if (Math.random() > 0.0001) {
+			double x1 = Math.random() * this.x;
+			double x2=other.x * Math.random();
+			this.x = this.x + x2;
+			other.x = other.x + x1;
+			this.x=this.x-x1;
+			other.x=other.x-x2;
+		}
+		
+		if (Math.random() > 0.00001) {
+			double z1 = Math.random() * this.z;
+			double z2=other.z * Math.random();
+			this.z = this.z - z1;
+			other.z = other.z + z2;
+			this.z=this.z+z1;
+			
+			other.z=other.z-z2;
+		}
+		
+		
+
+		// Das mit allen Variablen der Unit
+
+	}
+	
+	
+	
+	
+	public void randEntropie4(Unit other) {
+
+//		if (Math.random() > 0.01) {
+//			double x = Math.random() * this.x;
+//			this.x = this.x + other.x * Math.random();
+//			other.x = other.x + x;
+//		}
+			double x1 = Math.random() * (other.x-this.x);
+			double y1 = Math.random() * (other.y-this.y);
+			double z1 = Math.random() * (other.z-this.z);
+			while(x1*x1+y1*y1+z1*z1>this.maxSpeed*this.maxSpeed/Math.random()*Math.random()) {if(Math.random()>0.5)return;x1*=Math.random();y1*=Math.random();z1*=Math.random();}
+			if (Math.random() >pe4) {
+		
+			this.vx = this.vx +x1;
+			other.vx = other.vx - x1;
+			this.x+=x1;
+			other.x-=x1;
+			
+		
+		
+		if (Math.random() > pe4) {
+			
+		
+			this.vy = this.vy +y1;
+			other.vy = other.vy - y1;
+			this.y+=y1;
+			other.y-=y1;
+			
+		
+		
+		if (Math.random() > pe4) {
+		
+		
+			this.vz = this.vz +z1;
+			this.z+=z1;
+			other.vz = other.vz - z1;
+			other.z-=z1;
+			
+		}}}
+//		if (Math.random() > 0.0001) {
+//			double x1 = Math.random() * this.x;
+//			double x2=other.x * Math.random();
+//			this.x = this.x + x2;
+//			other.x = other.x + x1;
+//			this.x=this.x-x1;
+//			other.x=other.x-x2;
+//		}
+//		
+//		if (Math.random() > 0.00001) {
+//			double z1 = Math.random() * this.z;
+//			double z2=other.z * Math.random();
+//			this.z = this.z - z1;
+//			other.z = other.z + z2;
+//			this.z=this.z+z1;
+//			
+//			other.z=other.z-z2;
+		}
+	
+	
+//	 public void printWerte() {
+//	    	System.out.println("System.currentTimeMillis() = "+System.currentTimeMillis());
+//	    	System.out.println("Position x = "+x+" Meter");
+//	    	System.out.println("Position y = "+y+" Meter");
+//	    	System.out.println("Position z = "+z+" Meter");
+//	    	System.out.println("Geschwindigkeit vx = "+vx+" Meter pro Sekunde");
+//	    	System.out.println("Geschwindigkeit vy = "+vy+" Meter pro Sekunde");
+//	    	System.out.println("Geschwindigkeit vz = "+vz+" Meter pro Sekunde");
+//	    	System.out.println("Kinetische Energie = "+getEKin());
+//	    	System.out.println("Masse = "+mass+" Kilogramm");
+//	    	System.out.println("Farbe = "+color);
+//	    }
+	    
+	    
+	    public void entropieMove() {
+	    	int rand = (int)(Math.random()*8);
+	    	if(rand<2)return;
+	    	if(rand==2)x++;
+	    	if(rand==3)x--;
+	    	if(rand==4)y++;
+	    	if(rand==5)y--;
+	    	if(rand==6)z++;
+	    	if(rand==7)z--;
+	    }
+	    
+	    public void entropieMoveRand() {
+	    	int rand = (int)(Math.random()*8);
+	    	if(rand<2)return;
+	    	if(rand==2)x+=Math.random();
+	    	if(rand==3)x-=Math.random();
+	    	if(rand==4)y+=Math.random();
+	    	if(rand==5)y-=Math.random();
+	    	if(rand==6)z+=Math.random();
+	    	if(rand==7)z-=Math.random();
+	    }
+	    
+	    double G = 6.6743015e-11;
+	    // Kraft in Newton, die auf beide MasseKugeln wirkt und diese wechselseitig in Richtung des anderen beschleunigt, so das die Gravitationskraft weiter steigt und der Abstand sinkt
+	    public double getGravityKraft(Unit other) {
+	    	double kraft =0;
+	    	double distQ = (other.x-this.x)*(other.x-this.x)+(other.y-this.y)*(other.y-this.y)+(other.z-this.z)*(other.z-this.z);
+	    	kraft= G * this.mass*other.mass/distQ;
+	    	return kraft;
+	    }
+	    
+	    double leben=1;
+	    double damage=1;
+	    public void fressen(Unit kugel2) {
+	    	if(kugel2.leben<=0)fusion(kugel2);
+	    	kugel2.leben-=damage;
+	    }
+	    double maxLeben=5;
+//	    double leben=maxLeben;
+	   
+	    
+	   public void fusion2D(Unit kugel2) {
+	    	
+	    	double massAlt=mass;
+	    	double massOther=kugel2.mass;
+	    	double massNew=massAlt+massOther;
+	    	
+	    	mass=massNew;
+	    	maxLeben=maxLeben+massOther*Math.random()/Math.random();
+	    	leben=maxLeben;
+	    	damage=damage+massOther*Math.random()/Math.random();
+	    	
+	    	double red = color.getRed()*massAlt+kugel2.color.getRed()*massOther;
+	    	double green = color.getGreen()*massAlt+kugel2.color.getGreen()*massOther;
+	    	double blue = color.getBlue()*massAlt+kugel2.color.getBlue()*massOther;
+	    	
+	    	red=Math.round(red/massNew);
+	    	green=Math.round(green/massNew);
+	    	blue=Math.round(blue/massNew);
+	    	
+	    	this.color=new Color((int)red,(int)green,(int)blue);
+	    	
+	    	double flaecheAlt=this.radius*this.radius;
+	    	double flaeche2=kugel2.radius*kugel2.radius;
+	    	double flaechenNeu=flaecheAlt+flaeche2;
+	    	
+	    	double sizeNeu=Math.round(Math.pow(flaechenNeu, 1/2.0));
+	    	this.radius=(int)sizeNeu;
+	    	speed=radius*Math.random()*2;
+
+
+
+	    }
+	   
+	   double speed;
+	    
+	    public void fusion(Unit kugel2) {
+	    	
+	    	double massAlt=mass;
+	    	double massOther=kugel2.mass;
+	    	double massNew=massAlt+massOther;
+	    	
+	    	mass=massNew;
+	    	maxLeben=maxLeben+massOther*Math.random()/Math.random();
+	    	leben=maxLeben;
+	    	damage=damage+massOther*Math.random()/Math.random();
+	    	
+	    	double red = color.getRed()*massAlt+kugel2.color.getRed()*massOther;
+	    	double green = color.getGreen()*massAlt+kugel2.color.getGreen()*massOther;
+	    	double blue = color.getBlue()*massAlt+kugel2.color.getBlue()*massOther;
+	    	
+	    	red=Math.round(red/massNew);
+	    	green=Math.round(green/massNew);
+	    	blue=Math.round(blue/massNew);
+	    	
+	    	this.color=new Color((int)red,(int)green,(int)blue);
+	    	
+	    	double volumenAlt=this.radius*this.radius*this.radius;
+	    	double volumen2=kugel2.radius*kugel2.radius*kugel2.radius;
+	    	double volumenNeu=volumenAlt+volumen2;
+	    	
+	    	double sizeNeu=Math.round(Math.pow(volumenNeu, 1/3.0));
+	    	this.radius=(int)sizeNeu;
+	    	speed=radius*Math.random()*2;
+
+
+
+	    }
+	    
+	    public void moveTo(Unit oponent) {
+			double distQ = (this.x - oponent.x) * (this.x - oponent.x)
+					+ (this.y - oponent.y) * (this.y - oponent.y)
+					+ (this.z - oponent.z) * (this.z - oponent.z);
+			double dist = Math.pow(distQ, 0.5);
+			
+			double dx=x-oponent.x;
+			double dy=y-oponent.y;
+			double dz=z-oponent.z;
+			
+			double movDist=Math.min(speed, Math.abs(dist-0));
+			
+			vx=-dx/dist*movDist;
+			vy=-dy/dist*movDist;
+			vz=-dz/dist*movDist;
+
+		}
+	    
+	    public double getDistance(Unit oponent) {
+			double distQ = (this.x - oponent.y) * (this.x - oponent.x)
+					+ (this.y - oponent.y) * (this.y - oponent.y)
+					+ (this.z - oponent.z) * (this.z - oponent.z);
+			double dist = Math.pow(distQ, 0.5);
+			return dist;
+		}
+	    
+	    public Unit teilen() {
+	    	Unit neu=new Unit(x,y,z,vx,vy,vz,Math.round(mass*Math.random()),radius);
+	    	
+	    	
+	    	double massAlt=mass;
+	    	double volumenAlt=radius*radius*radius;
+	    	double volumenNeu=volumenAlt/mass*neu.mass;
+	    	double radiusNeu=Math.pow(volumenNeu, 1/3.0);
+	    	
+	    	 mass=mass-neu.mass;
+	    	 
+	    	 double volumenNeu2=volumenAlt/massAlt*mass;
+	     	double radiusNeu2=Math.pow(volumenNeu2, 1/3.0);
+	    	
+	    	radius=(int)Math.round(radiusNeu2);
+	    	neu.radius=(int)Math.round(radiusNeu);
+	    	
+	    	double randr=Math.random();
+	    	double randg=Math.random();
+	    	double randb=Math.random();
+	    	int red = (int)Math.min(Math.round(color.getRed()*randr*2), 255);
+	    	int green = (int)Math.min(Math.round(color.getRed()*randg*2), 255);
+	    	int blue = (int)Math.min(Math.round(color.getRed()*randb*2), 255);
+	    	int red2 = (int)Math.min(Math.round(color.getRed()*(1-randr)*2), 255);
+	    	int green2 = (int)Math.min(Math.round(color.getRed()*(1-randg)*2), 255);
+	    	int blue2 = (int)Math.min(Math.round(color.getRed()*(1-randb)*2), 255);
+	    	
+	    	neu.color=new Color(red,green,blue);
+	    	this.color=new Color(red2,green2,blue2);
+	    	neu.team=neu.color.getRed()*neu.color.getRed()+neu.color.getGreen()*neu.color.getGreen()+neu.color.getBlue()*neu.color.getBlue();
+//			neu.team=team;
+	    	neu.maxLeben=neu.mass*Math.random()/Math.random();
+	    	neu.leben=neu.maxLeben;
+	    	neu.damage=neu.mass*Math.random()/Math.random();
+	    	
+	    	
+	    	return(neu);
+	    	
+	    }
+	    
+	    double team=1;
+	    
+	    public Unit teilen2D() {
+	    	Unit neu=new Unit(x,y,z,vx,vy,vz,Math.round(mass*Math.random()),radius);
+	    	
+	    	
+	    	double massAlt=mass;
+	    	double flaecheAlt=radius*radius;
+	    	double flaecheNeu=flaecheAlt/mass*neu.mass;
+	    	double radiusNeu=Math.pow(flaecheNeu, 1/2.0);
+	    	
+	    	 mass=mass-neu.mass;
+	    	 
+	    	 double flaecheNeu2=flaecheAlt/massAlt*mass;
+	     	double radiusNeu2=Math.pow(flaecheNeu2, 1/2.0);
+	    	
+	    	radius=(int)Math.round(radiusNeu2);
+	    	neu.radius=(int)Math.round(radiusNeu);
+	    	
+	    	double randr=Math.random();
+	    	double randg=Math.random();
+	    	double randb=Math.random();
+	    	int red = (int)Math.min(Math.round(color.getRed()*randr*2), 255);
+	    	int green = (int)Math.min(Math.round(color.getRed()*randg*2), 255);
+	    	int blue = (int)Math.min(Math.round(color.getRed()*randb*2), 255);
+	    	int red2 = (int)Math.min(Math.round(color.getRed()*(1-randr)*2), 255);
+	    	int green2 = (int)Math.min(Math.round(color.getRed()*(1-randg)*2), 255);
+	    	int blue2 = (int)Math.min(Math.round(color.getRed()*(1-randb)*2), 255);
+	    	
+	    	neu.color=new Color(red,green,blue);
+	    	this.color=new Color(red2,green2,blue2);
+	    	neu.team=neu.color.getRed()*neu.color.getRed()+neu.color.getGreen()*neu.color.getGreen()+neu.color.getBlue()*neu.color.getBlue();
+//			neu.team=team;
+	    	neu.maxLeben=neu.mass*Math.random()/Math.random();
+	    	neu.leben=neu.maxLeben;
+	    	neu.damage=neu.mass*Math.random()/Math.random();
+	    	
+	    	
+	    	return(neu);
+	    	
+	    }
+	
+	public void randEntropie2(Unit other) {
+
+		if (Math.random() > 0.1) {
+			if(this.x<other.x) {this.vx+=Math.random();other.vx-=Math.random();}
+			if(this.y<other.y) {this.vy+=Math.random();other.vy-=Math.random();}
+			if(this.z<other.z) {this.vz+=Math.random();other.vz-=Math.random();}
+		
+		
+		}}
+
+	// (Die restlichen Methoden wie gravity, angleichen etc. bleiben hier
+	// unverändert erhalten)
+}
+//Teile ProtonenMasse durch sechstel Elektronenmasse und runde ab und teste Teilbarkeiten für 3D Raum und mögliche Ableitungen und Modellierungen zu diesen weiteren hier sehr chönen bereit sehr klaren und noch nicht ganz so wertvoll, das es neu besser wird aber schon open sourrce da und sehr begeistern in einer Art und Weisee aus dem kollektiven Bewusstsein , die eigendlich gut ist und besser als selber alles schon nicht zu Prognostizieren. Aber für ein geeignete Prognose bräuchten wir einen Zietstempel und entscheidungskritereien. Es lassen sich sprachmodelle und Intelligenzen zu intuitionen befragen aber die Zeitschrittte dr Gravity Java Simulation und Visualisierbarkeit hier sollte besser werden wie es die doubles zulassen sollten um hier am besten die chance für die Erkenntnisgenerirung die allen am meisten bringt gesucht und gaaamifiziert werden kann aber erst mal geforscht und was compilierbares in seinen Möglichkeiten bespielt und besser verstehbar für begeisterung wieder dasfür holen was logisch sinnvoll wirkt.
