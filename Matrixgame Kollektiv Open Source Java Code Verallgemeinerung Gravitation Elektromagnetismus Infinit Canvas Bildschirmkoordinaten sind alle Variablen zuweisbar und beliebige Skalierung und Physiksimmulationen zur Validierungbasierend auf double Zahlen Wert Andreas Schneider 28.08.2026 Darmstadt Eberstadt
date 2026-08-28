@@ -1,0 +1,1107 @@
+// Infinit Canvas mit beliebigen Variablen und unendlich klein und groß Skalierbaren Bildschirmachsen und ausbau für Kollektive KI-Games Open Source mich und alle Intelligenzen er Existenz
+package ordner1;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainGame extends JPanel {
+
+	private List<Unit> unitList = new ArrayList<Unit>();
+	private Unit selectedKugel = null;
+	private Unit draggedKugel = null;
+	private double zoom = 20.0;
+	private StringBuilder infoText = new StringBuilder();
+
+	private double kameraX = 0;
+	private double kameraY = 0;
+
+	private boolean isDraggingCamera = false;
+	private boolean isDraggingObject = false;
+	private int lastMouseX, lastMouseY;
+
+	private String[] verfuegbareVariablen = { "x", "y", "z", "vx", "vy", "vz", "mass", "radius", "ekin" };
+	private int indexAxisX = 0;
+	private int indexAxisY = 1;
+
+	private long startZeit;
+	private int simulationsSchritte = 0;
+	private Timer simulationTimer;
+	private boolean achsenSichtbar = true;
+
+	int randChar() {
+		return (int) (Math.random() * 256);
+	}
+	
+	double randDouble(double faktor) {
+		return faktor*(Math.random()-Math.random());
+	}
+	
+	double randDoublePos(double faktor) {
+		return faktor*(Math.random());
+	}
+	
+	double randDouble2(double faktor) {
+		return faktor*(Math.random()-Math.random())/Math.random();
+	}
+	
+	double randDoublePos2(double faktor) {
+		return faktor*(Math.random())/Math.random();
+	}
+
+	Color randColor() {
+		return new Color(randChar(), randChar(), randChar());
+	}
+
+	public void init() {
+
+		for (int i = 0; i < 2000; i++) {
+			// Konstruiere Unit mit (double x,double y,double z, double vx,double vy,double
+			// vz, double mass, int radius, Color)
+			// Konstruiert aber hier nicht so schön lesbar
+			// kugeln.add(new Unit(0, 0, 0, 0, 0, 0, 100*Math.random(), 10, randColor()));
+
+			// Hier lieber vom default Konstruktor der in der kasse natürlich von mir in seinem default für den Kontext wieder angelegt und modifiziert ist
+			Unit unit = new Unit();
+			unit.x= randDouble(10);
+			unit.y= randDouble(10);
+			unit.z= randDouble(10);
+			unit.vx= randDouble2(0);
+			unit.vy= randDouble2(0);
+			unit.vz= randDouble2(0);
+			unit.mass=100*Math.random()/Math.random();
+			unit.radius=8;
+			unit.color=randColor();
+			unit.pe4=0.5;
+			
+			// neue EntropieMove aktivierung in prozent
+			unit.entropieMoveSpeed2ProCent=70;
+			
+			
+//			if(i==1)unit.vx=1000;
+			
+			unitList.add(unit);
+		}
+
+	}
+
+	public MainGame() {
+		setPreferredSize(new Dimension(1000, 800));
+		setBackground(Color.BLACK);
+		startZeit = System.currentTimeMillis();
+
+		// Setzen der Units für den Start
+		init();
+
+		// ... (Maus-Events für Klick, Drag und Zoom bleiben exakt gleich wie im
+		// vorherigen Code) ...
+		addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					isDraggingCamera = true;
+					lastMouseX = e.getX();
+					lastMouseY = e.getY();
+				} else if (SwingUtilities.isLeftMouseButton(e)) {
+					draggedKugel = null;
+					selectedKugel = null;
+					for (Unit k : unitList) {
+						double valX = k.getVariable(verfuegbareVariablen[indexAxisX]);
+						double valY = k.getVariable(verfuegbareVariablen[indexAxisY]);
+						int screenX = weltZuScreenX(valX);
+						int screenY = weltZuScreenY(valY);
+						int distanz = (int) Math
+								.sqrt(Math.pow(e.getX() - screenX, 2) + Math.pow(e.getY() - screenY, 2));
+						if (distanz <= k.radius + 5) {
+							selectedKugel = k;
+							draggedKugel = k;
+							isDraggingObject = true;
+							lastMouseX = e.getX();
+							lastMouseY = e.getY();
+							break;
+						}
+					}
+					updateInfoText();
+					repaint();
+				}
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e))
+					isDraggingCamera = false;
+				else if (SwingUtilities.isLeftMouseButton(e)) {
+					isDraggingObject = false;
+					draggedKugel = null;
+				}
+			}
+		});
+
+		addMouseMotionListener(new MouseMotionAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				if (isDraggingCamera) {
+					kameraX -= (e.getX() - lastMouseX) / zoom;
+					kameraY += (e.getY() - lastMouseY) / zoom;
+					lastMouseX = e.getX();
+					lastMouseY = e.getY();
+					repaint();
+				} else if (isDraggingObject && draggedKugel != null) {
+					int deltaX = e.getX() - lastMouseX;
+					int deltaY = e.getY() - lastMouseY;
+					double alterWertX = draggedKugel.getVariable(verfuegbareVariablen[indexAxisX]);
+					double alterWertY = draggedKugel.getVariable(verfuegbareVariablen[indexAxisY]);
+					draggedKugel.setVariable(verfuegbareVariablen[indexAxisX], alterWertX + (deltaX / zoom));
+					draggedKugel.setVariable(verfuegbareVariablen[indexAxisY], alterWertY - (deltaY / zoom));
+					lastMouseX = e.getX();
+					lastMouseY = e.getY();
+					updateInfoText();
+					repaint();
+				}
+			}
+		});
+
+		addMouseWheelListener(e -> {
+			if (e.getWheelRotation() < 0)
+				zoom *= 1.1;
+			else
+				zoom /= 1.1;
+			if (zoom < Double.MIN_VALUE)
+				zoom = Double.MIN_VALUE;
+			if (selectedKugel != null)
+				updateInfoText();
+			repaint();
+		});
+
+		// TASTATUR-STEUERUNG
+		setFocusable(true);
+		addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_A) {
+					achsenSichtbar = !achsenSichtbar;
+					repaint();
+				} else if (e.getKeyCode() == KeyEvent.VK_H) {
+					indexAxisX = (indexAxisX + 1) % verfuegbareVariablen.length;
+					updateInfoText();
+					repaint();
+				} else if (e.getKeyCode() == KeyEvent.VK_V) {
+					indexAxisY = (indexAxisY + 1) % verfuegbareVariablen.length;
+					updateInfoText();
+					repaint();
+				}
+
+				// NEUE TASTEN FÜR DIE OBJEKT-STEUERUNG
+				else if (e.getKeyCode() == KeyEvent.VK_P) {
+					if (selectedKugel != null) {
+						selectedKugel.updatePositionAktiv = !selectedKugel.updatePositionAktiv;
+						updateInfoText();
+					}
+				} else if (e.getKeyCode() == KeyEvent.VK_E) {
+					if (selectedKugel != null) {
+						selectedKugel.entropieMoveAktiv = !selectedKugel.entropieMoveAktiv;
+						updateInfoText();
+					}
+				}
+			}
+		});
+
+		// DER SIMULATIONSTIMER
+		// Hier hat die KI was hin generiert was der gameloop sein könnte
+		simulationTimer = new Timer(100, e -> {
+			// Hier wird JETZT NUR NOCH update() aufgerufen!
+			for (Unit k : unitList) {
+				k.update();
+				k.randEntropie4(unitList.get((int)(unitList.size()*Math.random())));
+			}
+			simulationsSchritte++;
+			if (selectedKugel != null)
+				updateInfoText();
+			repaint();
+		});
+		simulationTimer.start();
+	}
+
+	private void updateInfoText() {
+		infoText.setLength(0);
+		long aktuelleZeit = System.currentTimeMillis();
+		long abgelaufeneZeit = aktuelleZeit - startZeit;
+		long sekunden = abgelaufeneZeit / 1000;
+		long millisekunden = abgelaufeneZeit % 1000;
+
+		infoText.append("=== SIMULATIONS-STATUS ===\n");
+		infoText.append(
+				String.format("Abgelaufen: %d.%03d s | Schritte: %d\n", sekunden, millisekunden, simulationsSchritte));
+		infoText.append(String.format("Achse H (H): %s | Achse V (V): %s\n", verfuegbareVariablen[indexAxisX],
+				verfuegbareVariablen[indexAxisY]));
+		infoText.append("\n");
+
+		if (selectedKugel != null) {
+			infoText.append("=== AUSGEWÄHLTE KUGEL ===\n");
+			infoText.append(String.format("Position Update (P): %s\n",
+					selectedKugel.updatePositionAktiv ? "AKTIV" : "inaktiv"));
+			infoText.append(
+					String.format("Entropie Move (E): %s\n", selectedKugel.entropieMoveAktiv ? "AKTIV" : "inaktiv"));
+			infoText.append("\n--- POSITIONEN ---\n");
+			infoText.append(
+					String.format("x: %.2f | y: %.2f | z: %.2f\n", selectedKugel.x, selectedKugel.y, selectedKugel.z));
+			infoText.append("\n--- GESCHWINDIGKEITEN ---\n");
+			infoText.append(String.format("vx: %.2f | vy: %.2f | vz: %.2f\n", selectedKugel.vx, selectedKugel.vy,
+					selectedKugel.vz));
+			infoText.append("\n--- EIGENSCHAFTEN ---\n");
+			infoText.append(String.format("Masse: %.2f | Radius: %d\n", selectedKugel.mass, selectedKugel.radius));
+		} else {
+			infoText.append("=== KEINE KUGEL AUSGEWÄHLT ===\n");
+		}
+	}
+
+	// ... (paintComponent, berechneSchrittweite, formatiereZahl und
+	// Transformationsmethoden bleiben exakt gleich) ...
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		int breite = getWidth();
+		int hoehe = getHeight();
+
+		if (achsenSichtbar) {
+			g2.setColor(Color.GREEN);
+			g2.setStroke(new BasicStroke(2));
+			g2.drawLine(0, weltZuScreenY(0), breite, weltZuScreenY(0));
+			g2.drawLine(weltZuScreenX(0), 0, weltZuScreenX(0), hoehe);
+			g2.setFont(new Font("Monospaced", Font.PLAIN, 11));
+			g2.setColor(Color.LIGHT_GRAY);
+			double schrittweite = berechneSchrittweite();
+			double startX = Math.floor(screenZuWeltX(0) / schrittweite) * schrittweite;
+			double startY = Math.floor(screenZuWeltY(hoehe) / schrittweite) * schrittweite;
+			for (double x = startX; x < screenZuWeltX(breite); x += schrittweite) {
+				if (Math.abs(x) > schrittweite / 10) {
+					int screenX = weltZuScreenX(x);
+					int achsenY = weltZuScreenY(0);
+					if (screenX >= 0 && screenX < breite) {
+						g2.drawLine(screenX, achsenY - 5, screenX, achsenY + 5);
+						g2.drawString(formatiereZahl(x), screenX - 20, achsenY + 18);
+					}
+				}
+			}
+			for (double y = startY; y < screenZuWeltY(0); y += schrittweite) {
+				if (Math.abs(y) > schrittweite / 10) {
+					int screenY = weltZuScreenY(y);
+					int achsenX = weltZuScreenX(0);
+					if (screenY >= 0 && screenY < hoehe) {
+						g2.drawLine(achsenX - 5, screenY, achsenX + 5, screenY);
+						g2.drawString(formatiereZahl(y), achsenX + 10, screenY + 5);
+					}
+				}
+			}
+			g2.setFont(new Font("Monospaced", Font.BOLD, 13));
+			g2.setColor(Color.YELLOW);
+			g2.drawString(verfuegbareVariablen[indexAxisX] + " →", breite - 100, weltZuScreenY(0) - 10);
+			g2.drawString("↑ " + verfuegbareVariablen[indexAxisY], weltZuScreenX(0) + 10, 20);
+		}
+
+		for (Unit k : unitList) {
+			double valX = k.getVariable(verfuegbareVariablen[indexAxisX]);
+			double valY = k.getVariable(verfuegbareVariablen[indexAxisY]);
+			int kugelX = weltZuScreenX(valX);
+			int kugelY = weltZuScreenY(valY);
+			g2.setColor(k.color);
+			g2.fillOval(kugelX - k.radius, kugelY - k.radius, k.radius * 2, k.radius * 2);
+			if (k == selectedKugel) {
+				g2.setColor(Color.YELLOW);
+				g2.setStroke(new BasicStroke(3));
+				g2.drawOval(kugelX - k.radius - 5, kugelY - k.radius - 5, (k.radius + 5) * 2, (k.radius + 5) * 2);
+			}
+		}
+
+		if (infoText.length() > 0) {
+			g2.setColor(Color.WHITE);
+			g2.setFont(new Font("Monospaced", Font.PLAIN, 12));
+			String[] zeilen = infoText.toString().split("\n");
+			for (int i = 0; i < zeilen.length; i++)
+				g2.drawString(zeilen[i], 20, 30 + i * 16);
+		}
+		g2.setColor(Color.GRAY);
+		g2.setFont(new Font("Monospaced", Font.PLAIN, 11));
+		g2.drawString("H/V: Achsen | P: Pos-Update | E: Entropie | A: Achsen ein/aus", 20, hoehe - 20);
+	}
+
+	private double berechneSchrittweite() {
+		double sichtbareBreite = getWidth() / zoom;
+		double roheSchrittweite = sichtbareBreite / 10.0;
+		if (roheSchrittweite < Double.MIN_VALUE * 100)
+			return Double.MIN_VALUE * 100;
+		double exponent = Math.floor(Math.log10(Math.abs(roheSchrittweite)));
+		double basis = Math.pow(10, exponent);
+		double faktor = roheSchrittweite / basis;
+		if (faktor < 2)
+			return basis;
+		if (faktor < 5)
+			return 2 * basis;
+		return 5 * basis;
+	}
+
+	private String formatiereZahl(double wert) {
+		if (wert == 0)
+			return "0";
+		double absWert = Math.abs(wert);
+		if (absWert >= 1e6 || absWert < 0.001) {
+			int exponent = (int) Math.floor(Math.log10(absWert));
+			double mantisse = wert / Math.pow(10, exponent);
+			return String.format("%.1fe%d", mantisse, exponent);
+		} else {
+			return String.format("%.1f", wert);
+		}
+	}
+
+	private int weltZuScreenX(double weltX) {
+		double e = getWidth() / 2.0 + (weltX - kameraX) * zoom;
+		return (int) e;
+	}
+
+	private int weltZuScreenY(double weltY) {
+		double e = getHeight() / 2.0 - (weltY - kameraY) * zoom;
+		return (int) e;
+	}
+
+	private double screenZuWeltX(int screenX) {
+		return (screenX - getWidth() / 2.0) / zoom + kameraX;
+	}
+
+	private double screenZuWeltY(int screenY) {
+		return -(screenY - getHeight() / 2.0) / zoom + kameraY;
+	}
+
+	public static void main(String[] args) {
+		JFrame frame = new JFrame("Matrixgame: Dynamische Achsen-Simulation");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.add(new MainGame());
+		frame.setSize(1200, 900);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+	}
+}
+
+
+
+package ordner1;
+
+import java.awt.Color;
+import java.util.ArrayList;
+
+public class Unit {
+	// --- BASIS & ENTROPIE ---
+	public double basisEntroDouble;
+	public double[] basisentros = new double[100];
+
+	// --- PHYSIKALISCHE GRÖSSEN ---
+	public double x, y, z;
+	public double vx, vy, vz;
+	public double ax, ay, az;
+	public double mass;
+	public int radius;
+	
+	public double maxSpeed=5*Math.random();
+
+	public double EKin;
+	public double Ex, Ey, Ez;
+	public double time = 255.0;
+	double pe4;
+
+	// --- FARBEN & ZUSTAND ---
+	public double rot, green, blue;
+	public Color color;
+	public boolean movable = true;
+	public boolean leben = true;
+
+	// --- SIMULATIONS-STEUERUNG (NEU) ---
+	// Standardmäßig alles auf false, damit das Objekt ruhig ist
+	public boolean updatePositionAktiv = false;
+	public boolean entropieMoveAktiv = false;
+	public String algorithmus = "HALTEN";
+	// Ich finde es hier erst einmal allgemein gut den Wert als double ohne public
+	// oder privat zu definieren oder zu setzen mit 0 im default und sichtbar und
+	// änderbar in package
+	double entropieMoveSpeed2ProCent;
+
+	// --- KONSTRUKTOREN ---
+	public Unit(double x, double y, double z, double vx, double vy, double vz, double mass, int radius, Color color) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.vx = vx;
+		this.vy = vy;
+		this.vz = vz;
+		this.mass = mass;
+		this.radius = radius;
+		setColorSafe(color);
+	}
+
+	public Unit() {
+		this(0, 0, 0, 0, 0, 0, 10, 10, Color.CYAN);
+	}
+
+	private void setColorSafe(Color c) {
+		this.color = c != null ? c : Color.WHITE;
+		this.rot = this.color.getRed();
+		this.green = this.color.getGreen();
+		this.blue = this.color.getBlue();
+	}
+
+	// --- DYNAMISCHER ZUGRIFF ---
+	public double getVariable(String name) {
+		switch (name.toLowerCase()) {
+		case "x":
+			return x;
+		case "y":
+			return y;
+		case "z":
+			return z;
+		case "vx":
+			return vx;
+		case "vy":
+			return vy;
+		case "vz":
+			return vz;
+		case "mass":
+		case "masse":
+			return mass;
+		case "radius":
+			return radius;
+		case "ekin":
+			return EKin;
+		case "time":
+			return time;
+		default:
+			return 0.0;
+		}
+	}
+
+	public void setVariable(String name, double wert) {
+		switch (name.toLowerCase()) {
+		case "x":
+			x = wert;
+			break;
+		case "y":
+			y = wert;
+			break;
+		case "z":
+			z = wert;
+			break;
+		case "vx":
+			vx = wert;
+			break;
+		case "vy":
+			vy = wert;
+			break;
+		case "vz":
+			vz = wert;
+			break;
+		case "mass":
+		case "masse":
+			mass = wert;
+			break;
+		case "radius":
+			radius = (int) wert;
+			break;
+		case "ekin":
+			EKin = wert;
+			break;
+		case "time":
+			time = wert;
+			break;
+		}
+	}
+
+	// --- DIE ZENTRALE UPDATE-METHODE ---
+	// Wird einmal pro Zeitschritt vom Canvas aufgerufen
+	public void update() {
+
+		if (entropieMoveSpeed2ProCent > (Math.random() * 100)) {
+			entropieMoveSpeed2();
+		}
+
+		// 1. Entropie-Bewegung (wenn aktiviert)
+		if (entropieMoveAktiv) {
+			entropieMove();
+		}
+
+		// 2. Positions-Update (wenn aktiviert)
+		if (updatePositionAktiv) {
+			updatePosition(1.0); // 1.0 als Standard-Zeitschritt-Faktor
+		}
+		
+		// 
+//		if(randEntropie2ProCent>(Math.random() * 100)) {
+//			randEntro();
+//		}
+
+		// Hier können später weitere Updates folgen, z.B.:
+		// if (gravitationAktiv) { ... }
+		// if (colorUpdateAktiv) { updateColor(); }
+	}
+
+	// --- DIE EINZELNEN VERHALTENSMETHODEN ---
+
+	public void updatePosition(double timeStep) {
+		this.x += (this.vx * timeStep);
+		this.y += (this.vy * timeStep);
+		this.z += (this.vz * timeStep);
+	}
+
+	public void entropieMove() {
+		int rand = (int) (Math.random() * 8);
+		if (rand < 2)
+			return;
+		if (rand == 2)
+			x++;
+		if (rand == 3)
+			x--;
+		if (rand == 4)
+			y++;
+		if (rand == 5)
+			y--;
+		if (rand == 6)
+			z++;
+		if (rand == 7)
+			z--;
+	}
+
+	public void entropieMoveSpeed2() {
+		// Bewege dich in jede Richtung per Random * Geschwindigkeit
+		x = x + vx * Math.random();
+		y = y + vy * Math.random();
+		z = z + vz * Math.random();
+	}
+
+	public void entropieMoveSpeed() {
+		// Bewege dich in jede Richtung per Random * Geschwindigkeit
+		x = x + vx * Math.random() + Math.random() - Math.random();
+		y = y + vy * Math.random() + Math.random() - Math.random();
+		z = z + vz * Math.random() + Math.random() - Math.random();
+	}
+
+	public void entropieMoveSpeedPyt() {
+		// Bewege dich in jede Richtung per Random * Geschwindigkeit
+		// vx^2+vy^2+vz^2 <= Geschwindigkeit^2
+		// später weiter
+
+		x = x + vx * Math.pow(Math.random(), 0.5);
+		y = y + vy * Math.random();
+		z = z + vz * Math.random();
+	}
+
+	// allgemein für zwei doubles
+	void randEntro() {
+
+	}
+
+	public void randEntropie3(Unit other) {
+
+//		if (Math.random() > 0.01) {
+//			double x = Math.random() * this.x;
+//			this.x = this.x + other.x * Math.random();
+//			other.x = other.x + x;
+//		}
+		if (Math.random() > 0.0001) {
+			double y1 = Math.random() * this.y;
+			double y2=other.y * Math.random();
+			this.y = this.y + y2;
+			other.y = other.y + y1;
+			this.y=this.y-y1;
+			other.y=other.y-y2;
+		}
+		if (Math.random() > 0.0001) {
+			double x1 = Math.random() * this.x;
+			double x2=other.x * Math.random();
+			this.x = this.x + x2;
+			other.x = other.x + x1;
+			this.x=this.x-x1;
+			other.x=other.x-x2;
+		}
+		
+		if (Math.random() > 0.00001) {
+			double z1 = Math.random() * this.z;
+			double z2=other.z * Math.random();
+			this.z = this.z - z1;
+			other.z = other.z + z2;
+			this.z=this.z+z1;
+			
+			other.z=other.z-z2;
+		}
+		
+		
+
+		// Das mit allen Variablen der Unit
+
+	}
+	
+	public void randEntropie4(Unit other) {
+
+//		if (Math.random() > 0.01) {
+//			double x = Math.random() * this.x;
+//			this.x = this.x + other.x * Math.random();
+//			other.x = other.x + x;
+//		}
+			double x1 = Math.random() * (other.x-this.x);
+			double y1 = Math.random() * (other.y-this.y);
+			double z1 = Math.random() * (other.z-this.z);
+			while(x1*x1+y1*y1+z1*z1>this.maxSpeed*this.maxSpeed/Math.random()*Math.random()) {if(Math.random()>0.5)return;x1*=Math.random();y1*=Math.random();z1*=Math.random();}
+			if (Math.random() >pe4) {
+		
+			this.vx = this.vx +x1;
+			other.vx = other.vx - x1;
+			this.x+=x1;
+			other.x-=x1;
+			
+		
+		
+		if (Math.random() > pe4) {
+			
+		
+			this.vy = this.vy +y1;
+			other.vy = other.vy - y1;
+			this.y+=y1;
+			other.y-=y1;
+			
+		
+		
+		if (Math.random() > pe4) {
+		
+		
+			this.vz = this.vz +z1;
+			this.z+=z1;
+			other.vz = other.vz - z1;
+			other.z-=z1;
+			
+		}}}
+//		if (Math.random() > 0.0001) {
+//			double x1 = Math.random() * this.x;
+//			double x2=other.x * Math.random();
+//			this.x = this.x + x2;
+//			other.x = other.x + x1;
+//			this.x=this.x-x1;
+//			other.x=other.x-x2;
+//		}
+//		
+//		if (Math.random() > 0.00001) {
+//			double z1 = Math.random() * this.z;
+//			double z2=other.z * Math.random();
+//			this.z = this.z - z1;
+//			other.z = other.z + z2;
+//			this.z=this.z+z1;
+//			
+//			other.z=other.z-z2;
+		}
+	
+	public void randEntropie2(Unit other) {
+
+		if (Math.random() > 0.1) {
+			if(this.x<other.x) {this.vx+=Math.random();other.vx-=Math.random();}
+			if(this.y<other.y) {this.vy+=Math.random();other.vy-=Math.random();}
+			if(this.z<other.z) {this.vz+=Math.random();other.vz-=Math.random();}
+		
+		
+		}}
+
+	// (Die restlichen Methoden wie gravity, angleichen etc. bleiben hier
+	// unverändert erhalten)
+}
+
+
+package ordner1;
+
+//ndeas Schneider Hypothese für Wissenschaft und Open Sourc Anwendung und Unterstützung gesucht: 
+//27.08.2026 Beweis durch Compilierbaren Java Code und weiteren Projekten und berichten und Kontaktwunsch und Mehr:
+//package ordner2;
+
+public class ElementareMassenVerhältnisseZurValidierungUndSeriousGamifizierung {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		System.out.println("Hello Universe");
+
+		double elektronenMasse = 9.1093837139 * Math.pow(10, -31);
+
+		System.out.println("Die Elektronenmasse Begründet durch unsere Wissenschaft und das sehr gut: = "
+				+ elektronenMasse + " kg");
+		double sechstelElektronenMasse = elektronenMasse / 6.0;
+		System.out.println("Die sechstel Elektronen Masse = " + elektronenMasse / 6.0);
+
+		double protonenMasse = 1.67262192595 * Math.pow(10, -27);// kg"
+
+		System.out.println("Die Protonen Masse = " + protonenMasse);
+
+		System.out.println("protonenMasse/sechstelElektronenMasse" + protonenMasse / sechstelElektronenMasse);
+
+		System.out.println("Lässt sich schön aufrunden aber wir runden hier ab, um die Simmetrie zu beweisen: "
+				+ (int) (protonenMasse / sechstelElektronenMasse));
+
+		double symmetrieZahl = 11016.0;
+		double RaumSymmetrien = 11016 / 8.0; // =1377.0
+		double RaumSymmetrie2 = 11016 / 8.0 / 3 / 3 / 3;
+
+		System.out.println("11016 Dividiert erst durch 8 und durch 27 :" + RaumSymmetrie2);
+
+		System.out.println(
+				"Nach division durch 8 für den 3D Raum gibt es ein erstes ganzzahl Ergebnis: " + RaumSymmetrien);
+
+		System.out.println("Dieses erneut durch 27 dividieren: " + RaumSymmetrien / 27.0);
+
+		System.out.println(
+				"Das Ergebnis lässt sich jetzt ein weiteres Mal durch 3 sowie durch den Primfaktor 17 zerlegen und kann in Zukunft, sowohl für mich wie auch andere Meschen wie mich und die open source community und die Wissenschaft und Weiters geeignet Genutzt und weiter Nutzbar und Validierbarer und Weiteres gutes damit gemacht werden so das wir alle mit schöner Didaktik gewinnen und weitere Fortschritte folgen. Vielen Dank");
+
+		System.out.println(
+				"Autor und nach Unterstützung und Diskusionen und Perreview und Ausbau für die allgemeine und Kollektive Nutzung und zu meinem ssowie dem Vorteil und Gewinn für die Menschheit und Wissenschft und Weitere Intelligenzen: Andreas Schneider Eberstadt-Darmstadt Facebook: https://www.facebook.com/ , HandyNummer: +491778627094, Email: andreas.schneider01989@gmail.com, GitHub: https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit");
+//		Elementare Massen
+//		Teilchenphysik für das Matrixgame und die Kollektiven Ki-Games
+//		07.02.2026 Andreas Schneider, Deutschland, Darmstadt-Eberstadt, Weingartenstraße 45
+//
+//		Nukleonen
+//		Teilchen, Typ, “Masse in kg”
+//		Proton, Nukleon, "≈1,67262192595×10−27 kg"
+//		Neutron (n), Nukleon, "≈1,67493×10−27 kg"
+//
+//
+//		Quarks
+//		Teilchen,Typ,”Masse in kg (ca.)”, ‘Ladung’
+//		Up-Quark(u),Quark,"3,9×10^−30 kg", ‘+2/3e’
+//		Down-Quark(d),Quark,"8,4×10^−30 kg", ‘-1/3e’
+//		Strange-Quark(s),Quark,"1,7×10^−28 kg", ‘-1/3e’
+//		Charm-Quark(c),Quark,"2,3×10^−27 kg", ‘+2/3e’
+//		Bottom-Quark(b),Quark,"7,5×10^−27 kg", ‘-1/3e’
+//		Top-Quark(t),Quark,"3,1×10^−25 kg", ‘+2/3e’
+//
+//
+//		Leptonen
+//		Masse Elektron (me​): 9,1093837139×10−31 kg
+//
+//		
+
+	}
+}
+
+
+
+package ordner1;
+
+import java.awt.Color;
+import java.util.ArrayList;
+
+public class Unit {
+	// --- BASIS & ENTROPIE ---
+	public double basisEntroDouble;
+	public double[] basisentros = new double[100];
+
+	// --- PHYSIKALISCHE GRÖSSEN ---
+	public double x, y, z;
+	public double vx, vy, vz;
+	public double ax, ay, az;
+	public double mass;
+	public int radius;
+	
+	public double maxSpeed=5*Math.random();
+
+	public double EKin;
+	public double Ex, Ey, Ez;
+	public double time = 255.0;
+	double pe4;
+
+	// --- FARBEN & ZUSTAND ---
+	public double rot, green, blue;
+	public Color color;
+	public boolean movable = true;
+	public boolean leben = true;
+
+	// --- SIMULATIONS-STEUERUNG (NEU) ---
+	// Standardmäßig alles auf false, damit das Objekt ruhig ist
+	public boolean updatePositionAktiv = false;
+	public boolean entropieMoveAktiv = false;
+	public String algorithmus = "HALTEN";
+	// Ich finde es hier erst einmal allgemein gut den Wert als double ohne public
+	// oder privat zu definieren oder zu setzen mit 0 im default und sichtbar und
+	// änderbar in package
+	double entropieMoveSpeed2ProCent;
+
+	// --- KONSTRUKTOREN ---
+	public Unit(double x, double y, double z, double vx, double vy, double vz, double mass, int radius, Color color) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.vx = vx;
+		this.vy = vy;
+		this.vz = vz;
+		this.mass = mass;
+		this.radius = radius;
+		setColorSafe(color);
+	}
+
+	public Unit() {
+		this(0, 0, 0, 0, 0, 0, 10, 10, Color.CYAN);
+	}
+
+	private void setColorSafe(Color c) {
+		this.color = c != null ? c : Color.WHITE;
+		this.rot = this.color.getRed();
+		this.green = this.color.getGreen();
+		this.blue = this.color.getBlue();
+	}
+
+	// --- DYNAMISCHER ZUGRIFF ---
+	public double getVariable(String name) {
+		switch (name.toLowerCase()) {
+		case "x":
+			return x;
+		case "y":
+			return y;
+		case "z":
+			return z;
+		case "vx":
+			return vx;
+		case "vy":
+			return vy;
+		case "vz":
+			return vz;
+		case "mass":
+		case "masse":
+			return mass;
+		case "radius":
+			return radius;
+		case "ekin":
+			return EKin;
+		case "time":
+			return time;
+		default:
+			return 0.0;
+		}
+	}
+
+	public void setVariable(String name, double wert) {
+		switch (name.toLowerCase()) {
+		case "x":
+			x = wert;
+			break;
+		case "y":
+			y = wert;
+			break;
+		case "z":
+			z = wert;
+			break;
+		case "vx":
+			vx = wert;
+			break;
+		case "vy":
+			vy = wert;
+			break;
+		case "vz":
+			vz = wert;
+			break;
+		case "mass":
+		case "masse":
+			mass = wert;
+			break;
+		case "radius":
+			radius = (int) wert;
+			break;
+		case "ekin":
+			EKin = wert;
+			break;
+		case "time":
+			time = wert;
+			break;
+		}
+	}
+
+	// --- DIE ZENTRALE UPDATE-METHODE ---
+	// Wird einmal pro Zeitschritt vom Canvas aufgerufen
+	public void update() {
+
+		if (entropieMoveSpeed2ProCent > (Math.random() * 100)) {
+			entropieMoveSpeed2();
+		}
+
+		// 1. Entropie-Bewegung (wenn aktiviert)
+		if (entropieMoveAktiv) {
+			entropieMove();
+		}
+
+		// 2. Positions-Update (wenn aktiviert)
+		if (updatePositionAktiv) {
+			updatePosition(1.0); // 1.0 als Standard-Zeitschritt-Faktor
+		}
+		
+		// 
+//		if(randEntropie2ProCent>(Math.random() * 100)) {
+//			randEntro();
+//		}
+
+		// Hier können später weitere Updates folgen, z.B.:
+		// if (gravitationAktiv) { ... }
+		// if (colorUpdateAktiv) { updateColor(); }
+	}
+
+	// --- DIE EINZELNEN VERHALTENSMETHODEN ---
+
+	public void updatePosition(double timeStep) {
+		this.x += (this.vx * timeStep);
+		this.y += (this.vy * timeStep);
+		this.z += (this.vz * timeStep);
+	}
+
+	public void entropieMove() {
+		int rand = (int) (Math.random() * 8);
+		if (rand < 2)
+			return;
+		if (rand == 2)
+			x++;
+		if (rand == 3)
+			x--;
+		if (rand == 4)
+			y++;
+		if (rand == 5)
+			y--;
+		if (rand == 6)
+			z++;
+		if (rand == 7)
+			z--;
+	}
+
+	public void entropieMoveSpeed2() {
+		// Bewege dich in jede Richtung per Random * Geschwindigkeit
+		x = x + vx * Math.random();
+		y = y + vy * Math.random();
+		z = z + vz * Math.random();
+	}
+
+	public void entropieMoveSpeed() {
+		// Bewege dich in jede Richtung per Random * Geschwindigkeit
+		x = x + vx * Math.random() + Math.random() - Math.random();
+		y = y + vy * Math.random() + Math.random() - Math.random();
+		z = z + vz * Math.random() + Math.random() - Math.random();
+	}
+
+	public void entropieMoveSpeedPyt() {
+		// Bewege dich in jede Richtung per Random * Geschwindigkeit
+		// vx^2+vy^2+vz^2 <= Geschwindigkeit^2
+		// später weiter
+
+		x = x + vx * Math.pow(Math.random(), 0.5);
+		y = y + vy * Math.random();
+		z = z + vz * Math.random();
+	}
+
+	// allgemein für zwei doubles
+	void randEntro() {
+
+	}
+
+	public void randEntropie3(Unit other) {
+
+//		if (Math.random() > 0.01) {
+//			double x = Math.random() * this.x;
+//			this.x = this.x + other.x * Math.random();
+//			other.x = other.x + x;
+//		}
+		if (Math.random() > 0.0001) {
+			double y1 = Math.random() * this.y;
+			double y2=other.y * Math.random();
+			this.y = this.y + y2;
+			other.y = other.y + y1;
+			this.y=this.y-y1;
+			other.y=other.y-y2;
+		}
+		if (Math.random() > 0.0001) {
+			double x1 = Math.random() * this.x;
+			double x2=other.x * Math.random();
+			this.x = this.x + x2;
+			other.x = other.x + x1;
+			this.x=this.x-x1;
+			other.x=other.x-x2;
+		}
+		
+		if (Math.random() > 0.00001) {
+			double z1 = Math.random() * this.z;
+			double z2=other.z * Math.random();
+			this.z = this.z - z1;
+			other.z = other.z + z2;
+			this.z=this.z+z1;
+			
+			other.z=other.z-z2;
+		}
+		
+		
+
+		// Das mit allen Variablen der Unit
+
+	}
+	
+	public void randEntropie4(Unit other) {
+
+//		if (Math.random() > 0.01) {
+//			double x = Math.random() * this.x;
+//			this.x = this.x + other.x * Math.random();
+//			other.x = other.x + x;
+//		}
+			double x1 = Math.random() * (other.x-this.x);
+			double y1 = Math.random() * (other.y-this.y);
+			double z1 = Math.random() * (other.z-this.z);
+			while(x1*x1+y1*y1+z1*z1>this.maxSpeed*this.maxSpeed/Math.random()*Math.random()) {if(Math.random()>0.5)return;x1*=Math.random();y1*=Math.random();z1*=Math.random();}
+			if (Math.random() >pe4) {
+		
+			this.vx = this.vx +x1;
+			other.vx = other.vx - x1;
+			this.x+=x1;
+			other.x-=x1;
+			
+		
+		
+		if (Math.random() > pe4) {
+			
+		
+			this.vy = this.vy +y1;
+			other.vy = other.vy - y1;
+			this.y+=y1;
+			other.y-=y1;
+			
+		
+		
+		if (Math.random() > pe4) {
+		
+		
+			this.vz = this.vz +z1;
+			this.z+=z1;
+			other.vz = other.vz - z1;
+			other.z-=z1;
+			
+		}}}
+//		if (Math.random() > 0.0001) {
+//			double x1 = Math.random() * this.x;
+//			double x2=other.x * Math.random();
+//			this.x = this.x + x2;
+//			other.x = other.x + x1;
+//			this.x=this.x-x1;
+//			other.x=other.x-x2;
+//		}
+//		
+//		if (Math.random() > 0.00001) {
+//			double z1 = Math.random() * this.z;
+//			double z2=other.z * Math.random();
+//			this.z = this.z - z1;
+//			other.z = other.z + z2;
+//			this.z=this.z+z1;
+//			
+//			other.z=other.z-z2;
+		}
+	
+	public void randEntropie2(Unit other) {
+
+		if (Math.random() > 0.1) {
+			if(this.x<other.x) {this.vx+=Math.random();other.vx-=Math.random();}
+			if(this.y<other.y) {this.vy+=Math.random();other.vy-=Math.random();}
+			if(this.z<other.z) {this.vz+=Math.random();other.vz-=Math.random();}
+		
+		
+		}}
+
+	// (Die restlichen Methoden wie gravity, angleichen etc. bleiben hier
+	// unverändert erhalten)
+}
