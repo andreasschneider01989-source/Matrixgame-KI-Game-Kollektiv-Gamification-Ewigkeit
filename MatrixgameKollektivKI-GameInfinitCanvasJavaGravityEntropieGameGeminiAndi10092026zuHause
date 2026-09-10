@@ -1,0 +1,389 @@
+package ordner3;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
+import java.util.List;
+
+// =====================================================================
+// MATRIXGAME: PILOTED INFINITY CANVAS & DUAL-FLIGHT ENGINE
+// =====================================================================
+class Unit {
+    double x, y, z;
+    double vx, vy, vz;
+    double mass, radius;
+    Color color;
+    
+    boolean updatePositionAktiv = true;
+    boolean entropieMoveAktiv = true;
+    double entropieMoveSpeed2ProCent = 70;
+    double pe4 = 0.5;
+
+    public Unit() {}
+
+    public double getVariable(String varName) {
+        switch (varName) {
+            case "x": return x;
+            case "y": return y;
+            case "z": return z;
+            case "vx": return vx;
+            case "vy": return vy;
+            case "vz": return vz;
+            case "mass": return mass;
+            case "radius": return radius;
+            case "ekin": return 0.5 * mass * (vx*vx + vy*vy + vz*vz);
+            default: return 0.0;
+        }
+    }
+
+    public void setVariable(String varName, double val) {
+        switch (varName) {
+            case "x": x = val; break;
+            case "y": y = val; break;
+            case "z": z = val; break;
+            case "vx": vx = val; break;
+            case "vy": vy = val; break;
+            case "vz": vz = val; break;
+            case "mass": mass = Math.max(0.1, val); radius = Math.min(12, Math.max(2, Math.cbrt(mass))); break;
+            case "radius": radius = val; break;
+        }
+    }
+
+    public void update() {
+        if (updatePositionAktiv) {
+            x += vx * 0.05;
+            y += vy * 0.05;
+            z += vz * 0.05;
+        }
+        if (entropieMoveAktiv && Math.random() * 100 < entropieMoveSpeed2ProCent) {
+            vx += (Math.random() - 0.5) * pe4;
+            vy += (Math.random() - 0.5) * pe4;
+            vz += (Math.random() - 0.5) * pe4;
+        }
+    }
+
+    public void randEntropie4(Unit other) {
+        double dx = other.x - this.x;
+        double dy = other.y - this.y;
+        double dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist > 0 && dist < 50) {
+            vx += (dx / dist) * 0.02;
+            vy += (dy / dist) * 0.02;
+        }
+    }
+
+    public double getDistance(Unit other) {
+        return Math.sqrt(Math.pow(other.x - x, 2) + Math.pow(other.y - y, 2) + Math.pow(other.z - z, 2));
+    }
+
+    public void fressen(Unit other) {
+        this.mass += other.mass * 0.1;
+        this.radius = Math.min(15, Math.max(2, Math.cbrt(this.mass)));
+    }
+
+    public void teilen() {
+        if (this.mass > 50) {
+            this.mass /= 2;
+            this.vx += (Math.random() - 0.5) * 5;
+            this.vy += (Math.random() - 0.5) * 5;
+        }
+    }
+}
+
+public class MainGame extends JPanel {
+    private List<Unit> unitList = new ArrayList<>();
+    private Unit selectedKugel = null;
+    private Unit draggedKugel = null;
+    private double zoom = 15.0;
+    private StringBuilder infoText = new StringBuilder();
+
+    private double kameraX = 0;
+    private double kameraY = 0;
+
+    private boolean isDraggingCamera = false;
+    private boolean isDraggingObject = false;
+    private int lastMouseX, lastMouseY;
+
+    private String[] verfuegbareVariablen = { "x", "y", "z", "vx", "vy", "vz", "mass", "radius", "ekin" };
+    private int indexAxisX = 0;
+    private int indexAxisY = 1;
+
+    private long startZeit;
+    private int simulationsSchritte = 0;
+    private Timer simulationTimer;
+    private boolean achsenSichtbar = true;
+    
+    // Steuerungs-Zustände
+    private boolean skaliereRadiusMitZoom = false;
+    private boolean inVacuumMode = false; // false = Äther/Reibung, true = Vakuum/Trägheit
+    private boolean keyW = false, keyA = false, keyS = false, keyD = false;
+
+    int randChar() { return (int) (Math.random() * 256); }
+    Color randColor() { return new Color(randChar(), randChar(), randChar()); }
+
+    public void init() {
+        for (int i = 0; i < 1500; i++) {
+            Unit unit = new Unit();
+            unit.x = (Math.random() - 0.5) * 100;
+            unit.y = (Math.random() - 0.5) * 100;
+            unit.z = (Math.random() - 0.5) * 100;
+            unit.vx = (Math.random() - 0.5) * 2;
+            unit.vy = (Math.random() - 0.5) * 2;
+            unit.vz = (Math.random() - 0.5) * 2;
+            unit.mass = 10 + Math.random() * 100;
+            unit.radius = Math.min(10, Math.max(2, Math.cbrt(unit.mass)));
+            unit.color = randColor();
+            unitList.add(unit);
+        }
+    }
+
+    public MainGame() {
+        setPreferredSize(new Dimension(1200, 900));
+        setBackground(Color.BLACK);
+        startZeit = System.currentTimeMillis();
+        init();
+
+        addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    isDraggingCamera = true;
+                    lastMouseX = e.getX();
+                    lastMouseY = e.getY();
+                } else if (SwingUtilities.isLeftMouseButton(e)) {
+                    draggedKugel = null;
+                    selectedKugel = null;
+                    for (Unit k : unitList) {
+                        double valX = k.getVariable(verfuegbareVariablen[indexAxisX]);
+                        double valY = k.getVariable(verfuegbareVariablen[indexAxisY]);
+                        int screenX = (int) (getWidth() / 2.0 + (valX - kameraX) * zoom);
+                        int screenY = (int) (getHeight() / 2.0 - (valY - kameraY) * zoom);
+                        int distanz = (int) Math.hypot(e.getX() - screenX, e.getY() - screenY);
+                        int hitRadius = skaliereRadiusMitZoom ? (int)(k.radius * zoom) : (int)Math.max(4, Math.cbrt(k.mass) * 1.5);
+                        if (distanz <= hitRadius + 4) {
+                            selectedKugel = k;
+                            draggedKugel = k;
+                            isDraggingObject = true;
+                            lastMouseX = e.getX();
+                            lastMouseY = e.getY();
+                            break;
+                        }
+                    }
+                    updateInfoText();
+                    repaint();
+                }
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) isDraggingCamera = false;
+                else if (SwingUtilities.isLeftMouseButton(e)) {
+                    isDraggingObject = false;
+                    draggedKugel = null;
+                }
+            }
+        });
+
+        addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent e) {
+                if (isDraggingCamera) {
+                    kameraX -= (e.getX() - lastMouseX) / zoom;
+                    kameraY += (e.getY() - lastMouseY) / zoom;
+                    lastMouseX = e.getX();
+                    lastMouseY = e.getY();
+                    repaint();
+                } else if (isDraggingObject && draggedKugel != null) {
+                    int deltaX = e.getX() - lastMouseX;
+                    int deltaY = e.getY() - lastMouseY;
+                    double alterX = draggedKugel.getVariable(verfuegbareVariablen[indexAxisX]);
+                    double alterY = draggedKugel.getVariable(verfuegbareVariablen[indexAxisY]);
+                    draggedKugel.setVariable(verfuegbareVariablen[indexAxisX], alterX + (deltaX / zoom));
+                    draggedKugel.setVariable(verfuegbareVariablen[indexAxisY], alterY - (deltaY / zoom));
+                    lastMouseX = e.getX();
+                    lastMouseY = e.getY();
+                    updateInfoText();
+                    repaint();
+                }
+            }
+        });
+
+        addMouseWheelListener(e -> {
+            if (e.getWheelRotation() < 0) zoom *= 1.1;
+            else zoom /= 1.1;
+            if (zoom < 0.0001) zoom = 0.0001;
+            repaint();
+        });
+
+        setFocusable(true);
+        addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_W: keyW = true; break;
+                    case KeyEvent.VK_A: keyA = true; break;
+                    case KeyEvent.VK_S: keyS = true; break;
+                    case KeyEvent.VK_D: keyD = true; break;
+                    case KeyEvent.VK_A_ALT: // Fallbacks
+                    case KeyEvent.VK_LEFT: keyA = true; break;
+                    case KeyEvent.VK_RIGHT: keyD = true; break;
+                    case KeyEvent.VK_UP: keyW = true; break;
+                    case KeyEvent.VK_DOWN: keyS = true; break;
+                    
+                    case KeyEvent.VK_A_KEY:
+                    case KeyEvent.VK_A: achsenSichtbar = !achsenSichtbar; repaint(); break;
+                    case KeyEvent.VK_H: indexAxisX = (indexAxisX + 1) % verfuegbareVariablen.length; updateInfoText(); repaint(); break;
+                    case KeyEvent.VK_V: indexAxisY = (indexAxisY + 1) % verfuegbareVariablen.length; updateInfoText(); repaint(); break;
+                    case KeyEvent.VK_R: skaliereRadiusMitZoom = !skaliereRadiusMitZoom; updateInfoText(); repaint(); break;
+                    case KeyEvent.VK_M: inVacuumMode = !inVacuumMode; updateInfoText(); break;
+                    case KeyEvent.VK_P: if (selectedKugel != null) { selectedKugel.updatePositionAktiv = !selectedKugel.updatePositionAktiv; updateInfoText(); } break;
+                    case KeyEvent.VK_E: if (selectedKugel != null) { selectedKugel.entropieMoveAktiv = !selectedKugel.entropieMoveAktiv; updateInfoText(); } break;
+                }
+            }
+
+            public void keyReleased(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_W: keyW = false; break;
+                    case KeyEvent.VK_A: keyA = false; break;
+                    case KeyEvent.VK_S: keyS = false; break;
+                    case KeyEvent.VK_D: keyD = false; break;
+                }
+            }
+        });
+
+        // Simulations- und Steuerungs-Loop (30 FPS)
+        simulationTimer = new Timer(30, e -> {
+            // 1. WASD-Steuerung auf die selektierte Unit anwenden
+            if (selectedKugel != null) {
+                double fx = 0, fy = 0;
+                if (keyW) fy += 1.0;
+                if (keyS) fy -= 1.0;
+                if (keyA) fx -= 1.0;
+                if (keyD) fx += 1.0;
+
+                if (inVacuumMode) {
+                    // Vakuum / Trägheit: Schubdüsen addieren Beschleunigung
+                    if (fx != 0 || fy != 0) {
+                        selectedKugel.vx += fx * 0.2;
+                        selectedKugel.vy += fy * 0.2;
+                    }
+                } else {
+                    // Äther / Reibung: Direkte Geschwindigkeitssteuerung mit Dämpfung
+                    if (fx != 0 || fy != 0) {
+                        selectedKugel.vx = fx * 3.5;
+                        selectedKugel.vy = fy * 3.5;
+                        selectedKugel.updatePositionAktiv = true;
+                    } else {
+                        selectedKugel.vx *= 0.85; // Sanftes Ausrollen
+                        selectedKugel.vy *= 0.85;
+                    }
+                }
+            }
+
+            // 2. Allgemeine Physik & Update aller Units
+            for (int i = 0; i < unitList.size(); i++) {
+                Unit k = unitList.get(i);
+                k.update();
+                int posOther = (int) (Math.abs(i + k.mass) % unitList.size());
+                if (posOther != i) {
+                    k.randEntropie4(unitList.get(posOther));
+                    if (Math.random() > 0.999 && k.getDistance(unitList.get(posOther)) < 20) {
+                        k.fressen(unitList.get(posOther));
+                    }
+                }
+                if (Math.random() > 0.9999) k.teilen();
+            }
+            simulationsSchritte++;
+            if (selectedKugel != null) updateInfoText();
+            repaint();
+        });
+        simulationTimer.start();
+    }
+
+    private void updateInfoText() {
+        infoText.setLength(0);
+        long abgelaufeneZeit = System.currentTimeMillis() - startZeit;
+        infoText.append("=== MATRIXGAME: PILOT & SIMULATION ===\n");
+        infoText.append(String.format("Zeit: %.1fs | Schritte: %d | Units: %d\n", abgelaufeneZeit / 1000.0, simulationsSchritte, unitList.size()));
+        infoText.append(String.format("Achse H [H]: %s | Achse V [V]: %s\n", verfuegbareVariablen[indexAxisX], verfuegbareVariablen[indexAxisY]));
+        infoText.append(String.format("Radius-Modus [R]: %s\n", skaliereRadiusMitZoom ? "Dynamisch (Welt)" : "Konstant (Bildschirm)"));
+        infoText.append(String.format("Flugmodus [M]: %s\n\n", inVacuumMode ? "VAKUUM / TRÄGHEIT (Newton)" : "ÄTHER / REIBUNG (Arcade)"));
+
+        if (selectedKugel != null) {
+            infoText.append("=== PILOTIEROBAJEKT (GESEUERT PER WASD) ===\n");
+            infoText.append(String.format("Pos-Update [P]: %s | Entropie [E]: %s\n", selectedKugel.updatePositionAktiv ? "AKTIV" : "inaktiv", selectedKugel.entropieMoveAktiv ? "AKTIV" : "inaktiv"));
+            infoText.append(String.format("x: %.2f | y: %.2f | vx: %.2f | vy: %.2f\n", selectedKugel.x, selectedKugel.y, selectedKugel.vx, selectedKugel.vy));
+            infoText.append(String.format("Masse: %.2f | Radius: %.2f\n", selectedKugel.mass, selectedKugel.radius));
+        } else {
+            infoText.append("Klicke eine Unit an, um sie mit WASD zu steuern!");
+        }
+    }
+
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        int breite = getWidth();
+        int hoehe = getHeight();
+
+        AffineTransform oldTransform = g2.getTransform();
+        
+        g2.translate(breite / 2.0 - kameraX * zoom, hoehe / 2.0 + kameraY * zoom);
+        g2.scale(zoom, -zoom);
+
+        if (achsenSichtbar) {
+            g2.setColor(new Color(0, 100, 0, 150));
+            g2.setStroke(new BasicStroke((float)(1.0 / zoom)));
+            g2.drawLine(-1000000, 0, 1000000, 0);
+            g2.drawLine(0, -1000000, 0, 1000000);
+        }
+
+        for (Unit k : unitList) {
+            double valX = k.getVariable(verfuegbareVariablen[indexAxisX]);
+            double valY = k.getVariable(verfuegbareVariablen[indexAxisY]);
+            
+            double r;
+            if (skaliereRadiusMitZoom) {
+                r = Math.max(0.2, k.radius);
+            } else {
+                double pixelSize = Math.max(3.0, Math.min(10.0, Math.cbrt(k.mass) * 1.5));
+                r = pixelSize / zoom;
+            }
+            
+            g2.setColor(k.color);
+            g2.fill(new Ellipse2D.Double(valX - r, valY - r, r * 2, r * 2));
+
+            if (k == selectedKugel) {
+                g2.setColor(Color.YELLOW);
+                double border = (skaliereRadiusMitZoom ? 2.0 : 3.0) / zoom;
+                g2.setStroke(new BasicStroke((float) border));
+                g2.draw(new Ellipse2D.Double(valX - r - border, valY - r - border, (r + border) * 2, (r + border) * 2));
+            }
+        }
+
+        g2.setTransform(oldTransform);
+
+        // --- HUD / UI ---
+        if (infoText.length() > 0) {
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("Monospaced", Font.PLAIN, 12));
+            String[] zeilen = infoText.toString().split("\n");
+            for (int i = 0; i < zeilen.length; i++) {
+                g2.drawString(zeilen[i], 20, 25 + i * 16);
+            }
+        }
+
+        g2.setColor(Color.GRAY);
+        g2.setFont(new Font("Monospaced", Font.PLAIN, 11));
+        g2.drawString(String.format("Zoom: %.4f | WASD: Steuern | M: Flugmodus | R: Radius | Rechtsklick: Pan", zoom), 20, hoehe - 15);
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Matrixgame: Piloted Infinity Canvas Engine");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(new MainGame());
+        frame.setSize(1200, 900);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
