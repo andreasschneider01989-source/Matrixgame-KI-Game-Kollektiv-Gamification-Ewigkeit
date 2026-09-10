@@ -1,0 +1,11 @@
+(game "Name"  
+    (players 2)  
+    (equipment { 
+        (board (square 3)) 
+        (piece "Ball" Each) 
+    })  
+    (rules 
+        (play (move Add (to (sites Empty))))
+        (end (if (no Moves Next) (result Mover Win)))
+    )
+)
