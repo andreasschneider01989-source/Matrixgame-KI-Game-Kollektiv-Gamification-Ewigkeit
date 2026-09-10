@@ -1,0 +1,341 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+
+// =====================================================================
+// MATRIXGAME: UNIVERSAL UNIT SIMULATION (Single-File Engine)
+// =====================================================================
+class Unit {
+    double x, y, z;
+    double vx, vy, vz;
+    double mass, radius;
+    Color color;
+    
+    // Matrixgame-Zustandsvariablen
+    boolean updatePositionAktiv = true;
+    boolean entropieMoveAktiv = true;
+    double entropieMoveSpeed2ProCent = 70;
+    int rot = 255, green = 255, blue = 255;
+    double pe4 = 0.5;
+
+    public Unit() {
+        // Default-Konstruktor für den Matrixgame-Kontext
+    }
+
+    public double getVariable(String varName) {
+        switch (varName) {
+            case "x": return x;
+            case "y": return y;
+            case "z": return z;
+            case "vx": return vx;
+            case "vy": return vy;
+            case "vz": return vz;
+            case "mass": return mass;
+            case "radius": return radius;
+            case "ekin": return 0.5 * mass * (vx*vx + vy*vy + vz*vz);
+            default: return 0.0;
+        }
+    }
+
+    public void setVariable(String varName, double val) {
+        switch (varName) {
+            case "x": x = val; break;
+            case "y": y = val; break;
+            case "z": z = val; break;
+            case "vx": vx = val; break;
+            case "vy": vy = val; break;
+            case "vz": vz = val; break;
+            case "mass": mass = Math.max(0.1, val); radius = (int) Math.min(12, Math.max(2, Math.cbrt(mass))); break;
+            case "radius": radius = (int) val; break;
+        }
+    }
+
+    public void update() {
+        if (updatePositionAktiv) {
+            x += vx * 0.05;
+            y += vy * 0.05;
+            z += vz * 0.05;
+        }
+        if (entropieMoveAktiv && Math.random() * 100 < entropieMoveSpeed2ProCent) {
+            vx += (Math.random() - 0.5) * pe4;
+            vy += (Math.random() - 0.5) * pe4;
+            vz += (Math.random() - 0.5) * pe4;
+        }
+    }
+
+    public void randEntropie4(Unit other) {
+        // Wechselwirkung zwischen Einheiten im Feld
+        double dx = other.x - this.x;
+        double dy = other.y - this.y;
+        double dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist > 0 && dist < 50) {
+            vx += (dx / dist) * 0.02;
+            vy += (dy / dist) * 0.02;
+        }
+    }
+
+    public double getDistance(Unit other) {
+        return Math.sqrt(Math.pow(other.x - x, 2) + Math.pow(other.y - y, 2) + Math.pow(other.z - z, 2));
+    }
+
+    public void fressen(Unit other) {
+        this.mass += other.mass * 0.1;
+        this.radius = (int) Math.min(15, Math.max(2, Math.cbrt(this.mass)));
+    }
+
+    public void teilen() {
+        if (this.mass > 50) {
+            this.mass /= 2;
+            this.vx += (Math.random() - 0.5) * 5;
+            this.vy += (Math.random() - 0.5) * 5;
+        }
+    }
+}
+
+public class MainGame extends JPanel {
+    private List<Unit> unitList = new ArrayList<>();
+    private Unit selectedKugel = null;
+    private Unit draggedKugel = null;
+    private double zoom = 15.0;
+    private StringBuilder infoText = new StringBuilder();
+
+    private double kameraX = 0;
+    private double kameraY = 0;
+
+    private boolean isDraggingCamera = false;
+    private boolean isDraggingObject = false;
+    private int lastMouseX, lastMouseY;
+
+    private String[] verfuegbareVariablen = { "x", "y", "z", "vx", "vy", "vz", "mass", "radius", "ekin" };
+    private int indexAxisX = 0;
+    private int indexAxisY = 1;
+
+    private long startZeit;
+    private int simulationsSchritte = 0;
+    private Timer simulationTimer;
+    private boolean achsenSichtbar = true;
+
+    int randChar() { return (int) (Math.random() * 256); }
+    Color randColor() { return new Color(randChar(), randChar(), randChar()); }
+
+    public void init() {
+        for (int i = 0; i < 2000; i++) {
+            Unit unit = new Unit();
+            unit.x = (Math.random() - 0.5) * 100;
+            unit.y = (Math.random() - 0.5) * 100;
+            unit.z = (Math.random() - 0.5) * 100;
+            unit.vx = (Math.random() - 0.5) * 2;
+            unit.vy = (Math.random() - 0.5) * 2;
+            unit.vz = (Math.random() - 0.5) * 2;
+            unit.mass = 10 + Math.random() * 100;
+            unit.radius = (int) Math.min(10, Math.max(2, Math.cbrt(unit.mass)));
+            unit.color = randColor();
+            unitList.add(unit);
+        }
+    }
+
+    public MainGame() {
+        setPreferredSize(new Dimension(1200, 900));
+        setBackground(Color.BLACK);
+        startZeit = System.currentTimeMillis();
+        init();
+
+        addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    isDraggingCamera = true;
+                    lastMouseX = e.getX();
+                    lastMouseY = e.getY();
+                } else if (SwingUtilities.isLeftMouseButton(e)) {
+                    draggedKugel = null;
+                    selectedKugel = null;
+                    for (Unit k : unitList) {
+                        double valX = k.getVariable(verfuegbareVariablen[indexAxisX]);
+                        double valY = k.getVariable(verfuegbareVariablen[indexAxisY]);
+                        int screenX = weltZuScreenX(valX);
+                        int screenY = weltZuScreenY(valY);
+                        int distanz = (int) Math.hypot(e.getX() - screenX, e.getY() - screenY);
+                        if (distanz <= k.radius + 5) {
+                            selectedKugel = k;
+                            draggedKugel = k;
+                            isDraggingObject = true;
+                            lastMouseX = e.getX();
+                            lastMouseY = e.getY();
+                            break;
+                        }
+                    }
+                    updateInfoText();
+                    repaint();
+                }
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) isDraggingCamera = false;
+                else if (SwingUtilities.isLeftMouseButton(e)) {
+                    isDraggingObject = false;
+                    draggedKugel = null;
+                }
+            }
+        });
+
+        addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent e) {
+                if (isDraggingCamera) {
+                    kameraX -= (e.getX() - lastMouseX) / zoom;
+                    kameraY += (e.getY() - lastMouseY) / zoom;
+                    lastMouseX = e.getX();
+                    lastMouseY = e.getY();
+                    repaint();
+                } else if (isDraggingObject && draggedKugel != null) {
+                    int deltaX = e.getX() - lastMouseX;
+                    int deltaY = e.getY() - lastMouseY;
+                    double alterX = draggedKugel.getVariable(verfuegbareVariablen[indexAxisX]);
+                    double alterY = draggedKugel.getVariable(verfuegbareVariablen[indexAxisY]);
+                    draggedKugel.setVariable(verfuegbareVariablen[indexAxisX], alterX + (deltaX / zoom));
+                    draggedKugel.setVariable(verfuegbareVariablen[indexAxisY], alterY - (deltaY / zoom));
+                    lastMouseX = e.getX();
+                    lastMouseY = e.getY();
+                    updateInfoText();
+                    repaint();
+                }
+            }
+        });
+
+        addMouseWheelListener(e -> {
+            if (e.getWheelRotation() < 0) zoom *= 1.1;
+            else zoom /= 1.1;
+            if (zoom < 0.1) zoom = 0.1;
+            repaint();
+        });
+
+        setFocusable(true);
+        addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_A) {
+                    achsenSichtbar = !achsenSichtbar;
+                    repaint();
+                } else if (e.getKeyCode() == KeyEvent.VK_H) {
+                    indexAxisX = (indexAxisX + 1) % verfuegbareVariablen.length;
+                    updateInfoText();
+                    repaint();
+                } else if (e.getKeyCode() == KeyEvent.VK_V) {
+                    indexAxisY = (indexAxisY + 1) % verfuegbareVariablen.length;
+                    updateInfoText();
+                    repaint();
+                } else if (e.getKeyCode() == KeyEvent.VK_P && selectedKugel != null) {
+                    selectedKugel.updatePositionAktiv = !selectedKugel.updatePositionAktiv;
+                    updateInfoText();
+                } else if (e.getKeyCode() == KeyEvent.VK_E && selectedKugel != null) {
+                    selectedKugel.entropieMoveAktiv = !selectedKugel.entropieMoveAktiv;
+                    updateInfoText();
+                }
+            }
+        });
+
+        simulationTimer = new Timer(30, e -> {
+            for (int i = 0; i < unitList.size(); i++) {
+                Unit k = unitList.get(i);
+                k.update();
+                int posOther = (int) (Math.abs(i + k.mass) % unitList.size());
+                if (posOther != i) {
+                    k.randEntropie4(unitList.get(posOther));
+                    if (Math.random() > 0.999 && k.getDistance(unitList.get(posOther)) < 20) {
+                        k.fressen(unitList.get(posOther));
+                    }
+                }
+                if (Math.random() > 0.9999) k.teilen();
+            }
+            simulationsSchritte++;
+            if (selectedKugel != null) updateInfoText();
+            repaint();
+        });
+        simulationTimer.start();
+    }
+
+    private void updateInfoText() {
+        infoText.setLength(0);
+        long abgelaufeneZeit = System.currentTimeMillis() - startZeit;
+        infoText.append("=== MATRIXGAME: SIMULATIONS-STATUS ===\n");
+        infoText.append(String.format("Zeit: %.1fs | Schritte: %d | Units: %d\n", abgelaufeneZeit / 1000.0, simulationsSchritte, unitList.size()));
+        infoText.append(String.format("Achse H [H]: %s | Achse V [V]: %s\n\n", verfuegbareVariablen[indexAxisX], verfuegbareVariablen[indexAxisY]));
+
+        if (selectedKugel != null) {
+            infoText.append("=== AUSGEWÄHLTE UNIT ===\n");
+            infoText.append(String.format("Pos-Update [P]: %s | Entropie [E]: %s\n", selectedKugel.updatePositionAktiv ? "AKTIV" : "inaktiv", selectedKugel.entropieMoveAktiv ? "AKTIV" : "inaktiv"));
+            infoText.append(String.format("x: %.2f | y: %.2f | z: %.2f\n", selectedKugel.x, selectedKugel.y, selectedKugel.z));
+            infoText.append(String.format("vx: %.2f | vy: %.2f | vz: %.2f\n", selectedKugel.vx, selectedKugel.vy, selectedKugel.vz));
+            infoText.append(String.format("Masse: %.2f | Radius: %.1f\n", selectedKugel.mass, selectedKugel.radius));
+        } else {
+            infoText.append("Klicke eine Unit an, um sie zu inspizieren und zu steuern.");
+        }
+    }
+
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        int breite = getWidth();
+        int hoehe = getHeight();
+
+        if (achsenSichtbar) {
+            g2.setColor(new Color(0, 100, 0));
+            g2.setStroke(new BasicStroke(1.5f));
+            g2.drawLine(0, weltZuScreenY(0), breite, weltZuScreenY(0));
+            g2.drawLine(weltZuScreenX(0), 0, weltZuScreenX(0), hoehe);
+
+            g2.setFont(new Font("Monospaced", Font.BOLD, 12));
+            g2.setColor(Color.YELLOW);
+            g2.drawString(verfuegbareVariablen[indexAxisX] + " →", breite - 80, weltZuScreenY(0) - 10);
+            g2.drawString("↑ " + verfuegbareVariablen[indexAxisY], weltZuScreenX(0) + 10, 20);
+        }
+
+        for (Unit k : unitList) {
+            double valX = k.getVariable(verfuegbareVariablen[indexAxisX]);
+            double valY = k.getVariable(verfuegbareVariablen[indexAxisY]);
+            int kugelX = weltZuScreenX(valX);
+            int kugelY = weltZuScreenY(valY);
+            int r = Math.max(1, (int)(k.radius));
+            
+            g2.setColor(k.color);
+            g2.fillOval(kugelX - r, kugelY - r, r * 2, r * 2);
+
+            if (k == selectedKugel) {
+                g2.setColor(Color.YELLOW);
+                g2.setStroke(new BasicStroke(2));
+                g2.drawOval(kugelX - r - 4, kugelY - r - 4, (r + 4) * 2, (r + 4) * 2);
+            }
+        }
+
+        if (infoText.length() > 0) {
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("Monospaced", Font.PLAIN, 12));
+            String[] zeilen = infoText.toString().split("\n");
+            for (int i = 0; i < zeilen.length; i++) {
+                g2.drawString(zeilen[i], 20, 25 + i * 16);
+            }
+        }
+
+        g2.setColor(Color.GRAY);
+        g2.setFont(new Font("Monospaced", Font.PLAIN, 11));
+        g2.drawString("H/V: Achsen umschalten | P: Pos-Update | E: Entropie | A: Achsen ein/aus | Rechtsklick: Kamera verschieben", 20, hoehe - 15);
+    }
+
+    private int weltZuScreenX(double weltX) {
+        return (int) (getWidth() / 2.0 + (weltX - kameraX) * zoom);
+    }
+
+    private int weltZuScreenY(double weltY) {
+        return (int) (getHeight() / 2.0 - (weltY - kameraY) * zoom);
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Matrixgame: Dynamische Unit-Simulation");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(new MainGame());
+        frame.setSize(1200, 900);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
