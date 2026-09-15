@@ -1,0 +1,489 @@
+package ordner1;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import java.util.List;
+
+/**
+ * MATRIXGAME GENESIS TURN-BASED INFINITY CANVAS v3.0
+ * ==================================================
+ * Zugbasiertes Grid-Canvas (Infinity-Canvas-Stil):
+ * - Jede Einheit darf pro Zug EINEN Schritt: N / S / E / W (1 Feld)
+ * - Zusaetzlich: wenn Gegner in Reichweite, Attacke gegen einen solchen Gegner
+ * - Spieler und KI sehen dieselben legalen Aktionen und waehlen daraus
+ * - Grundlage fuer Evaluierung, Minimax und spaeteres Alpha-Zero-Training
+ * - Phi_Game + Hogen-Skala bleiben als Bewertungsmetrik
+ * - Maus: Linksklick = Einheit waehlen / Zugziel / Attacke; Rechtsklick = Abbruch
+ * - Tastatur: SPACE = KI-Zug fuer aktuelle Einheit, R = Reset, A = Auto-KI-Modus
+ *
+ * Kompilieren: javac -encoding UTF-8 MatrixGenesisTurnBasedCanvas.java
+ * Starten:     java ordner1.MatrixGenesisTurnBasedCanvas
+ */
+public class MatrixGenesisTurnBasedCanvas extends JPanel {
+
+    // ---------- Grid / Canvas ----------
+    static final int CELL = 36;           // Pixel pro Grid-Zelle
+    static final int GRID_W = 28;         // Zellen horizontal
+    static final int GRID_H = 18;         // Zellen vertikal
+    static final int PANEL_W = GRID_W * CELL + 40;
+    static final int PANEL_H = GRID_H * CELL + 120;
+
+    // ---------- Spielzustand ----------
+    final List<GUnit> units = new ArrayList<>();
+    GUnit selected = null;
+    List<Action> legalActions = new ArrayList<>();
+    int currentTeam = 1;                  // 1 = Spieler, 2 = KI
+    boolean autoKi = false;
+    int turn = 0;
+    double globalPhi = 0.0;
+    String statusMsg = "Waehle Einheit (Team 1) und dann Zugziel oder Attacke";
+
+    final Random rnd = new Random(7);
+
+    // ---------- Farben ----------
+    static final Color BG      = new Color(12, 14, 22);
+    static final Color GRID_C  = new Color(35, 40, 55);
+    static final Color TEAM1_C = new Color(70, 150, 255);
+    static final Color TEAM2_C = new Color(255, 95, 80);
+    static final Color SEL_C   = new Color(255, 230, 80);
+    static final Color MOVE_C  = new Color(80, 220, 140, 140);
+    static final Color ATK_C   = new Color(255, 120, 80, 160);
+    static final Color UI_C    = new Color(210, 220, 230);
+
+    // =========================================================
+    // Aktion (legal move)
+    // =========================================================
+    enum ActionType { MOVE, ATTACK }
+
+    static class Action {
+        final ActionType type;
+        final int tx, ty;          // Zielzelle (bei MOVE) oder Position des Ziels (bei ATTACK)
+        final GUnit target;        // nur bei ATTACK
+        Action(ActionType type, int tx, int ty, GUnit target) {
+            this.type = type;
+            this.tx = tx;
+            this.ty = ty;
+            this.target = target;
+        }
+        @Override public String toString() {
+            if (type == ActionType.MOVE) return "MOVE(" + tx + "," + ty + ")";
+            return "ATTACK->" + (target != null ? target.id : "?");
+        }
+    }
+
+    // =========================================================
+    // Unit
+    // =========================================================
+    static class GUnit {
+        final int id;
+        int team;
+        int gx, gy;                // Grid-Koordinaten
+        double hp, maxHp;
+        double damage;
+        int range;                 // Attack-Reichweite in Zellen (Manhattan oder Chebyshev)
+        boolean alive = true;
+        String algo = "PLAYER";    // oder MINIMAX / MC / UTILITY
+        Hogen hogen = new Hogen();
+
+        GUnit(int id, int team, int gx, int gy) {
+            this.id = id;
+            this.team = team;
+            this.gx = gx;
+            this.gy = gy;
+            this.maxHp = 40 + Math.random() * 30;
+            this.hp = maxHp;
+            this.damage = 8 + Math.random() * 8;
+            this.range = 1;        // Standard: angrenzend
+        }
+    }
+
+    static class Hogen {
+        double stability = 0.7, adaptability = 0.5, connectivity = 0.4, joy = 0.6, resistance = 0.3;
+        double score() {
+            return (stability * 0.25 + adaptability * 0.25 + connectivity * 0.2 + joy * 0.2)
+                    / (1.0 + resistance * 0.5);
+        }
+        void feedback(double dJ, double dR) {
+            joy = clamp(joy + dJ); resistance = clamp(resistance + dR);
+            adaptability = clamp(adaptability + 0.02);
+        }
+        static double clamp(double v) { return Math.max(0, Math.min(1, v)); }
+    }
+
+    // =========================================================
+    // Phi
+    // =========================================================
+    static double phiOf(GUnit u) {
+        double I = 0.65 + (u.maxHp - u.hp) * 0.002;
+        double C = u.hogen.connectivity;
+        double V = 0.8;
+        double G = 0.55 + u.hogen.adaptability * 0.2;
+        double J = u.hogen.joy;
+        double rho = u.hogen.resistance;
+        return (I * C * V * G * J) / (1.0 + rho);
+    }
+
+    // =========================================================
+    // Konstruktor + Input
+    // =========================================================
+    public MatrixGenesisTurnBasedCanvas() {
+        setPreferredSize(new Dimension(PANEL_W, PANEL_H));
+        setBackground(BG);
+        setFocusable(true);
+        initUnits();
+
+        addMouseListener(new MouseAdapter() {
+            @Override public void mousePressed(MouseEvent e) {
+                int cx = (e.getX() - 20) / CELL;
+                int cy = (e.getY() - 20) / CELL;
+                if (cx < 0 || cy < 0 || cx >= GRID_W || cy >= GRID_H) return;
+
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    selected = null;
+                    legalActions.clear();
+                    statusMsg = "Auswahl abgebrochen";
+                    repaint();
+                    return;
+                }
+
+                // Linksklick
+                GUnit clicked = unitAt(cx, cy);
+
+                if (selected == null) {
+                    // Einheit waehlen (nur eigenes Team im Spielerzug)
+                    if (clicked != null && clicked.alive && clicked.team == currentTeam) {
+                        selected = clicked;
+                        legalActions = generateLegalActions(selected);
+                        statusMsg = "Unit " + selected.id + " gewaehlt – " + legalActions.size() + " legale Aktionen";
+                    }
+                } else {
+                    // Aktion ausfuehren, falls Klick auf legales Ziel
+                    Action chosen = null;
+                    for (Action a : legalActions) {
+                        if (a.type == ActionType.MOVE && a.tx == cx && a.ty == cy) {
+                            chosen = a; break;
+                        }
+                        if (a.type == ActionType.ATTACK && a.target != null
+                                && a.target.gx == cx && a.target.gy == cy) {
+                            chosen = a; break;
+                        }
+                    }
+                    if (chosen != null) {
+                        applyAction(selected, chosen);
+                        afterAction();
+                    } else if (clicked != null && clicked.alive && clicked.team == currentTeam) {
+                        // andere eigene Einheit waehlen
+                        selected = clicked;
+                        legalActions = generateLegalActions(selected);
+                        statusMsg = "Unit " + selected.id + " gewaehlt – " + legalActions.size() + " legale Aktionen";
+                    }
+                }
+                repaint();
+            }
+        });
+
+        addKeyListener(new KeyAdapter() {
+            @Override public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_SPACE -> {
+                        if (selected != null && currentTeam == 2) {
+                            // manuell KI-Zug erzwingen
+                            Action a = chooseAiAction(selected);
+                            if (a != null) {
+                                applyAction(selected, a);
+                                afterAction();
+                            }
+                        } else if (selected != null && !legalActions.isEmpty()) {
+                            // Spieler: ersten legalen Zug nehmen (Debug)
+                            applyAction(selected, legalActions.get(0));
+                            afterAction();
+                        }
+                        repaint();
+                    }
+                    case KeyEvent.VK_R -> { units.clear(); initUnits(); selected = null; legalActions.clear();
+                        currentTeam = 1; turn = 0; statusMsg = "Reset"; repaint(); }
+                    case KeyEvent.VK_A -> { autoKi = !autoKi; statusMsg = "Auto-KI: " + autoKi; repaint(); }
+                    case KeyEvent.VK_ENTER -> {
+                        // KI-Zug fuer aktuelles Team (wenn Team 2)
+                        if (currentTeam == 2) doFullTeamAiTurn();
+                        repaint();
+                    }
+                }
+            }
+        });
+
+        // Auto-KI Timer (wenn Auto-Modus und Team 2 am Zug)
+        javax.swing.Timer t = new javax.swing.Timer(600, e -> {
+            if (autoKi && currentTeam == 2) {
+                doFullTeamAiTurn();
+                repaint();
+            }
+        });
+        t.start();
+    }
+
+    // =========================================================
+    // Init
+    // =========================================================
+    void initUnits() {
+        units.clear();
+        int id = 0;
+        // Team 1 (unten)
+        for (int i = 0; i < 6; i++) {
+            units.add(new GUnit(id++, 1, 4 + i * 3, GRID_H - 3));
+        }
+        // Team 2 (oben)
+        for (int i = 0; i < 6; i++) {
+            GUnit u = new GUnit(id++, 2, 5 + i * 3, 2);
+            u.algo = "MINIMAX";
+            units.add(u);
+        }
+        currentTeam = 1;
+        selected = null;
+        legalActions.clear();
+        statusMsg = "Team 1 am Zug – Einheit anklicken, dann legales Feld oder Gegner";
+    }
+
+    GUnit unitAt(int gx, int gy) {
+        for (GUnit u : units) if (u.alive && u.gx == gx && u.gy == gy) return u;
+        return null;
+    }
+
+    boolean occupied(int gx, int gy) {
+        return unitAt(gx, gy) != null;
+    }
+
+    // =========================================================
+    // Legale Aktionen generieren (Kern des Infinity-Canvas-Zugs)
+    // =========================================================
+    List<Action> generateLegalActions(GUnit u) {
+        List<Action> list = new ArrayList<>();
+        if (u == null || !u.alive) return list;
+
+        // 1. Bewegungen: N S E W (1 Feld), wenn frei und im Grid
+        int[][] dirs = {{0, -1}, {0, 1}, {1, 0}, {-1, 0}};
+        for (int[] d : dirs) {
+            int nx = u.gx + d[0];
+            int ny = u.gy + d[1];
+            if (nx >= 0 && ny >= 0 && nx < GRID_W && ny < GRID_H && !occupied(nx, ny)) {
+                list.add(new Action(ActionType.MOVE, nx, ny, null));
+            }
+        }
+
+        // 2. Attacken: alle lebenden Gegner in Reichweite (Chebyshev <= range)
+        for (GUnit e : units) {
+            if (!e.alive || e.team == u.team) continue;
+            int dist = Math.max(Math.abs(e.gx - u.gx), Math.abs(e.gy - u.gy));
+            if (dist <= u.range) {
+                list.add(new Action(ActionType.ATTACK, e.gx, e.gy, e));
+            }
+        }
+        return list;
+    }
+
+    // =========================================================
+    // Aktion ausfuehren
+    // =========================================================
+    void applyAction(GUnit u, Action a) {
+        if (u == null || a == null || !u.alive) return;
+        if (a.type == ActionType.MOVE) {
+            u.gx = a.tx;
+            u.gy = a.ty;
+            statusMsg = "Unit " + u.id + " bewegt nach (" + a.tx + "," + a.ty + ")";
+        } else if (a.type == ActionType.ATTACK && a.target != null && a.target.alive) {
+            a.target.hp -= u.damage;
+            statusMsg = "Unit " + u.id + " greift " + a.target.id + " an (HP " + String.format("%.1f", a.target.hp) + ")";
+            if (a.target.hp <= 0) {
+                a.target.alive = false;
+                u.hogen.feedback(0.05, -0.02);
+                statusMsg += " – vernichtet!";
+            } else {
+                u.hogen.feedback(0.01, 0);
+            }
+        }
+        // Phi aktualisieren
+        double sum = 0; int n = 0;
+        for (GUnit x : units) if (x.alive) { sum += phiOf(x); n++; }
+        globalPhi = n > 0 ? sum / n : 0;
+    }
+
+    void afterAction() {
+        selected = null;
+        legalActions.clear();
+        // Team wechseln (einfacher Wechselschlag: eine Aktion pro Team-Zug)
+        // Fuer echte Alpha-Zero-Didaktik spaeter: alle Units eines Teams nacheinander
+        currentTeam = (currentTeam == 1) ? 2 : 1;
+        turn++;
+        if (currentTeam == 1) {
+            statusMsg += "  |  Team 1 am Zug";
+        } else {
+            statusMsg += "  |  Team 2 (KI) am Zug – ENTER oder Auto-KI";
+        }
+        // Sieg-Check
+        long a1 = units.stream().filter(u -> u.alive && u.team == 1).count();
+        long a2 = units.stream().filter(u -> u.alive && u.team == 2).count();
+        if (a1 == 0) statusMsg = "TEAM 2 SIEGT";
+        if (a2 == 0) statusMsg = "TEAM 1 SIEGT";
+    }
+
+    // =========================================================
+    // KI: einfache Evaluierung + Minimax-lite / Utility
+    // =========================================================
+    double evaluateState(int forTeam) {
+        double score = 0;
+        for (GUnit u : units) {
+            if (!u.alive) continue;
+            double val = u.hp + u.damage * 2 + u.hogen.score() * 10;
+            if (u.team == forTeam) score += val;
+            else score -= val * 1.1;
+        }
+        return score;
+    }
+
+    Action chooseAiAction(GUnit u) {
+        List<Action> acts = generateLegalActions(u);
+        if (acts.isEmpty()) return null;
+
+        // 1-Ply Minimax-lite / Utility: bewerte Nachfolgezustand grob
+        Action best = null;
+        double bestVal = -1e12;
+        for (Action a : acts) {
+            // Snapshot
+            int ogx = u.gx, ogy = u.gy;
+            double thp = a.target != null ? a.target.hp : 0;
+            boolean talive = a.target != null && a.target.alive;
+
+            applyAction(u, a); // temporaer
+            double val = evaluateState(u.team);
+            // leichte Zufalls-Exploration (Monte-Carlo-Hauch)
+            val += (rnd.nextDouble() - 0.5) * 3.0;
+
+            // Undo
+            u.gx = ogx; u.gy = ogy;
+            if (a.target != null) {
+                a.target.hp = thp;
+                a.target.alive = talive;
+            }
+
+            if (val > bestVal) {
+                bestVal = val;
+                best = a;
+            }
+        }
+        return best;
+    }
+
+    void doFullTeamAiTurn() {
+        // Eine lebende KI-Unit waehlen und Zug machen
+        List<GUnit> ai = new ArrayList<>();
+        for (GUnit u : units) if (u.alive && u.team == 2) ai.add(u);
+        if (ai.isEmpty()) return;
+        GUnit actor = ai.get(rnd.nextInt(ai.size()));
+        Action a = chooseAiAction(actor);
+        if (a != null) {
+            applyAction(actor, a);
+            afterAction();
+        } else {
+            // kein Zug moeglich – Team wechseln
+            currentTeam = 1;
+            statusMsg = "KI konnte nicht ziehen – Team 1";
+        }
+    }
+
+    // =========================================================
+    // Rendering
+    // =========================================================
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Grid
+        g2.setColor(GRID_C);
+        for (int x = 0; x <= GRID_W; x++)
+            g2.drawLine(20 + x * CELL, 20, 20 + x * CELL, 20 + GRID_H * CELL);
+        for (int y = 0; y <= GRID_H; y++)
+            g2.drawLine(20, 20 + y * CELL, 20 + GRID_W * CELL, 20 + y * CELL);
+
+        // Legale Aktionen hervorheben
+        if (selected != null) {
+            for (Action a : legalActions) {
+                int px = 20 + a.tx * CELL;
+                int py = 20 + a.ty * CELL;
+                if (a.type == ActionType.MOVE) {
+                    g2.setColor(MOVE_C);
+                    g2.fillRect(px + 2, py + 2, CELL - 4, CELL - 4);
+                } else {
+                    g2.setColor(ATK_C);
+                    g2.fillRect(px + 2, py + 2, CELL - 4, CELL - 4);
+                }
+            }
+        }
+
+        // Units
+        for (GUnit u : units) {
+            if (!u.alive) continue;
+            int px = 20 + u.gx * CELL + CELL / 2;
+            int py = 20 + u.gy * CELL + CELL / 2;
+            int r = CELL / 2 - 4;
+            Color c = u.team == 1 ? TEAM1_C : TEAM2_C;
+            g2.setColor(c);
+            g2.fillOval(px - r, py - r, r * 2, r * 2);
+            if (u == selected) {
+                g2.setColor(SEL_C);
+                g2.setStroke(new BasicStroke(2.5f));
+                g2.drawOval(px - r - 3, py - r - 3, r * 2 + 6, r * 2 + 6);
+                g2.setStroke(new BasicStroke(1f));
+            }
+            // HP-Balken
+            int bw = r * 2;
+            g2.setColor(Color.DARK_GRAY);
+            g2.fillRect(px - r, py - r - 8, bw, 4);
+            g2.setColor(u.hp / u.maxHp > 0.35 ? Color.GREEN : Color.ORANGE);
+            g2.fillRect(px - r, py - r - 8, (int) (bw * (u.hp / u.maxHp)), 4);
+            // ID
+            g2.setColor(UI_C);
+            g2.setFont(new Font("Monospaced", Font.PLAIN, 10));
+            g2.drawString("" + u.id, px - 4, py + 4);
+        }
+
+        // HUD
+        g2.setColor(UI_C);
+        g2.setFont(new Font("SansSerif", Font.BOLD, 14));
+        g2.drawString("GENESIS TURN-BASED INFINITY CANVAS v3.0", 20, PANEL_H - 70);
+        g2.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        long a1 = units.stream().filter(u -> u.alive && u.team == 1).count();
+        long a2 = units.stream().filter(u -> u.alive && u.team == 2).count();
+        g2.drawString(String.format("Turn %d | Team %d | Phi %.3f | Alive T1=%d T2=%d | AutoKI=%s",
+                turn, currentTeam, globalPhi, a1, a2, autoKi), 20, PANEL_H - 50);
+        g2.drawString(statusMsg, 20, PANEL_H - 32);
+        g2.drawString("L-Click: Waehlen / Zug / Attacke   R-Click: Abbruch   SPACE: Zug   ENTER: KI-Zug   A: AutoKI   R: Reset", 20, PANEL_H - 14);
+    }
+
+    // =========================================================
+    // MAIN
+    // =========================================================
+    public static void main(String[] args) {
+        System.out.println("=======================================================");
+        System.out.println("  MATRIXGAME GENESIS TURN-BASED INFINITY CANVAS v3.0");
+        System.out.println("  Zugbasiert: 1 Schritt N/S/E/W + optionale Attacke");
+        System.out.println("  Spieler + KI sehen dieselben legalen Aktionen");
+        System.out.println("=======================================================\n");
+        System.out.println("Das ist die Didaktik-Basis fuer Evaluierung / Minimax / Alpha-Zero.");
+        System.out.println("Steuerung siehe HUD im Fenster.\n");
+
+        SwingUtilities.invokeLater(() -> {
+            JFrame f = new JFrame("Matrixgame – Genesis Turn-Based Infinity Canvas");
+            MatrixGenesisTurnBasedCanvas panel = new MatrixGenesisTurnBasedCanvas();
+            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            f.setContentPane(panel);
+            f.pack();
+            f.setLocationRelativeTo(null);
+            f.setVisible(true);
+            panel.requestFocusInWindow();
+        });
+    }
+}
