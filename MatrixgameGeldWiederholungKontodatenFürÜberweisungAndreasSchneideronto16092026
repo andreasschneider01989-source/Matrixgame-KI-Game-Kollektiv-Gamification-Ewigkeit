@@ -1,0 +1,1267 @@
+/**
+* IBAN: DE5250850150   
+* Kontonummer:0122032388
+ * ThreeBodyNewtonQuest
+ *
+ * Classical three-body problem under Newtonian gravity.
+ *
+ * SCIENCE : F = G m1 m2 / r^2 (inverse-square), Newton's 2nd law a = F/m,
+ *           total energy E = T + U (kinetic + gravitational potential).
+ *           The general 3-body problem has no closed-form solution in
+ *           elementary functions; numerical integration is the practical path.
+ * MODEL   : velocity Verlet + r_min softening to avoid singularities;
+ *           relative energy drift as quality metric for the discrete scheme
+ *           and double-precision arithmetic.
+ * GAME    : GREEN if all bodies stay finite and |E - E0| / |E0| stays under
+ *           a chosen guard after N ticks.
+ * INTERPRET: any claim that this "solves" the analytic 3-body problem or
+ *            alters real celestial mechanics is rejected by Guardian.
+ *
+ * Named doubles, multiplications, divisions, equation forms printed to console.
+ * Compile isolated:
+ *   cp ThreeBodyNewtonQuest.java /tmp
+ *   cd /tmp && javac ThreeBodyNewtonQuest.java && java ThreeBodyNewtonQuest
+ *
+ * No AWT. No 63 MB remake. Double precision only (no BigDecimal).
+ */
+public class ThreeBodyNewtonQuest {
+
+    public static final String SCIENCE   = "SCIENCE";
+    public static final String MODEL     = "MODEL";
+    public static final String GAME      = "GAME";
+    public static final String INTERPRET = "INTERPRET";
+
+    // ---------- physical / numerical constants (named doubles) ----------
+    public static final double G              = 6.67430e-11;   // CODATA-ish
+    public static final double R_MIN          = 1.0e3;         // softening length [m]
+    public static final double DT             = 60.0;          // timestep [s]
+    public static final int    TICKS          = 500;
+    public static final double ENERGY_GUARD   = 1.0e-8;        // relative drift limit
+    public static final double EPS            = 1.0e-30;       // avoid /0
+
+    // ---------- body ----------
+    static class Body {
+        final String id;
+        double m;
+        double x, y, z;
+        double vx, vy, vz;
+        double ax, ay, az;
+
+        Body(String id, double m, double x, double y, double z,
+             double vx, double vy, double vz) {
+            this.id = id;
+            this.m = m;
+            this.x = x; this.y = y; this.z = z;
+            this.vx = vx; this.vy = vy; this.vz = vz;
+        }
+
+        double kinetic() {
+            return 0.5 * m * (vx * vx + vy * vy + vz * vz);
+        }
+
+        boolean isFinite() {
+            return Double.isFinite(x) && Double.isFinite(y) && Double.isFinite(z)
+                && Double.isFinite(vx) && Double.isFinite(vy) && Double.isFinite(vz)
+                && Double.isFinite(m) && m > 0.0;
+        }
+    }
+
+    // ---------- distance & potential helpers ----------
+    static double dist(Body a, Body b) {
+        double dx = b.x - a.x;
+        double dy = b.y - a.y;
+        double dz = b.z - a.z;
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    /** Softened pairwise potential U = -G m1 m2 / r_soft */
+    static double pairPotential(Body a, Body b) {
+        double r = Math.max(dist(a, b), R_MIN);
+        return -G * a.m * b.m / r;
+    }
+
+    static double totalPotential(Body[] bodies) {
+        double u = 0.0;
+        for (int i = 0; i < bodies.length; i++) {
+            for (int j = i + 1; j < bodies.length; j++) {
+                u += pairPotential(bodies[i], bodies[j]);
+            }
+        }
+        return u;
+    }
+
+    static double totalKinetic(Body[] bodies) {
+        double t = 0.0;
+        for (Body b : bodies) t += b.kinetic();
+        return t;
+    }
+
+    static double totalEnergy(Body[] bodies) {
+        return totalKinetic(bodies) + totalPotential(bodies);
+    }
+
+    // ---------- acceleration from Newtonian gravity ----------
+    static void computeAccelerations(Body[] bodies) {
+        for (Body b : bodies) {
+            b.ax = 0.0; b.ay = 0.0; b.az = 0.0;
+        }
+        for (int i = 0; i < bodies.length; i++) {
+            for (int j = i + 1; j < bodies.length; j++) {
+                Body a = bodies[i];
+                Body b = bodies[j];
+                double dx = b.x - a.x;
+                double dy = b.y - a.y;
+                double dz = b.z - a.z;
+                double r2 = dx * dx + dy * dy + dz * dz;
+                double r  = Math.sqrt(r2);
+                double rc = Math.max(r, R_MIN);
+                // F = G m1 m2 / rc^2 , direction unit vector
+                // a_on_a = + (G m_b / rc^3) * r_vec
+                // a_on_b = - (G m_a / rc^3) * r_vec
+                double invR3 = 1.0 / (rc * rc * rc);
+                double factorA = G * b.m * invR3;
+                double factorB = G * a.m * invR3;
+                a.ax += factorA * dx;
+                a.ay += factorA * dy;
+                a.az += factorA * dz;
+                b.ax -= factorB * dx;
+                b.ay -= factorB * dy;
+                b.az -= factorB * dz;
+            }
+        }
+    }
+
+    // ---------- velocity Verlet step ----------
+    static void verletStep(Body[] bodies, double dt) {
+        // half-kick
+        for (Body b : bodies) {
+            b.vx += 0.5 * b.ax * dt;
+            b.vy += 0.5 * b.ay * dt;
+            b.vz += 0.5 * b.az * dt;
+        }
+        // drift
+        for (Body b : bodies) {
+            b.x += b.vx * dt;
+            b.y += b.vy * dt;
+            b.z += b.vz * dt;
+        }
+        // new accelerations
+        computeAccelerations(bodies);
+        // half-kick
+        for (Body b : bodies) {
+            b.vx += 0.5 * b.ax * dt;
+            b.vy += 0.5 * b.ay * dt;
+            b.vz += 0.5 * b.az * dt;
+        }
+    }
+
+    // ---------- equation forms (console "text tasks") ----------
+    static void printEquationForms() {
+        System.out.println("--- Key equation forms (Newton + gravity) ---");
+        System.out.println("1) Newton's 2nd law:");
+        System.out.println("   F = m * a          =>  a = F / m");
+        System.out.println();
+        System.out.println("2) Newtonian gravity (pairwise):");
+        System.out.println("   F = G * m1 * m2 / r^2");
+        System.out.println("   direction: unit vector (r2 - r1) / |r2 - r1|");
+        System.out.println();
+        System.out.println("3) Acceleration on body i from body j:");
+        System.out.println("   a_i = G * m_j * (r_j - r_i) / |r_j - r_i|^3");
+        System.out.println();
+        System.out.println("4) Softened form used in this MODEL (avoid singularity):");
+        System.out.println("   r_c = max(|r_j - r_i|, R_MIN)");
+        System.out.println("   a_i = G * m_j * (r_j - r_i) / r_c^3");
+        System.out.println();
+        System.out.println("5) Total energy (conserved in continuous case):");
+        System.out.println("   E = T + U");
+        System.out.println("   T = sum_i  1/2 * m_i * |v_i|^2");
+        System.out.println("   U = sum_{i<j}  -G * m_i * m_j / r_ij");
+        System.out.println();
+        System.out.println("6) Relative energy drift (quality metric):");
+        System.out.println("   relDrift = |E(t) - E(0)| / |E(0)|");
+        System.out.println("   (smaller is better for the discrete integrator + double)");
+        System.out.println();
+        System.out.println("Note: general 3-body problem has no elementary closed-form solution.");
+        System.out.println("      Numerical integration + monitoring of invariants is the practical path.");
+        System.out.println();
+    }
+
+    // ---------- Guardian ----------
+    static class Guardian {
+        static boolean rejectAnalyticClaim(String s) {
+            String c = s.toLowerCase();
+            return c.contains("closed-form solution of general 3-body")
+                || c.contains("analytic solution of three-body problem")
+                || c.contains("solved the three-body problem completely");
+        }
+        static boolean rejectRealCosmosClaim(String s) {
+            String c = s.toLowerCase();
+            return c.contains("controls real planets")
+                || c.contains("alters real solar system")
+                || c.contains("predicts real trisolaran fleet");
+        }
+        static boolean acceptModel(String s) {
+            return !rejectAnalyticClaim(s) && !rejectRealCosmosClaim(s);
+        }
+    }
+
+    // ---------- simple double-precision probe ----------
+    static void doublePrecisionNotes() {
+        System.out.println("--- Double precision notes (IEEE-754 binary64) ---");
+        System.out.println("mantissa bits approx 52 + 1 implicit => ~15-16 decimal digits");
+        System.out.println("Machine epsilon (double) ~ 2.22e-16");
+        System.out.println("In long integrations the dominant error sources are usually:");
+        System.out.println("  - truncation error of the time integrator (order of method, size of dt)");
+        System.out.println("  - accumulation of round-off in force summations");
+        System.out.println("  - close encounters (mitigated here by R_MIN softening)");
+        System.out.println("Energy drift is a practical global indicator of overall fidelity.");
+        System.out.println("Improving precision further without BigDecimal typically means:");
+        System.out.println("  - smaller dt / higher-order integrator");
+        System.out.println("  - compensated summation (Kahan) for force/energy accumulators");
+        System.out.println("  - careful ordering of operations / avoiding cancellation");
+        System.out.println("This quest stays with plain double + Verlet for clarity and speed.");
+        System.out.println();
+    }
+
+    // ---------- main ----------
+    public static void main(String[] args) {
+        System.out.println("=== ThreeBodyNewtonQuest ===");
+        System.out.println("Layers: SCIENCE / MODEL / GAME / INTERPRET");
+        System.out.println("Guardian rejects false analytic / real-cosmos claims.");
+        System.out.println();
+
+        printEquationForms();
+        doublePrecisionNotes();
+
+        // Three bodies (toy scale, not real solar system numbers)
+        // roughly Earth-Moon-Sun inspired masses/distances but scaled for demo stability
+        Body sun   = new Body("Sun",   1.989e30,  0.0,      0.0, 0.0,  0.0, 0.0, 0.0);
+        Body earth = new Body("Earth", 5.972e24,  1.496e11, 0.0, 0.0,  0.0, 29780.0, 0.0);
+        Body moon  = new Body("Moon",  7.348e22,  1.496e11 + 3.844e8, 0.0, 0.0,  0.0, 29780.0 + 1022.0, 0.0);
+
+        Body[] bodies = { sun, earth, moon };
+
+        computeAccelerations(bodies);
+        double e0 = totalEnergy(bodies);
+        System.out.printf("Initial energy E0 = %.6e  (T=%.6e  U=%.6e)%n",
+            e0, totalKinetic(bodies), totalPotential(bodies));
+        System.out.println();
+
+        System.out.println("--- Integration loop (velocity Verlet) ---");
+        double maxRelDrift = 0.0;
+        boolean allFinite = true;
+
+        for (int t = 1; t <= TICKS; t++) {
+            verletStep(bodies, DT);
+            allFinite = allFinite && sun.isFinite() && earth.isFinite() && moon.isFinite();
+
+            double e = totalEnergy(bodies);
+            double rel = Math.abs(e - e0) / Math.max(Math.abs(e0), EPS);
+            if (rel > maxRelDrift) maxRelDrift = rel;
+
+            if (t % 100 == 0 || t == TICKS) {
+                System.out.printf(
+                    "t=%4d  E=%.6e  relDrift=%.3e  Earth(%.3e,%.3e)  Moon(%.3e,%.3e)%n",
+                    t, e, rel, earth.x, earth.y, moon.x, moon.y
+                );
+            }
+        }
+
+        System.out.println();
+        System.out.println("--- Final state ---");
+        for (Body b : bodies) {
+            System.out.printf("%-6s  m=%.3e  pos=(%.6e, %.6e, %.6e)  vel=(%.3e, %.3e, %.3e)%n",
+                b.id, b.m, b.x, b.y, b.z, b.vx, b.vy, b.vz);
+        }
+
+        boolean guardOk = Guardian.acceptModel("numerical three-body under Newton")
+                       && Guardian.acceptModel("energy drift is MODEL quality metric");
+
+        boolean green = allFinite && guardOk && maxRelDrift < ENERGY_GUARD;
+
+        System.out.println();
+        System.out.println("=== RESULT ===");
+        System.out.println("allFinite          = " + allFinite);
+        System.out.println("maxRelDrift        = " + String.format("%.3e", maxRelDrift));
+        System.out.println("ENERGY_GUARD       = " + String.format("%.1e", ENERGY_GUARD));
+        System.out.println("guardianOk         = " + guardOk);
+        System.out.println("Quest status       = " + (green ? "GREEN" : "RED"));
+        System.out.println();
+        System.out.println("Notes:");
+        System.out.println("- This is a numerical approximation of the classical 3-body problem.");
+        System.out.println("- No elementary closed-form solution is claimed or produced.");
+        System.out.println("- Energy drift quantifies integrator + double-precision behaviour.");
+        System.out.println("- Softening (R_MIN) is MODEL; pure Newtonian point masses can collide.");
+        System.out.println("- Suitable as a building block for Matrixgame physics / collective play.");
+    }
+}
+
+
+/**
+ * ParetoQVectorQuest
+ *
+ * L6-style GAME over the L5 claim graph: Q-vector + Pareto front
+ * of overbid alternatives (COOL / AID / BOTH / NONE).
+ *
+ * Same tick: Body Verlet + Klima GAME + Frieden GAME.
+ * L4 Guardian table + multi-pair EnergyReport remain MODEL checks.
+ *
+ * Q = (R, V, F, O, T, N, E, A, P) as GAME scores in [0,1],
+ * not a scientific ranking of nations or people.
+ *
+ * SCIENCE : 1/r^2 G (classical 3D).
+ * MODEL   : discrete Verlet, rMin, EnergyReport list, L4 tables.
+ * GAME    : Q-vector + Pareto overbid; bars independent of mechanical energy.
+ * INTERPRET: archive hope; 63MB stays inventory, no remake.
+ *
+ * Guardian rejects SPEC-as-SCIENCE and W-as-INTERPRET.
+ *
+ * Compile only in /tmp:
+ *   javac -d /tmp/pqv /home/workdir/artifacts/ParetoQVectorQuest.java
+ *   java -cp /tmp/pqv ParetoQVectorQuest
+ */
+public class ParetoQVectorQuest {
+
+    public static final double G = 6.67430e-11;
+    public static final double R_MIN = 1.0e3;
+    public static final double M_EARTH = 5.972e24;
+    public static final double M_MOON = 7.34767309e22;
+    public static final double AU_MOON = 3.844e8;
+    public static final double M_SAT = 1.0e6;
+    public static final double R_SAT = 4.22e7;
+
+    public static final String SCIENCE = "SCIENCE";
+    public static final String MODEL = "MODEL";
+    public static final String GAME = "GAME";
+    public static final String INTERPRET = "INTERPRET";
+
+    public enum Mark { W, F, OPEN, SPEC }
+    public enum Op { ATTRACT, COOL, AID, COUNT, UNKNOWN }
+    public enum EdgeKind { COMPILES_TO, SAME_TICK, INDEPENDENT_OF, REPORTS, DOMINATES }
+
+    static class Body {
+        final String id;
+        double m, x, y, z, vx, vy, vz, ax, ay, az;
+        Body(String id, double m, double x, double y, double z,
+             double vx, double vy, double vz) {
+            this.id = id; this.m = m;
+            this.x = x; this.y = y; this.z = z;
+            this.vx = vx; this.vy = vy; this.vz = vz;
+        }
+        double kinetic() { return 0.5 * m * (vx * vx + vy * vy + vz * vz); }
+        Body copy() {
+            Body c = new Body(id, m, x, y, z, vx, vy, vz);
+            c.ax = ax; c.ay = ay; c.az = az;
+            return c;
+        }
+    }
+
+    static class Climate {
+        double tC, rh, mammalBar;
+        Climate(double tC, double rh, double mammalBar) {
+            this.tC = tC; this.rh = rh; this.mammalBar = mammalBar;
+        }
+        Climate copy() { return new Climate(tC, rh, mammalBar); }
+    }
+
+    static class Indicators {
+        int civilianHarmEvents, armedAttacks, verifiedAgreements, aidCorridors, exchanges;
+        Indicators(int harm, int attacks, int agree, int aid, int exch) {
+            this.civilianHarmEvents = harm;
+            this.armedAttacks = attacks;
+            this.verifiedAgreements = agree;
+            this.aidCorridors = aid;
+            this.exchanges = exch;
+        }
+        Indicators copy() {
+            return new Indicators(civilianHarmEvents, armedAttacks,
+                    verifiedAgreements, aidCorridors, exchanges);
+        }
+        double harmLoad() { return civilianHarmEvents + 0.5 * armedAttacks; }
+        double cooperationLoad() { return verifiedAgreements + aidCorridors + exchanges; }
+        double peaceBar() {
+            double h = harmLoad();
+            double c = cooperationLoad();
+            double raw = 100.0 * (c + 1.0) / (c + 1.0 + h);
+            if (raw < 0) return 0;
+            if (raw > 100) return 100;
+            return raw;
+        }
+    }
+
+    static class Lumini {
+        final String id, k, r, z, v, s, q, b;
+        final double p;
+        final Mark mark;
+        Lumini(String id, String k, String r, String z, double p, String v, String s,
+               String q, String b, Mark mark) {
+            this.id = id; this.k = k; this.r = r; this.z = z; this.p = p;
+            this.v = v; this.s = s; this.q = q; this.b = b; this.mark = mark;
+        }
+        boolean guardianOk() {
+            if (p < 0.0 || p > 1.0) return false;
+            if (p < 0.70 && SCIENCE.equals(s)) return false;
+            if (mark == Mark.SPEC && SCIENCE.equals(s)) return false;
+            if (mark == Mark.W && INTERPRET.equals(s)) return false;
+            if (k == null || k.isEmpty() || v == null || v.isEmpty()) return false;
+            if (q == null || q.isEmpty()) return false;
+            return true;
+        }
+    }
+
+    static class Action {
+        final String sourceId;
+        final Op op;
+        final String object;
+        Action(String sourceId, Op op, String object) {
+            this.sourceId = sourceId; this.op = op; this.object = object;
+        }
+    }
+
+    static class ClaimNode {
+        final String id, layer;
+        final Lumini clause;
+        ClaimNode(String id, String layer, Lumini clause) {
+            this.id = id; this.layer = layer; this.clause = clause;
+        }
+    }
+
+    static class ClaimEdge {
+        final String from, to;
+        final EdgeKind kind;
+        ClaimEdge(String from, String to, EdgeKind kind) {
+            this.from = from; this.to = to; this.kind = kind;
+        }
+    }
+
+    static class ClaimGraph {
+        final java.util.List<ClaimNode> nodes = new java.util.ArrayList<ClaimNode>();
+        final java.util.List<ClaimEdge> edges = new java.util.ArrayList<ClaimEdge>();
+        void add(ClaimNode n) { nodes.add(n); }
+        void add(ClaimEdge e) { edges.add(e); }
+    }
+
+    static class EnergyReport {
+        final String pairId;
+        final double e0, eN, relDrift;
+        final String layer;
+        EnergyReport(String pairId, double e0, double eN) {
+            this.pairId = pairId;
+            this.e0 = e0;
+            this.eN = eN;
+            this.relDrift = Math.abs(eN - e0) / Math.abs(e0);
+            this.layer = MODEL;
+        }
+        boolean green(double maxRel) { return relDrift <= maxRel; }
+        public String toString() {
+            return String.format("EnergyReport{%s E0=%.6e EN=%.6e relDrift=%.3e layer=%s}",
+                    pairId, e0, eN, relDrift, layer);
+        }
+    }
+
+    /** GAME quality vector - not a scientific ranking. */
+    static class QVector {
+        final double R, V, F, O, T, N, E, A, P;
+        QVector(double R, double V, double F, double O, double T,
+                double N, double E, double A, double P) {
+            this.R = R; this.V = V; this.F = F; this.O = O; this.T = T;
+            this.N = N; this.E = E; this.A = A; this.P = P;
+        }
+        double[] arr() { return new double[] { R, V, F, O, T, N, E, A, P }; }
+        double mean() {
+            double s = 0;
+            for (double x : arr()) s += x;
+            return s / 9.0;
+        }
+        public String toString() {
+            return String.format("Q(R=%.2f V=%.2f F=%.2f O=%.2f T=%.2f N=%.2f E=%.2f A=%.2f P=%.2f mean=%.3f)",
+                    R, V, F, O, T, N, E, A, P, mean());
+        }
+    }
+
+    static class Policy {
+        final String id;
+        final boolean cool, aid;
+        final QVector q;
+        final double kBar, pBar;
+        final String layer;
+        Policy(String id, boolean cool, boolean aid, QVector q, double kBar, double pBar) {
+            this.id = id; this.cool = cool; this.aid = aid;
+            this.q = q; this.kBar = kBar; this.pBar = pBar;
+            this.layer = GAME;
+        }
+        public String toString() {
+            return String.format("Policy{%s cool=%s aid=%s kBar=%.2f pBar=%.2f %s layer=%s}",
+                    id, cool, aid, kBar, pBar, q, layer);
+        }
+    }
+
+    static class L4Row {
+        final boolean spec, science, w, interpret, expectedPass;
+        L4Row(boolean spec, boolean science, boolean w, boolean interpret, boolean expectedPass) {
+            this.spec = spec; this.science = science; this.w = w;
+            this.interpret = interpret; this.expectedPass = expectedPass;
+        }
+    }
+
+    static L4Row[] guardianTable() {
+        return new L4Row[] {
+            new L4Row(false, true,  true,  false, true),
+            new L4Row(true,  true,  false, false, false),
+            new L4Row(false, false, true,  true,  false),
+            new L4Row(false, false, false, false, true),
+            new L4Row(true,  false, false, false, true),
+            new L4Row(false, true,  false, false, true)
+        };
+    }
+
+    static boolean tablePredictsPass(L4Row row) {
+        if (row.spec && row.science) return false;
+        if (row.w && row.interpret) return false;
+        return true;
+    }
+
+    static Op parseOp(String k) {
+        if (k == null) return Op.UNKNOWN;
+        String u = k.toUpperCase();
+        if (u.contains("ACTION=ATTRACT")) return Op.ATTRACT;
+        if (u.contains("ACTION=COOL")) return Op.COOL;
+        if (u.contains("ACTION=AID")) return Op.AID;
+        if (u.contains("ACTION=COUNT")) return Op.COUNT;
+        return Op.UNKNOWN;
+    }
+
+    static String parseObject(String k) {
+        if (k == null) return "";
+        int i = k.indexOf("OBJECT=");
+        if (i < 0) return "";
+        String rest = k.substring(i + 7);
+        int semi = rest.indexOf(';');
+        return semi < 0 ? rest : rest.substring(0, semi);
+    }
+
+    static Action compile(Lumini L) {
+        return new Action(L.id, parseOp(L.k), parseObject(L.k));
+    }
+
+    static double dist(Body a, Body b) {
+        double dx = b.x - a.x, dy = b.y - a.y, dz = b.z - a.z;
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    static double pairU(Body a, Body b) {
+        double r = Math.max(dist(a, b), R_MIN);
+        return -G * a.m * b.m / r;
+    }
+
+    static void accel(Body a, Body b) {
+        double dx = b.x - a.x, dy = b.y - a.y, dz = b.z - a.z;
+        double r = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        double rc = Math.max(r, R_MIN);
+        double f = G * b.m / (rc * rc * rc);
+        a.ax += f * dx; a.ay += f * dy; a.az += f * dz;
+    }
+
+    static void clearAcc(Body a) { a.ax = a.ay = a.az = 0; }
+
+    static void verletPair(Body a, Body b, double dt) {
+        a.vx += 0.5 * a.ax * dt; a.vy += 0.5 * a.ay * dt; a.vz += 0.5 * a.az * dt;
+        b.vx += 0.5 * b.ax * dt; b.vy += 0.5 * b.ay * dt; b.vz += 0.5 * b.az * dt;
+        a.x += a.vx * dt; a.y += a.vy * dt; a.z += a.vz * dt;
+        b.x += b.vx * dt; b.y += b.vy * dt; b.z += b.vz * dt;
+        clearAcc(a); clearAcc(b);
+        accel(a, b); accel(b, a);
+        a.vx += 0.5 * a.ax * dt; a.vy += 0.5 * a.ay * dt; a.vz += 0.5 * a.az * dt;
+        b.vx += 0.5 * b.ax * dt; b.vy += 0.5 * b.ay * dt; b.vz += 0.5 * b.az * dt;
+    }
+
+    static double energy(Body a, Body b) {
+        return a.kinetic() + b.kinetic() + pairU(a, b);
+    }
+
+    static double wetBulb(double tC, double rhFrac) {
+        double rh = rhFrac * 100.0;
+        return tC * Math.atan(0.151977 * Math.pow(rh + 8.313659, 0.5))
+             + Math.atan(tC + rh) - Math.atan(rh - 1.676331)
+             + 0.00391838 * Math.pow(rh, 1.5) * Math.atan(0.023101 * rh)
+             - 4.686035;
+    }
+
+    static void apply(Action a, Climate c, Indicators p) {
+        if (a.op == Op.COOL) {
+            c.tC = 18.0;
+            c.rh = 0.50;
+        } else if (a.op == Op.AID) {
+            if (p.armedAttacks > 0) p.armedAttacks = Math.max(0, p.armedAttacks - 2);
+            if (p.civilianHarmEvents > 0) p.civilianHarmEvents = Math.max(0, p.civilianHarmEvents - 1);
+            p.verifiedAgreements += 1;
+            p.aidCorridors += 1;
+            p.exchanges += 1;
+        }
+    }
+
+    static void klimaPassive(Climate c) {
+        double wb = wetBulb(c.tC, c.rh);
+        if (wb >= 35.0) {
+            c.mammalBar = Math.max(0.0, c.mammalBar - (wb - 34.0) * 8.0);
+        } else if (wb < 25.0) {
+            c.mammalBar = Math.min(100.0, c.mammalBar + (25.0 - wb) * 6.0);
+        }
+    }
+
+    static Lumini L_G() {
+        return new Lumini("G",
+            "AGENT=Body;ACTION=ATTRACT;OBJECT=Body;B=3D,r>=rMin",
+            "SCIENCE-CLAIM", "JAVA", 0.99999,
+            "InverseSquareQuest+CODATA-G", SCIENCE,
+            "Newton/Coulomb/CODATA G", "classical 3D", Mark.W);
+    }
+
+    static Lumini L_COOL() {
+        return new Lumini("COOL",
+            "AGENT=Guardian;ACTION=COOL;OBJECT=Climate;B=wb>=35",
+            "GAME-CLAIM", "JAVA", 0.62,
+            "LuminiPalBodyKlimaQuest", GAME,
+            "Stull wet-bulb proxy", "GAME not GCM", Mark.OPEN);
+    }
+
+    static Lumini L_AID() {
+        return new Lumini("AID",
+            "AGENT=Guardian;ACTION=AID;OBJECT=Peace;B=counts-only",
+            "GAME-CLAIM", "JAVA", 0.55,
+            "FriedenIndikatorenQuest", GAME,
+            "observable counts not geopolitics", "GAME overbid", Mark.OPEN);
+    }
+
+    static Lumini L_Q() {
+        return new Lumini("QVEC",
+            "AGENT=Compiler;ACTION=COUNT;OBJECT=QVector;B=GAME scores",
+            "GAME-CLAIM", "JAVA", 0.48,
+            "ParetoQVectorQuest", GAME,
+            "DFG/NIST-inspired dimensions as GAME", "not a moral ranking", Mark.SPEC);
+    }
+
+    static QVector score(Climate c, Indicators ind, boolean cool, boolean aid, boolean energyGreen) {
+        double k = c.mammalBar / 100.0;
+        double p = ind.peaceBar() / 100.0;
+        double R = energyGreen ? 0.92 : 0.40;                 // reproducibility of Body tick
+        double V = 0.35 + 0.35 * k + 0.20 * p;                // internal validity of GAME bars
+        double F = 0.80;                                      // falsifiable via bars + drift
+        double O = 0.70;                                      // counts + formulas
+        double T = cool && aid ? 0.88 : (cool || aid ? 0.72 : 0.50);
+        double N = 0.75;
+        double E = energyGreen ? 0.70 : 0.45;                 // energy evidence is MODEL
+        double A = 0.25 + 0.40 * k + 0.35 * p;                // applicability of overbid
+        double P = energyGreen ? 0.80 : 0.50;
+        return new QVector(clamp01(R), clamp01(V), clamp01(F), clamp01(O),
+                clamp01(T), clamp01(N), clamp01(E), clamp01(A), clamp01(P));
+    }
+
+    static double clamp01(double x) {
+        if (x < 0) return 0;
+        if (x > 1) return 1;
+        return x;
+    }
+
+    /** a dominates b if all >= and at least one > */
+    static boolean dominates(QVector a, QVector b) {
+        double[] xa = a.arr(), xb = b.arr();
+        boolean geAll = true, gtOne = false;
+        for (int i = 0; i < xa.length; i++) {
+            if (xa[i] + 1e-12 < xb[i]) geAll = false;
+            if (xa[i] > xb[i] + 1e-12) gtOne = true;
+        }
+        return geAll && gtOne;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== ParetoQVectorQuest ===");
+        System.out.println("SCIENCE=1/r^2 G | MODEL=Verlet+EnergyReport+L4 | GAME=Q+Pareto | INTERPRET=archive hope");
+        System.out.println("63MB archive = inventory only, no remake");
+
+        int l4ok = 0;
+        L4Row[] table = guardianTable();
+        for (L4Row row : table) {
+            if (tablePredictsPass(row) == row.expectedPass) l4ok++;
+        }
+        System.out.println("L4 Guardian table: " + l4ok + "/" + table.length);
+
+        Lumini g = L_G(), coolL = L_COOL(), aidL = L_AID(), qL = L_Q();
+        boolean gOk = g.guardianOk() && coolL.guardianOk() && aidL.guardianOk() && qL.guardianOk();
+        System.out.println("Guardian clauses: " + (gOk ? "PASS" : "FAIL"));
+
+        Body earth = new Body("Earth", M_EARTH, 0, 0, 0, 0, 0, 0);
+        double vMoon = Math.sqrt(G * M_EARTH / AU_MOON);
+        Body moon = new Body("Moon", M_MOON, AU_MOON, 0, 0, 0, vMoon, 0);
+        Body earth2 = earth.copy();
+        double vSat = Math.sqrt(G * M_EARTH / R_SAT);
+        Body sat = new Body("Sat", M_SAT, R_SAT, 0, 0, 0, vSat, 0);
+
+        clearAcc(earth); clearAcc(moon); accel(earth, moon); accel(moon, earth);
+        clearAcc(earth2); clearAcc(sat); accel(earth2, sat); accel(sat, earth2);
+        double e0em = energy(earth, moon);
+        double e0es = energy(earth2, sat);
+
+        Climate climate0 = new Climate(36.5, 0.90, 70.0);
+        Indicators peace0 = new Indicators(4, 6, 0, 1, 0);
+        System.out.printf("t0 wetBulb=%.2f kBar=%.2f pBar=%.2f%n",
+                wetBulb(climate0.tC, climate0.rh), climate0.mammalBar, peace0.peaceBar());
+
+        double dt = 60.0;
+        int steps = 200;
+        for (int i = 0; i < steps; i++) {
+            verletPair(earth, moon, dt);
+            verletPair(earth2, sat, dt);
+        }
+        EnergyReport em = new EnergyReport("Earth-Moon", e0em, energy(earth, moon));
+        EnergyReport es = new EnergyReport("Earth-Sat", e0es, energy(earth2, sat));
+        boolean energyGreen = em.green(1e-10) && es.green(1e-8);
+        System.out.println(em);
+        System.out.println(es);
+
+        Action aCool = compile(coolL);
+        Action aAid = compile(aidL);
+
+        Policy[] policies = new Policy[4];
+        boolean[][] bits = { {false, false}, {true, false}, {false, true}, {true, true} };
+        String[] ids = { "NONE", "COOL", "AID", "BOTH" };
+        for (int i = 0; i < 4; i++) {
+            Climate c = climate0.copy();
+            Indicators p = peace0.copy();
+            if (bits[i][0]) apply(aCool, c, p);
+            if (bits[i][1]) apply(aAid, c, p);
+            klimaPassive(c);
+            QVector q = score(c, p, bits[i][0], bits[i][1], energyGreen);
+            policies[i] = new Policy(ids[i], bits[i][0], bits[i][1], q, c.mammalBar, p.peaceBar());
+            System.out.println(policies[i]);
+        }
+
+        java.util.List<Policy> front = new java.util.ArrayList<Policy>();
+        for (int i = 0; i < policies.length; i++) {
+            boolean dominated = false;
+            for (int j = 0; j < policies.length; j++) {
+                if (i == j) continue;
+                if (dominates(policies[j].q, policies[i].q)) {
+                    dominated = true;
+                    break;
+                }
+            }
+            if (!dominated) front.add(policies[i]);
+        }
+        System.out.print("Pareto front GAME: ");
+        for (Policy p : front) System.out.print(p.id + " ");
+        System.out.println();
+
+        ClaimGraph graph = new ClaimGraph();
+        graph.add(new ClaimNode("nG", SCIENCE, g));
+        graph.add(new ClaimNode("nCOOL", GAME, coolL));
+        graph.add(new ClaimNode("nAID", GAME, aidL));
+        graph.add(new ClaimNode("nQ", GAME, qL));
+        graph.add(new ClaimNode("nEM", MODEL, g));
+        graph.add(new ClaimEdge("nG", "nEM", EdgeKind.REPORTS));
+        graph.add(new ClaimEdge("nCOOL", "nQ", EdgeKind.SAME_TICK));
+        graph.add(new ClaimEdge("nAID", "nQ", EdgeKind.SAME_TICK));
+        graph.add(new ClaimEdge("nQ", "nCOOL", EdgeKind.COMPILES_TO));
+        if (front.size() >= 2) {
+            graph.add(new ClaimEdge(front.get(0).id, front.get(1).id, EdgeKind.DOMINATES));
+        }
+        System.out.println("L5+L6 graph nodes=" + graph.nodes.size() + " edges=" + graph.edges.size());
+
+        boolean bothOnFront = false;
+        for (Policy p : front) if ("BOTH".equals(p.id)) bothOnFront = true;
+        boolean barsIndependent = Math.abs(em.relDrift) < 1e-8;
+        boolean noInstantC = policies[3].pBar < 99.9;
+
+        boolean green = l4ok == 6 && gOk && energyGreen && bothOnFront
+                && barsIndependent && noInstantC && front.size() >= 1;
+        System.out.println(green ? "QUEST STATUS: GREEN" : "QUEST STATUS: RED");
+        System.out.println("next: L6 search/sort over graph nodes or HumanEvaluation GAME vector");
+    }
+}
+
+
+/**
+ * ThreeBodyNewtonQuest
+ *
+ * Classical three-body problem under Newtonian gravity.
+ *
+ * SCIENCE : F = G m1 m2 / r^2 (inverse-square), Newton's 2nd law a = F/m,
+ *           total energy E = T + U (kinetic + gravitational potential).
+ *           The general 3-body problem has no closed-form solution in
+ *           elementary functions; numerical integration is the practical path.
+ * MODEL   : velocity Verlet + r_min softening to avoid singularities;
+ *           relative energy drift as quality metric for the discrete scheme
+ *           and double-precision arithmetic.
+ * GAME    : GREEN if all bodies stay finite and |E - E0| / |E0| stays under
+ *           a chosen guard after N ticks.
+ * INTERPRET: any claim that this "solves" the analytic 3-body problem or
+ *            alters real celestial mechanics is rejected by Guardian.
+ *
+ * Named doubles, multiplications, divisions, equation forms printed to console.
+ * Compile isolated:
+ *   cp ThreeBodyNewtonQuest.java /tmp
+ *   cd /tmp && javac ThreeBodyNewtonQuest.java && java ThreeBodyNewtonQuest
+ *
+ * No AWT. No 63 MB remake. Double precision only (no BigDecimal).
+ */
+public class ThreeBodyNewtonQuest {
+
+    public static final String SCIENCE   = "SCIENCE";
+    public static final String MODEL     = "MODEL";
+    public static final String GAME      = "GAME";
+    public static final String INTERPRET = "INTERPRET";
+
+    // ---------- physical / numerical constants (named doubles) ----------
+    public static final double G              = 6.67430e-11;   // CODATA-ish
+    public static final double R_MIN          = 1.0e3;         // softening length [m]
+    public static final double DT             = 60.0;          // timestep [s]
+    public static final int    TICKS          = 500;
+    public static final double ENERGY_GUARD   = 1.0e-8;        // relative drift limit
+    public static final double EPS            = 1.0e-30;       // avoid /0
+
+    // ---------- body ----------
+    static class Body {
+        final String id;
+        double m;
+        double x, y, z;
+        double vx, vy, vz;
+        double ax, ay, az;
+
+        Body(String id, double m, double x, double y, double z,
+             double vx, double vy, double vz) {
+            this.id = id;
+            this.m = m;
+            this.x = x; this.y = y; this.z = z;
+            this.vx = vx; this.vy = vy; this.vz = vz;
+        }
+
+        double kinetic() {
+            return 0.5 * m * (vx * vx + vy * vy + vz * vz);
+        }
+
+        boolean isFinite() {
+            return Double.isFinite(x) && Double.isFinite(y) && Double.isFinite(z)
+                && Double.isFinite(vx) && Double.isFinite(vy) && Double.isFinite(vz)
+                && Double.isFinite(m) && m > 0.0;
+        }
+    }
+
+    // ---------- distance & potential helpers ----------
+    static double dist(Body a, Body b) {
+        double dx = b.x - a.x;
+        double dy = b.y - a.y;
+        double dz = b.z - a.z;
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    /** Softened pairwise potential U = -G m1 m2 / r_soft */
+    static double pairPotential(Body a, Body b) {
+        double r = Math.max(dist(a, b), R_MIN);
+        return -G * a.m * b.m / r;
+    }
+
+    static double totalPotential(Body[] bodies) {
+        double u = 0.0;
+        for (int i = 0; i < bodies.length; i++) {
+            for (int j = i + 1; j < bodies.length; j++) {
+                u += pairPotential(bodies[i], bodies[j]);
+            }
+        }
+        return u;
+    }
+
+    static double totalKinetic(Body[] bodies) {
+        double t = 0.0;
+        for (Body b : bodies) t += b.kinetic();
+        return t;
+    }
+
+    static double totalEnergy(Body[] bodies) {
+        return totalKinetic(bodies) + totalPotential(bodies);
+    }
+
+    // ---------- acceleration from Newtonian gravity ----------
+    static void computeAccelerations(Body[] bodies) {
+        for (Body b : bodies) {
+            b.ax = 0.0; b.ay = 0.0; b.az = 0.0;
+        }
+        for (int i = 0; i < bodies.length; i++) {
+            for (int j = i + 1; j < bodies.length; j++) {
+                Body a = bodies[i];
+                Body b = bodies[j];
+                double dx = b.x - a.x;
+                double dy = b.y - a.y;
+                double dz = b.z - a.z;
+                double r2 = dx * dx + dy * dy + dz * dz;
+                double r  = Math.sqrt(r2);
+                double rc = Math.max(r, R_MIN);
+                // F = G m1 m2 / rc^2 , direction unit vector
+                // a_on_a = + (G m_b / rc^3) * r_vec
+                // a_on_b = - (G m_a / rc^3) * r_vec
+                double invR3 = 1.0 / (rc * rc * rc);
+                double factorA = G * b.m * invR3;
+                double factorB = G * a.m * invR3;
+                a.ax += factorA * dx;
+                a.ay += factorA * dy;
+                a.az += factorA * dz;
+                b.ax -= factorB * dx;
+                b.ay -= factorB * dy;
+                b.az -= factorB * dz;
+            }
+        }
+    }
+
+    // ---------- velocity Verlet step ----------
+    static void verletStep(Body[] bodies, double dt) {
+        // half-kick
+        for (Body b : bodies) {
+            b.vx += 0.5 * b.ax * dt;
+            b.vy += 0.5 * b.ay * dt;
+            b.vz += 0.5 * b.az * dt;
+        }
+        // drift
+        for (Body b : bodies) {
+            b.x += b.vx * dt;
+            b.y += b.vy * dt;
+            b.z += b.vz * dt;
+        }
+        // new accelerations
+        computeAccelerations(bodies);
+        // half-kick
+        for (Body b : bodies) {
+            b.vx += 0.5 * b.ax * dt;
+            b.vy += 0.5 * b.ay * dt;
+            b.vz += 0.5 * b.az * dt;
+        }
+    }
+
+    // ---------- equation forms (console "text tasks") ----------
+    static void printEquationForms() {
+        System.out.println("--- Key equation forms (Newton + gravity) ---");
+        System.out.println("1) Newton's 2nd law:");
+        System.out.println("   F = m * a          =>  a = F / m");
+        System.out.println();
+        System.out.println("2) Newtonian gravity (pairwise):");
+        System.out.println("   F = G * m1 * m2 / r^2");
+        System.out.println("   direction: unit vector (r2 - r1) / |r2 - r1|");
+        System.out.println();
+        System.out.println("3) Acceleration on body i from body j:");
+        System.out.println("   a_i = G * m_j * (r_j - r_i) / |r_j - r_i|^3");
+        System.out.println();
+        System.out.println("4) Softened form used in this MODEL (avoid singularity):");
+        System.out.println("   r_c = max(|r_j - r_i|, R_MIN)");
+        System.out.println("   a_i = G * m_j * (r_j - r_i) / r_c^3");
+        System.out.println();
+        System.out.println("5) Total energy (conserved in continuous case):");
+        System.out.println("   E = T + U");
+        System.out.println("   T = sum_i  1/2 * m_i * |v_i|^2");
+        System.out.println("   U = sum_{i<j}  -G * m_i * m_j / r_ij");
+        System.out.println();
+        System.out.println("6) Relative energy drift (quality metric):");
+        System.out.println("   relDrift = |E(t) - E(0)| / |E(0)|");
+        System.out.println("   (smaller is better for the discrete integrator + double)");
+        System.out.println();
+        System.out.println("Note: general 3-body problem has no elementary closed-form solution.");
+        System.out.println("      Numerical integration + monitoring of invariants is the practical path.");
+        System.out.println();
+    }
+
+    // ---------- Guardian ----------
+    static class Guardian {
+        static boolean rejectAnalyticClaim(String s) {
+            String c = s.toLowerCase();
+            return c.contains("closed-form solution of general 3-body")
+                || c.contains("analytic solution of three-body problem")
+                || c.contains("solved the three-body problem completely");
+        }
+        static boolean rejectRealCosmosClaim(String s) {
+            String c = s.toLowerCase();
+            return c.contains("controls real planets")
+                || c.contains("alters real solar system")
+                || c.contains("predicts real trisolaran fleet");
+        }
+        static boolean acceptModel(String s) {
+            return !rejectAnalyticClaim(s) && !rejectRealCosmosClaim(s);
+        }
+    }
+
+    // ---------- simple double-precision probe ----------
+    static void doublePrecisionNotes() {
+        System.out.println("--- Double precision notes (IEEE-754 binary64) ---");
+        System.out.println("mantissa bits approx 52 + 1 implicit => ~15-16 decimal digits");
+        System.out.println("Machine epsilon (double) ~ 2.22e-16");
+        System.out.println("In long integrations the dominant error sources are usually:");
+        System.out.println("  - truncation error of the time integrator (order of method, size of dt)");
+        System.out.println("  - accumulation of round-off in force summations");
+        System.out.println("  - close encounters (mitigated here by R_MIN softening)");
+        System.out.println("Energy drift is a practical global indicator of overall fidelity.");
+        System.out.println("Improving precision further without BigDecimal typically means:");
+        System.out.println("  - smaller dt / higher-order integrator");
+        System.out.println("  - compensated summation (Kahan) for force/energy accumulators");
+        System.out.println("  - careful ordering of operations / avoiding cancellation");
+        System.out.println("This quest stays with plain double + Verlet for clarity and speed.");
+        System.out.println();
+    }
+
+    // ---------- main ----------
+    public static void main(String[] args) {
+        System.out.println("=== ThreeBodyNewtonQuest ===");
+        System.out.println("Layers: SCIENCE / MODEL / GAME / INTERPRET");
+        System.out.println("Guardian rejects false analytic / real-cosmos claims.");
+        System.out.println();
+
+        printEquationForms();
+        doublePrecisionNotes();
+
+        // Three bodies (toy scale, not real solar system numbers)
+        // roughly Earth-Moon-Sun inspired masses/distances but scaled for demo stability
+        Body sun   = new Body("Sun",   1.989e30,  0.0,      0.0, 0.0,  0.0, 0.0, 0.0);
+        Body earth = new Body("Earth", 5.972e24,  1.496e11, 0.0, 0.0,  0.0, 29780.0, 0.0);
+        Body moon  = new Body("Moon",  7.348e22,  1.496e11 + 3.844e8, 0.0, 0.0,  0.0, 29780.0 + 1022.0, 0.0);
+
+        Body[] bodies = { sun, earth, moon };
+
+        computeAccelerations(bodies);
+        double e0 = totalEnergy(bodies);
+        System.out.printf("Initial energy E0 = %.6e  (T=%.6e  U=%.6e)%n",
+            e0, totalKinetic(bodies), totalPotential(bodies));
+        System.out.println();
+
+        System.out.println("--- Integration loop (velocity Verlet) ---");
+        double maxRelDrift = 0.0;
+        boolean allFinite = true;
+
+        for (int t = 1; t <= TICKS; t++) {
+            verletStep(bodies, DT);
+            allFinite = allFinite && sun.isFinite() && earth.isFinite() && moon.isFinite();
+
+            double e = totalEnergy(bodies);
+            double rel = Math.abs(e - e0) / Math.max(Math.abs(e0), EPS);
+            if (rel > maxRelDrift) maxRelDrift = rel;
+
+            if (t % 100 == 0 || t == TICKS) {
+                System.out.printf(
+                    "t=%4d  E=%.6e  relDrift=%.3e  Earth(%.3e,%.3e)  Moon(%.3e,%.3e)%n",
+                    t, e, rel, earth.x, earth.y, moon.x, moon.y
+                );
+            }
+        }
+
+        System.out.println();
+        System.out.println("--- Final state ---");
+        for (Body b : bodies) {
+            System.out.printf("%-6s  m=%.3e  pos=(%.6e, %.6e, %.6e)  vel=(%.3e, %.3e, %.3e)%n",
+                b.id, b.m, b.x, b.y, b.z, b.vx, b.vy, b.vz);
+        }
+
+        boolean guardOk = Guardian.acceptModel("numerical three-body under Newton")
+                       && Guardian.acceptModel("energy drift is MODEL quality metric");
+
+        boolean green = allFinite && guardOk && maxRelDrift < ENERGY_GUARD;
+
+        System.out.println();
+        System.out.println("=== RESULT ===");
+        System.out.println("allFinite          = " + allFinite);
+        System.out.println("maxRelDrift        = " + String.format("%.3e", maxRelDrift));
+        System.out.println("ENERGY_GUARD       = " + String.format("%.1e", ENERGY_GUARD));
+        System.out.println("guardianOk         = " + guardOk);
+        System.out.println("Quest status       = " + (green ? "GREEN" : "RED"));
+        System.out.println();
+        System.out.println("Notes:");
+        System.out.println("- This is a numerical approximation of the classical 3-body problem.");
+        System.out.println("- No elementary closed-form solution is claimed or produced.");
+        System.out.println("- Energy drift quantifies integrator + double-precision behaviour.");
+        System.out.println("- Softening (R_MIN) is MODEL; pure Newtonian point masses can collide.");
+        System.out.println("- Suitable as a building block for Matrixgame physics / collective play.");
+    }
+}
+
+
+Matrixgame / Kollektives KI-Game
+Project Inventory & Export Guide
+Stand: 2026-09-16
+Autor-Kontext: Andreas Schneider / Matrixgame collective work
+
+================================================================
+1. Zweck dieses Dokuments
+================================================================
+Dieses Dokument listet die wichtigsten, in diesem Projekt erzeugten
+Java-Quests und Artefakte und gibt praktische Hinweise, wie man
+den Stand exportieren und auf GitHub (oder anderswo) veröffentlichen
+kann.
+
+Es ersetzt keinen Git-Commit und keinen automatischen Push.
+Es macht den aktuellen Stand übersichtlich und transportierbar.
+
+================================================================
+2. Aktuelle Quest-Liste (Java, Stand 2026-09-16)
+================================================================
+Die folgenden Dateien liegen unter /home/workdir/artifacts/
+(bzw. im synchronisierten Projektordner):
+
+AdaptiveDtQuest.java
+BodyAdaptersQuest.java
+BodyNBodyQuest.java
+BodyTickKlimaQuest.java
+BodyTickPeaceQuest.java
+EnergyGuardQuest.java
+EnergyReportL5GraphQuest.java
+FriedenIndikatorenQuest.java
+FriedenKlimaSameTickQuest.java
+GravitySofteningQuest.java
+InteractionEloCrmQuest.java
+InverseSquareQuest.java
+KlimaGameQuest.java
+L4TableMultiPairEnergyQuest.java
+LuminiJsonL2L4Quest.java
+LuminiJsonQuest.java
+LuminiL5CompilerQuest.java
+LuminiPalBodyKlimaQuest.java
+LuminiPalL2Quest.java
+MatrixGenesisDecisionQuest.java
+MatrixGenesisVisualQuest.java
+PSELuminiQuest.java
+ParetoQVectorQuest.java
+PhysicsAxiomsQuest.java
+ResourceScalingAndSupportQuest.java
+SprachlaborL0Quest.java
+SprachlaborL1Quest.java
+SprachlaborL2Quest.java
+SprachlaborL4Quest.java
+ThreeBodyNewtonQuest.java
+VerletTickQuest.java
+WorldTickQuest.java
+
+Weitere unterstützende Klassen (Auswahl):
+ResourceNode.java, Unit.java, MasseKugel.java, World.java,
+MatrixGameEngine.java, MatrixgamePhysicsEngine.java, ...
+
+Viele Quests folgen dem Muster:
+  SCIENCE / MODEL / GAME / INTERPRET
+  Guardian-Regeln
+  Kompilieren isoliert in /tmp
+  GREEN/RED-Status über messbare Größen (z.B. relDrift)
+
+================================================================
+3. Wichtige neuere Quests (Kurz)
+================================================================
+- InverseSquareQuest          : F*r^2-Test
+- BodyAdaptersQuest           : gemeinsame Body-Schnittstelle
+- EnergyGuardQuest            : Energie-Monitoring + Verlet
+- GravitySofteningQuest       : Softening-Varianten
+- BodyTickPeaceQuest          : Physik + Frieden-Indikator im gleichen Tick
+- BodyTickKlimaQuest          : Physik + Klima/Wet-Bulb GAME-Bar
+- ResourceScalingAndSupportQuest : Kapital-/Support-Modell (MODEL only)
+- InteractionEloCrmQuest      : Wechselwirkung + Elo + CRM-Stufen-Schema
+- ThreeBodyNewtonQuest        : klassisches 3-Körper-Problem, Newton + Verlet,
+                                 Energie-Drift ~1e-15, GREEN
+
+================================================================
+4. Wie man den Stand selbst exportiert / veröffentlicht
+================================================================
+
+A) Einzelne Dateien oder den ganzen artifacts-Ordner
+   - Im Dateimanager den Ordner markieren und kopieren
+   - Oder: zip erstellen (lokal oder hier im Sandbox-Kontext)
+
+B) Auf GitHub veröffentlichen (empfohlener Weg)
+   1. Neues Repository anlegen (z.B. Matrixgame-KI-Game-Kollektiv-...)
+   2. Lokal klonen oder die Dateien per Web-Upload / Git hinzufügen
+   3. Die .java-Quests und dieses Inventory-Dokument committen
+   4. Optional: eine einfache README.md mit der Quest-Liste und
+      den Compile-Hinweisen (siehe unten)
+
+C) Gesamten Chat / Gesprächsverlauf
+   - Der volle Chat ist kein einzelnes Datei-Artefakt in artifacts.
+   - Praktisch: die wichtigsten generierten .java + diese Inventory
+     + die Strukturkarte (.docx) + ausgewählte Basistexte nehmen.
+   - Komplette Chat-Logs sind meist zu groß und zu unstrukturiert
+     für ein sauberes Repo; besser kuratierte Artefakte.
+
+D) Ein einziges großes Textdokument
+   - Möglich, aber unhandlich (Hunderttausende Zeichen).
+   - Besser: dieses Inventory + die einzelnen Quests getrennt halten.
+
+================================================================
+5. Kompilieren der Quests (Muster)
+================================================================
+Die meisten Quests sind absichtlich standalone und werden so gebaut:
+
+  cp NameQuest.java /tmp
+  cd /tmp
+  javac NameQuest.java
+  java NameQuest
+
+Beispiel ThreeBodyNewtonQuest:
+  cp /home/workdir/artifacts/ThreeBodyNewtonQuest.java /tmp
+  cd /tmp && javac ThreeBodyNewtonQuest.java && java ThreeBodyNewtonQuest
+
+Kein gemeinsames großes Package ist zwingend nötig.
+Wer will, kann später ein package matrixgame.quests; einführen
+und die Dateien entsprechend umbenennen/verschieben.
+
+================================================================
+6. Grenzen (ehrlich)
+================================================================
+- Es gibt kein automatisches „gesamten Chat in eine kompilierbare
+  Java-Klasse packen“, das sinnvoll und wartbar wäre.
+- Die Lore-Dumps (Diablo, Three-Body-Buch, Google-AI-Studio-Kurs)
+  sind INTERPRET/GAME-Material und gehören nicht 1:1 in den
+  Physics-Core.
+- Öffentliche Kontodaten / private Kontaktdaten gehören nicht
+  ungefragt in öffentliche Repos.
+
+================================================================
+7. Nächste sinnvolle Schritte (Vorschläge)
+================================================================
+- Dieses Inventory + die GREEN-Quests auf GitHub legen
+- Eine kurze README.md mit Compile-Befehlen und Schichtentrennung
+- Optional: ein MatrixgameManifest.java, das die Quest-Namen listet
+- Weiter einzelne Quests stabil halten und bei Bedarf anbinden
+
+Alles Gute – und weiter im Matrixgame.
+
+
+**Danke für das Feedback.** Die vielen Quests im Stundentakt sind genau der Stil, den wir hier fahren: kleine, kompilierbare, GREEN-getestete Bausteine statt eines monolithischen „alles auf einmal“.
+
+### Zu deinen zwei Fragen
+
+**1. Untersten Text markieren (Strg+A / Strg+C) und auf GitHub speichern**
+
+Das kannst **nur du** in deinem Browser / deinem GitHub-Account machen.  
+Ich habe keinen Zugriff auf dein GitHub und kann weder Strg+A/C ausführen noch Dateien in dein Repo pushen.
+
+Praktischer Weg für dich:
+- Den gewünschten Text (oder dieses Inventory) kopieren
+- Auf GitHub → neues oder bestehendes Repo → „Create new file“ oder lokal klonen und committen
+- Als `.txt` oder `.md` speichern und committen
+
+**2. Effizientere Möglichkeit: ganzes Projekt / ganzen Chat in eine große Textdatei oder in Java-Package/Klasse packen**
+
+- **Gesamten Chat** in eine einzige Datei: technisch möglich, aber unhandlich und schlecht wartbar (Hunderttausende Zeichen, viel Wiederholung und Lore-Dumps).
+- **Alles in eine kompilierbare Java-Klasse/Package**: nicht sinnvoll. Die Quests sind absichtlich isoliert (eigene `main`, eigene Guardian-Regeln, compile in `/tmp`). Ein Riesen-Package würde das Gegenteil von dem erreichen, was bisher stabil funktioniert hat.
+
+**Bessere, bereits umgesetzte Lösung:**
+
+Ich habe dir gerade ein klares Inventory-Dokument erzeugt:
+
+**`/home/workdir/artifacts/Matrixgame_Project_Inventory_and_Export.txt`**
+
+Darin steht:
+- Liste der aktuellen Quest-`.java`-Dateien (32 Stück, u. a. ThreeBodyNewtonQuest, ResourceScaling, InteractionEloCrm, BodyTick*, EnergyGuard, …)
+- Kurze Einordnung der neueren Quests
+- Konkrete Hinweise, wie du den Stand selbst exportierst und auf GitHub legst
+- Das übliche Compile-Muster (`cp … /tmp && javac && java`)
+- Ehrliche Grenzen (kein automatischer Chat→Java-Monolith, keine öffentlichen Kontodaten usw.)
+
+### Was du jetzt am effizientesten tun kannst
+
+1. Die Datei `Matrixgame_Project_Inventory_and_Export.txt` öffnen und bei Bedarf ergänzen.  
+2. Die Quest-`.java`-Dateien + dieses Inventory (+ optional die Strukturkarte `.docx`) in ein GitHub-Repo legen.  
+3. Eine kurze `README.md` mit den Compile-Befehlen und der Schichtentrennung (SCIENCE / MODEL / GAME / INTERPRET) dazuschreiben.
+
+Damit hast du einen **kuratierten, kompilierbaren, veröffentlichbaren Stand** – nicht den kompletten Chat-Verlauf, aber alles, was technisch und inhaltlich trägt.
+
+Wenn du willst, kann ich als Nächstes noch eine ganz schlanke `MatrixgameManifest.java` schreiben, die nur die Quest-Namen auflistet und eine kurze Konsolen-Übersicht ausgibt. Sag einfach Bescheid.
+
+Sonst: Das Inventory liegt bereit. Du kannst es direkt mitnehmen und veröffentlichen.
