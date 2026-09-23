@@ -1,0 +1,520 @@
+package ordner4;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class MatrixgameLevel3 extends JPanel {
+
+    public List<Unit> unitList = new ArrayList<>();
+
+    int FRAME_WIDTH = 1920;
+    int FRAME_HEIGHT = 1080;
+
+    double zoomFactor = 1.0;
+    double zoomCenterX = 0;
+    double zoomCenterY = 0;
+    static final double ZOOM_STEP = 1.2;
+    double feinheit = 50;
+    double PAN_STEP = feinheit * zoomFactor;
+
+    double globalEntropyPool = 100.0;
+    long simulationTicks = 0;
+    int currentLevel = 3;
+
+    int dragStartX = -1;
+    int dragStartY = -1;
+    int currentMouseX = -1;
+    int currentMouseY = -1;
+    boolean isDragging = false;
+
+    public MatrixgameLevel3() {
+        setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+        setBackground(Color.BLACK);
+        
+        MouseAdapter mouseHandler = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    dragStartX = e.getX();
+                    dragStartY = e.getY();
+                    currentMouseX = dragStartX;
+                    currentMouseY = dragStartY;
+                    isDragging = false;
+                }
+                else if (SwingUtilities.isRightMouseButton(e)) {
+                    int mouseX = e.getX();
+                    int mouseY = e.getY();
+                    
+                    double worldTargetX = (mouseX - getWidth() / 2.0) / zoomFactor - zoomCenterX;
+                    double worldTargetY = (mouseY - getHeight() / 2.0) / zoomFactor - zoomCenterY;
+
+                    Unit clickedEnemy = null;
+                    for (Unit u : unitList) {
+                        double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0;
+                        double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0;
+                        double radius = Math.abs(u.size);
+                        
+                        if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) {
+                            clickedEnemy = u;
+                            break;
+                        }
+                    }
+
+                    int selectedCount = 0;
+                    for (Unit u : unitList) {
+                        if (u.isSelected) selectedCount++;
+                    }
+
+                    double commandCost = selectedCount * 1.5;
+                    if (globalEntropyPool >= commandCost) {
+                        globalEntropyPool -= commandCost;
+                        for (Unit u : unitList) {
+                            if (u.isSelected) { 
+                                // Erlaubt den Angriff, solange das Ziel nicht im eigenen Team ist
+                                if (clickedEnemy != null && clickedEnemy.team != u.team) {
+                                    u.manualTarget = clickedEnemy;
+                                    u.targetPosX = null;
+                                    u.targetPosY = null;
+                                    u.decisionAlgorithm = "TACTICAL_FOCUS";
+                                } else {
+                                    u.targetPosX = worldTargetX;
+                                    u.targetPosY = worldTargetY;
+                                    u.manualTarget = null;
+                                    u.decisionAlgorithm = "TACTICAL_MOVE";
+                                }
+                            }
+                        }
+                    } else {
+                        System.out.println("Zu wenig Entropie für komplexe Befehlskette! Warte auf Regeneration...");
+                    }
+                    repaint();
+                }
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    currentMouseX = e.getX();
+                    currentMouseY = e.getY();
+                    if (Math.hypot(currentMouseX - dragStartX, currentMouseY - dragStartY) > 5) {
+                        isDragging = true;
+                    }
+                    repaint();
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    if (isDragging) {
+                        double x1 = Math.min(dragStartX, currentMouseX);
+                        double x2 = Math.max(dragStartX, currentMouseX);
+                        double y1 = Math.min(dragStartY, currentMouseY);
+                        double y2 = Math.max(dragStartY, currentMouseY);
+
+                        if (!e.isShiftDown()) {
+                            for (Unit u : unitList) u.isSelected = false;
+                        }
+
+                        for (Unit u : unitList) {
+                            double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0;
+                            double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0;
+                            if (sx >= x1 && sx <= x2 && sy >= y1 && sy <= y2) {
+                                u.isSelected = true; // Team-Filter komplett entfernt
+                            }
+                        }
+                    } else {
+                        int mouseX = e.getX();
+                        int mouseY = e.getY();
+                        boolean unitFound = false;
+
+                        for (Unit u : unitList) {
+                            double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0;
+                            double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0;
+                            double radius = Math.abs(u.size);
+
+                            if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) {
+                                if (!e.isShiftDown()) {
+                                    for (Unit other : unitList) other.isSelected = false;
+                                }
+                                u.isSelected = !u.isSelected; // Team-Filter komplett entfernt
+                                unitFound = true;
+                                break;
+                            }
+                        }
+                        if (!unitFound && !e.isShiftDown()) {
+                            for (Unit u : unitList) u.isSelected = false;
+                        }
+                    }
+                    isDragging = false;
+                    dragStartX = -1;
+                    dragStartY = -1;
+                    repaint();
+                }
+            }
+        };
+
+        this.addMouseListener(mouseHandler);
+        this.addMouseMotionListener(mouseHandler);
+    }
+
+    public void init() {
+        double counterId = 0;
+        
+        for (int i = 0; i < 220; i++) {
+            Unit unit = new Unit();
+            unit.leben = Math.max(10, Math.random() / Math.random());
+            unit.schaden = Math.max(1, Math.random() / Math.random());
+            
+            unit.team = 5;
+            unit.posX = (int) (Math.round(12 * Math.random()) - 6);
+            unit.posY = (int) (Math.round(3 * Math.random()) + 5);
+            unit.posZ = (int) (Math.round(3 * Math.random()) + 5);
+            unit.blue = 255;
+            unit.red = 180;
+            unit.green = 180;
+            unit.id = counterId++;
+            unit.decisionAlgorithm = "Nearest_ENEMI"; // Beide Seiten starten im Auto-Bot-Modus
+            unitList.add(unit);
+        }
+        
+        Unit king1 = new Unit();
+        king1.typ = "King";
+        king1.size = 15;
+        king1.leben = 500;
+        king1.schaden = 10;
+        king1.team = 5;
+        king1.posX = 0;
+        king1.posY = 10;
+        king1.blue = 255;
+        king1.red = 200;
+        king1.green = 200;
+        king1.id = counterId++;
+        unitList.add(king1);
+
+        for (int i = 0; i < 220; i++) {
+            Unit unit = new Unit();
+            unit.team = 20;
+            unit.posX = (int) (Math.round(12 * Math.random()) - 6);
+            unit.posY = (int) (Math.round(-3 * Math.random()) - 5);
+            unit.posZ = (int) (Math.round(3 * Math.random()) + 5);
+            unit.leben = Math.max(10, Math.random() / Math.random());
+            unit.schaden = Math.max(1, Math.random() / Math.random());
+            unit.red = 255;
+            unit.green = 60;
+            unit.blue = 60;
+            unit.speed = 0.45;
+            unit.id = counterId++;
+            unit.decisionAlgorithm = "Nearest_ENEMI";
+            unitList.add(unit);
+        }
+        
+        Unit king2 = new Unit();
+        king2.typ = "King";
+        king2.size = 15;
+        king2.team = 20;
+        king2.posX = 0;
+        king2.posY = -10;
+        king2.leben = 500;
+        king2.schaden = 10;
+        king2.red = 255;
+        king2.green = 60;
+        king2.blue = 60;
+        king2.id = counterId++;
+        unitList.add(king2);
+
+        repaint();
+    }
+
+    public void panLeft() { zoomCenterX += PAN_STEP; repaint(); }
+    public void panRight() { zoomCenterX -= PAN_STEP; repaint(); }
+    public void panUp() { zoomCenterY += PAN_STEP; repaint(); }
+    public void panDown() { zoomCenterY -= PAN_STEP; repaint(); }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+
+        for (int i = 0; i < unitList.size(); i++) {
+            Unit unit = unitList.get(i);
+            if (unit.leben <= 0) continue;
+            double radius = unit.size;
+            Color color = new Color((int) Math.min(255, Math.max(0, unit.red)), 
+                                      (int) Math.min(255, Math.max(0, unit.green)), 
+                                      (int) Math.min(255, Math.max(0, unit.blue)));
+            double sx = (zoomCenterX + unit.posX) * zoomFactor + getWidth() / 2.0;
+            double sy = (zoomCenterY + unit.posY) * zoomFactor + getHeight() / 2.0;
+            
+            g2.setColor(color);
+            g2.fillOval((int) (sx - radius), (int) (sy - radius), (int) (radius * 2), (int) (radius * 2));
+            
+            if (unit.isSelected) {
+                g2.setColor(Color.WHITE);
+                g2.drawOval((int) (sx - radius - 2), (int) (sy - radius - 2), (int) (radius * 2 + 4), (int) (radius * 2 + 4));
+            }
+        }
+
+        if (isDragging) {
+            g2.setColor(new Color(0, 255, 128, 60));
+            int x = Math.min(dragStartX, currentMouseX);
+            int y = Math.min(dragStartY, currentMouseY);
+            int w = Math.abs(currentMouseX - dragStartX);
+            int h = Math.abs(currentMouseY - dragStartY);
+            g2.fillRect(x, y, w, h);
+            g2.setColor(new Color(0, 255, 128));
+            g2.drawRect(x, y, w, h);
+        }
+
+        g2.setColor(new Color(0, 255, 128));
+        g2.setFont(new Font("Monospaced", Font.BOLD, 14));
+        g2.drawString("Matrixgame [SANDBOX BASIS] - Entropie-Pool: " + String.format("%.2f", globalEntropyPool), 20, 30);
+        g2.drawString("Simulation Ticks: " + simulationTicks, 20, 55);
+
+        drawUnitInspector(g2);
+    }
+
+    private void drawUnitInspector(Graphics2D g2) {
+        g2.setColor(new Color(20, 20, 20, 220));
+        g2.fillRect(getWidth() - 350, 20, 330, 300);
+        g2.setColor(new Color(0, 255, 128));
+        g2.drawRect(getWidth() - 350, 20, 330, 300);
+        
+        g2.setFont(new Font("Monospaced", Font.BOLD, 12));
+        g2.drawString("=== LEVEL 3 INSPEKTOR ===", getWidth() - 330, 45);
+        
+        int yOffset = 70;
+        int selectedCount = 0;
+        for (Unit u : unitList) {
+            if (u.isSelected) {
+                selectedCount++;
+                if (yOffset < 280) {
+                    String info = String.format("ID: %.0f [%s] HP: %.1f", u.id, u.typ, u.leben);
+                    g2.drawString(info, getWidth() - 330, yOffset);
+                    g2.drawString(String.format("Alg: %s", u.decisionAlgorithm), getWidth() - 330, yOffset + 18);
+                    yOffset += 40;
+                }
+            }
+        }
+        if (selectedCount == 0) {
+            g2.drawString("Keine Einheit ausgewählt.", getWidth() - 330, yOffset);
+            g2.drawString("Steuerung: Drag-Box / Rechtsklick", getWidth() - 330, yOffset + 20);
+        } else {
+            g2.drawString("Ausgewählt: " + selectedCount + " Einheiten", getWidth() - 330, 300);
+        }
+    }
+
+    public void zoomIn() {
+        zoomFactor *= ZOOM_STEP;
+        PAN_STEP = feinheit / zoomFactor;
+        repaint();
+    }
+
+    public void zoomOut() {
+        zoomFactor /= ZOOM_STEP;
+        PAN_STEP = feinheit / zoomFactor;
+        repaint();
+    }
+
+    long pauseTime = 10; 
+
+    public void gameLoop() {
+        while (true) {
+            simulationTicks++;
+            if (globalEntropyPool < 100.0) {
+                globalEntropyPool += 0.08; 
+            }
+
+            repaint();
+            if (unitList.isEmpty()) continue;
+            
+            int randNumber = (int) (unitList.size() * Math.random());
+            Unit current = unitList.get(randNumber);
+            
+            if (current.leben <= 0) {
+                if ("King".equals(current.typ)) return;
+                continue;
+            }
+
+            // Universal-Logik für ALLE Einheiten
+            if ("TACTICAL_MOVE".equals(current.decisionAlgorithm) && current.targetPosX != null && current.targetPosY != null) {
+                current.moveTo(current.targetPosX, current.targetPosY, current.posZ, current.speed);
+                if (current.getDistanceTo(current.targetPosX, current.targetPosY, current.posZ) < 0.001) {
+                    current.targetPosX = null;
+                    current.targetPosY = null;
+                    current.decisionAlgorithm = "Nearest_ENEMI"; // Fällt zurück auf Bot-KI
+                }
+            } else if ("TACTICAL_FOCUS".equals(current.decisionAlgorithm) && current.manualTarget != null) {
+                current.target = current.manualTarget;
+                if (current.target.leben <= 0) {
+                    current.decisionAlgorithm = "Nearest_ENEMI"; // Fällt zurück auf Bot-KI
+                    current.manualTarget = null;
+                } else if (current.getDistance(current.target) <= current.reichweite) {
+                    current.attackieren(current.target);
+                } else {
+                    current.moveTo(current.target);
+                }
+            } else { 
+                // Standard Bot-KI für beide Seiten
+                if (current.target == null || current.target.leben <= 0) {
+                    current.target = selectSmartTarget(current);
+                }
+
+                current.moveTo(current.target);
+                if (current.target != null && current.getDistance(current.target) <= current.reichweite) {
+                    current.attackieren(current.target);
+                    if ("King".equals(current.target.typ) && current.target.leben <= 0)
+                        return;
+                }
+            }
+
+            try {
+                Thread.sleep(pauseTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public Unit selectSmartTarget(Unit current) {
+        Unit bestTarget = null;
+        double minMetric = Double.MAX_VALUE;
+        for (Unit ziel : unitList) {
+            if (current.team != ziel.team && ziel.leben > 0) {
+                double dist = current.getDistance(ziel);
+                double healthFactor = ziel.leben / 100.0;
+                double kingBonus = "King".equals(ziel.typ) ? 0.4 : 1.0;
+                double metric = dist * healthFactor * kingBonus;
+                
+                if (metric < minMetric) {
+                    minMetric = metric;
+                    bestTarget = ziel;
+                }
+            }
+        }
+        return bestTarget;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Matrixgame Sandbox - Universelle Bot-KI & Steuerung");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            MatrixgameLevel3 simPanel = new MatrixgameLevel3();
+            simPanel.init();
+
+            frame.setLayout(new BorderLayout());
+            frame.add(simPanel, BorderLayout.CENTER);
+
+            JButton zoomIn = new JButton("Zoom In");
+            JButton zoomOut = new JButton("Zoom Out");
+            JButton panLeft = new JButton("← Links");
+            JButton panRight = new JButton("Rechts →");
+            JButton panUp = new JButton("↑ Hoch");
+            JButton panDown = new JButton("↓ Runter");
+
+            zoomIn.addActionListener(e -> simPanel.zoomIn());
+            zoomOut.addActionListener(e -> simPanel.zoomOut());
+            panLeft.addActionListener(e -> simPanel.panLeft());
+            panRight.addActionListener(e -> simPanel.panRight());
+            panUp.addActionListener(e -> simPanel.panUp());
+            panDown.addActionListener(e -> simPanel.panDown());
+
+            JPanel control = new JPanel();
+            control.add(zoomIn);
+            control.add(zoomOut);
+            control.add(panLeft);
+            control.add(panRight);
+            control.add(panUp);
+            control.add(panDown);
+
+            frame.add(control, BorderLayout.NORTH);
+            frame.setSize(1920, 1080);
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+
+            Thread gameThread = new Thread(simPanel::gameLoop);
+            gameThread.start();
+        });
+    }
+}
+
+class Unit {
+    public double id;
+    public int team = 1;
+    public String typ = "Unit";
+    
+    public double posX = 0;
+    public double posY = 0;
+    public double posZ = 0;
+    
+    public double vx = 0;
+    public double vy = 0;
+    public double vz = 0;
+    
+    public double size = 8.0;
+    public double leben = 100.0;
+    public double speed = 0.42;
+    public double reichweite = 2.0;
+    public double schaden = 11.0;
+    
+    public double red = 200;
+    public double green = 200;
+    public double blue = 200;
+    
+    public boolean isSelected = false;
+    public Unit target = null;
+    public Unit manualTarget = null;
+    public Double targetPosX = null;
+    public Double targetPosY = null;
+    public String decisionAlgorithm = "IDLE";
+
+    public void moveTo(double targetX, double targetY, double targetZ, double moveSpeed) {
+        double dx = targetX - posX;
+        double dy = targetY - posY;
+        double dz = targetZ - posZ;
+        double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        if (dist > 0.0001) {
+            posX += (dx / dist) * moveSpeed;
+            posY += (dy / dist) * moveSpeed;
+            posZ += (dz / dist) * moveSpeed;
+        }
+    }
+
+    public void moveTo(Unit other) {
+        if (other != null) {
+            moveTo(other.posX, other.posY, other.posZ, speed);
+        }
+    }
+
+    public double getDistance(Unit other) {
+        if (other == null) return Double.MAX_VALUE;
+        return getDistanceTo(other.posX, other.posY, other.posZ);
+    }
+
+    public double getDistanceTo(double tx, double ty, double tz) {
+        double dx = tx - posX;
+        double dy = ty - posY;
+        double dz = tz - posZ;
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    public void attackieren(Unit enemy) {
+        if (enemy != null && enemy.leben > 0) {
+            double kritischerMultiplikator = 1.0 + (Math.random() * 2.5);
+            double tatsaechlicherSchaden = schaden * kritischerMultiplikator;
+            enemy.leben -= tatsaechlicherSchaden;
+            if (enemy.leben <= 0) {
+                enemy.leben = 0;
+                System.out.println("Unit " + enemy.id + " (" + enemy.typ + ") wurde vernichtet durch Unit " + this.id);
+            }
+        }
+    }
+}
