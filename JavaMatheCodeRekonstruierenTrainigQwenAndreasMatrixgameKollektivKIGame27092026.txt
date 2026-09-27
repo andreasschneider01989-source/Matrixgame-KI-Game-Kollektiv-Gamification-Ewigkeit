@@ -1,0 +1,226 @@
+package ordner1;
+
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+public class MatrixgameLevelGenerator {
+
+    // =====================================================================
+    // 1. DIE DATENSTRUKTUR (Was definiert ein Level?)
+    // =====================================================================
+    static class LevelConfig {
+        int levelNumber;
+        int minSteps, maxSteps;
+        String[] variables;
+        String[] operations;
+        boolean useConstants;
+        int minVal, maxVal; // NEU: Steuert den Zahlenraum der Eingaben (X,Y,Z)
+        int baseElo;
+
+        LevelConfig(int levelNumber, int minSteps, int maxSteps, String[] variables, 
+                    String[] operations, boolean useConstants, int minVal, int maxVal, int baseElo) {
+            this.levelNumber = levelNumber;
+            this.minSteps = minSteps;
+            this.maxSteps = maxSteps;
+            this.variables = variables;
+            this.operations = operations;
+            this.useConstants = useConstants;
+            this.minVal = minVal;
+            this.maxVal = maxVal;
+            this.baseElo = baseElo;
+        }
+    }
+
+    // =====================================================================
+    // 2. DIE FABRIK (Hier entsteht die Magie der 50 Level!)
+    // =====================================================================
+    /**
+     * Diese Funktion ersetzt das alte statische Array.
+     * Sie berechnet basierend auf der Schwierigkeit (1 bis 50) alle Parameter.
+     */
+    static LevelConfig generiereLevel(int difficulty) {
+        // Begrenzung auf 50 Level
+        if (difficulty < 1) difficulty = 1;
+        if (difficulty > 50) difficulty = 50;
+
+        // --- SCHRITTE (Komplexität der Formel) ---
+        int minSteps = 2 + (difficulty / 12); // Steigt langsam an (Max ca. 6)
+        int maxSteps = 2 + (difficulty / 10); 
+
+        // --- VARIABLEN (Wie viele Dimensionen?) ---
+        String[] vars;
+        if (difficulty <= 15) vars = new String[]{"X", "Y"};       // Level 1-15: Nur 2D
+        else vars = new String[]{"X", "Y", "Z"};                   // Ab Level 16: 3D
+
+        // --- OPERATIONEN (Welche Werkzeuge?) ---
+        String[] ops;
+        if (difficulty <= 10) ops = new String[]{"+", "-"};        // Level 1-10: Nur线性
+        else if (difficulty <= 30) ops = new String[]{"+", "-", "*"}; // Level 11-30: Multiplikation
+        else ops = new String[]{"+", "-", "*", "/"};               // Ab Level 31: Division
+
+        // --- KONSTANTEN (Zusätzliches Rauschen?) ---
+        boolean useConstants = difficulty > 20; // Ab Level 21 werden feste Zahlen (1-5) eingebaut
+
+        // --- ZAHLENRAUM (Der "Fairness"-Faktor / Ankerpunkte) ---
+        int minVal, maxVal;
+        if (difficulty <= 20) {
+            minVal = 0; maxVal = 3; // Level 1-20: 0 und 1 sind garantiert als Ankerpunkte da!
+        } else if (difficulty <= 40) {
+            minVal = 1; maxVal = 5; // Level 21-40: Normale Werte, keine Null mehr
+        } else {
+            minVal = 1; maxVal = 9; // Level 41-50: Große Zahlen, hohe Komplexität
+        }
+
+        // --- ELO ---
+        int baseElo = 800 + (difficulty * 25);
+
+        return new LevelConfig(difficulty, minSteps, maxSteps, vars, ops, useConstants, minVal, maxVal, baseElo);
+    }
+
+    // =====================================================================
+    // 3. DIE GENERATOR-LOGIK (Bleibt gleich, nutzt aber jetzt minVal/maxVal)
+    // =====================================================================
+    private static final int ANZAHL_MESSUNGEN = 20;
+
+    private static final class Gleichung {
+        final String name, links, operation, rechts;
+        Gleichung(String name, String links, String operation, String rechts) {
+            this.name = name; this.links = links; this.operation = operation; this.rechts = rechts;
+        }
+        String alsText() { return name + " = " + links + " " + operation + " " + rechts; }
+    }
+
+    private static Random erzeugeZufall(String[] args) {
+        long seed = System.nanoTime() ^ System.currentTimeMillis();
+        for (String arg : args) {
+            if (!arg.equals("--show") && !arg.equals("--log")) {
+                try { seed = Long.parseLong(arg); } catch (NumberFormatException e) {}
+            }
+        }
+        return new Random(seed);
+    }
+
+    private static double zufallsZahl(Random random, int min, int max) {
+        return random.nextInt(max - min + 1) + min;
+    }
+
+    private static String zufallsElement(Random random, String[] array) {
+        return array[random.nextInt(array.length)];
+    }
+
+    private static List<Gleichung> erzeugeFormel(Random random, LevelConfig config) {
+        int anzahlSchritte = random.nextInt(config.maxSteps - config.minSteps + 1) + config.minSteps;
+        List<Gleichung> formel = new ArrayList<>();
+
+        for (int i = 1; i <= anzahlSchritte; i++) {
+            String name = "A" + i;
+            String links, rechts;
+
+            if (i == 1) {
+                links = zufallsElement(random, config.variables);
+                List<String> andere = new ArrayList<>(List.of(config.variables));
+                andere.remove(links);
+                rechts = zufallsElement(random, andere.toArray(new String[0]));
+            } else {
+                links = "A" + (i - 1);
+                if (config.useConstants && random.nextBoolean()) {
+                    rechts = Double.toString(zufallsZahl(random, 1, 5)); // Konstanten immer 1-5
+                } else {
+                    rechts = zufallsElement(random, config.variables);
+                }
+            }
+            formel.add(new Gleichung(name, links, zufallsElement(random, config.operations), rechts));
+        }
+        return formel;
+    }
+
+    private static double berechne(Gleichung g, Map<String, Double> werte) {
+        double a = werte.get(g.links);
+        double b = werte.containsKey(g.rechts) ? werte.get(g.rechts) : Double.parseDouble(g.rechts);
+        switch (g.operation) {
+            case "+": return a + b;
+            case "-": return a - b;
+            case "*": return a * b;
+            case "/": return b != 0 ? a / b : a; 
+            default: throw new IllegalStateException("Unbekannte Operation: " + g.operation);
+        }
+    }
+
+    private static void loggeErgebnis(int level, long seed, double zeitSekunden, int versuche, String formel, boolean korrekt) {
+        try (PrintWriter out = new PrintWriter(new FileWriter("matrixgame_stats.csv", true))) {
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            out.printf("%s, %d, %d, %.2f, %d, \"%s\", %b%n", 
+                       timestamp, level, seed, zeitSekunden, versuche, formel.replace("\"", "'"), korrekt);
+        } catch (Exception e) {
+            System.out.println("⚠️ Fehler beim Speichern der Statistik: " + e.getMessage());
+        }
+    }
+
+    // =====================================================================
+    // 4. HAUPTPROGRAMM (Der Startpunkt)
+    // =====================================================================
+    public static void main(String[] args) {
+        int gewaehltesLevel = 25; // Level auswählbar 
+        boolean loesungAnzeigen = false;
+        
+        // Argumente parsen
+        for (String arg : args) {
+            if (arg.equals("--show")) loesungAnzeigen = true;
+            else if (arg.matches("\\d+")) gewaehltesLevel = Integer.parseInt(arg);
+        }
+
+        // HIER WIRD DIE MAGIE AUFGERUFEN:
+        LevelConfig config = generiereLevel(gewaehltesLevel);
+        
+        Random random = erzeugeZufall(args);
+        List<Gleichung> formel = erzeugeFormel(random, config);
+        String zielVariable = formel.get(formel.size() - 1).name;
+
+        // --- AUSGABE ---
+        System.out.println("============================================================");
+        System.out.println(" 🎮 MATRIXGAME: 50-LEVEL PROGRESSIONS-MODUS");
+        System.out.println(" 📊 LEVEL " + config.levelNumber + " / 50 | Seed: " + 0);
+        System.out.println(" 📏 Schritte: " + formel.size() + " | Puzzle-Elo: ~" + config.baseElo);
+        System.out.println(" 🔣 Variablen: " + String.join(", ", config.variables));
+        System.out.println(" ➕ Operationen: " + String.join(", ", config.operations));
+        System.out.println(" 🔢 Zahlenraum: " + config.minVal + " bis " + config.maxVal);
+        System.out.println("============================================================");
+        System.out.println("ID\tX\tY\tZ\tMESSWERT");
+
+        for (int i = 1; i <= ANZAHL_MESSUNGEN; i++) {
+            Map<String, Double> werte = new LinkedHashMap<>();
+            for (String v : new String[]{"X", "Y", "Z"}) {
+                if (List.of(config.variables).contains(v)) {
+                    // WICHTIG: Hier werden jetzt minVal und maxVal aus dem Config genutzt!
+                    werte.put(v, zufallsZahl(random, config.minVal, config.maxVal)); 
+                } else {
+                    werte.put(v, 0.0); 
+                }
+            }
+            for (Gleichung g : formel) werte.put(g.name, berechne(g, werte));
+            
+            System.out.printf("%02d\t%.0f\t%.0f\t%.0f\t%.0f%n", i, werte.get("X"), werte.get("Y"), werte.get("Z"), werte.get(zielVariable));
+        }
+        System.out.println("============================================================");
+
+        if (loesungAnzeigen) {
+            System.out.println("🔑 GEHEIME LÖSUNG:");
+            for (Gleichung g : formel) System.out.println("   " + g.alsText());
+            System.out.println("   --> MESSWERT = " + zielVariable);
+            loggeErgebnis(config.levelNumber, 0, 0.0, 1, "Selbsttest", true);
+            System.out.println("✅ Ergebnis wurde in matrixgame_stats.csv gespeichert.");
+        } else {
+            System.out.println("💡 Dein Auftrag:");
+            System.out.println("1. Finde die Formel (Tipp: Nutze die Isolationsmethode!).");
+            System.out.println("2. Antworte im Chat: 'Lösung: [Formel] | Zeit: X Min | Versuche: Y'");
+        }
+        System.out.println("============================================================");
+    }
+}
