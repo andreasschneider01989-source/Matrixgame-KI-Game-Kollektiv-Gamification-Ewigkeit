@@ -1,0 +1,688 @@
+Ja – und hier lässt sich die bisherige „Entropie“-Idee sehr gut weiterentwickeln. Eine wichtige Korrektur vorweg: Frankfurt vergibt nicht einfach „reines Heroin an alle“, sondern medizinisch kontrolliertes Diamorphin im Rahmen einer Behandlung schwerer Opioidabhängigkeit. Das ist pharmazeutisch kontrollierte Ware, nicht Straßenheroin. Frankfurt betreibt diese Versorgung weiterhin über die Substitutionsambulanz Grüne Straße.
+
+1. Warum der Unterschied zwischen Diamorphin und Straßenheroin so wichtig ist
+
+Bei Straßenheroin kennt die konsumierende Person typischerweise nicht zuverlässig:
+
+welche Wirkstoffe tatsächlich enthalten sind,
+wie hoch die Konzentration ist,
+welche Streckmittel vorhanden sind,
+welche Produktionsrückstände existieren,
+ob andere Opioide oder synthetische Opioide enthalten sind,
+und wie sich die Zusammensetzung von einer Charge zur nächsten verändert.
+
+Bei ärztlich verabreichtem Diamorphin ist dagegen die Zusammensetzung kontrolliert und die Dosis medizinisch festgelegt. In Frankfurt erfolgt die Verabreichung unter ärztlicher Aufsicht; nach der Anwendung werden die Patientinnen und Patienten mindestens 20 Minuten überwacht.
+
+Das reduziert damit nicht die Abhängigkeit durch einen Trick, sondern beseitigt einen großen zusätzlichen Unsicherheits- und Vergiftungsfaktor des Schwarzmarktes.
+
+2. Und hier kommt dein Blei-Beispiel ins Spiel
+
+Wenn eine Person über lange Zeit ein verunreinigtes Produkt konsumiert, können zwei völlig unterschiedliche Schadensachsen gleichzeitig auftreten:
+
+Opioidbelastung
+
+→ Abhängigkeit
+→ Toleranz
+→ Entzug
+→ Überdosierungsrisiko
+→ Atemdepression
+
+und beispielsweise:
+
+Metall-/Toxinbelastung
+
+→ zusätzliche systemische Belastung
+→ mögliche neurologische Schäden
+→ Nieren-/Blutbildungsschäden je nach Stoff
+→ oxidativer Stress und andere toxische Mechanismen.
+
+Das ist eine entscheidende Unterscheidung:
+
+Die Substanz, die die Abhängigkeit aufrechterhält, muss nicht dieselbe Substanz sein, die einen zusätzlichen Organschaden verursacht.
+
+Ein Mensch kann also gleichzeitig opioidabhängig und einer vollkommen unabhängigen toxischen Belastung ausgesetzt sein.
+
+Das macht die Situation besonders problematisch.
+
+3. Der „doppelte Entropiekanal“
+
+Für dein Matrixgame würde ich deshalb ein neues Modell einführen:
+
+$$ \boxed{ R_{\text{gesamt}} = R_{\text{Opioid}} + R_{\text{Kontamination}} + R_{\text{Unsicherheit}} } $$
+
+Bei kontrolliertem Diamorphin wird insbesondere der dritte Anteil stark reduziert.
+
+Beim Straßenmarkt können dagegen mehrere Unsicherheiten gleichzeitig auftreten.
+
+Das ist ähnlich wie bei deinem vorherigen Amphetamin-Beispiel:
+
+Nicht nur „Droge“ → Schaden.
+
+Sondern:
+
+Wirkstoff + Kontamination + Dosisunsicherheit + individuelle Vulnerabilität + Konsumumstände → Gesamtrisiko.
+
+4. Ein besonders aktuelles Problem: Fentanyl und andere synthetische Opioide
+
+Hier ist die Situation sogar noch komplexer als nur „Blei im Heroin“.
+
+Die Bundesärztekammer berichtet für Deutschland, dass 2025 insgesamt 2.150 Menschen an Folgen des Drogenkonsums starben; in 1.316 Fällen waren Opiate oder Opioide beteiligt. Gleichzeitig wird vor der weiteren Ausbreitung synthetischer Opioide gewarnt.
+
+Und Frankfurt hat bereits einen konkreten Warnhinweis veröffentlicht: Im Januar 2025 wurde in einem Frankfurter Drogenkonsumraum bei Schnelltests erstmals Fentanyl als Streckmittel in Straßenheroin entdeckt.
+
+Das zeigt sehr schön, warum dein Prinzip „Information reduziert Entropie“ praktisch relevant ist.
+
+Ein Konsument, der glaubt:
+
+„Das ist normales Heroin“
+
+kann mit einer völlig anderen pharmakologischen Situation konfrontiert sein.
+
+5. Warum kontrollierte Abgabe mehr ist als „sauberes Heroin“
+
+Der eigentliche Fortschritt ist ein System:
+
+kontrollierter Wirkstoff
+
+definierte Dosierung
+
+medizinische Überwachung
+
+Suchtmedizin
+
+psychosoziale Betreuung
+
+weitere Substitutionsmöglichkeiten
+
+Naloxon/Überdosierungsmanagement
+
+Zugang zu weiterer medizinischer Versorgung
+
+Frankfurt beschreibt genau diese Kombination: Neben der Diamorphinvergabe bestehen psychologische, sozial- und suchttherapeutische Angebote.
+
+Und die deutsche S3-Leitlinie zu opioidbezogenen Störungen umfasst ausdrücklich Diagnostik, Opioidagonisten-Therapie, psychosoziale Behandlung, Behandlung von Begleiterkrankungen und Nachsorge.
+
+Das ist entscheidend:
+
+Die optimale Lösung ist nicht „sauberes Heroin statt schmutziges Heroin“.
+
+Die bessere Formulierung lautet:
+
+„Unkontrollierte Risiken durch ein medizinisch kontrolliertes Behandlungssystem ersetzen.“
+
+6. Interessant für dein „Nicht verbieten, sondern überbieten“
+
+Hier entsteht ein ziemlich starkes Matrixgame-Prinzip:
+
+Schlechter Zustand
+
+Schwarzmarkt
+
+→ unbekannte Zusammensetzung
+→ unbekannte Konzentration
+→ unbekannte Toxine
+→ keine medizinische Überwachung
+→ Finanzierung über illegalen Markt
+→ zusätzliche Gesundheits- und Sozialrisiken.
+
+Verbesserter Zustand
+
+medizinische Versorgung
+
+→ definierter Wirkstoff
+→ definierte Dosis
+→ Laborqualität
+→ medizinische Überwachung
+→ Behandlung der Abhängigkeit
+→ psychosoziale Unterstützung
+→ Möglichkeit einer späteren Umstellung.
+
+Das ist genau die von dir gewünschte Transformation:
+
+$$ \boxed{ \text{Chaos} \rightarrow \text{Messung} \rightarrow \text{Kontrolle} \rightarrow \text{Behandlung} \rightarrow \text{mehr Optionen} } $$
+7. Aber: Diamorphin ist nicht für jeden Menschen die richtige Lösung
+
+Das sollte man ebenfalls klar sagen.
+
+Die Diamorphinbehandlung selbst ist eine medizinische Therapie für eine bestimmte Gruppe, keine allgemeine Empfehlung zum Opioidkonsum.
+
+Die aktuelle deutsche Regelung wurde 2025 sogar erweitert: Die Voraussetzungen wurden gegenüber den alten Kriterien deutlich verändert; unter anderem können Erwachsene bereits ab 18 Jahren unter bestimmten Voraussetzungen behandelt werden, wobei für 18- bis 23-Jährige eine zusätzliche Zweitmeinung vorgesehen ist.
+
+Daneben bleiben Methadon, Levomethadon, Buprenorphin und andere etablierte Formen der Opioidagonisten-Therapie wichtige Behandlungsoptionen.
+
+Die Bundesärztekammer berichtet, dass 2025 etwa 78.800 Menschen in Deutschland substitutionsgestützt behandelt wurden.
+
+8. Der nächste große Schritt deines Modells wäre deshalb „Toxin-Entropie-Monitoring“
+
+Hier sehe ich eine tatsächlich interessante Erweiterung:
+
+Nicht erst reagieren, wenn Menschen vergiftet wurden.
+
+Sondern systematisch messen:
+
+Drogenkonsumräume
+
+→ Probenanalyse
+→ Schwermetallmonitoring
+→ Screening auf unerwartete Opioide
+→ regionale Warnsysteme
+→ anonymisierte Daten
+→ schnelle Information an Konsumierende und medizinische Einrichtungen.
+
+Dann entsteht ein Frühwarnsystem:
+
+$$ \text{Probe} \rightarrow \text{Labor} \rightarrow \text{Erkennung} \rightarrow \text{Warnung} \rightarrow \text{Verhaltensanpassung} \rightarrow \text{weniger Schaden} $$
+
+Das wäre im Grunde ein „Toxin-Radar“ für das Gesundheitssystem.
+
+Und genau hier treffen sich deine Themen KI + Matrixgame + Public Health.
+
+Eine KI könnte beispielsweise anonymisierte Daten aus Drug-Checking, Notaufnahmen, Giftinformationszentren und Drogenkonsumräumen zusammenführen und ungewöhnliche Veränderungen erkennen.
+
+9. Und noch ein Schritt weiter
+
+Man könnte für jede Region einen vereinfachten
+
+Opioid-Risikostatus
+
+berechnen:
+
+$$ \Omega = Q \times U \times T \times V $$
+
+mit
+
+\(Q\) = Unsicherheit über Produktqualität,
+\(U\) = Unsicherheit über Wirkstoff/Dosis,
+\(T\) = Toxinbelastung,
+\(V\) = Vulnerabilität der Bevölkerung.
+
+Ein kontrolliertes medizinisches System kann \(Q\), \(U\) und \(T\) massiv reduzieren.
+
+Naloxon reduziert wiederum die Wahrscheinlichkeit, dass eine Überdosierung tödlich endet. Die neue BÄK-Richtlinie von Juli 2026 hat deshalb ausdrücklich Take-home-Naloxon als Harm-Reduction-Maßnahme aufgenommen.
+
+10. Die große Erkenntnis für dein Matrixgame
+
+Ich würde die bisherige Formel deshalb noch einmal erweitern:
+
+$$ \boxed{ \text{Schaden} \sim \text{Exposition} \times \text{Toxizität} \times \text{Unsicherheit} \times \text{Vulnerabilität} } $$
+
+Und die gesellschaftliche Gegenstrategie:
+
+$$ \boxed{ \text{Schaden}\downarrow \quad\text{durch}\quad \text{Exposition}\downarrow + \text{Toxizität}\downarrow + \text{Unsicherheit}\downarrow + \text{Vulnerabilität}\downarrow } $$
+
+Das ist meines Erachtens eine stärkere und wissenschaftlich sauberere Version deines Entropiegedankens.
+
+Denn wir müssen nicht versuchen, Menschen zu „kontrollieren“.
+
+Wir können stattdessen die gefährlichen Zufallsvariablen kontrollieren.
+
+Das ist ein enorm wichtiger Unterschied.
+
+Nicht den Menschen kontrollieren.
+Die gefährliche Unsicherheit kontrollieren.
+Nicht die Krankheit bestrafen.
+Die Behandlungsmöglichkeiten erweitern.
+Nicht nur Schäden reparieren.
+Frühzeitig messen.
+Nicht nur warnen.
+Eine bessere Alternative anbieten.
+
+Und genau das ist die Verbindung zwischen Drug-Checking, Diamorphinbehandlung, Naloxon, Suchtmedizin, KI-Frühwarnsystemen und deinem Matrixgame.
+
+Wissen → Kontrolle über die relevanten Variablen → mehr sichere Optionen → weniger ungewollter Schaden → mehr Lebensqualität und Handlungsspielraum.
+
+Das ist eine sehr viel konkretere Form von „Nicht verbieten, sondern überbieten.“
+
+Sehr gut, dann können wir uns jetzt wieder den Unit Fights widmen oder? Wenn ja hier ist der basis Java Code: package ordner5; import javax.swing.*; import java.awt.*; import java.awt.event.MouseAdapter; import java.awt.event.MouseEvent; import java.util.List; import java.util.Locale; import java.util.concurrent.CopyOnWriteArrayList; public class MatrixgameLevel3 extends JPanel { // Thread-sichere Liste für reibungslose Zugriffe zwischen GameLoop und UI-Canvas public List<Unit> unitList = new CopyOnWriteArrayList<>(); int FRAME_WIDTH = 1920; int FRAME_HEIGHT = 1080; double zoomFactor = 1.0; double zoomCenterX = 0; double zoomCenterY = 0; static final double ZOOM_STEP = 1.2; double feinheit = 50; double PAN_STEP = feinheit * zoomFactor; double globalEntropyPool = 100.0; long simulationTicks = 0; int currentLevel = 3; int dragStartX = -1; int dragStartY = -1; int currentMouseX = -1; int currentMouseY = -1; boolean isDragging = false; // STEUERUNGSSCHRAUBEN long pauseTime = 50; // Pause pro Tick in Millisekunden (z.B. 500 für Detailansicht oder 5 für Speed) public static double logProbability = 1.0; // 1.0 = 100% aller Moves anzeigen | 0.005 = 0.5% für Massenschlachten public MatrixgameLevel3() { setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT)); setBackground(Color.BLACK); MouseAdapter mouseHandler = new MouseAdapter() { @Override public void mousePressed(MouseEvent e) { if (SwingUtilities.isLeftMouseButton(e)) { dragStartX = e.getX(); dragStartY = e.getY(); currentMouseX = dragStartX; currentMouseY = dragStartY; isDragging = false; } else if (SwingUtilities.isRightMouseButton(e)) { int mouseX = e.getX(); int mouseY = e.getY(); double worldTargetX = (mouseX - getWidth() / 2.0) / zoomFactor - zoomCenterX; double worldTargetY = (mouseY - getHeight() / 2.0) / zoomFactor - zoomCenterY; Unit clickedEnemy = null; for (Unit u : unitList) { double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0; double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0; double radius = Math.abs(u.size); if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) { clickedEnemy = u; break; } } int selectedCount = 0; for (Unit u : unitList) { if (u.isSelected) selectedCount++; } double commandCost = selectedCount * 1.5; if (globalEntropyPool >= commandCost) { globalEntropyPool -= commandCost; for (Unit u : unitList) { if (u.isSelected) { if (clickedEnemy != null && clickedEnemy.team != u.team) { u.manualTarget = clickedEnemy; u.targetPosX = null; u.targetPosY = null; u.decisionAlgorithm = "TACTICAL_FOCUS"; System.out.println("COMMAND | Unit " + u.id + " -> TACTICAL_FOCUS auf Gegner-Unit " + clickedEnemy.id); } else { u.targetPosX = worldTargetX; u.targetPosY = worldTargetY; u.manualTarget = null; u.decisionAlgorithm = "TACTICAL_MOVE"; System.out.println(String.format(Locale.US, "COMMAND | Unit %.0f -> TACTICAL_MOVE zu Position (%.2f, %.2f)", u.id, worldTargetX, worldTargetY)); } } } } else { System.out.println("WARN | Zu wenig Entropie für komplexe Befehlskette!"); } repaint(); } } @Override public void mouseDragged(MouseEvent e) { if (SwingUtilities.isLeftMouseButton(e)) { currentMouseX = e.getX(); currentMouseY = e.getY(); if (Math.hypot(currentMouseX - dragStartX, currentMouseY - dragStartY) > 5) { isDragging = true; } repaint(); } } @Override public void mouseReleased(MouseEvent e) { if (SwingUtilities.isLeftMouseButton(e)) { if (isDragging) { double x1 = Math.min(dragStartX, currentMouseX); double x2 = Math.max(dragStartX, currentMouseX); double y1 = Math.min(dragStartY, currentMouseY); double y2 = Math.max(dragStartY, currentMouseY); if (!e.isShiftDown()) { for (Unit u : unitList) u.isSelected = false; } for (Unit u : unitList) { double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0; double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0; if (sx >= x1 && sx <= x2 && sy >= y1 && sy <= y2) { u.isSelected = true; } } } else { int mouseX = e.getX(); int mouseY = e.getY(); boolean unitFound = false; for (Unit u : unitList) { double sx = (zoomCenterX + u.posX) * zoomFactor + getWidth() / 2.0; double sy = (zoomCenterY + u.posY) * zoomFactor + getHeight() / 2.0; double radius = Math.abs(u.size); if (Math.hypot(mouseX - sx, mouseY - sy) <= radius) { if (!e.isShiftDown()) { for (Unit other : unitList) other.isSelected = false; } u.isSelected = !u.isSelected; unitFound = true; break; } } if (!unitFound && !e.isShiftDown()) { for (Unit u : unitList) u.isSelected = false; } } isDragging = false; dragStartX = -1; dragStartY = -1; repaint(); } } }; this.addMouseListener(mouseHandler); this.addMouseMotionListener(mouseHandler); } public void init() { double counterId = 0; for (int j = 0; j < 2; j++) { double iMax = 20+ 10 * Math.random()/Math.random(); for (double i = 0; i < iMax; i++) { Unit unit = new Unit(); if (i == 0) { unit.typ = "King"; unit.size += 5; } unit.leben = 100.0*Math.random()/Math.random(); unit.schaden = 10.0*Math.random()/Math.random(); unit.reichweite = 2.0*Math.random()/Math.random(); unit.speed = 0.5*Math.random()/Math.random(); unit.team = j * 3; unit.posX = (Math.round(12 * Math.random()) - 6); unit.posY = (Math.round(3 * Math.random()) + 5); unit.posZ = (Math.round(3 * Math.random()) + 5); unit.blue = 255; unit.red = 180; unit.green = 180; if (j == 1) { unit.blue = 0; unit.posY = -unit.posY; } unit.id = counterId++; unit.decisionAlgorithm = "Nearest_ENEMI"; unitList.add(unit); } } repaint(); } public void panLeft() { zoomCenterX += PAN_STEP; repaint(); } public void panRight() { zoomCenterX -= PAN_STEP; repaint(); } public void panUp() { zoomCenterY += PAN_STEP; repaint(); } public void panDown() { zoomCenterY -= PAN_STEP; repaint(); } @Override protected void paintComponent(Graphics g) { super.paintComponent(g); Graphics2D g2 = (Graphics2D) g; g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); g2.setColor(Color.BLACK); g2.fillRect(0, 0, getWidth(), getHeight()); for (Unit unit : unitList) { if (unit.leben <= 0) continue; double radius = unit.size; Color color = new Color((int) Math.min(255, Math.max(0, unit.red)), (int) Math.min(255, Math.max(0, unit.green)), (int) Math.min(255, Math.max(0, unit.blue))); double sx = (zoomCenterX + unit.posX) * zoomFactor + getWidth() / 2.0; double sy = (zoomCenterY + unit.posY) * zoomFactor + getHeight() / 2.0; g2.setColor(color); g2.fillOval((int) (sx - radius), (int) (sy - radius), (int) (radius * 2), (int) (radius * 2)); if (unit.isSelected) { g2.setColor(Color.WHITE); g2.drawOval((int) (sx - radius - 2), (int) (sy - radius - 2), (int) (radius * 2 + 4), (int) (radius * 2 + 4)); } } if (isDragging) { g2.setColor(new Color(0, 255, 128, 60)); int x = Math.min(dragStartX, currentMouseX); int y = Math.min(dragStartY, currentMouseY); int w = Math.abs(currentMouseX - dragStartX); int h = Math.abs(currentMouseY - dragStartY); g2.fillRect(x, y, w, h); g2.setColor(new Color(0, 255, 128)); g2.drawRect(x, y, w, h); } g2.setColor(new Color(0, 255, 128)); g2.setFont(new Font("Monospaced", Font.BOLD, 14)); g2.drawString("Matrixgame [SANDBOX BASIS] - Entropie-Pool: " + String.format("%.2f", globalEntropyPool), 20, 30); g2.drawString("Simulation Ticks: " + simulationTicks, 20, 55); drawUnitInspector(g2); } private void drawUnitInspector(Graphics2D g2) { g2.setColor(new Color(20, 20, 20, 220)); g2.fillRect(getWidth() - 350, 20, 330, 300); g2.setColor(new Color(0, 255, 128)); g2.drawRect(getWidth() - 350, 20, 330, 300); g2.setFont(new Font("Monospaced", Font.BOLD, 12)); g2.drawString("=== LEVEL 3 INSPEKTOR ===", getWidth() - 330, 45); int yOffset = 70; int selectedCount = 0; for (Unit u : unitList) { if (u.isSelected) { selectedCount++; if (yOffset < 280) { String info = String.format("ID: %.0f [%s] HP: %.1f", u.id, u.typ, u.leben); g2.drawString(info, getWidth() - 330, yOffset); g2.drawString(String.format("Alg: %s", u.decisionAlgorithm), getWidth() - 330, yOffset + 18); yOffset += 40; } } } if (selectedCount == 0) { g2.drawString("Keine Einheit ausgewählt.", getWidth() - 330, yOffset); g2.drawString("Steuerung: Drag-Box / Rechtsklick", getWidth() - 330, yOffset + 20); } else { g2.drawString("Ausgewählt: " + selectedCount + " Einheiten", getWidth() - 330, 300); } } public void zoomIn() { zoomFactor *= ZOOM_STEP; PAN_STEP = feinheit / zoomFactor; repaint(); } public void zoomOut() { zoomFactor /= ZOOM_STEP; PAN_STEP = feinheit / zoomFactor; repaint(); } public void gameLoop() { while (true) { simulationTicks++; if (globalEntropyPool < 100.0) { globalEntropyPool = Math.min(100.0, globalEntropyPool + 0.08); } if (!unitList.isEmpty()) { int randNumber = (int) (unitList.size() * Math.random()); Unit current = unitList.get(randNumber); if (current.leben > 0) { System.out.println("System.currentTimeMillis() = "+System.currentTimeMillis()); System.out.println(String.format("--- TICK %d | ZUG: Unit %.0f (Team %d) ---", simulationTicks, current.id, current.team)); if ("TACTICAL_MOVE".equals(current.decisionAlgorithm) && current.targetPosX != null && current.targetPosY != null) { current.moveTo(current.targetPosX, current.targetPosY, current.posZ, current.speed); if (current.getDistanceTo(current.targetPosX, current.targetPosY, current.posZ) < 0.001) { current.targetPosX = null; current.targetPosY = null; current.decisionAlgorithm = "Nearest_ENEMI"; } } else if ("TACTICAL_FOCUS".equals(current.decisionAlgorithm) && current.manualTarget != null) { current.target = current.manualTarget; if (current.target.leben <= 0) { current.decisionAlgorithm = "Nearest_ENEMI"; current.manualTarget = null; } else if (current.getDistance(current.target) <= current.reichweite) { current.attackieren(current.target); } else { current.moveTo(current.target); } } else { if (current.target == null || current.target.leben <= 0) { current.target = selectSmartTarget(current); } if (current.target != null) { if (current.getDistance(current.target) <= current.reichweite) { current.attackieren(current.target); if ("King".equals(current.target.typ) && current.target.leben <= 0) { System.out.println("GAME OVER: King vernichtet!"); return; } } else { current.moveTo(current.target); } } } } } repaint(); try { Thread.sleep(pauseTime); } catch (InterruptedException e) { e.printStackTrace(); } } } public Unit selectSmartTarget(Unit current) { Unit bestTarget = null; double minMetric = Double.MAX_VALUE; for (Unit ziel : unitList) { if (current.team != ziel.team && ziel.leben > 0) { double dist = current.getDistance(ziel); if (dist < minMetric) { minMetric = dist; bestTarget = ziel; } } } return bestTarget; } public static void main(String[] args) { SwingUtilities.invokeLater(() -> { JFrame frame = new JFrame("Matrixgame Sandbox - Universelle Bot-KI & Steuerung (Ordner 5)"); frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); MatrixgameLevel3 simPanel = new MatrixgameLevel3(); simPanel.init(); frame.setLayout(new BorderLayout()); frame.add(simPanel, BorderLayout.CENTER); JButton zoomIn = new JButton("Zoom In"); JButton zoomOut = new JButton("Zoom Out"); JButton panLeft = new JButton("← Links"); JButton panRight = new JButton("Rechts →"); JButton panUp = new JButton("↑ Hoch"); JButton panDown = new JButton("↓ Runter"); zoomIn.addActionListener(e -> simPanel.zoomIn()); zoomOut.addActionListener(e -> simPanel.zoomOut()); panLeft.addActionListener(e -> simPanel.panLeft()); panRight.addActionListener(e -> simPanel.panRight()); panUp.addActionListener(e -> simPanel.panUp()); panDown.addActionListener(e -> simPanel.panDown()); JPanel control = new JPanel(); control.add(zoomIn); control.add(zoomOut); control.add(panLeft); control.add(panRight); control.add(panUp); control.add(panDown); frame.add(control, BorderLayout.NORTH); frame.setSize(1920, 1080); frame.setLocationRelativeTo(null); frame.setVisible(true); Thread gameThread = new Thread(simPanel::gameLoop); gameThread.start(); }); } } class Unit { public double id; public int team = 1; public String typ = "Unit"; public double posX = 0; public double posY = 0; public double posZ = 0; public double vx = 0; public double vy = 0; public double vz = 0; public double size = 8.0; public double leben = 100.0; public double speed = 0.5; public double reichweite = 2.0; public double schaden = 10.0; public double red = 200; public double green = 200; public double blue = 200; public boolean isSelected = false; public Unit target = null; public Unit manualTarget = null; public Double targetPosX = null; public Double targetPosY = null; public String decisionAlgorithm = "IDLE"; public void moveTo(double targetX, double targetY, double targetZ, double moveSpeed) { double oldX = posX; double oldY = posY; double oldZ = posZ; double dx = targetX - posX; double dy = targetY - posY; double dz = targetZ - posZ; double dist = Math.sqrt(dx * dx + dy * dy + dz * dz); if (dist > 0.0001) { posX += (dx / dist) * moveSpeed; posY += (dy / dist) * moveSpeed; posZ += (dz / dist) * moveSpeed; // Probabilistischer Log-Filter für die Konsole if (Math.random() <= MatrixgameLevel3.logProbability) { System.out.println(String.format(Locale.US, "MOVE | Unit %.0f (Team %d) von (%.2f, %.2f, %.2f) -> (%.2f, %.2f, %.2f)", this.id, this.team, oldX, oldY, oldZ, posX, posY, posZ)); } } } public void moveTo(Unit other) { if (other != null) { moveTo(other.posX, other.posY, other.posZ, speed); } } public double getDistance(Unit other) { if (other == null) return Double.MAX_VALUE; return getDistanceTo(other.posX, other.posY, other.posZ); } public double getDistanceTo(double tx, double ty, double tz) { double dx = tx - posX; double dy = ty - posY; double dz = tz - posZ; return Math.sqrt(dx * dx + dy * dy + dz * dz); } public void attackieren(Unit enemy) { if (enemy != null && enemy.leben > 0) { double kritischerMultiplikator = 1.0 + (Math.random() * 2.5); double tatsaechlicherSchaden = schaden * kritischerMultiplikator; enemy.leben -= tatsaechlicherSchaden; if (Math.random() <= MatrixgameLevel3.logProbability || enemy.leben <= 0) { System.out.println(String.format(Locale.US, "ATTACK | Unit %.0f greift Unit %.0f an! Schaden: %.2f (Rest-HP: %.2f)", this.id, enemy.id, tatsaechlicherSchadien_korrigiert(tatsaechlicherSchaden), enemy.leben)); } if (enemy.leben <= 0) { enemy.leben = 0; System.out.println("DESTROY| Unit " + enemy.id + " (" + enemy.typ + ") wurde vernichtet durch Unit " + this.id); } } } // Hilfsmethode zur Vermeidung von Tippfehlern im String.format private double tatsaechlicherSchadien_korrigiert(double schadenVal) { return schadenVal; } } Und hier eine mögliche generierte Ausgabe für einen epischen Kampfbericht aus dem du hoffendlich eine epische Geschichte generieren kannst und aus dem sich neben dem Code geeignete optimierungen wie etwa Königssicherheit oder Kiting logisch oder empirisch oder intuitiv oder anders herleiten und oder ableiten lassen um die Entscheidungsfindung der Units und der Teams möglichst allgemein und vielseitig und geeignet zu verbessern: System.currentTimeMillis() = 1791294913148 --- TICK 1 | ZUG: Unit 48 (Team 3) --- MOVE | Unit 48 (Team 3) von (2.00, -6.00, 6.00) -> (2.10, -5.45, 6.00) System.currentTimeMillis() = 1791294913261 --- TICK 2 | ZUG: Unit 57 (Team 3) --- MOVE | Unit 57 (Team 3) von (4.00, -8.00, 6.00) -> (4.00, -7.76, 6.00) System.currentTimeMillis() = 1791294913323 --- TICK 3 | ZUG: Unit 46 (Team 3) --- MOVE | Unit 46 (Team 3) von (0.00, -7.00, 6.00) -> (-0.01, -6.92, 6.00) System.currentTimeMillis() = 1791294913386 --- TICK 4 | ZUG: Unit 40 (Team 0) --- MOVE | Unit 40 (Team 0) von (-2.00, 6.00, 7.00) -> (-1.98, 5.87, 6.99) System.currentTimeMillis() = 1791294913449 --- TICK 5 | ZUG: Unit 18 (Team 0) --- MOVE | Unit 18 (Team 0) von (3.00, 6.00, 7.00) -> (2.90, 5.65, 6.97) System.currentTimeMillis() = 1791294913513 --- TICK 6 | ZUG: Unit 22 (Team 0) --- MOVE | Unit 22 (Team 0) von (-1.00, 8.00, 8.00) -> (-0.92, 7.02, 7.85) System.currentTimeMillis() = 1791294913576 --- TICK 7 | ZUG: Unit 40 (Team 0) --- MOVE | Unit 40 (Team 0) von (-1.98, 5.87, 6.99) -> (-1.95, 5.74, 6.98) System.currentTimeMillis() = 1791294913639 --- TICK 8 | ZUG: Unit 31 (Team 0) --- MOVE | Unit 31 (Team 0) von (1.00, 7.00, 5.00) -> (0.99, 6.93, 5.01) System.currentTimeMillis() = 1791294913702 --- TICK 9 | ZUG: Unit 32 (Team 0) --- MOVE | Unit 32 (Team 0) von (6.00, 7.00, 7.00) -> (5.89, 6.66, 6.97) System.currentTimeMillis() = 1791294913766 --- TICK 10 | ZUG: Unit 41 (Team 0) --- MOVE | Unit 41 (Team 0) von (-6.00, 7.00, 6.00) -> (-5.81, 6.18, 6.06) System.currentTimeMillis() = 1791294913828 --- TICK 11 | ZUG: Unit 16 (Team 0) --- MOVE | Unit 16 (Team 0) von (4.00, 7.00, 5.00) -> (3.87, 6.12, 5.07) System.currentTimeMillis() = 1791294913890 --- TICK 12 | ZUG: Unit 33 (Team 0) --- MOVE | Unit 33 (Team 0) von (-1.00, 5.00, 6.00) -> (-0.74, 2.45, 6.00) System.currentTimeMillis() = 1791294913953 --- TICK 13 | ZUG: Unit 10 (Team 0) --- MOVE | Unit 10 (Team 0) von (1.00, 7.00, 7.00) -> (0.92, 6.08, 6.92) System.currentTimeMillis() = 1791294914015 --- TICK 14 | ZUG: Unit 38 (Team 0) --- MOVE | Unit 38 (Team 0) von (5.00, 7.00, 8.00) -> (4.98, 6.90, 7.98) System.currentTimeMillis() = 1791294914077 --- TICK 15 | ZUG: Unit 23 (Team 0) --- MOVE | Unit 23 (Team 0) von (5.00, 6.00, 5.00) -> (4.95, 5.79, 5.02) System.currentTimeMillis() = 1791294914141 --- TICK 16 | ZUG: Unit 54 (Team 3) --- MOVE | Unit 54 (Team 3) von (-3.00, -6.00, 7.00) -> (-2.90, -5.62, 6.95) System.currentTimeMillis() = 1791294914203 --- TICK 17 | ZUG: Unit 2 (Team 0) --- MOVE | Unit 2 (Team 0) von (3.00, 6.00, 7.00) -> (2.80, 5.26, 6.93) System.currentTimeMillis() = 1791294914266 --- TICK 18 | ZUG: Unit 64 (Team 3) --- MOVE | Unit 64 (Team 3) von (-1.00, -6.00, 7.00) -> (-0.93, -3.65, 6.72) System.currentTimeMillis() = 1791294914329 --- TICK 19 | ZUG: Unit 55 (Team 3) --- MOVE | Unit 55 (Team 3) von (-1.00, -7.00, 6.00) -> (-0.96, -5.34, 6.00) System.currentTimeMillis() = 1791294914391 --- TICK 20 | ZUG: Unit 63 (Team 3) --- MOVE | Unit 63 (Team 3) von (0.00, -7.00, 6.00) -> (-0.03, -6.61, 6.00) System.currentTimeMillis() = 1791294914453 --- TICK 21 | ZUG: Unit 17 (Team 0) --- MOVE | Unit 17 (Team 0) von (-5.00, 6.00, 8.00) -> (152.84, -368.18, -41.55) System.currentTimeMillis() = 1791294914515 --- TICK 22 | ZUG: Unit 66 (Team 3) --- MOVE | Unit 66 (Team 3) von (0.00, -6.00, 7.00) -> (-0.04, -5.54, 6.95) System.currentTimeMillis() = 1791294914577 --- TICK 23 | ZUG: Unit 8 (Team 0) --- MOVE | Unit 8 (Team 0) von (-4.00, 6.00, 6.00) -> (-3.63, 4.84, 6.09) System.currentTimeMillis() = 1791294914640 --- TICK 24 | ZUG: Unit 26 (Team 0) --- MOVE | Unit 26 (Team 0) von (5.00, 7.00, 6.00) -> (4.24, 5.64, 6.09) ...
+⚔️
+
+Ja — jetzt können wir sehr gut wieder zu den Unit Fights zurückkehren. Und der Log enthält tatsächlich schon Hinweise darauf, dass sich aus dem Verhalten bessere allgemeine Kampfstrategien ableiten lassen.
+
+Besonders auffällig ist bereits Tick 21:
+
+Unit 17: (-5, 6, 8) -> (152.84, -368.18, -41.55)
+
+Das ist kein normales taktisches Manöver, sondern sehr wahrscheinlich ein numerischer Ausreißer durch die zufällige Initialisierung. Dein Code verwendet mehrfach Konstruktionen wie Math.random()/Math.random(). Wenn der Nenner extrem nahe bei 0 liegt, können leben, schaden, reichweite oder speed astronomisch groß werden. Das sollten wir vor einer KI-Optimierung unbedingt stabilisieren.
+
+Was ich aus deinem aktuellen System ableiten würde
+
+Der nächste Entwicklungsschritt sollte nicht einfach „stärkere Bots“ heißen, sondern eine allgemeine Entscheidungsarchitektur:
+
+Königsschutz
+Einheiten erkennen, ob der eigene King bedroht wird.
+Nahestehende Einheiten können den King abschirmen.
+Der King sollte nicht blind den nächstgelegenen Gegner verfolgen.
+Fokusfeuer
+Mehrere Einheiten greifen bevorzugt dasselbe sinnvolle Ziel an.
+Dadurch wird nicht zehnmal Schaden auf zehn verschiedene Gegner verteilt.
+Kiting
+Wenn eine Einheit Reichweitenvorteil besitzt, versucht sie:
+angreifen → Abstand herstellen → erneut angreifen.
+Besonders interessant, weil sich daraus emergente Rollen wie Fernkämpfer, Tank und Jäger entwickeln können.
+
+Gefahrenbewertung statt nur Entfernung
+
+Aktuell ist selectSmartTarget() praktisch:
+
+„Nimm den nächsten Gegner.“
+
+Besser wäre beispielsweise:
+
+Zielwert = Bedrohung + Zielwert + Verwundbarkeit + strategische Nähe – Distanz
+
+Damit kann eine Einheit erkennen, dass ein etwas weiter entfernter gegnerischer King wichtiger sein kann als irgendeine normale Unit.
+
+Teamrollen
+Aus denselben Grundbausteinen könnten sich später entwickeln:
+King
+Tank
+Damage Dealer
+Ranged/Kiter
+Protector
+Scout
+Assassin
+Support
+
+Formation / Gruppendynamik
+
+Die Units sollten nicht nur individuell denken. Eine besonders interessante nächste Ebene wäre:
+
+Individual Intelligence → Team Intelligence → Battlefield Intelligence.
+
+Und daraus lässt sich sogar ein sehr schönes Matrixgame-Prinzip ableiten
+
+Eine Unit maximiert nicht einfach ihren eigenen Schaden.
+
+Sie versucht:
+
+Überlebenswahrscheinlichkeit × Teamnutzen × Zielwert × Informationsqualität
+
+zu maximieren.
+
+Das ist viel interessanter als reines „Nearest Enemy“.
+
+Ein besonders wichtiger Bug
+
+Deine Initialisierung enthält beispielsweise:
+
+unit.speed = 0.5*Math.random()/Math.random();
+
+Mathematisch ist das
+
+$$ 0.5\frac{r_1}{r_2} $$
+
+und wenn \(r_2 \rightarrow 0\), geht der Wert theoretisch gegen unendlich.
+
+Dasselbe Problem besteht bei:
+
+leben
+schaden
+reichweite
+speed
+
+Das erklärt sehr plausibel den völlig absurden Sprung von Unit 17.
+
+Für die weitere Entwicklung würde ich deshalb zuerst die Physik/Parameter stabilisieren und danach die KI intelligenter machen. Sonst lernt die KI möglicherweise Strategien gegen Fehler des Simulators statt gegen den Gegner.
+
+Und aus deinem Kampfbericht können wir anschließend tatsächlich eine epische Kampfgeschichte + empirisch abgeleitete KI-Regeln erzeugen: also nicht nur Storytelling, sondern „Was ist passiert? → Warum? → Welche Strategie hätte geholfen? → Welche Code-Regel entsteht daraus?“.
+
+Das wäre für dein Unit-Fight-Projekt wahrscheinlich der spannendste nächste Schritt.
+
+Das könnte dich auch interessieren.
+
+haimaker
+
+Your Agent. Every Model.
+
+Cline, Kilo Code, OpenCode or any OpenAI agent.
+
+Anzeige
+Weitere Optionen
+Du. Das glaube ich auch. Ich gebe dir jetzt hier noch mal einen kompletten generierten Bericht von Sollenausgabe von einem weiteren Durchlauf der Simulation. Und ansonsten, dass die Werte so variabel generiert werden mit Maßänderung und mit haltet Maßänderung. Das ist erst mal beabsichtigt. Das soll dafür sorgen, dass einfach alles möglich bleibt in der Simulation und da kann die KI durchaus versuchen, verschiedene Strategien zu finden, um da für alles, was passieren kann, gerüstet zu sein. Ich kopiere jetzt hier mal den File und es wäre natürlich optimal immer, wenn kompakte Code-Blöcke entstehen würden, also entweder welche, die die komplette Klasse neu generieren oder die halt eine Methode oder einen Logikblock, der ihn gut finden kann, ersetzen durch einen neuen erweiterten oder veränderten Block. Dann viel Erfolg und vielen Dank und du kannst auch gerne immer wieder Story und weitere begeisternde und geeignete Textelemente generieren, die uns hier kollektiv weiterbringen. Vielen Dank, let's go, let's go. System.currentTimeMillis() = 1791295584773  --- TICK 1 | ZUG: Unit 11 (Team 0) ---  MOVE   | Unit 11 (Team 0) von (5.00, 5.00, 5.00) -> (5.00, 3.19, 5.18)  System.currentTimeMillis() = 1791295584902  --- TICK 2 | ZUG: Unit 27 (Team 3) ---  MOVE   | Unit 27 (Team 3) von (-4.00, -8.00, 7.00) -> (-4.03, -7.58, 7.00)  System.currentTimeMillis() = 1791295584965  --- TICK 3 | ZUG: Unit 3 (Team 0) ---  MOVE   | Unit 3 (Team 0) von (-3.00, 6.00, 8.00) -> (-2.93, 5.59, 7.93)  System.currentTimeMillis() = 1791295585029  --- TICK 4 | ZUG: Unit 6 (Team 0) ---  MOVE   | Unit 6 (Team 0) von (0.00, 6.00, 8.00) -> (-0.09, 4.98, 7.81)  System.currentTimeMillis() = 1791295585093  --- TICK 5 | ZUG: Unit 13 (Team 0) ---  MOVE   | Unit 13 (Team 0) von (2.00, 8.00, 7.00) -> (3.30, -8.85, 5.70)  System.currentTimeMillis() = 1791295585155  --- TICK 6 | ZUG: Unit 32 (Team 3) ---  MOVE   | Unit 32 (Team 3) von (5.00, -6.00, 7.00) -> (4.37, -7.05, 6.52)  System.currentTimeMillis() = 1791295585219  --- TICK 7 | ZUG: Unit 22 (Team 3) ---  MOVE   | Unit 22 (Team 3) von (1.00, -7.00, 8.00) -> (1.19, -7.15, 7.81)  System.currentTimeMillis() = 1791295585283  --- TICK 8 | ZUG: Unit 22 (Team 3) ---  MOVE   | Unit 22 (Team 3) von (1.19, -7.15, 7.81) -> (1.38, -7.31, 7.62)  System.currentTimeMillis() = 1791295585346  --- TICK 9 | ZUG: Unit 33 (Team 3) ---  MOVE   | Unit 33 (Team 3) von (2.00, -8.00, 6.00) -> (4.81, -9.84, 5.36)  System.currentTimeMillis() = 1791295585409  --- TICK 10 | ZUG: Unit 25 (Team 3) ---  ATTACK | Unit 25 greift Unit 13 an! Schaden: 14.68 (Rest-HP: 34.79)  System.currentTimeMillis() = 1791295585473  --- TICK 11 | ZUG: Unit 34 (Team 3) ---  MOVE   | Unit 34 (Team 3) von (-5.00, -7.00, 7.00) -> (-4.57, -7.10, 6.93)  System.currentTimeMillis() = 1791295585535  --- TICK 12 | ZUG: Unit 40 (Team 3) ---  ATTACK | Unit 40 greift Unit 13 an! Schaden: 3.77 (Rest-HP: 31.02)  System.currentTimeMillis() = 1791295585598  --- TICK 13 | ZUG: Unit 0 (Team 0) ---  MOVE   | Unit 0 (Team 0) von (-5.00, 6.00, 5.00) -> (-4.80, 5.46, 5.05)  System.currentTimeMillis() = 1791295585661  --- TICK 14 | ZUG: Unit 13 (Team 0) ---  MOVE   | Unit 13 (Team 0) von (3.30, -8.85, 5.70) -> (2.00, 8.00, 7.00)  System.currentTimeMillis() = 1791295585722  --- TICK 15 | ZUG: Unit 32 (Team 3) ---  MOVE   | Unit 32 (Team 3) von (4.37, -7.05, 6.52) -> (4.16, -5.75, 6.56)  System.currentTimeMillis() = 1791295585784  --- TICK 16 | ZUG: Unit 6 (Team 0) ---  MOVE   | Unit 6 (Team 0) von (-0.09, 4.98, 7.81) -> (-0.19, 3.96, 7.63)  System.currentTimeMillis() = 1791295585847  --- TICK 17 | ZUG: Unit 23 (Team 3) ---  MOVE   | Unit 23 (Team 3) von (-5.00, -8.00, 5.00) -> (-4.69, -7.24, 5.17)  System.currentTimeMillis() = 1791295585911  --- TICK 18 | ZUG: Unit 29 (Team 3) ---  MOVE   | Unit 29 (Team 3) von (-2.00, -6.00, 6.00) -> (-1.94, -5.69, 6.05)  System.currentTimeMillis() = 1791295585973  --- TICK 19 | ZUG: Unit 28 (Team 3) ---  MOVE   | Unit 28 (Team 3) von (3.00, -6.00, 6.00) -> (3.17, -5.22, 5.93)  System.currentTimeMillis() = 1791295586035  --- TICK 20 | ZUG: Unit 25 (Team 3) ---  MOVE   | Unit 25 (Team 3) von (5.00, -5.00, 6.00) -> (4.87, -4.42, 6.04)  System.currentTimeMillis() = 1791295586099  --- TICK 21 | ZUG: Unit 13 (Team 0) ---  MOVE   | Unit 13 (Team 0) von (2.00, 8.00, 7.00) -> (3.30, -8.85, 5.70)  System.currentTimeMillis() = 1791295586161  --- TICK 22 | ZUG: Unit 41 (Team 3) ---  MOVE   | Unit 41 (Team 3) von (-2.00, -7.00, 7.00) -> (-1.62, -7.13, 6.91)  System.currentTimeMillis() = 1791295586224  --- TICK 23 | ZUG: Unit 13 (Team 0) ---  MOVE   | Unit 13 (Team 0) von (3.30, -8.85, 5.70) -> (2.00, 8.00, 7.00)  System.currentTimeMillis() = 1791295586287  --- TICK 24 | ZUG: Unit 18 (Team 0) ---  MOVE   | Unit 18 (Team 0) von (-3.00, 6.00, 7.00) -> (-2.86, 5.21, 6.93)  System.currentTimeMillis() = 1791295586351  --- TICK 25 | ZUG: Unit 16 (Team 0) ---  MOVE   | Unit 16 (Team 0) von (2.00, 6.00, 7.00) -> (2.76, 3.24, 6.75)  System.currentTimeMillis() = 1791295586414  --- TICK 26 | ZUG: Unit 16 (Team 0) ---  MOVE   | Unit 16 (Team 0) von (2.76, 3.24, 6.75) -> (3.52, 0.48, 6.49)  System.currentTimeMillis() = 1791295586476  --- TICK 27 | ZUG: Unit 29 (Team 3) ---  MOVE   | Unit 29 (Team 3) von (-1.94, -5.69, 6.05) -> (-1.89, -5.37, 6.10)  System.currentTimeMillis() = 1791295586540  --- TICK 28 | ZUG: Unit 20 (Team 0) ---  MOVE   | Unit 20 (Team 0) von (2.00, 7.00, 6.00) -> (2.87, 3.53, 6.01)  System.currentTimeMillis() = 1791295586603  --- TICK 29 | ZUG: Unit 22 (Team 3) ---  MOVE   | Unit 22 (Team 3) von (1.38, -7.31, 7.62) -> (1.40, -7.00, 7.60)  System.currentTimeMillis() = 1791295586665  --- TICK 30 | ZUG: Unit 39 (Team 3) ---  MOVE   | Unit 39 (Team 3) von (-3.00, -7.00, 6.00) -> (-2.82, -6.79, 6.01)  System.currentTimeMillis() = 1791295586729  --- TICK 31 | ZUG: Unit 20 (Team 0) ---  MOVE   | Unit 20 (Team 0) von (2.87, 3.53, 6.01) -> (3.74, 0.05, 6.03)  System.currentTimeMillis() = 1791295586792  --- TICK 32 | ZUG: Unit 31 (Team 3) ---  MOVE   | Unit 31 (Team 3) von (-3.00, -6.00, 8.00) -> (-2.77, -5.79, 7.93)  System.currentTimeMillis() = 1791295586855  --- TICK 33 | ZUG: Unit 6 (Team 0) ---  MOVE   | Unit 6 (Team 0) von (-0.19, 3.96, 7.63) -> (-0.28, 2.95, 7.44)  System.currentTimeMillis() = 1791295586918  --- TICK 34 | ZUG: Unit 27 (Team 3) ---  MOVE   | Unit 27 (Team 3) von (-4.03, -7.58, 7.00) -> (-4.06, -7.16, 7.00)  System.currentTimeMillis() = 1791295586980  --- TICK 35 | ZUG: Unit 32 (Team 3) ---  MOVE   | Unit 32 (Team 3) von (4.16, -5.75, 6.56) -> (3.96, -4.45, 6.60)  System.currentTimeMillis() = 1791295587043  --- TICK 36 | ZUG: Unit 37 (Team 3) ---  MOVE   | Unit 37 (Team 3) von (3.00, -5.00, 6.00) -> (3.08, -4.43, 6.00)  System.currentTimeMillis() = 1791295587106  --- TICK 37 | ZUG: Unit 11 (Team 0) ---  MOVE   | Unit 11 (Team 0) von (5.00, 3.19, 5.18) -> (4.97, 1.38, 5.39)  System.currentTimeMillis() = 1791295587169  --- TICK 38 | ZUG: Unit 4 (Team 0) ---  MOVE   | Unit 4 (Team 0) von (2.00, 8.00, 6.00) -> (2.04, 7.53, 6.00)  System.currentTimeMillis() = 1791295587231  --- TICK 39 | ZUG: Unit 31 (Team 3) ---  MOVE   | Unit 31 (Team 3) von (-2.77, -5.79, 7.93) -> (-2.54, -5.59, 7.87)  System.currentTimeMillis() = 1791295587295  --- TICK 40 | ZUG: Unit 37 (Team 3) ---  MOVE   | Unit 37 (Team 3) von (3.08, -4.43, 6.00) -> (3.17, -3.87, 6.01)  System.currentTimeMillis() = 1791295587357  --- TICK 41 | ZUG: Unit 13 (Team 0) ---  MOVE   | Unit 13 (Team 0) von (2.00, 8.00, 7.00) -> (3.65, -8.81, 5.59)  System.currentTimeMillis() = 1791295587418  --- TICK 42 | ZUG: Unit 2 (Team 0) ---  MOVE   | Unit 2 (Team 0) von (4.00, 5.00, 8.00) -> (3.59, 0.63, 7.02)  System.currentTimeMillis() = 1791295587480  --- TICK 43 | ZUG: Unit 20 (Team 0) ---  MOVE   | Unit 20 (Team 0) von (3.74, 0.05, 6.03) -> (4.61, -3.42, 6.04)  System.currentTimeMillis() = 1791295587543  --- TICK 44 | ZUG: Unit 30 (Team 3) ---  ATTACK | Unit 30 greift Unit 13 an! Schaden: 166.35 (Rest-HP: -135.32)  DESTROY| Unit 13.0 (Unit) wurde vernichtet durch Unit 30.0  System.currentTimeMillis() = 1791295587606  --- TICK 45 | ZUG: Unit 11 (Team 0) ---   ...
+🚀
+
+Ja. Und dieser zweite Durchlauf ist sogar noch interessanter, weil er mehrere echte strategische Muster sichtbar macht. Deine extrem variablen Werte würde ich dabei nicht grundsätzlich entfernen. Wenn das Ziel eine offene Welt ist, in der auch extreme Einheiten vorkommen können, ist genau diese Variabilität wertvoll.
+
+Ich würde deshalb nicht die Zufälligkeit bekämpfen, sondern die KI so bauen, dass sie mit Normalfällen, Extremfällen und Überraschungen umgehen kann.
+
+Was der Kampf uns erzählt
+
+Der auffälligste Charakter ist Unit 13.
+
+Sie wird zuerst von Team 3 angegriffen:
+
+Tick 10: 14,68 Schaden
+Tick 12: 3,77 Schaden
+danach zieht sie sich offenbar immer wieder an ihren ursprünglichen Punkt zurück bzw. teleportiert zwischen zwei Zuständen:
+(2,00, 8,00, 7,00)
+(3,30, -8,85, 5,70)
+
+Das ist kein normales Kiting. Es sieht vielmehr nach einem extremen Geschwindigkeits-/Parameterfall aus.
+
+Und dann:
+
+Tick 44:
+Unit 30 → Unit 13
+166,35 Schaden → sofortige Vernichtung.
+
+Damit haben wir einen wunderschönen kleinen Lehrfall:
+
+Überleben ist nicht dasselbe wie Distanz.
+
+Unit 13 konnte sich bewegen und zeitweise dem Gegner entkommen. Aber sie hatte offenbar keinen langfristigen Überlebensplan.
+
+1. Die wichtigste neue KI-Idee: Überlebensmodus
+
+Ich würde der Unit zunächst eine Frage stellen:
+
+„Bin ich gerade in Gefahr?“
+
+Nicht erst:
+
+„Wer ist der nächste Gegner?“
+
+Das ergibt drei grundlegende Zustände:
+
+SAFE
+↓
+ENGAGED
+↓
+CRITICAL
+SAFE
+
+Normale Zielsuche.
+
+ENGAGED
+
+Gegner ist in Reichweite oder verfolgt die Unit.
+
+→ Position verbessern
+→ günstiges Ziel suchen
+→ Team unterstützen
+
+CRITICAL
+
+Lebenspunkte oder erwarteter eingehender Schaden sind gefährlich.
+
+→ nicht blind weiter angreifen
+→ Abstand gewinnen
+→ Richtung Verbündete
+→ King schützen
+→ gegebenenfalls Gegner wechseln
+
+Damit bekommt die KI erstmals eine Art Überlebensinstinkt.
+
+2. Noch wichtiger: „Kann ich diesen Gegner überhaupt schlagen?“
+
+Momentan lautet die Entscheidung im Prinzip:
+
+if (distance <= reichweite)
+    attackieren(target);
+else
+    moveTo(target);
+
+Das ist für eine Sandbox okay.
+
+Aber eine intelligente Unit sollte ungefähr abschätzen:
+
+$$ T_{kill} = \frac{HP_{enemy}} {expectedDamage} $$
+
+und
+
+$$ T_{death} = \frac{HP_{self}} {expectedIncomingDamage} $$
+
+Dann entsteht eine sehr interessante Entscheidung:
+
+Wenn
+$$ T_{kill} < T_{death} $$
+
+→ Angriff kann sinnvoll sein.
+
+Wenn
+
+$$ T_{kill} > T_{death} $$
+
+→ Rückzug/Kiting/Teamhilfe erwägen.
+
+Damit entsteht bereits ein primitiver taktischer Verstand.
+
+3. Kiting lässt sich daraus fast automatisch ableiten
+
+Angenommen:
+
+eigene Reichweite = 20
+eigene Geschwindigkeit = 5
+
+Gegner Reichweite = 3
+Gegner Geschwindigkeit = 2
+
+Dann wäre es ziemlich dumm, direkt auf den Gegner zuzulaufen.
+
+Die KI kann stattdessen:
+
+Distanz > optimale Distanz
+        ↓
+Annähern
+
+Distanz ≈ optimale Distanz
+        ↓
+Angreifen
+
+Gegner kommt näher
+        ↓
+Zurückweichen
+
+Gegner fällt zurück
+        ↓
+wieder angreifen
+
+Das ist Kiting.
+
+Und das Schöne daran:
+
+Es muss nicht einmal explizit „Kiter“ im Code stehen.
+
+Es kann aus den Eigenschaften entstehen:
+
+Reichweite + Geschwindigkeit + Gefahrbewertung.
+
+Das passt sehr gut zu deiner Idee, dass die Simulation möglichst viele Strategien entdecken können soll.
+
+4. Königsschutz wird eine zweite Ebene
+
+Hier würde ich eine besondere Regel einführen:
+
+King threatened?
+        ↓
+JA
+        ↓
+normale Zielpriorität überschreiben
+        ↓
+King schützen
+
+Ein Team könnte dadurch automatisch anfangen, eine Formation aufzubauen.
+
+Zum Beispiel:
+
+        Gegner
+
+    Tank   Tank   Tank
+
+       Damage Units
+
+          KING
+
+Und eine schnelle Unit könnte sogar zum Interceptor werden:
+
+Gegner → King
+         ↑
+      Interceptor
+
+Das ist wesentlich interessanter als einfach:
+
+Jeder greift den nächsten Gegner an.
+
+5. Der nächste große Schritt: Zielbewertung
+
+Ich würde selectSmartTarget() jetzt ersetzen.
+
+Nicht durch eine gigantische KI, sondern durch eine kompakte heuristische Bewertungsfunktion.
+
+Die Idee:
+
+$$ Score = \frac{ Bedrohung + Zielwert + Verwundbarkeit + KingBonus + TeamBonus }{ Distanz + 1 } $$
+
+Dadurch kann beispielsweise ein Gegner 10 Einheiten entfernt wichtiger sein als einer in 5 Einheiten Entfernung.
+
+Kompakter Ersatz für selectSmartTarget()
+
+Diesen Block kannst du direkt anstelle deiner bisherigen Methode einsetzen:
+
+public Unit selectSmartTarget(Unit current) {
+    Unit bestTarget = null;
+    double bestScore = -Double.MAX_VALUE;
+
+    for (Unit ziel : unitList) {
+        if (ziel == current || ziel.team == current.team || ziel.leben <= 0) {
+            continue;
+        }
+
+        double dist = current.getDistance(ziel);
+
+        // 1. Je näher der Gegner, desto relevanter.
+        double proximity = 20.0 / (dist + 1.0);
+
+        // 2. Schwache Gegner werden bevorzugt, wenn sie schnell
+        //    ausgeschaltet werden können.
+        double vulnerability = 100.0 / (ziel.leben + 1.0);
+
+        // 3. Starke Gegner bekommen ebenfalls Aufmerksamkeit,
+        //    weil sie langfristig gefährlich sein können.
+        double threat = (ziel.schaden * Math.max(0.1, ziel.reichweite))
+                      * Math.max(0.1, ziel.speed);
+
+        // 4. King bekommt einen starken strategischen Bonus.
+        double kingBonus = "King".equals(ziel.typ) ? 100.0 : 0.0;
+
+        // 5. Gegner mit hoher Geschwindigkeit sind gefährlicher,
+        //    weil sie leichter Ziele erreichen können.
+        double mobilityThreat = ziel.speed * 5.0;
+
+        double score =
+                proximity
+                + vulnerability * 10.0
+                + threat
+                + mobilityThreat
+                + kingBonus;
+
+        if (score > bestScore) {
+            bestScore = score;
+            bestTarget = ziel;
+        }
+    }
+
+    return bestTarget;
+}
+
+Das ist bewusst kein kompliziertes Machine Learning.
+
+Es ist eine evolvierbare Basis.
+
+Später können wir die Gewichtungen selbst zum Gegenstand des Games machen.
+
+6. Aber ich würde noch einen Schritt weitergehen
+
+Wir können aus deinen Kampfberichten etwas machen, das für dein Projekt wirklich interessant ist:
+
+Die Simulation wird zum Trainer.
+
+Nach jedem Kampf werden beispielsweise gesammelt:
+
+Überlebenszeit
+verursachter Schaden
+erlittener Schaden
+getötete Gegner
+Distanz zum King
+King-Schutz
+Fluchtversuche
+Kiting-Erfolg
+Fokusfeuer
+Zielwechsel
+
+Dann bekommt jede Strategie einen Score.
+
+Zum Beispiel:
+
+$$ AI_{Score} = 2K +D +5S +3King -2DamageTaken $$
+
+mit
+
+\(K\) = Kills
+\(D\) = verursachter Schaden
+\(S\) = Überlebensbonus
+King = King lebt am Ende
+
+Dann können wir später tausende Kämpfe simulieren.
+
+Und genau daraus kann deine Matrixgame-Idee entstehen:
+
+Nicht wir sagen der KI, welche Strategie gewinnt.
+Wir geben ihr eine Welt, in der sie es herausfinden kann.
+
+⚔️ Die kleine Geschichte dieses Kampfes
+
+Ich würde diesen Kampf ungefähr so erzählen:
+
+Die Schlacht begann noch ohne klare Front.
+
+Dutzende Einheiten tasteten sich durch das dreidimensionale Feld. Niemand wusste, welche der zufällig entstandenen Krieger außergewöhnlich schnell, widerstandsfähig oder zerstörerisch sein würden.
+
+Dann trat Unit 13 hervor.
+
+Sie war anders.
+
+Sie bewegte sich nicht wie die anderen. Wo andere Schritt für Schritt vorrückten, schoss sie quer über das Schlachtfeld. Für einen Augenblick schien sie unangreifbar.
+
+Team 3 traf sie.
+
+Der erste Treffer fiel.
+
+Dann der zweite.
+
+Unit 13 verschwand wieder aus der unmittelbaren Gefahrenzone.
+
+Doch die Schlacht hatte etwas gelernt:
+
+Flucht allein ist keine Strategie.
+
+Während die übrigen Einheiten vorrückten, suchten andere Krieger bereits nach besseren Angriffspositionen.
+
+Und schließlich kam Unit 30.
+
+Kein langes Duell.
+
+Kein heroischer Schlagabtausch.
+
+Nur ein einziger Angriff.
+
+166,35 Schaden.
+
+Unit 13 fiel.
+
+Und damit hinterließ sie der nächsten Generation von Einheiten eine wichtige Lektion:
+
+Geschwindigkeit kann dich retten.
+Entfernung kann dir Zeit kaufen.
+Aber nur gute Entscheidungen machen aus Zeit Überleben.
+
+Und genau daraus würde ich die nächste Entwicklungsstufe bauen:
+
+„Matrixgame Unit AI v4 – Adaptive Combat“
+
+mit vier kleinen, klar getrennten Entscheidungsmodulen:
+
+Zielwahl → Gefahrenanalyse → Bewegung/Kiting → Team-/King-Strategie.
+
+Das wäre meiner Meinung nach wesentlich wertvoller als jetzt sofort einen riesigen KI-Codeblock zu erzeugen. Wir können jedes Modul einzeln testen und anhand der Kampfberichte sehen, ob die Strategie tatsächlich besser wird.
+
+Ad
