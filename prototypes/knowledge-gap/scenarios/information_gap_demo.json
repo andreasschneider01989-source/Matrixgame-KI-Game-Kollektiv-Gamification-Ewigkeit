@@ -1,0 +1,48 @@
+{
+  "scenario_id": "information_gap_demo_v1",
+  "title": "KnowledgeGap – Informationsverzoegerung",
+  "data_status": "SYNTHETISCHE MODELLANNAHMEN / KEINE REALDATEN",
+  "purpose": "Demonstriert Input-Operation-Output und epistemische Kennzeichnung.",
+  "timeline": [
+    {
+      "day": 1,
+      "estimated_total": 10,
+      "officially_confirmed": 1,
+      "label": "MODELLANNAHME",
+      "note": "Fruehe Phase: nur wenige Faelle sind bestaetigt."
+    },
+    {
+      "day": 2,
+      "estimated_total": 30,
+      "officially_confirmed": 8,
+      "label": "MODELLANNAHME",
+      "note": "Die modellierte Schaetzung waechst schneller als Bestaetigungen."
+    },
+    {
+      "day": 3,
+      "estimated_total": 50,
+      "officially_confirmed": 35,
+      "label": "MODELLANNAHME",
+      "note": "Mehr Untersuchungen verkleinern die Informationsluecke."
+    },
+    {
+      "day": 4,
+      "estimated_total": 70,
+      "officially_confirmed": 65,
+      "label": "MODELLANNAHME",
+      "note": "Der Informationsstand naehert sich der Schaetzung."
+    }
+  ],
+  "open_quests": [
+    {
+      "id": "q_measurement",
+      "question": "Welche unabhaengigen Daten wuerden die Schaetzung besser begruenden?",
+      "reward": "Erkenntnispunkte erst nach nachvollziehbarer Begruendung und Pruefung vergeben."
+    },
+    {
+      "id": "q_sensitivity",
+      "question": "Wie veraendert sich die Ampel, wenn die Schaetzung um 20 Prozent danebenliegt?",
+      "reward": "Vergleichbare Sensitivitaetsanalyse dokumentieren."
+    }
+  ]
+}
