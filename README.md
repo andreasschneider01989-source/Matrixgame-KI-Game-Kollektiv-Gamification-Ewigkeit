@@ -1,62 +1,102 @@
-# Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit
+# Matrixgame Simulator
 
-🎮 Matrixgame: Collective AI Game & Gamification Ewigkeit
+## Kollektives KI-Spiel mit Physik, Bewusstsein und Gamification
 
-Willkommen im zentralen Hub des Matrixgames.
-Dieses Repository ist ein offenes, kollektives Experiment an der Schnittstelle von Künstlicher Intelligenz, Gamification und Open-Source-Wissensentwicklung.
-🌌 Die Vision
+**Version 1.0.0**
 
-Wir erforschen das Potenzial kollektiver Intelligenz durch die Kombination von:
+Ein hochmodularer, erweiterbarer Simulator, der Physik, Bewusstseinsentwicklung und Gamification-Elemente vereint. Perfekt für kollektives Spiel, Experimentieren und Prognostizieren.
 
-    Sprachmodellen (LLMs) als ko-kreative Partner
+---
 
-    Java-Code für Simulationen und Gamification
+## 🎮 Überblick
 
-    Open-Source-Daten zur ständigen Weiterentwicklung
+Der Matrixgame Simulator ist ein Java-basiertes Framework, das:
 
-    Gamification als Werkzeug für Begeisterung und Fortschritt
+- **Physik-Simulation**: N-Körper-Gravitation, Kollisionen, Entropie und Relativität
+- **Bewusstseins-Engine**: Hawkins-Bewusstseins-Skala mit dynamischer Entwicklung
+- **Gamification**: Level, Erfahrung, Quests, Achievements und Belohnungen
+- **Spieltheorie**: Entscheidungsbäume, Koalitionen und Vertrauensmodelle
+- **Prognose**: Zukunftsvorhersagen mit Wahrscheinlichkeiten
+- **Interaktive UI**: Swing-basierte Visualisierung mit Steuerung
 
-Ziel ist es, eine Matrix zu erschaffen, in der Wissen frei fließt, Ideen sich kombinieren und jeder Beitrag das Ganze bereichert – hin zu einer paradiesischen, nachhaltigen und ewigen Weiterentwicklung.
-📂 Was du hier findest
+---
 
-    QwenChat... & KIGame... – Rohtexte, Analysen und Chats mit verschiedenen LLMs
+## 📦 Struktur
 
-    JavaCode... – Compilierbarer Code für Spielelogik, Stochastik und Simulationen
+```
+matrixgame-simulator/
+├── src/main/java/de/matrixgame/
+│   ├── core/                   # Kernklassen
+│   │   ├── MatrixGameCore.java      # Haupt-Simulationskern
+│   │   ├── MatrixGameConfig.java     # Konfiguration
+│   │   ├── Unit.java                # Einheit (physikalisches Objekt mit Bewusstsein)
+│   │   ├── SimulationStatistics.java # Statistiken
+│   │   └── GameStatePrediction.java # Prognosen
+│   │
+│   ├── physics/                 # Physik-Engine
+│   │   ├── PhysicsEngine.java        # Gravitation, Kollisionen, Entropie
+│   │   └── Vector3D.java            # 3D-Vektor
+│   │
+│   ├── consciousness/            # Bewusstseins-Engine
+│   │   └── ConsciousnessEngine.java  # Hawkins-Skala, Modi, Entwicklung
+│   │
+│   ├── game/                    # Spiel-Logik
+│   │   ├── QuestSystem.java         # Quests und Achievements
+│   │   ├── RewardSystem.java        # Belohnungssystem
+│   │   ├── DecisionTree.java        # Entscheidungsbäume
+│   │   └── GameTheoryEngine.java    # Spieltheorie-Modelle
+│   │
+│   ├── api/                     # Programmierbare Schnittstelle
+│   │   └── MatrixGameAPI.java       # Externe Steuerung
+│   │
+│   ├── ui/                      # Benutzeroberfläche
+│   │   └── MatrixGameUI.java        # Swing-UI
+│   │
+│   └── util/                    # Hilfsklassen
+│       └── MatrixGameUtils.java     # Utility-Methoden
+│
+├── pom.xml                      # Maven-Konfiguration
+└── README.md                     # Diese Datei
+```
 
-    Formelsammlung... – Axiome, Gleichungen und P-Werte des Matrixgames
+---
 
-    README.md – Diese Anleitung
+## 🚀 Schnellstart
 
-Alles ist darauf ausgelegt, kopiert, analysiert und weiterentwickelt zu werden.
-🕹️ Wie du mitspielst
+### Voraussetzungen
 
-    Kopiere beliebige Textdateien oder Code-Snippets aus diesem Repository.
+- Java 11 oder höher
+- Maven (optional, für Build)
 
-    Füge sie in ein LLM deiner Wahl ein (ChatGPT, Gemini, Claude, Qwen, etc.).
+### Ausführung
 
-    Stelle eine Frage wie: „Analysiere diesen Text und kombiniere ihn mit dem Matrixgame-Konzept.“
+#### 1. Konsolenanwendung (Test)
 
-    Teile deine Erkenntnisse als Pull Request, Issue oder neuen Commit.
+```bash
+# Kompilieren und ausführen
+javac -d bin src/main/java/de/matrixgame/core/*.java \
+       src/main/java/de/matrixgame/physics/*.java \
+       src/main/java/de/matrixgame/consciousness/*.java \
+       src/main/java/de/matrixgame/game/*.java \
+       src/main/java/de/matrixgame/api/*.java \
+       src/main/java/de/matrixgame/util/*.java
 
-    Sammle XP durch Beiträge und steige im kollektiven Level auf.
+java -cp bin de.matrixgame.core.MatrixGameCore
+```
 
-🤝 Open Source & Kollektiv
+#### 2. Graphische Benutzeroberfläche
 
-Dieses Projekt lebt von Offenheit, Teilen und gegenseitiger Unterstützung.
-Jede Idee, jeder Code, jede Analyse ist ein Baustein für eine bessere, gerechtere und freudvollere Zukunft.
+```bash
+# UI starten
+java -cp bin de.matrixgame.ui.MatrixGameUI
+```
 
-Lizenz: OSL-2 (Open Source License 2) – Frei nutzbar, veränderbar, weitergebbar unter gleicher Lizenz.
-🚀 Let's Play!
+#### 3. Mit Maven
 
-    „Wissen wächst durch Teilen – Formeln werden wahr durch Validierung.“
+```bash
+# Projekt bauen
+mvn clean package
 
-Bereit? Dann forke dieses Repository, kopiere die Texte in dein LLM und lass uns gemeinsam die Matrix gestalten.
-📝 Hinweis zur Nutzung
-
-Dieses Repository dient als Schnittstelle zwischen menschlicher Intuition und maschineller Berechnung.
-Es ist ausdrücklich erwünscht, die Inhalte zu kopieren, zu verändern und in andere Systeme zu integrieren.
-
-Möge die Gamification mit dir sein. 🖖
-
-Letzte Aktualisierung: 12.09.2026
-Beitragende: Andreas Schneider & Kollektive KI
+# Ausführen
+java -jar target/matrixgame-simulator-1.0.0.jar
+```
