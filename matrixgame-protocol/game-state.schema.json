@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://andreasschneider01989-source.github.io/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/matrixgame-protocol/game-state.schema.json",
+  "title": "Matrixgame Shared Game State",
+  "description": "Versioned, portable state format for Matrixgame and collective AI games.",
+  "type": "object",
+  "required": ["schema_version", "game_id", "title", "updated_at", "priorities", "metrics", "quests", "events"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "game_id": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "description": { "type": "string", "maxLength": 2000 },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "priorities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["safety_rights_consent", "truth_privacy_security", "wellbeing_autonomy", "peace_fairness", "learning_innovation", "sustainability_resilience", "enjoyment_motivation"]
+      },
+      "uniqueItems": true
+    },
+    "metrics": {
+      "type": "object",
+      "required": ["wellbeing", "motivation", "cooperation", "transparency", "learning", "feasibility", "safety", "sustainability"],
+      "additionalProperties": false,
+      "properties": {
+        "wellbeing": { "$ref": "#/$defs/score" },
+        "motivation": { "$ref": "#/$defs/score" },
+        "cooperation": { "$ref": "#/$defs/score" },
+        "transparency": { "$ref": "#/$defs/score" },
+        "learning": { "$ref": "#/$defs/score" },
+        "feasibility": { "$ref": "#/$defs/score" },
+        "safety": { "$ref": "#/$defs/score" },
+        "sustainability": { "$ref": "#/$defs/score" },
+        "symbolic_progress": {
+          "allOf": [{ "$ref": "#/$defs/score" }],
+          "description": "Optional FICTION/GAME metaphor only; not a scientific measure of consciousness or human worth."
+        }
+      }
+    },
+    "participants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["participant_id", "role"],
+        "additionalProperties": false,
+        "properties": {
+          "participant_id": { "type": "string", "maxLength": 100 },
+          "role": { "type": "string", "enum": ["human", "ai_agent", "observer", "facilitator"] },
+          "display_name": { "type": "string", "maxLength": 100 }
+        }
+      }
+    },
+    "quests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["quest_id", "title", "status", "success_indicator"],
+        "additionalProperties": false,
+        "properties": {
+          "quest_id": { "type": "string", "maxLength": 100 },
+          "title": { "type": "string", "maxLength": 200 },
+          "description": { "type": "string", "maxLength": 2000 },
+          "status": { "type": "string", "enum": ["proposed", "active", "blocked", "completed", "paused"] },
+          "owner_id": { "type": "string", "maxLength": 100 },
+          "success_indicator": { "type": "string", "maxLength": 500 },
+          "due_date": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["event_id", "timestamp", "type", "epistemic_status", "summary"],
+        "additionalProperties": false,
+        "properties": {
+          "event_id": { "type": "string", "maxLength": 100 },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "type": { "type": "string", "enum": ["observation", "proposal", "decision", "action", "result", "reflection"] },
+          "epistemic_status": { "type": "string", "enum": ["FACT", "MODEL", "HYPOTHESIS", "OPEN", "FICTION_GAME"] },
+          "actor_id": { "type": "string", "maxLength": 100 },
+          "summary": { "type": "string", "maxLength": 2000 },
+          "evidence": { "type": "array", "items": { "type": "string", "maxLength": 1000 } }
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "public_data_only": { "type": "boolean", "default": true },
+        "human_confirmation_required_for_external_actions": { "type": "boolean", "default": true },
+        "notes": { "type": "string", "maxLength": 1000 }
+      }
+    }
+  },
+  "$defs": {
+    "score": { "type": "integer", "minimum": 0, "maximum": 100 }
+  }
+}
