@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0.0",
+  "game_id": "matrixgame-mobile-resilience-001",
+  "title": "Digital Sovereignty and Collective Intelligence",
+  "description": "A small cooperative game to improve reliable access to knowledge and collaborative work.",
+  "updated_at": "2026-10-31T12:00:00Z",
+  "priorities": [
+    "safety_rights_consent",
+    "truth_privacy_security",
+    "wellbeing_autonomy",
+    "peace_fairness",
+    "learning_innovation",
+    "sustainability_resilience",
+    "enjoyment_motivation"
+  ],
+  "metrics": {
+    "wellbeing": 60,
+    "motivation": 65,
+    "cooperation": 70,
+    "transparency": 75,
+    "learning": 50,
+    "feasibility": 45,
+    "safety": 70,
+    "sustainability": 60,
+    "symbolic_progress": 50
+  },
+  "participants": [
+    {
+      "participant_id": "player-1",
+      "role": "human",
+      "display_name": "Player"
+    },
+    {
+      "participant_id": "assistant-1",
+      "role": "ai_agent",
+      "display_name": "AI collaborator"
+    }
+  ],
+  "quests": [
+    {
+      "quest_id": "quest-interoperable-state",
+      "title": "Create a portable shared game state",
+      "description": "Define a JSON format that can be read and updated by independent clients.",
+      "status": "active",
+      "owner_id": "player-1",
+      "success_indicator": "The example validates against the published JSON Schema."
+    },
+    {
+      "quest_id": "quest-mobile-continuity",
+      "title": "Preserve work across devices",
+      "description": "Test a workflow that can continue on a phone after a desktop interruption.",
+      "status": "proposed",
+      "owner_id": "player-1",
+      "success_indicator": "A saved game state can be opened and continued on a second device."
+    }
+  ],
+  "events": [
+    {
+      "event_id": "event-001",
+      "timestamp": "2026-10-31T12:00:00Z",
+      "type": "observation",
+      "epistemic_status": "FACT",
+      "actor_id": "player-1",
+      "summary": "The project is being continued on a smartphone while desktop reliability is being investigated.",
+      "evidence": []
+    },
+    {
+      "event_id": "event-002",
+      "timestamp": "2026-10-31T12:00:00Z",
+      "type": "proposal",
+      "epistemic_status": "MODEL",
+      "actor_id": "assistant-1",
+      "summary": "Use versioned JSON as the shared state format between people, AI models and deterministic software.",
+      "evidence": []
+    }
+  ],
+  "safety": {
+    "public_data_only": true,
+    "human_confirmation_required_for_external_actions": true,
+    "notes": "Never store passwords, access tokens, recovery codes or sensitive personal information in this shared state."
+  }
+}
