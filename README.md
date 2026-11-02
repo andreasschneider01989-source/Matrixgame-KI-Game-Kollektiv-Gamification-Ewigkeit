@@ -36,6 +36,14 @@ This should make it easier to:
 
 The existing code and documentation provide a starting point for this process. The modular architecture described below is a **development plan**, not a claim that all components already exist or work together.
 
+## Collective Improvement Network
+
+The broader vision for human–AI collaboration, cross-project improvement quests, evidence-aware knowledge sharing, and responsible automation is documented here:
+
+- [Collective Improvement Network — Vision and Roadmap](docs/COLLECTIVE_IMPROVEMENT_NETWORK.md)
+
+This is a proposed direction for future development, not a claim that the network or its automation is already implemented.
+
 ## Implementation Roadmap
 
 The next development phase is intended to focus on:
