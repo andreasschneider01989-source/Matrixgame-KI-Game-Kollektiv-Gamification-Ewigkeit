@@ -3,6 +3,7 @@ const path = require("path");
 const vm = require("vm");
 
 const htmlPath = path.resolve(process.argv[2] || path.join(__dirname, "..", "Matrixgame_InfinityCanvas_GravityLab.html"));
+const outerCount = process.argv[3] || "6";
 const html = fs.readFileSync(htmlPath, "utf8");
 const match = html.match(/<script>([\s\S]*?)<\/script>/);
 if (!match) throw new Error("No inline JavaScript block found in Gravity Lab HTML");
@@ -38,7 +39,7 @@ const document = {
     return elements.get(id);
   },
 };
-const window = { devicePixelRatio: 1, location: { search: "?smoke=1" }, addEventListener: noop };
+const window = { devicePixelRatio: 1, location: { search: "?smoke=1&outer=" + outerCount }, addEventListener: noop };
 const runtime = {
   document, window, URLSearchParams, Math, Number, Array, Map, Object, String,
   clearTimeout: noop, setTimeout: () => 1, console,
@@ -47,8 +48,8 @@ vm.runInNewContext(source, runtime, { timeout: 10000 });
 
 const result = document.body.dataset;
 if (result.smoke !== "PASS") throw new Error("Gravity simulation returned non-finite values");
-if (result.bodyCount !== "9") throw new Error("Expected the 1 + 2 + 6 = 9 body baseline");
+if (result.bodyCount !== String(Number(outerCount) + 3)) throw new Error("Expected one central body, two inner bodies and " + outerCount + " outer bodies");
 console.log(
-  "PASS: 2 inner + 6 outer; 2,000 Velocity-Verlet steps; " +
+  "PASS: 2 inner + " + outerCount + " outer; 2,000 Velocity-Verlet steps; " +
   "relative energy drift " + result.energyDriftPercent + "%"
 );
