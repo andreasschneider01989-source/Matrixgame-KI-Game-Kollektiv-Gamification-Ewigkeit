@@ -36,6 +36,10 @@ if(document.body.dataset.smoke!=='PASS') throw new Error('3D integration produce
 if(String(document.body.dataset.count)!==String(Number(outer)+3)) throw new Error('Incorrect body count');
 const names=api.S.bodies.map(b=>b.id);
 if(!names.includes('outerXY+')||!names.includes('outerXZ+')||!names.includes('outerYZ+')) throw new Error('Three orbital planes not initialized');
+api.createSystem();
+const score=api.symmetryScore();
+if(!Number.isFinite(score)||score<0||score>100) throw new Error('Symmetry score is outside 0..100');
+if(Number(outer)===6&&score<99.9) throw new Error('The exact 2+6 baseline should have near-perfect geometric symmetry');
 api.S.selected='outerXZ+';api.S.running=false;
 const target=api.S.bodies.find(b=>b.id==='outerXZ+');
 const otherIndex=api.S.bodies.findIndex(b=>b.id==='outerYZ+');
@@ -69,7 +73,7 @@ api.loadJSON({ text: async () => JSON.stringify(saved) }).then(() => {
     throw new Error('JSON state round-trip did not restore bodies');
   }
   if (api.P.repel !== saved.parameters.repel) throw new Error('JSON did not restore repulsion');
-  console.log('PASS: 2+'+outer+' 3D bodies; orthogonal planes; Velocity-Verlet; 3D editor; repulsion; add/remove; JSON round-trip; drift '+document.body.dataset.drift+'%');
+  console.log('PASS: 2+'+outer+' 3D bodies; orthogonal planes; Velocity-Verlet; 3D editor; repulsion; add/remove; JSON round-trip; symmetry '+score.toFixed(1)+'%; drift '+document.body.dataset.drift+'%');
 }).catch(error => {
   console.error(error);
   process.exitCode = 1;
