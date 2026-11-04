@@ -28,3 +28,21 @@ for n in 5 6 7 8; do node web/tests/gravitylab_smoke.cjs web/Matrixgame_Infinity
 ```
 
 The automated test executes the inline application code in a minimal browser/canvas stub. It checks the 2,000-step finite-state simulation for each shell count, edits a body's mass/position/velocity/time step, confirms that the Newtonian acceleration field changes, and adds/removes a test body.
+
+
+## 3D Orthogonal Orbital Lab
+
+Open `Matrixgame_GravityLab_3D.html` directly in a desktop browser. This is a true 3D state with x/y/z positions and vx/vy/vz velocities, projected to a 2D canvas:
+- one central mass, two inner bodies, six outer bodies;
+- the six outer bodies form opposite pairs in mutually perpendicular XY, XZ, and YZ planes;
+- left-drag rotates, Shift/right-drag pans, wheel zooms;
+- edit mass, all three position and velocity components, and dt;
+- switch a simplified satellite-only repulsion term independently of central attraction;
+- JSON export/import saves masses, vectors, physics settings, and view.
+
+The repulsion slider is a toy interaction, not electromagnetism. The three planes are a geometry analogy to p-orbital orientations, not a quantum orbital model. The code explicitly does not model spin, the Pauli principle, wavefunctions, or Coulomb attraction/repulsion.
+
+Run tests:
+```sh
+for n in 5 6 7 8; do node web/tests/gravitylab3d_smoke.cjs web/Matrixgame_GravityLab_3D.html $n; done
+```
