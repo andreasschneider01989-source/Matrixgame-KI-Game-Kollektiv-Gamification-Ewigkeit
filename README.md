@@ -44,6 +44,18 @@ The broader vision for human–AI collaboration, cross-project improvement quest
 
 This is a proposed direction for future development, not a claim that the network or its automation is already implemented.
 
+## Universal Knowledge Engine (proposed)
+
+The Universal Knowledge Engine documentation connects scientific knowledge, personal and collective learning, simulations, evidence, quests, and future asynchronous research networks. These documents are specifications and learning maps, not claims that the described systems are already implemented.
+
+- [Universal Knowledge Engine — Architecture](docs/UNIVERSAL_KNOWLEDGE_ENGINE.md)
+- [Knowledge Node and Evidence Schema](docs/KNOWLEDGE_NODE_AND_EVIDENCE_SCHEMA.md)
+- [Physics A–Z Atlas](docs/PHYSICS_AZ_ATLAS.md)
+- [Learning Quests and Responsible Gamification](docs/LEARNING_QUESTS_AND_GAMIFICATION.md)
+- [Interplanetary Knowledge Network](docs/INTERPLANETARY_KNOWLEDGE_NETWORK.md)
+
+The initial implementation target is deliberately small: one sourced density knowledge node, its equation and SI units, a dimensional validation test, one linked learning quest, and a reproducible example. Later search, agent collaboration, and DTN-inspired synchronization should build on that verified foundation.
+
 ## Implementation Roadmap
 
 The next development phase is intended to focus on:
