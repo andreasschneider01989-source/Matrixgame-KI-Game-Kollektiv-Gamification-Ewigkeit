@@ -32,6 +32,18 @@ python evolution_forge.py --config request.json --out output/run-001
 
 Der Adapter wartet mit Timeout, protokolliert den Prozess in `process.log` und liest `summary.json` zurück. Der JSON-Text bleibt zunächst unverändert; eine typisierte Deserialisierung folgt erst nach Stabilisierung des Schemas.
 
+## Neue Umweltparameter-Overrides
+
+Seit Softwareversion 1.0.1 kann ein Experiment die Szenarioparameter `energy_flux` und `resource_regen` explizit überschreiben. Alle übrigen Umweltwerte stammen weiter aus dem Basisszenario. Die Konfiguration und die tatsächlich verwendeten Umweltwerte stehen vollständig in `summary.json`.
+
+Die extern übermittelten Optimierungsangaben werden als prüfbares Experiment geführt:
+- `energy_flux=0.65`
+- `maintenance_cost=0.015`
+- `cooperation_benefit=0.08`
+- `scenario=icy_ocean`, `steps=360`, `seed=7`
+
+Das ist zunächst nur ein Test der drei berichteten Zahlen. Die zusätzliche Angabe einer stabileren Ressourcenregeneration hat keinen numerischen Wert erhalten und wird daher nicht stillschweigend verändert. Die vom externen Chat berichteten Zielwerte (Schritt 93, Population 446 usw.) sind Sollwerte zur Prüfung, nicht als reproduziert dokumentiert.
+
 ## Teststatus
 
 - Python- und NumPy-/Matplotlib-Lauf erfolgreich in der lokalen Entwicklungsumgebung.
@@ -41,7 +53,7 @@ Der Adapter wartet mit Timeout, protokolliert den Prozess in `process.log` und l
 
 ## Versions- und Reproduzierbarkeitshinweis
 
-Der im Branch enthaltene Quellstand trägt `model_version=1.0.0`. Vergleichsläufe mit 360 Schritten und Seed 7 reproduzieren die im vorliegenden Vergleich genannten Werte für:
+Der im Branch enthaltene Quellstand trägt `model_version=1.0.1`. Vergleichsläufe mit 360 Schritten und Seed 7 reproduzieren die im vorliegenden Vergleich genannten Werte für:
 
 - `earth_tidal_pool`: erster Lebens-Agent Schritt 122, Endpopulation 520
 - `alkaline_vent`: erster Lebens-Agent Schritt 107, Endpopulation 518
