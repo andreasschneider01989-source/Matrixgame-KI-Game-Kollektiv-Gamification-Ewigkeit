@@ -155,7 +155,7 @@ def run_one(n,b,phase,dt,steps,post,mode):
         model="classical_newtonian_n_body_plummer_softened",integrator="velocity_verlet_fixed_dt",
         initialization_mode=mode,run_id=f"{'ABC'[n]}_b{int(b):02d}_phase{int(phase):03d}_dt{dt:g}",
         satellites_per_cluster=n,impact_parameter=b,relative_phase_deg=phase,G=G,softening=EPS,
-        dt=dt,steps=steps,simulated_time=steps*dt,total_cluster_mass=MT,satellite_mass=MS,
+        dt=dt,steps=steps,simulated_time=steps*dt,post_merger_steps=post if did_merge else 0,total_cluster_mass=MT,satellite_mass=MS,
         orbital_radius=R,core_radius_fixed=CORE_R,core_radius_policy="fixed_even_as_core_mass_changes",
         core_contact_distance=CONTACT,seed=None,initial_bodies=initial,
         min_core_distance_before_contact_or_end=dmin,closest_approach_time=tmin,
@@ -191,7 +191,16 @@ def main():
     results=[]; started=time.perf_counter()
     for i,(n,b,ph,dt,steps) in enumerate(runs,1):
         rid=f"{'ABC'[n]}_b{int(b):02d}_phase{int(ph):03d}_dt{dt:g}"; file=rd/f"{rid}.json"
-        if a.resume and file.exists(): r=json.loads(file.read_text(encoding="utf-8"))
+        if a.resume and file.exists():
+            cached=json.loads(file.read_text(encoding="utf-8"))
+            expected={"initialization_mode":a.initialization,"satellites_per_cluster":n,
+                      "impact_parameter":b,"relative_phase_deg":ph,"dt":dt,"steps":steps}
+            matches=all(cached.get(k)==v for k,v in expected.items())
+            matches=matches and cached.get("post_merger_steps")== (post if cached.get("merger_proxy") else 0)
+            if matches: r=cached
+            else:
+                r=run_one(n,b,ph,dt,steps,post,a.initialization)
+                file.write_text(json.dumps(r,indent=2,ensure_ascii=False),encoding="utf-8")
         else:
             r=run_one(n,b,ph,dt,steps,post,a.initialization)
             file.write_text(json.dumps(r,indent=2,ensure_ascii=False),encoding="utf-8")
