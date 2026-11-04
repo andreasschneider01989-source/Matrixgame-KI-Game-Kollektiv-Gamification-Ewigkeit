@@ -49,3 +49,8 @@ for n in 5 6 7 8; do node web/tests/gravitylab3d_smoke.cjs web/Matrixgame_Gravit
 
 
 Scientific model boundary and the proposed next experiment grid: [3D orbital analogy and physics documentation](../docs/GRAVITYLAB_3D_ORBITAL_ANALOGY.md).
+
+
+### Geometric symmetry score
+
+The UI reports a custom 0–100% model score based on radial equality and near-opposite positioning within the XY, XZ and YZ pairs, with a penalty when the satellite count differs from six. Baseline reference values are 56.4% (5 outer), 100.0% (6), 84.6% (7), and 71.7% (8). This is a geometric descriptor only; it does not measure chemical or quantum stability. JSON round-trip and score checks are included in the automated test.
