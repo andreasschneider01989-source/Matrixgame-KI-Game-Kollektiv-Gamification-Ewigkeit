@@ -162,3 +162,24 @@ Für reale Himmelskörper ist ein separater Validierungspfad vorgesehen: JPL Hor
 
 ---
 **Leitprinzip:** FACT / MODEL / HYPOTHESIS / OPEN / FICTION unterscheiden. Rohdaten, Codeversion und Parameter bleiben nachvollziehbar. Erst messen, dann interpretieren.
+
+
+---
+
+## 11. Präzisierung nach unabhängigen Reviews und Implementierung (04.11.2026)
+
+### Laufzahl
+Der 189er-Rasterumfang ist: Variante A (0 Satelliten) hat keine relevante Satellitenphase und erhält daher 7 Läufe (ein Lauf je Stoßparameter). Varianten B und C erhalten jeweils 7 × 13 = 91 Läufe. Gesamt: 7 + 91 + 91 = 189. Die Rechnung 7 × 13 × 3 = 273 zählt für A redundante Phasenvarianten.
+
+### Zwei Initialisierungsmodi
+Der HTML-Prototyp bleibt als historische Referenz unter `legacy_html` verfügbar. Seine Kernoffset-Korrektur verwendet den Nenner Gesamtmasse. Für exakten Schwerpunkt ist jedoch der Nenner Kernmasse erforderlich. Der neue Standard `isolated_equilibrium` erhält den Schwerpunkt exakt und setzt isolierte Kreisbahnen passend zum Plummer-Softening auf. Die Begegnung zweier Cluster stört diese isolierten Gleichgewichte nach dem Start.
+
+Die alten HTML-Bedingungen und die korrigierten isolierten Gleichgewichte sind unterschiedliche Modelleinstellungen; Ergebnisse dürfen nicht ohne Angabe des Modus vermischt werden.
+
+### Zusätzliche Modellannahmen
+- Der Kernradius bleibt bei 4 Einheiten, auch wenn die Kernmasse durch Satelliten abnimmt.
+- Satelliten-„Flucht“ bleibt eine vorläufige Momentaufnahme-Klassifikation; endgültiger Status erfordert längere Mehrkörper-Nachbeobachtung.
+- Ein Kern-Merger hat keinen eigenen Spin-Freiheitsgrad. Daher kann orbitaler Drehimpuls bei der vereinfachten Zusammenfassung verloren gehen und ist unmittelbar vor/nach dem Ereignis gesondert auszuweisen.
+
+### Implementierung und Ergebnisse
+Das ausführbare Skript liegt unter `experiments/gravity_cluster_phase_sweep.py`; Tests liegen daneben. Die Messzusammenfassung und Interpretationsgrenzen stehen in `docs/GRAVITY_CLUSTER_PHASE_SWEEP_RESULTS_20261104.md`. Der Hauptlauf umfasst 189/189 deterministische Läufe im Modus `isolated_equilibrium`. Drei grenznahe Fälle wurden mit dt=0,002 / 0,001 / 0,0005 geprüft; dort wechselte die Kontaktklassifikation nicht. Dies ist ein erster QC-Schritt, kein vollständiger Konvergenznachweis des gesamten Rasters.
