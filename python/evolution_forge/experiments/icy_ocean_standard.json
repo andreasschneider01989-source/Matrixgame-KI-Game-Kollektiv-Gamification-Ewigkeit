@@ -1,0 +1,9 @@
+{
+  "scenario": "icy_ocean",
+  "steps": 360,
+  "seed": 7,
+  "energy_flux": null,
+  "resource_regen": null,
+  "maintenance_cost": 0.018,
+  "cooperation_benefit": 0.05
+}
