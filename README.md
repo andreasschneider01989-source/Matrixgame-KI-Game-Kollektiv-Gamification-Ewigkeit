@@ -56,6 +56,7 @@ The Universal Knowledge Engine documentation connects scientific knowledge, pers
 - [Proton–electron mass ratio and 2D shell-exchange research](docs/RESEARCH_PROTON_ELECTRON_RATIO_AND_2D_SHELL_EXCHANGE.md)
 - [Planet Earth — Habitability and Evolution Project](docs/PLANET_EARTH_HABITABILITY_AND_EVOLUTION.md)
 - [Collective AI Accessibility and Global Participation](docs/COLLECTIVE_AI_ACCESSIBILITY_AND_GLOBAL_PARTICIPATION.md)
+- [Consciousness Simulator v0.14 Review and v0.15 Plan](docs/CONSCIOUSNESS_SIMULATOR_V014_REVIEW_AND_V015_PLAN.md)
 
 The initial implementation target is deliberately small: one sourced density knowledge node, its equation and SI units, a dimensional validation test, one linked learning quest, and a reproducible example. Later search, agent collaboration, and DTN-inspired synchronization should build on that verified foundation.
 
