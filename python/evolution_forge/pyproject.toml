@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "evolution-forge"
-version = "1.0.0"
+version = "1.0.1"
 description = "Exploratory agent-based evolution and astrobiology scenario models for Matrixgame"
 authors = ["Matrixgame contributors"]
 readme = "README.md"
