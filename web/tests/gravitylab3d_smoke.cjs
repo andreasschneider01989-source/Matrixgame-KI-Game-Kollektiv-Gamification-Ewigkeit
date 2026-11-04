@@ -46,7 +46,7 @@ const after=api.accelerations(api.S.bodies)[otherIndex].x;
 if(Math.abs(after-before)<1e-10) throw new Error('Mass/position edit had no effect on Newton acceleration');
 api.P.repel=0;const grav=api.accelerations(api.S.bodies)[otherIndex].x;
 api.P.repel=1.5;const rep=api.accelerations(api.S.bodies)[otherIndex].x;
-if(Math.abs(rep-gr av)<1e-10) throw new Error('Repulsion control did not change the force field');
+if(Math.abs(rep-grav)<1e-10) throw new Error('Repulsion control did not change the force field');
 const beforeCount=api.S.bodies.length;
 api.addTest();
 if(api.S.bodies.length!==beforeCount+1) throw new Error('Could not add 3D test body');
