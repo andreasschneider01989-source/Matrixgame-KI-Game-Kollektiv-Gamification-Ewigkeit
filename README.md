@@ -164,3 +164,16 @@ mvn clean package
 # Ausführen
 java -jar target/matrixgame-simulator-1.0.0.jar
 ```
+
+
+---
+
+## 🔖 Aktueller Forschungsstand und Wiederaufnahme
+
+Der zentrale Pausen- und Wiederaufnahme-Punkt (04.11.2026) enthält den Stand der Evolution Forge, Gravity Labs, 189er-Phasenstudie, 80er-Geschwindigkeitsstudie, Browser-Dashboard, offenen Fragen und priorisierten nächsten Schritte:
+
+- [Projekt-Pausen- und Wiederaufnahmeprotokoll](docs/PROJECT_PAUSE_RESUME_CHECKPOINT_20261104.md)
+- [Maschinenlesbare Ergebnisübersicht](results/project_checkpoint_20261104.json)
+- [Offener Entwicklungs-PR #4](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/pull/4)
+
+Der Pull Request ist ein Draft und noch nicht in `main` übernommen. Vor einer Wiederaufnahme bitte Branch und PR erneut prüfen.
