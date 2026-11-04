@@ -46,3 +46,6 @@ Run tests:
 ```sh
 for n in 5 6 7 8; do node web/tests/gravitylab3d_smoke.cjs web/Matrixgame_GravityLab_3D.html $n; done
 ```
+
+
+Scientific model boundary and the proposed next experiment grid: [3D orbital analogy and physics documentation](../docs/GRAVITYLAB_3D_ORBITAL_ANALOGY.md).
