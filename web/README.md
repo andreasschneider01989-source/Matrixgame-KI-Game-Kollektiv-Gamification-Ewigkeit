@@ -20,7 +20,7 @@ The model uses arbitrary simulation units. It is not a quantum atom simulation: 
 ## Test
 
 ```sh
-node web/tests/gravitylab_smoke.cjs web/Matrixgame_InfinityCanvas_GravityLab.html
+for n in 5 6 7 8; do node web/tests/gravitylab_smoke.cjs web/Matrixgame_InfinityCanvas_GravityLab.html $n; done
 ```
 
-The smoke test executes the inline simulation code for 2,000 integration steps using a minimal canvas stub and checks that all positions and velocities remain finite.
+The smoke test executes the inline simulation code for 2,000 integration steps using a minimal canvas stub and checks that all positions and velocities remain finite for 5, 6, 7 and 8 outer satellites.
