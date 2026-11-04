@@ -63,9 +63,9 @@ const saved = {
   view: { yaw: api.S.yaw, pitch: api.S.pitch, roll: api.S.roll, zoom: api.S.zoom, panX: api.S.panX, panY: api.S.panY },
   bodies: api.S.bodies.map(({trail,trace,...body}) => body)
 };
-const expectedMass = api.S.bodies[1].mass;
+const expectedMass = api.S.bodies.find(b => b.id === 'outerXZ+').mass;
 api.loadJSON({ text: async () => JSON.stringify(saved) }).then(() => {
-  if (api.S.bodies.length !== beforeCount || api.S.bodies[1].mass !== expectedMass) {
+  if (api.S.bodies.length !== beforeCount || api.S.bodies.find(b => b.id === 'outerXZ+').mass !== expectedMass) {
     throw new Error('JSON state round-trip did not restore bodies');
   }
   if (api.P.repel !== saved.parameters.repel) throw new Error('JSON did not restore repulsion');
