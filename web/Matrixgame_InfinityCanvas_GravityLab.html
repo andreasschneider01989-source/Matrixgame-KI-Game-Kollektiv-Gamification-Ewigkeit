@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Matrixgame Infinity Canvas: interaktive Newtonsche N-Körper-Gravitationssimulation mit 2+6 Elementar-Anordnung.">
+<title>Matrixgame · Infinity Canvas Gravity Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#070b16;--panel:rgba(14,21,38,.94);--line:rgba(142,164,205,.19);--text:#edf3ff;--muted:#9baac6;--accent:#85c9ff;--cyan:#6ee7e0;--gold:#ffd47d}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font:14px/1.45 Inter,Segoe UI,system-ui,sans-serif}
+#space{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:crosshair;touch-action:none}
+.panel{position:fixed;z-index:2;left:16px;top:16px;bottom:16px;width:310px;max-width:calc(100vw - 32px);overflow:auto;padding:18px 16px 20px;background:var(--panel);border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(16px);box-shadow:0 18px 60px rgba(0,0,0,.38)}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:13px}.brand-mark{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#42a7e8,#655ee9);display:grid;place-items:center;font-weight:800;color:white;font-size:17px}.brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase}.brand strong{display:block;font-size:16px}
+h2{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#9eb0d1;margin:18px 0 9px;font-weight:700}.intro{color:var(--muted);font-size:12px;margin:0 0 12px}.row{display:flex;gap:8px;align-items:center}.row>*{min-width:0;flex:1}
+button,select,input{font:inherit;color:var(--text)}button,select{border:1px solid rgba(151,176,221,.24);background:#18243b;border-radius:10px;padding:8px 10px;cursor:pointer}button:hover,select:hover{border-color:rgba(133,201,255,.65);background:#213452}button.primary{background:linear-gradient(135deg,#286eac,#514cc4);border-color:transparent;font-weight:700}button:disabled{opacity:.4;cursor:not-allowed}
+.btn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.btn-grid .wide{grid-column:1/-1}.field{margin:9px 0}.field label{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#c7d4eb;font-size:12px;margin-bottom:5px}.field output{color:var(--accent);font-variant-numeric:tabular-nums}.field select{width:100%}input[type=range]{width:100%;accent-color:#76c7ff}input[type=checkbox]{accent-color:#76c7ff}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}.stat{padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:rgba(27,40,65,.66)}.stat span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}.stat strong{display:block;font-size:15px;margin-top:3px;font-variant-numeric:tabular-nums}
+.readout{border:1px solid var(--line);border-radius:12px;padding:10px;background:rgba(27,40,65,.55);font-size:12px;color:#c9d6ec}.readout b{color:#fff}.readout .muted{color:var(--muted)}.tag{display:inline-block;padding:2px 7px;border:1px solid rgba(110,231,224,.3);border-radius:20px;color:var(--cyan);font-size:10px;letter-spacing:.04em;margin:0 4px 4px 0}
+.note{font-size:11px;color:var(--muted);margin:10px 0 0}.note strong{color:#d6e3fa}.divider{border:0;border-top:1px solid var(--line);margin:14px 0}.footer{font-size:10px;color:#7e8ba6;margin-top:14px}.checkrow{display:flex;align-items:center;gap:9px;color:#c2cee3;font-size:12px;margin:8px 0}
+#topHud{position:fixed;right:18px;top:16px;z-index:1;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;pointer-events:none}.hud-chip{background:rgba(10,17,31,.72);border:1px solid var(--line);border-radius:999px;padding:7px 11px;color:#b9c9e5;font-size:11px;backdrop-filter:blur(8px)}#toast{position:fixed;z-index:5;left:50%;bottom:20px;transform:translateX(-50%);padding:9px 14px;border-radius:999px;background:#1b2942;border:1px solid #58749d;color:#e7f0ff;font-size:12px;opacity:0;transition:opacity .2s;pointer-events:none}#toast.show{opacity:1}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted)}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}
+@media(max-width:700px){.panel{left:8px;top:8px;bottom:8px;width:min(290px,calc(100vw - 16px));padding:14px}.brand strong{font-size:14px}#topHud{right:8px;top:8px;left:310px}.hud-chip{font-size:10px;padding:5px 8px}}
+</style>
+</head>
+<body>
+<canvas id="space" aria-label="Interaktive N-Körper-Gravitationssimulation"></canvas>
+<div id="topHud"><div class="hud-chip">Newton · N-Körper · Velocity-Verlet</div><div class="hud-chip" id="hudTime">t = 0.000</div><div class="hud-chip" id="hudEnergy">Energie-Drift 0.00 %</div></div>
+<aside class="panel">
+<div class="brand"><div class="brand-mark">∞</div><div><small>Matrixgame · Simulation</small><strong>Infinity Canvas Gravity Lab</strong></div></div>
+<p class="intro">Newtonsche Gravitation mit frei beweglicher Kamera. Ziehen = Pan, Mausrad = Zoom. Die Simulation läuft unabhängig von der Darstellung.</p>
+<h2>Simulation</h2>
+<div class="btn-grid"><button id="playBtn" class="primary">Ⅱ Pause</button><button id="stepBtn">Ein Schritt</button><button id="resetBtn">↺ Neustart</button><button id="fitBtn">⌖ Ansicht einpassen</button></div>
+<div class="field"><label for="speedRange">Simulationsgeschwindigkeit <output id="speedOut">1.0×</output></label><input id="speedRange" type="range" min="0.25" max="4" step="0.25" value="1"></div>
+<div class="field"><label for="outerCount">Außenschale <output id="outerOut">6 Satelliten</output></label><select id="outerCount"><option value="5">5 · ein Platz frei</option><option value="6" selected>6 · Ausgangsanordnung</option><option value="7">7 · ein zusätzlicher</option><option value="8">8 · vollständig besetzt</option></select></div>
+<div class="row"><button id="removeLayerBtn">− Oktett</button><button id="addLayerBtn">+ Oktett</button></div>
+<div class="field"><label for="viewMode">Achsen-/Analyseansicht</label><select id="viewMode"><option value="orbit">XY · Bahnebene</option><option value="radius-time">Radius · Zeit</option><option value="speed-radius">Tempo · Radius</option></select></div>
+<div class="legend"><span><i class="dot" style="background:#ffd47d"></i>Zentralmasse</span><span><i class="dot" style="background:#6ee7e0"></i>Innere Bahn</span><span><i class="dot" style="background:#85c9ff"></i>Außenbahn</span></div>
+<h2>Darstellung</h2>
+<label class="checkrow"><input type="checkbox" id="trails" checked> Bewegungsspuren</label>
+<label class="checkrow"><input type="checkbox" id="orbits" checked> Referenzbahnen</label>
+<label class="checkrow"><input type="checkbox" id="vectors"> Geschwindigkeitsvektoren</label>
+<div class="row"><button id="zoomOut">− Zoom</button><button id="zoomIn">+ Zoom</button></div>
+<h2>Live-Messwerte</h2>
+<div class="stats"><div class="stat"><span>Objekte</span><strong id="objectCount">9</strong></div><div class="stat"><span>Simulationszeit</span><strong id="timeValue">0.000</strong></div><div class="stat"><span>Innere / äußere</span><strong id="shellValue">2 / 6</strong></div><div class="stat"><span>Energie-Drift</span><strong id="driftValue">0.00 %</strong></div></div>
+<h2>Ausgewähltes Objekt</h2><div class="readout" id="inspector"><span class="muted">Wähle einen Satelliten durch Anklicken im Canvas.</span></div>
+<h2>Atommodell-Vergleich</h2><div class="readout" id="atomReadout"><span class="tag">MODELLANALOGIE</span><b>2 + 6 = 8</b><br>Oxygen-Schema: 6 Außenelektronen. Das ist <b>kein</b> Edelgas-Oktett.</div>
+<p class="note"><strong>Wissenschaftliche Trennung:</strong> Die Bahnen hier sind klassische Gravitationsbahnen mit frei gewählten Massen und Einheiten. Elektronenorbitale sind keine Planetenbahnen. Die Elementzuordnung darunter ist nur ein separater Schalenbeleg.</p>
+<hr class="divider"><div class="readout"><b>Parameter</b><br>G = 28 · Zentralmasse = 1.000.000<br>Innenmasse = 12 · Außenmasse = 18<br>r<sub>innen</sub> = 32 · r<sub>außen</sub> = 72<br>Integrator: Velocity-Verlet · Softening = 1,2</div>
+<div class="footer">Matrixgame · Gravity prototype · v0.1 · lokale Einzeldatei, ohne Server oder externe Bibliotheken</div>
+</aside>
+<div id="toast"></div>
+<script>
+'use strict';
+(() => {
+const canvas=document.getElementById('space'),ctx=canvas.getContext('2d'),$=id=>document.getElementById(id);
+const PHYS=Object.freeze({G:28.0,softening:1.2,centerMass:1000000,innerMass:12,outerMass:18,innerRadius:32,outerRadius:72,dt:0.0008,substeps:8});
+const PALETTE=['#85c9ff','#f2a7d4','#8de5b4','#bba8ff'];
+const state={bodies:[],layers:1,outerCount:6,running:true,time:0,speed:1,camera:{x:0,y:0,zoom:3.1},selectedId:null,trails:true,orbits:true,vectors:false,view:'orbit',initialEnergy:0,frame:0,drag:null};
+let W=0,H=0,DPR=1,toastTimer=0;
+function acceleration(bodies){
+const ax=new Array(bodies.length).fill(0),ay=new Array(bodies.length).fill(0);
+for(let i=0;i<bodies.length;i++){const a=bodies[i];for(let j=i+1;j<bodies.length;j++){const b=bodies[j],dx=b.x-a.x,dy=b.y-a.y,r2=dx*dx+dy*dy+PHYS.softening*PHYS.softening,inv=1/(r2*Math.sqrt(r2)),f=PHYS.G*inv;ax[i]+=f*b.mass*dx;ay[i]+=f*b.mass*dy;ax[j]-=f*a.mass*dx;ay[j]-=f*a.mass*dy;}}
+return bodies.map((b,i)=>({x:ax[i],y:ay[i]}));
+}
+function totalEnergy(bodies){
+let e=0;for(const b of bodies)e+=0.5*b.mass*(b.vx*b.vx+b.vy*b.vy);
+for(let i=0;i<bodies.length;i++)for(let j=i+1;j<bodies.length;j++){const a=bodies[i],b=bodies[j],dx=b.x-a.x,dy=b.y-a.y;e-=PHYS.G*a.mass*b.mass/Math.sqrt(dx*dx+dy*dy+PHYS.softening*PHYS.softening);}
+return e;
+}
+function addBody(list,body){body.trail=[];body.trace=[];list.push(body);}
+function createSystem(){
+const bodies=[];addBody(bodies,{id:'core',name:'Zentralmasse',kind:'core',mass:PHYS.centerMass,x:0,y:0,vx:0,vy:0,radius:9,color:'#ffd47d',group:0});
+let momentumX=0,momentumY=0;
+for(let layer=0;layer<state.layers;layer++){
+const ri=PHYS.innerRadius+layer*220,ro=PHYS.outerRadius+layer*220,hue=PALETTE[layer%PALETTE.length];
+for(let k=0;k<2;k++){const angle=2*Math.PI*k/2+layer*0.17,x=ri*Math.cos(angle),y=ri*Math.sin(angle),v=Math.sqrt(PHYS.G*(PHYS.centerMass+k*PHYS.innerMass)/ri),vx=-v*Math.sin(angle),vy=v*Math.cos(angle);addBody(bodies,{id:\`L\${layer+1}-I\${k+1}\`,name:\`Innen \${layer+1}.\${k+1}\`,kind:'inner',mass:PHYS.innerMass,x,y,vx,vy,radius:4.3,color:'#6ee7e0',group:layer});momentumX+=PHYS.innerMass*vx;momentumY+=PHYS.innerMass*vy;}
+for(let k=0;k<state.outerCount;k++){const angle=2*Math.PI*k/state.outerCount+Math.PI/state.outerCount+layer*0.11,x=ro*Math.cos(angle),y=ro*Math.sin(angle),v=Math.sqrt(PHYS.G*(PHYS.centerMass+2*PHYS.innerMass)/ro),vx=-v*Math.sin(angle),vy=v*Math.cos(angle);addBody(bodies,{id:\`L\${layer+1}-O\${k+1}\`,name:\`Außen \${layer+1}.\${k+1}\`,kind:'outer',mass:PHYS.outerMass,x,y,vx,vy,radius:5.2,color:layer===0?'#85c9ff':hue,group:layer});momentumX+=PHYS.outerMass*vx;momentumY+=PHYS.outerMass*vy;}
+}
+bodies[0].vx=-momentumX/PHYS.centerMass;bodies[0].vy=-momentumY/PHYS.centerMass;state.bodies=bodies;state.time=0;state.frame=0;state.selectedId=null;state.initialEnergy=totalEnergy(bodies);syncReadouts();draw();
+}
+function integrateOne(dt){
+const b=state.bodies,a0=acceleration(b),half=0.5*dt*dt;
+for(let i=0;i<b.length;i++){b[i].x+=b[i].vx*dt+a0[i].x*half;b[i].y+=b[i].vy*dt+a0[i].y*half;}
+const a1=acceleration(b);for(let i=0;i<b.length;i++){b[i].vx+=0.5*(a0[i].x+a1[i].x)*dt;b[i].vy+=0.5*(a0[i].y+a1[i].y)*dt;}state.time+=dt;
+}
+function captureTraces(){
+for(const b of state.bodies){if(b.kind==='core')continue;const r=Math.hypot(b.x-state.bodies[0].x,b.y-state.bodies[0].y),speed=Math.hypot(b.vx,b.vy);b.trail.push({x:b.x,y:b.y});if(b.trail.length>650)b.trail.shift();b.trace.push({t:state.time,r,speed});if(b.trace.length>1800)b.trace.shift();}
+}
+function simStep(){integrateOne(PHYS.dt);state.frame++;if(state.frame%2===0)captureTraces();}
+function resize(){const rect=canvas.getBoundingClientRect();DPR=Math.max(1,Math.min(2,window.devicePixelRatio||1));W=rect.width;H=rect.height;canvas.width=Math.round(W*DPR);canvas.height=Math.round(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);draw();}
+function toScreen(x,y){return{x:W/2+(x-state.camera.x)*state.camera.zoom,y:H/2-(y-state.camera.y)*state.camera.zoom};}
+function toWorld(x,y){return{x:state.camera.x+(x-W/2)/state.camera.zoom,y:state.camera.y-(y-H/2)/state.camera.zoom};}
+function setZoom(next,anchorX=W/2,anchorY=H/2){const before=toWorld(anchorX,anchorY);state.camera.zoom=Math.max(0.08,Math.min(30,next));state.camera.x=before.x-(anchorX-W/2)/state.camera.zoom;state.camera.y=before.y+(anchorY-H/2)/state.camera.zoom;draw();}
+function fitView(){state.camera.x=0;state.camera.y=0;const largest=PHYS.outerRadius+(state.layers-1)*220+35;state.camera.zoom=Math.max(0.08,Math.min(30,Math.min(W,H)/(2.35*largest)));draw();}
+function drawBackground(){
+ctx.fillStyle='#070b16';ctx.fillRect(0,0,W,H);const grad=ctx.createRadialGradient(W*.69,H*.43,20,W*.69,H*.43,Math.max(W,H)*.75);grad.addColorStop(0,'rgba(31,55,91,.20)');grad.addColorStop(1,'rgba(3,7,16,0)');ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+const spacing=100*state.camera.zoom;if(spacing>35){ctx.strokeStyle='rgba(115,145,195,.07)';ctx.lineWidth=1;ctx.beginPath();const left=W/2-state.camera.x*state.camera.zoom,top=H/2+state.camera.y*state.camera.zoom,sx=((left%spacing)+spacing)%spacing,sy=((top%spacing)+spacing)%spacing;for(let x=sx;x<W;x+=spacing){ctx.moveTo(x,0);ctx.lineTo(x,H)}for(let y=sy;y<H;y+=spacing){ctx.moveTo(0,y);ctx.lineTo(W,y)}ctx.stroke();}
+}
+function drawOrbits(){
+if(!state.orbits)return;const c=toScreen(state.bodies[0].x,state.bodies[0].y);
+for(let layer=0;layer<state.layers;layer++)for(const [r,color] of [[PHYS.innerRadius+layer*220,'rgba(110,231,224,.22)'],[PHYS.outerRadius+layer*220,'rgba(133,201,255,.22)']]){ctx.beginPath();ctx.arc(c.x,c.y,r*state.camera.zoom,0,Math.PI*2);ctx.strokeStyle=color;ctx.lineWidth=1;ctx.setLineDash([4,7]);ctx.stroke();ctx.setLineDash([]);}
+ctx.beginPath();ctx.moveTo(c.x-12,c.y);ctx.lineTo(c.x+12,c.y);ctx.moveTo(c.x,c.y-12);ctx.lineTo(c.x,c.y+12);ctx.strokeStyle='rgba(255,212,125,.45)';ctx.stroke();
+}
+function drawTrails(){
+if(!state.trails)return;for(const b of state.bodies){if(b.kind==='core'||b.trail.length<2)continue;ctx.beginPath();for(let i=0;i<b.trail.length;i++){const p=toScreen(b.trail[i].x,b.trail[i].y);if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);}ctx.strokeStyle=b.color+'88';ctx.lineWidth=b.id===state.selectedId?2:1;ctx.stroke();}
+}
+function drawBodies(){
+for(const b of state.bodies){const p=toScreen(b.x,b.y);let radius=b.radius;if(b.kind==='core')radius=Math.max(7,Math.min(22,8+Math.log10(b.mass)*1.15));else radius=Math.max(2.7,Math.min(9,b.radius*Math.sqrt(state.camera.zoom/3.1)));
+if(b.kind==='core'){const glow=ctx.createRadialGradient(p.x,p.y,1,p.x,p.y,34);glow.addColorStop(0,'rgba(255,218,142,.40)');glow.addColorStop(1,'rgba(255,193,93,0)');ctx.fillStyle=glow;ctx.beginPath();ctx.arc(p.x,p.y,34,0,Math.PI*2);ctx.fill();}
+ctx.beginPath();ctx.arc(p.x,p.y,radius+(b.id===state.selectedId?4:0),0,Math.PI*2);ctx.fillStyle=b.id===state.selectedId?'rgba(255,255,255,.18)':b.color+'22';ctx.fill();
+ctx.beginPath();ctx.arc(p.x,p.y,radius,0,Math.PI*2);ctx.fillStyle=b.color;ctx.fill();
+if(b.id===state.selectedId){ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(p.x,p.y,radius+4,0,Math.PI*2);ctx.stroke();}
+if(state.vectors&&b.kind!=='core'){const scale=.008*state.camera.zoom;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+b.vx*scale,p.y-b.vy*scale);ctx.strokeStyle='rgba(255,255,255,.8)';ctx.lineWidth=1.4;ctx.stroke();}
+if(b.kind==='core'||b.id===state.selectedId){ctx.font='11px Segoe UI,sans-serif';ctx.fillStyle='#eaf2ff';ctx.fillText(b.name,p.x+radius+7,p.y-8);}
+}
+}
+function drawAxes(){const o=toScreen(0,0);if(o.x>-40&&o.x<W+40&&o.y>-40&&o.y<H+40){ctx.strokeStyle='rgba(160,184,224,.32)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,o.y);ctx.lineTo(W,o.y);ctx.moveTo(o.x,0);ctx.lineTo(o.x,H);ctx.stroke();}}
+function drawPlot(mode){
+const left=72,top=70,right=W-35,bottom=H-65,plotW=Math.max(100,right-left),plotH=Math.max(100,bottom-top),series=state.bodies.filter(b=>b.kind!=='core');
+ctx.fillStyle='rgba(5,10,20,.72)';ctx.fillRect(left-14,top-18,plotW+28,plotH+36);ctx.strokeStyle='rgba(150,177,220,.16)';ctx.lineWidth=1;ctx.font='11px Segoe UI';ctx.fillStyle='#a9bad7';
+for(let i=0;i<=5;i++){const y=top+plotH*i/5;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();}
+for(let i=0;i<=6;i++){const x=left+plotW*i/6;ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bottom);ctx.stroke();}
+const values=series.flatMap(b=>b.trace);if(!values.length)return;
+if(mode==='radius-time'){const minT=Math.max(0,state.time-12),maxT=Math.max(minT+1e-9,state.time),maxR=Math.max(100,...values.map(v=>v.r))*1.08;ctx.fillStyle='#e5efff';ctx.fillText('Abstand zum Zentrum · Simulationseinheiten',left,top-27);ctx.fillText('Zeit →',right-42,bottom+34);
+for(const b of series){ctx.beginPath();let begun=false;for(const v of b.trace){if(v.t<minT)continue;const x=left+(v.t-minT)/(maxT-minT)*plotW,y=bottom-v.r/maxR*plotH;if(!begun){ctx.moveTo(x,y);begun=true;}else ctx.lineTo(x,y);}ctx.strokeStyle=b.color;ctx.lineWidth=b.id===state.selectedId?2.6:1.3;ctx.stroke();}
+ctx.fillStyle='#8fa2c3';ctx.fillText('0',left-18,bottom+4);ctx.fillText(maxR.toFixed(0),left-38,top+4);
+}else{const maxR=Math.max(100,...values.map(v=>v.r))*1.08,maxS=Math.max(100,...values.map(v=>v.speed))*1.08;ctx.fillStyle='#e5efff';ctx.fillText('Geschwindigkeit · Simulationseinheiten',left,top-27);ctx.fillText('Radius →',right-55,bottom+34);
+for(const b of series){ctx.fillStyle=b.color;for(const v of b.trace){const x=left+v.r/maxR*plotW,y=bottom-v.speed/maxS*plotH;ctx.globalAlpha=b.id===state.selectedId?.95:.38;ctx.beginPath();ctx.arc(x,y,b.id===state.selectedId?2.4:1.6,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;}
+ctx.fillStyle='#8fa2c3';ctx.fillText('0',left-18,bottom+4);ctx.fillText(maxS.toFixed(0),left-38,top+4);}
+}
+function draw(){
+if(!ctx||!W||!H)return;drawBackground();if(state.view==='orbit'){drawAxes();drawOrbits();drawTrails();drawBodies();}else drawPlot(state.view);
+$('hudTime').textContent=\`t = \${state.time.toFixed(3)}\`;const energy=totalEnergy(state.bodies),drift=state.initialEnergy?100*(energy-state.initialEnergy)/Math.abs(state.initialEnergy):0;$('hudEnergy').textContent=\`Energie-Drift \${drift.toFixed(3)} %\`;
+}
+function updateAtomReadout(){const n=state.outerCount,atom={5:['Stickstoff','N','1s² 2s² 2p³',false],6:['Sauerstoff','O','1s² 2s² 2p⁴',false],7:['Fluor','F','1s² 2s² 2p⁵',false],8:['Neon','Ne','1s² 2s² 2p⁶',true]}[n];$('atomReadout').innerHTML=\`<span class="tag">SCHEMATISCHE ATOMZUORDNUNG</span><b>2 + \${n} = \${n+2}</b><br>\${atom[0]} (\${atom[1]}) · \${atom[2]}<br>\${atom[3]?'<b>Voll besetzte Außenschale (Edelgas)</b>':'Keine voll besetzte Außenschale.'}<br><span class="muted">Nicht Teil der Gravitation; nur Vergleich der Elektronenzahlen der ersten zehn Elemente.</span>\`;}
+function syncReadouts(){
+$('objectCount').textContent=state.bodies.length;$('timeValue').textContent=state.time.toFixed(3);$('shellValue').textContent=\`2 / \${state.outerCount}\`;$('outerOut').textContent=\`\${state.outerCount} Satelliten\`;$('addLayerBtn').disabled=state.layers>=4;$('removeLayerBtn').disabled=state.layers<=1;
+const selected=state.bodies.find(b=>b.id===state.selectedId);if(selected){const r=Math.hypot(selected.x-state.bodies[0].x,selected.y-state.bodies[0].y),speed=Math.hypot(selected.vx,selected.vy);$('inspector').innerHTML=\`<b>\${selected.name}</b> <span class="tag">\${selected.kind==='inner'?'INNEN':'AUSSEN'}</span><br>Masse: \${selected.mass.toLocaleString('de-DE')}<br>Radius: \${r.toFixed(3)}<br>Tempo: \${speed.toFixed(3)}<br>Position: (\${selected.x.toFixed(2)}, \${selected.y.toFixed(2)})\`;}else $('inspector').innerHTML='<span class="muted">Wähle einen Satelliten durch Anklicken im Canvas.</span>';updateAtomReadout();
+}
+function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2100);}
+function pickBody(x,y){let best=null,bestD=Infinity;for(const b of state.bodies){const p=toScreen(b.x,b.y),d=Math.hypot(p.x-x,p.y-y),threshold=b.kind==='core'?18:Math.max(10,b.radius*Math.sqrt(state.camera.zoom/3.1)+5);if(d<threshold&&d<bestD){best=b;bestD=d;}}return best;}
+function animate(){if(state.running){const n=Math.max(1,Math.round(PHYS.substeps*state.speed));for(let i=0;i<n;i++)simStep();syncReadouts();}draw();requestAnimationFrame(animate);}
+$('playBtn').addEventListener('click',()=>{state.running=!state.running;$('playBtn').textContent=state.running?'Ⅱ Pause':'▶ Start';});
+$('stepBtn').addEventListener('click',()=>{state.running=false;$('playBtn').textContent='▶ Start';for(let i=0;i<PHYS.substeps;i++)simStep();syncReadouts();draw();});
+$('resetBtn').addEventListener('click',()=>{createSystem();fitView();toast('Anordnung zurückgesetzt.');});$('fitBtn').addEventListener('click',fitView);
+$('speedRange').addEventListener('input',e=>{state.speed=Number(e.target.value);$('speedOut').textContent=\`\${state.speed.toFixed(2)}×\`;});
+$('outerCount').addEventListener('change',e=>{state.outerCount=Number(e.target.value);createSystem();fitView();toast(\`Außenschale auf \${state.outerCount} Satelliten gesetzt.\`);});
+$('addLayerBtn').addEventListener('click',()=>{if(state.layers<4){state.layers++;createSystem();fitView();toast(\`Oktett-Ebene \${state.layers} ergänzt.\`);}});
+$('removeLayerBtn').addEventListener('click',()=>{if(state.layers>1){state.layers--;createSystem();fitView();toast(\`Oktett-Ebene \${state.layers} verbleibt.\`);}});
+$('viewMode').addEventListener('change',e=>{state.view=e.target.value;draw();});
+$('trails').addEventListener('change',e=>{state.trails=e.target.checked;draw();});$('orbits').addEventListener('change',e=>{state.orbits=e.target.checked;draw();});$('vectors').addEventListener('change',e=>{state.vectors=e.target.checked;draw();});
+$('zoomIn').addEventListener('click',()=>setZoom(state.camera.zoom*1.25));$('zoomOut').addEventListener('click',()=>setZoom(state.camera.zoom/1.25));
+canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);state.drag={x:e.clientX,y:e.clientY,cx:state.camera.x,cy:state.camera.y,moved:false};});
+canvas.addEventListener('pointermove',e=>{if(!state.drag)return;const dx=e.clientX-state.drag.x,dy=e.clientY-state.drag.y;if(Math.hypot(dx,dy)>3)state.drag.moved=true;if(state.drag.moved){state.camera.x=state.drag.cx-dx/state.camera.zoom;state.camera.y=state.drag.cy+dy/state.camera.zoom;draw();}});
+canvas.addEventListener('pointerup',e=>{if(!state.drag)return;const moved=state.drag.moved;state.drag=null;if(!moved){const b=pickBody(e.clientX,e.clientY);state.selectedId=b?b.id:null;syncReadouts();draw();}});
+canvas.addEventListener('pointercancel',()=>{state.drag=null;});
+canvas.addEventListener('wheel',e=>{e.preventDefault();setZoom(state.camera.zoom*Math.exp(-e.deltaY*.001),e.clientX,e.clientY);},{passive:false});
+window.addEventListener('keydown',e=>{if(e.target&&['INPUT','SELECT','TEXTAREA','BUTTON'].includes(e.target.tagName))return;const pan=70/state.camera.zoom;if(e.key==='ArrowLeft'){state.camera.x-=pan;draw();e.preventDefault();}else if(e.key==='ArrowRight'){state.camera.x+=pan;draw();e.preventDefault();}else if(e.key==='ArrowUp'){state.camera.y+=pan;draw();e.preventDefault();}else if(e.key==='ArrowDown'){state.camera.y-=pan;draw();e.preventDefault();}else if(e.key==='+'||e.key==='='){setZoom(state.camera.zoom*1.2);e.preventDefault();}else if(e.key==='-'){setZoom(state.camera.zoom/1.2);e.preventDefault();}else if(e.code==='Space'){state.running=!state.running;$('playBtn').textContent=state.running?'Ⅱ Pause':'▶ Start';e.preventDefault();}});
+window.addEventListener('resize',resize);resize();createSystem();fitView();
+if(new URLSearchParams(window.location.search).get('smoke')==='1'){for(let i=0;i<2000;i++)simStep();const finite=state.bodies.every(b=>[b.x,b.y,b.vx,b.vy].every(Number.isFinite)),drift=100*(totalEnergy(state.bodies)-state.initialEnergy)/Math.abs(state.initialEnergy);document.body.dataset.smoke=finite&&Number.isFinite(drift)?'PASS':'FAIL';document.body.dataset.bodyCount=String(state.bodies.length);document.body.dataset.energyDriftPercent=drift.toFixed(6);syncReadouts();draw();}else animate();
+})();
+</script>
+</body>
+</html>
