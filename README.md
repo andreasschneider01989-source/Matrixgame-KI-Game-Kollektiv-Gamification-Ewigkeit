@@ -53,6 +53,7 @@ The Universal Knowledge Engine documentation connects scientific knowledge, pers
 - [Physics A–Z Atlas](docs/PHYSICS_AZ_ATLAS.md)
 - [Learning Quests and Responsible Gamification](docs/LEARNING_QUESTS_AND_GAMIFICATION.md)
 - [Interplanetary Knowledge Network](docs/INTERPLANETARY_KNOWLEDGE_NETWORK.md)
+- [Proton–electron mass ratio and 2D shell-exchange research](docs/RESEARCH_PROTON_ELECTRON_RATIO_AND_2D_SHELL_EXCHANGE.md)
 
 The initial implementation target is deliberately small: one sourced density knowledge node, its equation and SI units, a dimensional validation test, one linked learning quest, and a reproducible example. Later search, agent collaboration, and DTN-inspired synchronization should build on that verified foundation.
 
@@ -64,6 +65,10 @@ The initial work is tracked as separate, reviewable GitHub issues:
 - [Learning: Physics A–Z atlas and sourced quests](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/7)
 - [Simulation: Two-node offline knowledge synchronization](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/8)
 - [Research: Collective proof and verification workflow](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/9)
+- [Research: Test the 8–27–51 mass-ratio pattern](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/10)
+- [Simulation: 2D two-core/four-satellite exchange](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/11)
+- [Performance: simulation throughput and convergence](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/12)
+- [Validation: compare with reference He₂ potentials](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/13)
 
 Issues define proposed next steps and acceptance criteria. They do not imply that the corresponding functionality is already implemented.
 

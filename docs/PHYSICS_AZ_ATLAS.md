@@ -131,4 +131,12 @@ Suggested foundations:
 - [CERN — The Higgs boson](https://home.cern/science/physics/higgs-boson)
 - [OpenStax — University Physics](https://openstax.org/subjects/science)
 
+## Further research connection — atomic interaction and shell exchange
+
+The atlas also links to an exploratory Matrixgame research module on the proton–electron mass ratio, closed-shell analogies, Coulomb interaction, quantum exchange, and a 2D core–satellite simulation:
+
+- [Proton–electron mass ratio and 2D shell-exchange research](RESEARCH_PROTON_ELECTRON_RATIO_AND_2D_SHELL_EXCHANGE.md)
+
+The arithmetic 8–27–51 pattern is recorded as a checked integer identity; its physical interpretation remains OPEN. The satellite-exchange mechanism is a HYPOTHESIS / MODEL, not established chemistry.
+
 **Next step:** turn the density pathway into the first tested learning node, then add other concepts only as their sources, units, equations, and acceptance criteria are checked.

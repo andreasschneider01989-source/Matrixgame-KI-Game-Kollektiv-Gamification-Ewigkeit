@@ -178,3 +178,21 @@ The cycle allows progress without demanding continuous activity.
 7. Test accessibility and ensure that an unfinished quest has no penalty.
 
 **Completion definition:** one learner can complete or pause the density quest, produce a reproducible artifact, and see the next suggested step without exposing private profile data.
+
+## 11. Extended research quest — Two Cores, Four Satellites
+
+**Status:** PLANNED  
+**Research type:** physics model comparison and numerical simulation.
+
+See [Proton–electron mass ratio and 2D shell-exchange research](RESEARCH_PROTON_ELECTRON_RATIO_AND_2D_SHELL_EXCHANGE.md).
+
+Quest stages:
+
+1. Reproduce the NIST proton–electron ratio and the exact 8 × 27 × 51 factorization after the chosen sixfold floor operation.
+2. Implement two cores and four satellites with reproducible initial conditions.
+3. Compare gravity-only, gravity-plus-Coulomb, phenomenological short-range repulsion, and an independently switchable exchange event.
+4. Measure centre separation, relative velocity, energy, momentum, angular momentum, minimum distance, event count, and steps per second.
+5. Repeat with smaller time steps and varied orbital phases.
+6. If a helium-like model is selected, compare an effective interaction curve with a cited He₂ reference dataset.
+
+**Acceptance criteria:** the model variants remain separate, the exchange effect is reproducible or falsified, numerical conservation errors are reported, and no classical toy-model result is presented as proof of quantum chemistry.
