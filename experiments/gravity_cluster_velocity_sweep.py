@@ -67,7 +67,7 @@ def run_one(n_sats, impact, phase_deg, factor, dt=sim.DT, steps=sim.STEPS):
       "G":sim.G,"softening":sim.EPS,"total_cluster_mass":sim.MT,
       "satellite_mass":sim.MS,"orbital_radius":sim.R,
       "core_contact_distance":sim.CONTACT,"seed":None,
-      "min_core_distance":None if not math.isfinite(min_core) else min_core,
+      "core_distance_at_contact_or_closest_approach":None if not math.isfinite(min_core) else min_core,
       "closest_approach_time":closest_time,"core_contact":contact_time is not None,
       "first_contact_time":contact_time,"energy_initial":e0,"energy_final":e1,
       "relative_energy_drift_until_contact_or_end":drift,
