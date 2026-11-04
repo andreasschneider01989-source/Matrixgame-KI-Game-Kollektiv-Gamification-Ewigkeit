@@ -28,9 +28,38 @@ The slider parameter lambda modifies satellite–satellite interactions only. Fo
 
 This is a deliberately simplified, same-sign repulsion experiment. It is not an implementation of electromagnetism or Coulomb's law: there are no charge signs, no unlike-charge attraction, no electron spin and no quantum wavefunctions. Do not interpret the result as a prediction for atom stability or noble-gas chemistry.
 
+## MODEL: geometric symmetry score
+
+The UI reports a custom score between 0 and 100. For each canonical opposite pair in XY, XZ and YZ it calculates:
+- radial balance: min(r1,r2) / max(r1,r2);
+- antipodal alignment: the negative normalized dot product, clamped to [0,1];
+- the mean over the three canonical pairs, multiplied by an occupancy factor exp(-abs(N_outer-6)/6).
+
+In compact form:
+
+```text
+S_sym = 100 * mean(radial_balance * antipodal_alignment) * exp(-abs(N_outer - 6) / 6)
+```
+
+For the exact initialized layouts the UI reports:
+| Outer bodies | Geometric score |
+|---:|---:|
+| 5 | 56.4% |
+| 6 | 100.0% |
+| 7 | 84.6% |
+| 8 | 71.7% |
+
+This is a hand-designed geometry score, not a quantum number, energy, chemical stability measure, or empirical property of atoms.
+
+## Exploratory perturbation test
+
+A local controlled test offset one outer satellite by +0.5 in x and +0.2 in vy, then ran 2,000 integration steps at repulsion-slider values from 0 to 2. The radial standard deviation was about 0.196 simulation units and maximum radial deviation about 0.55 units across that small sweep. The relative energy drift remained about 0.000041–0.000042%. The slider changed the interaction law, but at these mass ratios and this short run the central mass dominated the overall orbital scale.
+
+These are results for one arbitrary perturbation and chosen numerical parameters. They do not establish an atomic-shell force law.
+
 ## Reproducibility checks
 
-The current automated smoke test runs 2,000 Velocity-Verlet steps and checks finite positions/velocities, editable 3D mass/position/velocity/dt values, response of the Newtonian acceleration field, repulsion switching, and test-body add/remove operations.
+The current automated smoke test runs 2,000 Velocity-Verlet steps and checks finite positions/velocities, editable 3D mass/position/velocity/dt values, response of the Newtonian acceleration field, repulsion switching, editable 3D mass/position/velocity/dt values, response of the Newtonian acceleration field, repulsion switching, test-body add/remove operations, geometric symmetry score and JSON export/import round-trip.
 
 | Outer bodies | Total bodies | Relative energy drift |
 |---:|---:|---:|
