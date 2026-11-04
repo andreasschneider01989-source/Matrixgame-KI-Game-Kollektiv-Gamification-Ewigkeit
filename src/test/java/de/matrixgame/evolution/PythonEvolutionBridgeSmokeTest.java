@@ -33,7 +33,10 @@ public final class PythonEvolutionBridgeSmokeTest {
         }
         String summary = result.getSummaryJson();
         if (!summary.contains("\"model_version\": \"1.0.1\"")
-                || !summary.contains("\"scenario\": \"icy_ocean\"")\n                || !summary.contains("\"energy_flux\": 0.65")\n                || !summary.contains("\"maintenance_cost\": 0.015")\n                || !summary.contains("\"cooperation_benefit\": 0.08")) {
+                || !summary.contains("\"scenario\": \"icy_ocean\"")
+                || !summary.contains("\"energy_flux\": 0.65")
+                || !summary.contains("\"maintenance_cost\": 0.015")
+                || !summary.contains("\"cooperation_benefit\": 0.08")) {
             throw new IllegalStateException("Unexpected or incomplete summary.json");
         }
         System.out.println("PASS: Java -> Python -> JSON summary with icy_ocean overrides");
