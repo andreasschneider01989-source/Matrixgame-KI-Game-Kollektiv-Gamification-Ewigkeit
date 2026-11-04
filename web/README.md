@@ -54,3 +54,22 @@ Scientific model boundary and the proposed next experiment grid: [3D orbital ana
 ### Geometric symmetry score
 
 The UI reports a custom 0–100% model score based on radial equality and near-opposite positioning within the XY, XZ and YZ pairs, with a penalty when the satellite count differs from six. Baseline reference values are 56.4% (5 outer), 100.0% (6), 84.6% (7), and 71.7% (8). This is a geometric descriptor only; it does not measure chemical or quantum stability. JSON round-trip and score checks are included in the automated test.
+
+
+## 2D Gravity Cluster Lab
+
+Open `Matrixgame_GravityClusterLab_2D.html` directly in a desktop browser. The lab compares three parallel encounters with zero, one or two satellites per core while keeping each cluster's total mass constant. It includes a close-encounter test, a gravitationally bound double-core orbit mode, impact-parameter and satellite-phase controls, a perfectly inelastic core-merger proxy, post-merger dynamics and JSON result export.
+
+Baseline test (G=1, total cluster mass=100, satellite mass=4, orbital radius=8, impact parameter=29, satellite phase B=46 degrees):
+- 0 satellites: minimum core separation 8.397; no merger.
+- 1 satellite per core: minimum 8.000; merger proxy at model time 38.898.
+- 2 satellites per core: minimum 8.043; close passage without merger.
+
+This is one phase-sensitive numerical experiment, not a universal shielding law. There is no repulsion in this model; all masses attract gravitationally. The merge operation is a perfectly inelastic collision proxy, not nuclear fusion or chemical bonding.
+
+Tests:
+```sh
+node web/tests/gravitycluster2d_smoke.cjs web/Matrixgame_GravityClusterLab_2D.html
+```
+
+See [the 2D cluster experiment's scientific notes](../docs/GRAVITY_CLUSTER_LAB_2D.md).
