@@ -184,6 +184,7 @@ Do not optimize for raw message counts, token counts, clicks, streaks, or leader
 - [Interplanetary knowledge network](INTERPLANETARY_KNOWLEDGE_NETWORK.md)
 - [Collective Improvement Network](COLLECTIVE_IMPROVEMENT_NETWORK.md)
 - [Proton–electron mass ratio and 2D shell-exchange research](RESEARCH_PROTON_ELECTRON_RATIO_AND_2D_SHELL_EXCHANGE.md)
+- [Planet Earth — Habitability and Evolution Project](PLANET_EARTH_HABITABILITY_AND_EVOLUTION.md)
 
 ## 14. Initial status
 
