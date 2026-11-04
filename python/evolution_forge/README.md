@@ -57,6 +57,14 @@ Start:
 poetry run python .\evolution_forge.py --config .\experiments\icy_ocean_energy_cooperation.json --out .\runs\icy-optimized
 ```
 
+## Standard gegen optimiertes Eismeer
+
+Für einen direkten A/B-Lauf gibt es zwei vollständige JSON-Konfigurationen:
+- `experiments/icy_ocean_standard.json`
+- `experiments/icy_ocean_energy_cooperation.json`
+
+Beide verwenden 360 Schritte und Seed 7. Die zweite ändert nur Energiefluss, Erhaltungskosten und Kooperationsvorteil. Die gemessenen Werte und die noch offenen Unterschiede zur externen Gemini-Auswertung stehen in `../../docs/ICY_OCEAN_REPRODUCIBILITY.md`.
+
 ## Ausgaben je Lauf
 
 - `summary.json`: kompakte Kennzahlen und wirksame Konfiguration
