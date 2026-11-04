@@ -56,4 +56,21 @@ api.remove();
 if(api.S.bodies.length!==beforeCount) throw new Error('Could not remove 3D test body');
 const finite=api.S.bodies.every(b=>['mass','x','y','z','vx','vy','vz'].every(k=>Number.isFinite(b[k])));
 if(!finite) throw new Error('A body became non-finite after editor changes');
-console.log('PASS: 2+'+outer+' 3D bodies; orthogonal XY/XZ/YZ planes; 2,000 Velocity-Verlet steps; 3D editor; repulsion; add/remove; drift '+document.body.dataset.drift+'%');
+const saved = {
+  format: 'matrixgame-gravitylab-3d',
+  version: 1,
+  parameters: { ...api.P },
+  view: { yaw: api.S.yaw, pitch: api.S.pitch, roll: api.S.roll, zoom: api.S.zoom, panX: api.S.panX, panY: api.S.panY },
+  bodies: api.S.bodies.map(({trail,trace,...body}) => body)
+};
+const expectedMass = api.S.bodies[1].mass;
+api.loadJSON({ text: async () => JSON.stringify(saved) }).then(() => {
+  if (api.S.bodies.length !== beforeCount || api.S.bodies[1].mass !== expectedMass) {
+    throw new Error('JSON state round-trip did not restore bodies');
+  }
+  if (api.P.repel !== saved.parameters.repel) throw new Error('JSON did not restore repulsion');
+  console.log('PASS: 2+'+outer+' 3D bodies; orthogonal planes; Velocity-Verlet; 3D editor; repulsion; add/remove; JSON round-trip; drift '+document.body.dataset.drift+'%');
+}).catch(error => {
+  console.error(error);
+  process.exitCode = 1;
+});
