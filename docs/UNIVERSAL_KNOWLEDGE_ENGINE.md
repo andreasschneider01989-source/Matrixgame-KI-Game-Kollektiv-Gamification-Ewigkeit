@@ -183,6 +183,7 @@ Do not optimize for raw message counts, token counts, clicks, streaks, or leader
 - [Learning quests and gamification](LEARNING_QUESTS_AND_GAMIFICATION.md)
 - [Interplanetary knowledge network](INTERPLANETARY_KNOWLEDGE_NETWORK.md)
 - [Collective Improvement Network](COLLECTIVE_IMPROVEMENT_NETWORK.md)
+- [Proton–electron mass ratio and 2D shell-exchange research](RESEARCH_PROTON_ELECTRON_RATIO_AND_2D_SHELL_EXCHANGE.md)
 
 ## 14. Initial status
 
@@ -196,5 +197,6 @@ Do not optimize for raw message counts, token counts, clicks, streaks, or leader
 | Search UI and graph database | PLANNED |
 | Agent orchestration and verifier | PLANNED |
 | Live interplanetary network integration | NOT IMPLEMENTED |
+| Proton–electron ratio / 2D shell-exchange research note | DOCUMENTED HYPOTHESIS |
 
 **Next action:** implement and test the smallest knowledge-node vertical slice. Keep every later capability behind evidence and explicit acceptance criteria.
