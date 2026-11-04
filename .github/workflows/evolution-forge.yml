@@ -13,8 +13,16 @@ jobs:
   python-and-java-bridge:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Check out only simulator and test sources
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            /.github/workflows/
+            /python/evolution_forge/
+            /src/main/java/de/matrixgame/evolution/
+            /src/test/java/de/matrixgame/evolution/
+            /web/
+          sparse-checkout-cone-mode: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
