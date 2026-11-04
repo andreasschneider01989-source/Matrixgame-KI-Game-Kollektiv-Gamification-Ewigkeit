@@ -21,7 +21,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-MODEL_VERSION = "1.0.0"
+MODEL_VERSION = "1.0.1"
 
 SCENARIOS: dict[str, dict[str, Any]] = {
     "earth_tidal_pool": {
@@ -67,6 +67,9 @@ class Config:
     seed: int = 7
     max_population: int = 520
     initial_cells: int = 0
+    # Optional scenario overrides. None keeps the base scenario profile.
+    energy_flux: float | None = None
+    resource_regen: float | None = None
     origin_rate: float = 0.035
     mutation_rate: float = 0.035
     replication_energy: float = 1.12
@@ -127,7 +130,15 @@ class EvolutionSimulator:
         if config.initial_cells < 0 or config.initial_cells > config.max_population:
             raise ValueError("initial_cells must be between 0 and max_population")
         self.cfg = config
-        self.scenario = SCENARIOS[config.scenario]
+        self.scenario = dict(SCENARIOS[config.scenario])
+        if config.energy_flux is not None:
+            if not 0.0 <= config.energy_flux <= 1.0:
+                raise ValueError("energy_flux override must be between 0 and 1")
+            self.scenario["energy_flux"] = config.energy_flux
+        if config.resource_regen is not None:
+            if not 0.0 <= config.resource_regen <= 0.2:
+                raise ValueError("resource_regen override must be between 0 and 0.2")
+            self.scenario["resource_regen"] = config.resource_regen
         self.rng = np.random.default_rng(config.seed)
         random.seed(config.seed)
         self.h, self.w = config.height, config.width
@@ -300,7 +311,7 @@ def run_simulation(config: Config) -> tuple[EvolutionSimulator,dict[str,Any]]:
 
 def apply_llm_proposal(base: Config,proposal: dict[str,Any]) -> Config:
     allowed={"scenario","steps","seed","origin_rate","mutation_rate","replication_energy",
-             "reproduction_probability","maintenance_cost","cooperation_benefit","quorum_cell_count",
+             "reproduction_probability","maintenance_cost","cooperation_benefit","energy_flux","resource_regen","quorum_cell_count",
              "multicell_threshold","differentiation_rate","predation_pressure"}
     unknown=set(proposal)-allowed
     if unknown: raise ValueError(f"Unsupported proposal fields: {sorted(unknown)}")
@@ -308,7 +319,8 @@ def apply_llm_proposal(base: Config,proposal: dict[str,Any]) -> Config:
     bounds={"steps":(20,2000),"seed":(0,2**31-1),"origin_rate":(0.0,0.25),
             "mutation_rate":(0.0,0.25),"replication_energy":(0.4,1.9),
             "reproduction_probability":(0.0,0.8),"maintenance_cost":(0.001,0.15),
-            "cooperation_benefit":(0.0,0.3),"quorum_cell_count":(1,20),
+            "cooperation_benefit":(0.0,0.3),"energy_flux":(0.0,1.0),"resource_regen":(0.0,0.2),
+            "quorum_cell_count":(1,20),
             "multicell_threshold":(2,40),"differentiation_rate":(0.0,0.15),
             "predation_pressure":(0.0,1.0)}
     for key,value in proposal.items():
