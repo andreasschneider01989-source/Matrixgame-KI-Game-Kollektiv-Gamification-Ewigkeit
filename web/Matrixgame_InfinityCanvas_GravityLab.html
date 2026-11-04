@@ -27,7 +27,7 @@ button,select,input{font:inherit;color:var(--text)}button,select{border:1px soli
 <div id="topHud"><div class="hud-chip">Newton · N-Körper · Velocity-Verlet</div><div class="hud-chip" id="hudTime">t = 0.000</div><div class="hud-chip" id="hudEnergy">Energie-Drift 0.00 %</div></div>
 <aside class="panel">
 <div class="brand"><div class="brand-mark">∞</div><div><small>Matrixgame · Simulation</small><strong>Infinity Canvas Gravity Lab</strong></div></div>
-<p class="intro">Newtonsche Gravitation mit frei beweglicher Kamera. Ziehen = Pan, Mausrad = Zoom. Die Simulation läuft unabhängig von der Darstellung.</p>
+<p class="intro">Newtonsche Gravitation mit frei beweglicher Kamera. Ziehen = Pan, Mausrad = Zoom; Pfeiltasten = Pan, +/- = Zoom, Leertaste = Pause. Die Simulation läuft unabhängig von der Darstellung.</p>
 <h2>Simulation</h2>
 <div class="btn-grid"><button id="playBtn" class="primary">Ⅱ Pause</button><button id="stepBtn">Ein Schritt</button><button id="resetBtn">↺ Neustart</button><button id="fitBtn">⌖ Ansicht einpassen</button></div>
 <div class="field"><label for="speedRange">Simulationsgeschwindigkeit <output id="speedOut">1.0×</output></label><input id="speedRange" type="range" min="0.25" max="4" step="0.25" value="1"></div>
@@ -130,7 +130,7 @@ ctx.fillStyle='#8fa2c3';ctx.fillText('0',left-18,bottom+4);ctx.fillText(maxS.toF
 }
 function draw(){
 if(!ctx||!W||!H)return;drawBackground();if(state.view==='orbit'){drawAxes();drawOrbits();drawTrails();drawBodies();}else drawPlot(state.view);
-$('hudTime').textContent=`t = ${state.time.toFixed(3)}`;const energy=totalEnergy(state.bodies),drift=state.initialEnergy?100*(energy-state.initialEnergy)/Math.abs(state.initialEnergy):0;$('hudEnergy').textContent=`Energie-Drift ${drift.toFixed(3)} %`;
+$('hudTime').textContent=`t = ${state.time.toFixed(3)}`;const energy=totalEnergy(state.bodies),drift=state.initialEnergy?100*(energy-state.initialEnergy)/Math.abs(state.initialEnergy):0;$('hudEnergy').textContent=`Energie-Drift ${drift.toFixed(3)} %`; $('driftValue').textContent=`${drift.toFixed(3)} %`;
 }
 function updateAtomReadout(){const n=state.outerCount,atom={5:['Stickstoff','N','1s² 2s² 2p³',false],6:['Sauerstoff','O','1s² 2s² 2p⁴',false],7:['Fluor','F','1s² 2s² 2p⁵',false],8:['Neon','Ne','1s² 2s² 2p⁶',true]}[n];$('atomReadout').innerHTML=`<span class="tag">SCHEMATISCHE ATOMZUORDNUNG</span><b>2 + ${n} = ${n+2}</b><br>${atom[0]} (${atom[1]}) · ${atom[2]}<br>${atom[3]?'<b>Voll besetzte Außenschale (Edelgas)</b>':'Keine voll besetzte Außenschale.'}<br><span class="muted">Nicht Teil der Gravitation; nur Vergleich der Elektronenzahlen der ersten zehn Elemente.</span>`;}
 function syncReadouts(){
@@ -156,7 +156,7 @@ canvas.addEventListener('pointerup',e=>{if(!state.drag)return;const moved=state.
 canvas.addEventListener('pointercancel',()=>{state.drag=null;});
 canvas.addEventListener('wheel',e=>{e.preventDefault();setZoom(state.camera.zoom*Math.exp(-e.deltaY*.001),e.clientX,e.clientY);},{passive:false});
 window.addEventListener('keydown',e=>{if(e.target&&['INPUT','SELECT','TEXTAREA','BUTTON'].includes(e.target.tagName))return;const pan=70/state.camera.zoom;if(e.key==='ArrowLeft'){state.camera.x-=pan;draw();e.preventDefault();}else if(e.key==='ArrowRight'){state.camera.x+=pan;draw();e.preventDefault();}else if(e.key==='ArrowUp'){state.camera.y+=pan;draw();e.preventDefault();}else if(e.key==='ArrowDown'){state.camera.y-=pan;draw();e.preventDefault();}else if(e.key==='+'||e.key==='='){setZoom(state.camera.zoom*1.2);e.preventDefault();}else if(e.key==='-'){setZoom(state.camera.zoom/1.2);e.preventDefault();}else if(e.code==='Space'){state.running=!state.running;$('playBtn').textContent=state.running?'Ⅱ Pause':'▶ Start';e.preventDefault();}});
-window.addEventListener('resize',resize);resize();createSystem();fitView();
+window.addEventListener('resize',resize);createSystem();resize();fitView();
 if(new URLSearchParams(window.location.search).get('smoke')==='1'){for(let i=0;i<2000;i++)simStep();const finite=state.bodies.every(b=>[b.x,b.y,b.vx,b.vy].every(Number.isFinite)),drift=100*(totalEnergy(state.bodies)-state.initialEnergy)/Math.abs(state.initialEnergy);document.body.dataset.smoke=finite&&Number.isFinite(drift)?'PASS':'FAIL';document.body.dataset.bodyCount=String(state.bodies.length);document.body.dataset.energyDriftPercent=drift.toFixed(6);syncReadouts();draw();}else animate();
 })();
 </script>
