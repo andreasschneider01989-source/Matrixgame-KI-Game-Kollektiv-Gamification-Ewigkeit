@@ -1,6 +1,6 @@
 # Matrixgame Infinity Canvas Gravity Lab
 
-Open `Matrixgame_InfinityCanvas_GravityLab.html` directly in a current desktop browser. It is a single-file application and requires no local server, package manager, or external library.
+Open `Matrixgame_InfinityCanvas_GravityLab.html` directly in a current desktop browser. It is a single-file HTML5/JavaScript application: no local server, package manager, SQL database, or external library is required.
 
 ## Controls
 
@@ -9,18 +9,22 @@ Open `Matrixgame_InfinityCanvas_GravityLab.html` directly in a current desktop b
 - Use the outer-shell selector to compare 5, 6, 7, or 8 outer satellites.
 - Add/remove additional 2+N layers with the Octet buttons.
 - Switch between XY orbit view, radius/time, and speed/radius plots.
-- Select a body to inspect its mass, orbital radius, speed, and coordinates.
+- Select a body to inspect its mass, orbital radius, speed, position, acceleration, and gravitational force.
+- Edit the selected body's mass, XY position, velocity components and time step. Changes pause the simulation and reset the energy reference.
+- Add and remove test masses at runtime. Enable velocity and gravitational-force vectors to inspect the current dynamical state.
 
-## Physics model
+## Newtonian physics
 
-Newtonian softened N-body gravity with pairwise interactions and a Velocity-Verlet integrator. The baseline preserves the earlier prototype's parameters: G=28, central mass=1,000,000, inner mass=12, outer mass=18, radii 32 and 72, softening=1.2.
+This is a true pairwise Newtonian N-body calculation with softened gravity and a Velocity-Verlet integrator. For each body, the acceleration is calculated from the current position of every other body at every integration step. The visible paths are trails of integrated positions, not pre-rendered circles. Dashed circles are reference radii only.
+
+The baseline preserves the earlier prototype's parameters: G=28, central mass=1,000,000, inner mass=12, outer mass=18, radii 32 and 72, softening=1.2. The editor currently operates in a 2D XY plane. A full XYZ editor is a planned later extension.
 
 The model uses arbitrary simulation units. It is not a quantum atom simulation: electron orbitals are not classical satellite paths. The atom comparison panel is only a separate electron-shell-count reference (2+5 nitrogen, 2+6 oxygen, 2+7 fluorine, 2+8 neon).
 
-## Test
+## Tests
 
 ```sh
 for n in 5 6 7 8; do node web/tests/gravitylab_smoke.cjs web/Matrixgame_InfinityCanvas_GravityLab.html $n; done
 ```
 
-The smoke test executes the inline simulation code for 2,000 integration steps using a minimal canvas stub and checks that all positions and velocities remain finite for 5, 6, 7 and 8 outer satellites.
+The automated test executes the inline application code in a minimal browser/canvas stub. It checks the 2,000-step finite-state simulation for each shell count, edits a body's mass/position/velocity/time step, confirms that the Newtonian acceleration field changes, and adds/removes a test body.
