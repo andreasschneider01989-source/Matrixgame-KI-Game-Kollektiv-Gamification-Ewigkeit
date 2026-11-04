@@ -1,0 +1,63 @@
+{
+  "checkpoint_date": "2026-11-04",
+  "branch": "feature/evolution-forge-bridge",
+  "pull_request": 4,
+  "pull_request_state": "open_draft_not_merged",
+  "gravity_cluster_phase_sweep": {
+    "runs": 189,
+    "dt": 0.002,
+    "steps": 26000,
+    "initialization": "isolated_equilibrium",
+    "contacts": {
+      "0_satellites": {"hits": 3, "runs": 7},
+      "1_satellite": {"hits": 37, "runs": 91},
+      "2_satellites": {"hits": 52, "runs": 91}
+    },
+    "dt_spot_checks": 3,
+    "classification_switches": 0,
+    "note": "finite-grid descriptive counts, not universal probabilities"
+  },
+  "orbit_speed_pilot": {
+    "runs": 80,
+    "impact_parameter": 29,
+    "dt": 0.002,
+    "speed_factors": [0.8, 1.0, 1.2, 1.4],
+    "contacts": {
+      "1_satellite": {
+        "0.8": {"hits": 5, "runs": 13},
+        "1.0": {"hits": 1, "runs": 13},
+        "1.2": {"hits": 8, "runs": 13},
+        "1.4": {"hits": 7, "runs": 13}
+      },
+      "2_opposite_satellites_unique_phases_mod_180": {
+        "0.8": {"hits": 1, "runs": 7},
+        "1.0": {"hits": 7, "runs": 7},
+        "1.2": {"hits": 7, "runs": 7},
+        "1.4": {"hits": 0, "runs": 7}
+      }
+    },
+    "note": "pilot at b=29 only; phase-dependent finite-grid results"
+  },
+  "dashboard": {
+    "csv_json_import": true,
+    "phase_heatmap": true,
+    "selected_run_newtonian_replay": true,
+    "velocity_factor_control": true,
+    "manual_test_of_velocity_factor_control": "pending"
+  },
+  "scientific_boundaries": [
+    "Newtonian forces remain attractive; velocity scaling does not create repulsion",
+    "core merger is a perfectly inelastic collision proxy, not nuclear fusion",
+    "classical satellites are not hydrogen or helium atoms",
+    "quantum/electromagnetic models remain separate future layers",
+    "escape classification is provisional",
+    "core radius remains fixed while core mass changes"
+  ],
+  "next_priority": [
+    "manually test dashboard orbit-speed slider",
+    "extend k sweep over b=28,29,30",
+    "repeat threshold cases at dt=0.002,0.001,0.0005",
+    "compare selected cases against REBOUND IAS15",
+    "only then consider a separately documented artificial repulsion model"
+  ]
+}

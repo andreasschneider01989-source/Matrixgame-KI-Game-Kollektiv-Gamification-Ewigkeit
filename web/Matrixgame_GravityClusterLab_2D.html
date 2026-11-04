@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Matrixgame 2D Gravity Cluster Lab: Vergleich von Kernbegegnungen mit null, einem oder zwei gravitativen Satelliten.">
+<title>Matrixgame · Gravity Cluster Lab 2D</title>
+<style>
+:root{color-scheme:dark;--bg:#070b16;--panel:rgba(14,21,38,.95);--line:rgba(145,170,215,.2);--text:#edf3ff;--muted:#9baac6;--gold:#ffd47d;--cyan:#6ee7e0;--blue:#85c9ff;--pink:#f5a2cf}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font:14px/1.45 Inter,Segoe UI,system-ui,sans-serif}
+#view{position:fixed;inset:0;width:100%;height:100%;display:block}
+.panel{position:fixed;z-index:2;left:14px;top:14px;bottom:14px;width:300px;max-width:calc(100vw - 28px);overflow:auto;padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:17px;backdrop-filter:blur(15px);box-shadow:0 18px 60px #0007}
+.brand{display:flex;gap:10px;align-items:center}.mark{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#42a7e8,#655ee9);font-size:18px;font-weight:800}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase}.brand b{font-size:16px}
+.intro,.note{font-size:11px;color:var(--muted)}h2{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#9eb0d1;margin:16px 0 8px}
+.row{display:flex;gap:7px}.row>*{flex:1;min-width:0}button,select,input{font:inherit;color:var(--text)}button,select{background:#18243b;border:1px solid #91a8d533;border-radius:9px;padding:7px 9px;cursor:pointer}button:hover,select:hover{border-color:#85c9ff99;background:#20314d}button.primary{background:linear-gradient(135deg,#286eac,#514cc4);border:0;font-weight:700}button:disabled{opacity:.4;cursor:not-allowed}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.field{margin:9px 0}.field label{display:flex;justify-content:space-between;gap:7px;font-size:11px;color:#c8d5ec;margin-bottom:4px}.field output{color:var(--blue);font-variant-numeric:tabular-nums}.field select{width:100%}input[type=range]{width:100%;accent-color:#85c9ff}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:7px}.stat,.readout{border:1px solid var(--line);border-radius:10px;background:#1b284155;padding:8px 9px}.stat span{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.1em}.stat b{font-size:13px;font-variant-numeric:tabular-nums}.readout{font-size:11px;color:#cbd8ec;overflow-wrap:anywhere}.readout b{color:#fff}.tag{display:inline-block;border:1px solid #6ee7e055;color:var(--cyan);border-radius:20px;padding:2px 6px;font-size:9px;margin-right:4px}.status{font-size:10px;color:#9fb0ca;min-height:18px}.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--muted)}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}
+#hud{position:fixed;z-index:1;right:16px;top:14px;display:flex;gap:7px;pointer-events:none}.chip{background:#09111fc9;border:1px solid var(--line);border-radius:20px;padding:6px 10px;color:#bdcce5;font-size:10px;backdrop-filter:blur(9px)}#toast{position:fixed;z-index:5;bottom:18px;left:50%;transform:translateX(-50%);background:#1c2a43;border:1px solid #58749d;padding:8px 13px;border-radius:20px;font-size:11px;opacity:0;pointer-events:none}#toast.show{opacity:1}
+.science{border-left:2px solid var(--gold);padding-left:8px;color:#a9b8d3;font-size:10px;margin-top:8px}
+@media(max-width:800px){.panel{top:8px;bottom:8px;left:8px;width:270px;padding:12px}#hud{right:8px;top:8px;left:286px;justify-content:flex-end;flex-wrap:wrap}.chip{font-size:9px;padding:5px 7px}}
+@media(max-width:560px){.panel{width:calc(100vw - 16px);height:48vh;top:auto}.intro{display:none}#hud{left:8px;right:8px;top:8px}.chip{background:#09111fee}}
+</style>
+</head>
+<body>
+<canvas id="view" aria-label="Drei parallele Newtonsche Begegnungsexperimente"></canvas>
+<div id="hud"><div class="chip">Newton · N-Körper · Velocity-Verlet</div><div class="chip" id="hudTime">t = 0.00</div><div class="chip" id="hudMode">Kollisionstest</div></div>
+<aside class="panel">
+ <div class="brand"><div class="mark">◎</div><div><small>Matrixgame · Physikexperiment</small><b>Gravity Cluster Lab 2D</b></div></div>
+ <p class="intro">Drei identische Begegnungsversuche nebeneinander: pro Kern kein Satellit, ein Satellit oder zwei Satelliten. Die Gesamtmasse jedes Clusters bleibt gleich.</p>
+ <h2>Experiment</h2>
+ <div class="row"><button id="encounter" class="primary">Kollisionstest</button><button id="binary">Doppel-Kernbahn</button></div>
+ <div class="grid2" style="margin-top:7px"><button id="play" class="primary">Ⅱ Pause</button><button id="step">Ein Schritt</button><button id="reset">↺ Neustart</button><button id="json">Ergebnis-JSON</button></div>
+ <div class="field"><label for="speed">Simulationsgeschwindigkeit <output id="speedOut">1,0×</output></label><input id="speed" type="range" min="0.5" max="4" step="0.25" value="1"></div>
+ <h2>Startbedingungen</h2>
+ <div class="field" id="impactField"><label for="impact">Stoßparameter b <output id="impactOut">29,0</output></label><input id="impact" type="range" min="24" max="36" step="0.1" value="29"></div>
+ <div class="field"><label for="phase">Satellitenphase B <output id="phaseOut">46°</output></label><input id="phase" type="range" min="0" max="360" step="1" value="46"></div>
+ <div class="field" id="separationField" hidden><label for="separation">Kernabstand <output id="separationOut">40</output></label><input id="separation" type="range" min="28" max="60" step="1" value="40"></div>
+ <div class="legend"><span><i class="dot" style="background:#ffd47d"></i>Kern A</span><span><i class="dot" style="background:#85c9ff"></i>Kern B</span><span><i class="dot" style="background:#6ee7e0"></i>Satellit</span></div>
+ <label class="check" style="display:flex;gap:8px;align-items:center;font-size:11px;margin-top:8px"><input id="trails" type="checkbox" checked> Bewegungsspuren</label>
+ <label class="check" style="display:flex;gap:8px;align-items:center;font-size:11px;margin-top:5px"><input id="forces" type="checkbox"> Gravitationsvektoren</label>
+ <h2>Vergleich der drei Modelle</h2>
+ <div class="stats">
+  <div class="stat"><span>0 Satelliten · Abstand min.</span><b id="min0">–</b></div>
+  <div class="stat"><span>0 Satelliten · Ergebnis</span><b id="result0">Bereit</b></div>
+  <div class="stat"><span>1 Satellit · Abstand min.</span><b id="min1">–</b></div>
+  <div class="stat"><span>1 Satellit · Ergebnis</span><b id="result1">Bereit</b></div>
+  <div class="stat"><span>2 Satelliten · Abstand min.</span><b id="min2">–</b></div>
+  <div class="stat"><span>2 Satelliten · Ergebnis</span><b id="result2">Bereit</b></div>
+ </div>
+ <p class="status" id="status">Bereit. Starten oder die Anfangsbedingungen verändern.</p>
+ <h2>Physikmodell</h2>
+ <div class="readout"><span class="tag">FACT / MODEL</span><b>Newtonsche Gravitation</b><br>Jede Masse zieht jede andere Masse an. Es gibt hier keinerlei eingebaute Satelliten-Abschirmung.</div>
+ <div class="readout" style="margin-top:7px">Kern-Kontaktregel: Wenn zwei Kernmittelpunkte näher als 8 Simulationseinheiten kommen, werden sie als vollkommen unelastische Kollision zu einem größeren Körper zusammengefasst. Gesamtmasse und Impuls bleiben erhalten.</div>
+ <p class="science">Das Ereignis heißt bewusst „Kernverschmelzungs-Proxy“, nicht Kernfusion: Reine klassische Gravitation beschreibt keine Kernreaktionen, starke Wechselwirkung oder chemische Bindung. Ein Vorbeiflug ohne Verschmelzung ist ebenfalls ein gültiges Ergebnis.</p>
+ <p class="note">Normierte Modellwerte: G=1, Gesamtmasse pro Cluster=100, Satellitenmasse=4, Umlaufradius=8, Kernradius=4, dt=0,002. Bei Satelliten wird Kernmasse reduziert, damit die Cluster-Gesamtmasse vergleichbar bleibt.</p>
+ <h2>Nächster Ausbauschritt</h2>
+ <p class="note">Mehrere Cluster, reproduzierbare Phasen- und Stoßparameter-Sweeps sowie später ein separates Quanten-Wahrscheinlichkeitsmodell. Das Wahrscheinlichkeitsmodell wird nicht aus klassischer Gravitation abgeleitet.</p>
+</aside>
+<div id="toast"></div>
+<script>
+'use strict';
+(()=>{
+const $=id=>document.getElementById(id),canvas=$('view'),ctx=canvas.getContext('2d');
+const P={G:1,eps:0.5,totalMass:100,satMass:4,orbitRadius:8,coreRadius:4,dt:0.002,substeps:20,speed:1,impact:29,phaseB:46*Math.PI/180,separation:40,mode:'encounter'};
+const S={lanes:[],running:false,time:0,trails:true,forces:false,frame:0};let W=0,H=0,DPR=1,toastTimer;
+function v(x=0,y=0){return{x,y}} function add(a,b){return{x:a.x+b.x,y:a.y+b.y}} function sub(a,b){return{x:a.x-b.x,y:a.y-b.y}} function mul(a,k){return{x:a.x*k,y:a.y*k}} function mag(a){return Math.hypot(a.x,a.y)}
+function acceleration(bodies){const out=bodies.map(()=>v());for(let i=0;i<bodies.length;i++)for(let j=i+1;j<bodies.length;j++){const a=bodies[i],b=bodies[j],d=v(b.x-a.x,b.y-a.y),r2=d.x*d.x+d.y*d.y+P.eps*P.eps,inv=P.G/(r2*Math.sqrt(r2));out[i].x+=inv*b.mass*d.x;out[i].y+=inv*b.mass*d.y;out[j].x-=inv*a.mass*d.x;out[j].y-=inv*a.mass*d.y;}return out;}
+function energy(bodies){let e=0;for(const b of bodies)e+=0.5*b.mass*(b.vx*b.vx+b.vy*b.vy);for(let i=0;i<bodies.length;i++)for(let j=i+1;j<bodies.length;j++){const a=bodies[i],b=bodies[j],d=mag(v(a.x-b.x,a.y-b.y));e-=P.G*a.mass*b.mass/Math.sqrt(d*d+P.eps*P.eps);}return e;}
+function createCluster(label,n,cx,cy,cvx,cvy,phase,color){const satellites=[];for(let i=0;i<n;i++){const angle=phase+(n===2?i*Math.PI:0),rr=P.orbitRadius,w=Math.sqrt(P.G*P.totalMass/(rr*rr*rr)),rx=rr*Math.cos(angle),ry=rr*Math.sin(angle),rvx=-w*ry,rvy=w*rx;satellites.push({mass:P.satMass,x:rx,y:ry,vx:rvx,vy:rvy,kind:'sat',cluster:label,name:'Satellit '+label+(i+1),radius:1.35,color:color+'99',trail:[]});}
+ const used=n*P.satMass,core={mass:P.totalMass-used,x:0,y:0,vx:0,vy:0,kind:'core',cluster:label,name:'Kern '+label,radius:P.coreRadius,color,trail:[]};let mx=0,my=0,mvx=0,mvy=0;for(const b of satellites){mx+=b.mass*b.x/P.totalMass;my+=b.mass*b.y/P.totalMass;mvx+=b.mass*b.vx/P.totalMass;mvy+=b.mass*b.vy/P.totalMass;}core.x=cx-mx;core.y=cy-my;core.vx=cvx-mvx;core.vy=cvy-mvy;for(const b of satellites){b.x+=cx;b.y+=cy;b.vx+=cvx;b.vy+=cvy;}return[core,...satellites];}
+function makeLane(n,index){const phaseA=0,phaseB=P.phaseB;let a,b;if(P.mode==='encounter'){const y=P.impact/2;a=createCluster('A',n,-50,y,1,0,phaseA,'#ffd47d');b=createCluster('B',n,50,-y,-1,0,phaseB,'#85c9ff');}else{const d=P.separation,vc=Math.sqrt(P.G*P.totalMass/(2*d));a=createCluster('A',n,-d/2,0,0,-vc,phaseA,'#ffd47d');b=createCluster('B',n,d/2,0,0,vc,phaseB,'#85c9ff');}
+ const bodies=[...a,...b];return{n,bodies,time:0,minDistance:Infinity,closestTime:0,mergeCount:0,mergeTime:null,passed:false,mode:P.mode,energy0:energy(bodies),initialBodies:bodies.map(x=>({...x,trail:[]})),index};}
+function reset(){P.impact=Number($('impact').value);P.phaseB=Number($('phase').value)*Math.PI/180;P.separation=Number($('separation').value);S.lanes=[0,1,2].map((n,i)=>makeLane(n,i));S.time=0;S.frame=0;S.running=false;$('play').textContent='▶ Start';$('status').textContent=P.mode==='encounter'?'Drei Begegnungen mit gleicher Gesamtmasse vorbereitet.':'Drei gebundene Doppel-Kern-Systeme vorbereitet.';sync();draw();}
+function mergeCores(lane,a,b){const m=a.mass+b.mass,total=m,x=(a.mass*a.x+b.mass*b.x)/total,y=(a.mass*a.y+b.mass*b.y)/total,vx=(a.mass*a.vx+b.mass*b.vx)/total,vy=(a.mass*a.vy+b.mass*b.vy)/total;const merged={mass:m,x,y,vx,vy,kind:'core',cluster:'AB',name:'Verschmolzener Kern',radius:Math.sqrt(a.radius*a.radius+b.radius*b.radius),color:'#fff0a8',trail:[]};lane.bodies=lane.bodies.filter(x=>x!==a&&x!==b);lane.bodies.push(merged);lane.mergeCount++;lane.mergeTime=lane.time;}
+function oneStep(lane){const b=lane.bodies,a0=acceleration(b),half=P.dt*P.dt/2;for(let i=0;i<b.length;i++){b[i].x+=b[i].vx*P.dt+a0[i].x*half;b[i].y+=b[i].vy*P.dt+a0[i].y*half;}const a1=acceleration(b);for(let i=0;i<b.length;i++){b[i].vx+=0.5*(a0[i].x+a1[i].x)*P.dt;b[i].vy+=0.5*(a0[i].y+a1[i].y)*P.dt;}lane.time+=P.dt;const cores=lane.bodies.filter(x=>x.kind==='core');if(cores.length>=2){const d=mag(v(cores[0].x-cores[1].x,cores[0].y-cores[1].y));if(d<lane.minDistance){lane.minDistance=d;lane.closestTime=lane.time;}if(d<=2*P.coreRadius){mergeCores(lane,cores[0],cores[1]);}else if(lane.time>lane.closestTime+4&&d>lane.minDistance+5)lane.passed=true;}if(S.trails&&Math.floor(lane.time/P.dt)%2===0){for(const x of lane.bodies){x.trail.push(v(x.x,x.y));if(x.trail.length>500)x.trail.shift();}}}
+function allStep(){S.frame++;for(const lane of S.lanes)oneStep(lane);S.time+=P.dt;}
+function drawArrow(x,y,dx,dy,color){const l=Math.hypot(dx,dy);if(!l)return;const scale=Math.min(35,30/l),ex=x+dx*scale,ey=y+dy*scale;ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(ex,ey);ctx.stroke();const a=Math.atan2(ey-y,ex-x);ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex-6*Math.cos(a-.5),ey-6*Math.sin(a-.5));ctx.lineTo(ex-6*Math.cos(a+.5),ey-6*Math.sin(a+.5));ctx.closePath();ctx.fill();}
+function drawLane(lane,x,y,w,h){ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();ctx.fillStyle='rgba(10,18,33,.70)';ctx.fillRect(x,y,w,h);ctx.strokeStyle='rgba(145,170,215,.18)';ctx.strokeRect(x,y,w,h);const title=lane.n===0?'A · 0 Satelliten pro Kern':lane.n===1?'B · 1 Satellit pro Kern':'C · 2 Satelliten pro Kern';ctx.fillStyle='#eef4ff';ctx.font='bold 13px Segoe UI';ctx.fillText(title,x+12,y+20);ctx.fillStyle='#90a3c4';ctx.font='10px Segoe UI';ctx.fillText('Gesamtmasse pro Cluster = 100',x+12,y+37);const scale=Math.min((w-45)/220,(h-100)/100),ox=x+w/2,oy=y+h*.55;const px=b=>ox+b.x*scale,py=b=>oy-b.y*scale;
+ if(P.mode==='encounter'){ctx.strokeStyle='rgba(145,170,215,.14)';ctx.setLineDash([4,6]);ctx.beginPath();ctx.moveTo(x+10,oy);ctx.lineTo(x+w-10,oy);ctx.stroke();ctx.setLineDash([]);}else{ctx.strokeStyle='rgba(145,170,215,.22)';ctx.beginPath();ctx.arc(ox,oy,P.separation/2*scale,0,Math.PI*2);ctx.stroke();}
+ if(S.trails)for(const b of lane.bodies){if(b.trail.length<2)continue;ctx.beginPath();b.trail.forEach((p,i)=>{if(!i)ctx.moveTo(px(p),py(p));else ctx.lineTo(px(p),py(p));});ctx.strokeStyle=b.color+'80';ctx.lineWidth=1.2;ctx.stroke();}
+ if(S.forces){const acc=acceleration(lane.bodies);lane.bodies.forEach((b,i)=>drawArrow(px(b),py(b),acc[i].x*b.mass*.002, -acc[i].y*b.mass*.002,'rgba(255,173,114,.7)'));}
+ for(const b of lane.bodies){const radius=Math.max(b.kind==='core'?5:2,b.radius*scale);ctx.beginPath();ctx.arc(px(b),py(b),radius+(b.kind==='core'?2:0),0,Math.PI*2);ctx.fillStyle=b.color+'2c';ctx.fill();ctx.beginPath();ctx.arc(px(b),py(b),radius,0,Math.PI*2);ctx.fillStyle=b.color;ctx.fill();if(b.kind==='core'||b.kind==='merged'){ctx.fillStyle='#eff4ff';ctx.font='10px Segoe UI';ctx.fillText(b.name,px(b)+radius+4,py(b)-5);}}
+ const current=lane.bodies.filter(b=>b.kind==='core'),result=lane.mergeCount?'Kernverschmelzung':lane.passed?'Vorbeiflug':'Begegnung läuft';ctx.fillStyle=lane.mergeCount?'#ffd47d':lane.passed?'#6ee7e0':'#a9bad0';ctx.font='bold 12px Segoe UI';ctx.fillText(result,x+12,y+h-16);ctx.fillStyle='#8799b8';ctx.font='10px Segoe UI';ctx.fillText('Kernkörper: '+current.length+' · Minimum: '+(Number.isFinite(lane.minDistance)?lane.minDistance.toFixed(2):'–'),x+12,y+h-31);ctx.restore();}
+function draw(){if(!W||!H)return;ctx.fillStyle='#070b16';ctx.fillRect(0,0,W,H);const mobile=W<560,left=mobile?8:(window.innerWidth<801?286:326),top=mobile?55:78,gap=mobile?5:9,w=Math.max(40,(W-left-16-gap*2)/3),h=Math.max(140,mobile?H-top-10:H-top-36);S.lanes.forEach((lane,i)=>drawLane(lane,left+i*(w+gap),top,w,h));$('hudTime').textContent='t = '+S.time.toFixed(2);}
+function resultLabel(lane){if(lane.mergeCount)return 'Fusion-Proxy';if(lane.passed)return 'Vorbeiflug';return 'Läuft';}
+function sync(){for(let i=0;i<3;i++){const l=S.lanes[i];$('min'+i).textContent=Number.isFinite(l.minDistance)?l.minDistance.toFixed(2):'–';$('result'+i).textContent=resultLabel(l);}const done=S.lanes.every(l=>l.mergeCount||l.passed);if(done)$('status').textContent='Versuch abgeschlossen: '+S.lanes.map(l=>l.n+' Sat. → '+resultLabel(l)).join(' · ');}
+function animate(){if(S.running){const n=Math.max(1,Math.round(P.substeps*P.speed));for(let k=0;k<n;k++)for(const lane of S.lanes)oneStep(lane);S.time+=P.dt*n;sync();}draw();requestAnimationFrame(animate);}
+function resize(){const r=canvas.getBoundingClientRect();DPR=Math.max(1,Math.min(2,window.devicePixelRatio||1));W=r.width;H=r.height;canvas.width=Math.round(W*DPR);canvas.height=Math.round(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);draw();}
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),1900);}
+function exportJSON(){const data={format:'matrixgame-gravity-cluster-2d',version:1,parameters:{...P},results:S.lanes.map(l=>({satellitesPerCore:l.n,time:l.time,minDistance:l.minDistance,closestTime:l.closestTime,mergeCount:l.mergeCount,mergeTime:l.mergeTime,passed:l.passed,bodies:l.bodies.map(({trail,...b})=>b)}))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='gravity-cluster-experiment.json';a.click();URL.revokeObjectURL(url);}
+function setMode(mode){P.mode=mode;$('encounter').classList.toggle('primary',mode==='encounter');$('binary').classList.toggle('primary',mode==='binary');$('impactField').hidden=mode!=='encounter';$('separationField').hidden=mode!=='binary';$('hudMode').textContent=mode==='encounter'?'Kollisionstest':'Doppel-Kernbahn';reset();}
+$('play').onclick=()=>{S.running=!S.running;$('play').textContent=S.running?'Ⅱ Pause':'▶ Start';};$('step').onclick=()=>{S.running=false;$('play').textContent='▶ Start';for(let i=0;i<P.substeps;i++)for(const lane of S.lanes)oneStep(lane);S.time+=P.dt*P.substeps;sync();draw();};$('reset').onclick=reset;$('json').onclick=exportJSON;$('encounter').onclick=()=>setMode('encounter');$('binary').onclick=()=>setMode('binary');$('speed').oninput=e=>{P.speed=Number(e.target.value);$('speedOut').textContent=P.speed.toFixed(2).replace('.',',')+'×';};$('impact').oninput=e=>{$('impactOut').textContent=Number(e.target.value).toFixed(1).replace('.',',');P.impact=Number(e.target.value);};$('phase').oninput=e=>{$('phaseOut').textContent=e.target.value+'°';P.phaseB=Number(e.target.value)*Math.PI/180;};$('separation').oninput=e=>{$('separationOut').textContent=e.target.value;P.separation=Number(e.target.value);};$('trails').onchange=e=>{S.trails=e.target.checked;};$('forces').onchange=e=>{S.forces=e.target.checked;draw();};window.addEventListener('resize',resize);window.addEventListener('keydown',e=>{if(e.code==='Space'&&!['INPUT','BUTTON'].includes(e.target.tagName)){S.running=!S.running;$('play').textContent=S.running?'Ⅱ Pause':'▶ Start';e.preventDefault();}});
+window.__gravityClusterTest={P,S,reset,oneStep,acceleration,energy,mergeCores,makeLane};
+reset();resize();animate();
+})();
+</script>
+</body>
+</html>
