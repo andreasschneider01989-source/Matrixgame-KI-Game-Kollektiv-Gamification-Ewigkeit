@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "evolution-forge"
-version = "0.1.0"
+version = "1.0.0"
 description = "Exploratory agent-based evolution and astrobiology scenario models for Matrixgame"
 authors = ["Matrixgame contributors"]
 readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
+python = ">=3.10,<3.14"
 numpy = "^2.1"
 matplotlib = "^3.9"
 
