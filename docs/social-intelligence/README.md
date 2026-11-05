@@ -176,3 +176,12 @@ Eine mögliche interne Quest-Metrik kann dimensionsweise angezeigt werden (z. B.
 **Wenn einer gewinnt, gewinnen alle – sofern niemand dafür seine Würde oder Autonomie aufgeben muss.**
 
 Let's play and let's be.
+
+
+## 13. Weiterführende Integration
+
+Das ergänzende Dokument verbindet soziale und emotionale Intelligenz mit Neurogame, Didaktik, Motivation, Regeneration und der Reduktion toxischer Interaktionsmuster:
+
+- [Neurogame × Social Intelligence × Toxicity Reduction](../neurogame/INTEGRATION_SOCIAL_INTELLIGENCE_TOXICITY_DIDACTICS.md)
+
+Es beschreibt die gemeldete Neurogame-Architektur als noch zu verifizierende Grundlage und legt eine schrittweise, testbare Integrations-Roadmap fest.
