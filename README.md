@@ -60,6 +60,16 @@ The Universal Knowledge Engine documentation connects scientific knowledge, pers
 
 The initial implementation target is deliberately small: one sourced density knowledge node, its equation and SI units, a dimensional validation test, one linked learning quest, and a reproducible example. Later search, agent collaboration, and DTN-inspired synchronization should build on that verified foundation.
 
+## Global research update — 6 November 2026
+
+The following research documents extend the Universal Knowledge Engine with a dated, evidence-aware snapshot of global progress, climate, AI, energy systems, space research, and collective intelligence.
+
+- [Matrixgame Global Research 2026 — full report](research/MATRIXGAME_GLOBAL_RESEARCH_2026-11-06.md)
+- [Global progress metrics — machine-readable JSON snapshot](research/MATRIXGAME_GLOBAL_PROGRESS_METRICS_2026-11-06.json)
+- [Matrixgame Infinity Report v4.0 — archive](research/Matrixgame_Infinity_Report_v4_0_2026-11-06.md)
+
+The report distinguishes observations, estimates, forecasts, models, hypotheses, and fiction. Metrics must be interpreted with their own period, unit, definition, and source. In particular, installed capacity is not electricity generation; target gain is not net fusion-plant output; and a one-year temperature anomaly is not identical to a long-term warming level.
+
 ## Open implementation quests
 
 The initial work is tracked as separate, reviewable GitHub issues:
