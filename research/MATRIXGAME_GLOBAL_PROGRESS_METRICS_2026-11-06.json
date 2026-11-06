@@ -1,0 +1,266 @@
+{
+  "schema_version": "1.0.0",
+  "title": "Matrixgame Global Progress Metrics",
+  "valid_as_of": "2026-11-06",
+  "note": "Values are not directly comparable. Each metric records its own period, definition, status and source. Forecasts are not observations. Capacity (GW) is not generation (TWh).",
+  "metrics": [
+    {
+      "id": "population.life_expectancy_global",
+      "label": "Global life expectancy at birth",
+      "value": 73.3,
+      "unit": "years",
+      "period": "2024",
+      "status": "FACT_ESTIMATE",
+      "source": "https://www.un.org/global-issues/population",
+      "note": "UN estimate; 8.4 years higher than 1995."
+    },
+    {
+      "id": "population.world_total",
+      "label": "World population",
+      "value": 8.2,
+      "unit": "billion people",
+      "period": "2024",
+      "status": "FACT_ESTIMATE",
+      "source": "https://www.un.org/en/node/219445"
+    },
+    {
+      "id": "population.world_peak_projection",
+      "label": "Projected world population peak",
+      "value": 10.3,
+      "unit": "billion people",
+      "period": "mid-2080s",
+      "status": "PROJECTION",
+      "source": "https://www.un.org/en/node/219445"
+    },
+    {
+      "id": "health.under5_deaths",
+      "label": "Deaths under age five",
+      "value": 4.9,
+      "unit": "million deaths",
+      "period": "2024",
+      "status": "FACT_ESTIMATE",
+      "source": "https://www.who.int/news-room/fact-sheets/detail/child-mortality-under-5-years",
+      "note": "Includes approximately 2.3 million neonatal deaths."
+    },
+    {
+      "id": "economy.labour_productivity_growth",
+      "label": "Global output per worker growth",
+      "value": 1.7,
+      "unit": "percent",
+      "period": "2025",
+      "status": "FACT_ESTIMATE",
+      "source": "https://unstats.un.org/sdgs/report/2026/goal-08/",
+      "note": "Below the 2015-2019 average of 1.8 percent."
+    },
+    {
+      "id": "poverty.extreme_poverty",
+      "label": "People below $3/day poverty line",
+      "value": 811,
+      "unit": "million people",
+      "period": "2026",
+      "status": "FACT_ESTIMATE",
+      "source": "https://www.worldbank.org/en/publication/poverty-prosperity-and-planet",
+      "note": "World Bank report estimate; line and PPP basis must be kept with future updates."
+    },
+    {
+      "id": "ai.chip_capacity_h100_equiv",
+      "label": "Cumulative tracked AI chip compute capacity",
+      "value": 29.56,
+      "unit": "million H100-equivalents",
+      "period": "2025-Q4",
+      "status": "MODEL_ESTIMATE",
+      "source": "https://hai.stanford.edu/assets/files/ai_index_report_2026.pdf",
+      "note": "Stanford AI Index / Epoch AI series; approximately 0.05 million in 2022-Q1. This is not general CPU speed."
+    },
+    {
+      "id": "ai.chip_capacity_start",
+      "label": "Cumulative tracked AI chip compute capacity",
+      "value": 0.05,
+      "unit": "million H100-equivalents",
+      "period": "2022-Q1",
+      "status": "MODEL_ESTIMATE",
+      "source": "https://hai.stanford.edu/assets/files/ai_index_report_2026.pdf"
+    },
+    {
+      "id": "ai.reported_incidents",
+      "label": "Documented AI incidents",
+      "value": 362,
+      "unit": "incidents",
+      "period": "2025",
+      "status": "FACT_DATABASE_COUNT",
+      "source": "https://hai.stanford.edu/ai-index/2026-ai-index-report/responsible-ai",
+      "note": "Count depends on reporting and database coverage; not a population-normalized risk rate."
+    },
+    {
+      "id": "ai.datacenter_electricity",
+      "label": "Global data-centre electricity consumption",
+      "value": 415,
+      "unit": "TWh",
+      "period": "2024",
+      "status": "IEA_ESTIMATE",
+      "source": "https://www.iea.org/reports/energy-and-ai/energy-demand-from-ai",
+      "note": "All data centres, not only AI."
+    },
+    {
+      "id": "ai.datacenter_electricity_forecast",
+      "label": "Global data-centre electricity consumption",
+      "value": 945,
+      "unit": "TWh",
+      "period": "2030",
+      "status": "IEA_BASE_CASE_FORECAST",
+      "source": "https://www.iea.org/reports/energy-and-ai/energy-demand-from-ai",
+      "note": "Scenario baseline; future uptake and efficiency are uncertain."
+    },
+    {
+      "id": "compute.top500_leader",
+      "label": "TOP500 HPL leader LineShine",
+      "value": 2.198,
+      "unit": "exaflops per second",
+      "period": "2026-06",
+      "status": "BENCHMARK_OBSERVATION",
+      "source": "https://www.top500.org/lists/top500/2026/06/",
+      "note": "HPL benchmark; not representative of every workload."
+    },
+    {
+      "id": "compute.jupiter",
+      "label": "JUPITER sustained performance",
+      "value": 1,
+      "unit": "exaflops per second",
+      "period": "2026-06",
+      "status": "BENCHMARK_OBSERVATION",
+      "source": "https://www.eurohpc-ju.europa.eu/supercomputers/our-supercomputers_en"
+    },
+    {
+      "id": "energy.renewable_capacity_additions_irena",
+      "label": "Renewables capacity additions",
+      "value": 692,
+      "unit": "GW",
+      "period": "2025",
+      "status": "FACT_ESTIMATE",
+      "source": "https://www.irena.org/Publications/2026/Mar/Renewable-capacity-statistics-2026",
+      "note": "IRENA series."
+    },
+    {
+      "id": "energy.solar_capacity_additions_irena",
+      "label": "Solar capacity additions",
+      "value": 510,
+      "unit": "GW",
+      "period": "2025",
+      "status": "FACT_ESTIMATE",
+      "source": "https://www.irena.org/Publications/2026/Mar/Renewable-capacity-statistics-2026",
+      "note": "IRENA series; approximately three quarters of new renewable capacity."
+    },
+    {
+      "id": "energy.renewable_capacity_additions_iea",
+      "label": "Renewables capacity additions",
+      "value": 800,
+      "unit": "GW",
+      "period": "2025",
+      "status": "IEA_ESTIMATE",
+      "source": "https://www.iea.org/reports/global-energy-review-2026/technology-solar-pv-and-wind",
+      "note": "IEA series differs from IRENA; do not combine or average without reconciling methodology."
+    },
+    {
+      "id": "energy.renewables_generation_share",
+      "label": "Renewables share of global electricity generation",
+      "value": 34,
+      "unit": "percent",
+      "period": "2025",
+      "status": "IEA_ESTIMATE",
+      "source": "https://www.iea.org/reports/global-energy-review-2026/electricity-supply"
+    },
+    {
+      "id": "energy.low_emissions_generation_share",
+      "label": "Renewables plus nuclear share of electricity generation",
+      "value": 43,
+      "unit": "percent",
+      "period": "2025",
+      "status": "IEA_ESTIMATE",
+      "source": "https://www.iea.org/reports/global-energy-review-2026/electricity-supply"
+    },
+    {
+      "id": "energy.battery_capacity_additions",
+      "label": "New battery storage power capacity",
+      "value": 108,
+      "unit": "GW",
+      "period": "2025",
+      "status": "IEA_ESTIMATE",
+      "source": "https://www.iea.org/reports/global-energy-review-2026/technology-battery-storage",
+      "note": "Power capacity, not energy capacity in GWh."
+    },
+    {
+      "id": "climate.october_anomaly",
+      "label": "Global temperature anomaly",
+      "value": 1.75,
+      "unit": "degrees C above 1850-1900",
+      "period": "2026-10",
+      "status": "OBSERVATION_ERA5",
+      "source": "https://climate.copernicus.eu/surface-air-temperature-october-2026"
+    },
+    {
+      "id": "climate.annual_2026_forecast_low",
+      "label": "2026 annual global temperature anomaly lower bound",
+      "value": 1.56,
+      "unit": "degrees C above 1850-1900",
+      "period": "2026 annual forecast",
+      "status": "FORECAST",
+      "source": "https://climate.copernicus.eu/copernicus-warmest-october-record-2026-virtually-certain-exceed-15degc"
+    },
+    {
+      "id": "climate.annual_2026_forecast_high",
+      "label": "2026 annual global temperature anomaly upper bound",
+      "value": 1.61,
+      "unit": "degrees C above 1850-1900",
+      "period": "2026 annual forecast",
+      "status": "FORECAST",
+      "source": "https://climate.copernicus.eu/copernicus-warmest-october-record-2026-virtually-certain-exceed-15degc"
+    },
+    {
+      "id": "climate.remaining_carbon_budget_15c",
+      "label": "Remaining carbon budget at 50 percent likelihood for 1.5 C",
+      "value": 170,
+      "unit": "Gt CO2",
+      "period": "start of 2026",
+      "status": "MODEL_ESTIMATE",
+      "source": "https://essd.copernicus.org/articles/18/3211/2026/",
+      "note": "Approximately four years at 2025 emissions rate; uncertainty remains."
+    },
+    {
+      "id": "nature.restoration_area",
+      "label": "Area under documented restoration",
+      "value": 252,
+      "unit": "million hectares",
+      "period": "2026",
+      "status": "FACT_REPORTED",
+      "source": "https://www.unep.org/en/news-and-stories/press-release/nature-making-comeback-world-must-move-faster-meet-restoration"
+    },
+    {
+      "id": "fusion.nif_target_yield",
+      "label": "NIF fusion energy yield",
+      "value": 7.9,
+      "unit": "MJ",
+      "period": "2026-06-20",
+      "status": "EXPERIMENTAL_RESULT",
+      "source": "https://lasers.llnl.gov/science/achieving-fusion-ignition",
+      "note": "Target gain approximately 3.8; not net facility electricity."
+    },
+    {
+      "id": "space.voyager_one_light_day",
+      "label": "Voyager 1 projected one-light-day distance",
+      "value": 1,
+      "unit": "light-day",
+      "period": "2026-11-18",
+      "status": "NASA_PROJECTION",
+      "source": "https://science.nasa.gov/mission/voyager/where-are-voyager-1-and-voyager-2-now/"
+    },
+    {
+      "id": "space.mars_surface_pressure",
+      "label": "Mars surface pressure relative to Earth",
+      "value": 0.6,
+      "unit": "percent",
+      "period": "NASA reference estimate",
+      "status": "FACT_APPROXIMATE",
+      "source": "https://www.nasa.gov/news-release/mars-terraforming-not-possible-using-present-day-technology/"
+    }
+  ]
+}
