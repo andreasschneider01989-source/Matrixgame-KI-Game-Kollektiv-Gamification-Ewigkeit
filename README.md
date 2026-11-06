@@ -76,6 +76,12 @@ A new research note integrates social connection, respectful dating and communic
 
 - [Social connection, wellbeing and safe self-regulation — research and design note](research/MATRIXGAME_CONNECTION_WELLBEING_SAFETY_2026-11-06.md)
 
+## Potential to progress — inspiration and research brief (6 November 2026)
+
+A concise synthesis of current energy, AI-for-science, restoration, health and climate developments, translated into evidence-aware Matrixgame quests and a practical collaboration model.
+
+- [Matrixgame Infinity — From potential to progress](research/MATRIXGAME_POTENTIAL_TO_PROGRESS_2026-11-06.md)
+
 ## Open implementation quests
 
 The initial work is tracked as separate, reviewable GitHub issues:
