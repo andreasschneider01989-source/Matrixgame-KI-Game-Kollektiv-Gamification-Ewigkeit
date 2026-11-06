@@ -148,7 +148,7 @@ Quellen:
 
 **FACT:** Der TOP500-Rekord im Juni 2026 liegt beim System LineShine in Shenzhen bei rund 2,198 Exaflops im HPL-Benchmark. Das europäische JUPITER-System am Forschungszentrum Jülich erreicht auf derselben Rangliste 1 Exaflop und ist Europas erster Exascale-Supercomputer.
 
-Ein Exaflop entspricht einer Trillion Fließkommaoperationen pro Sekunde in der üblichen deutschen Zahlwortsystematik? Präziser: 10^18 Operationen pro Sekunde. Der TOP500-Wert bezieht sich auf einen spezifischen Benchmark und darf nicht als allgemeine Geschwindigkeit jeder Anwendung gelesen werden.
+Ein Exaflop entspricht 10^18 Fließkommaoperationen pro Sekunde. Der TOP500-Wert bezieht sich auf einen spezifischen Benchmark und darf nicht als allgemeine Geschwindigkeit jeder Anwendung gelesen werden.
 
 **Für Deutschland besonders interessant:** JUPITER kann für Klimasimulationen, Materialforschung, digitale Zwillinge, medizinische Modellierung und KI-Anwendungen genutzt werden. Das ist eine konkrete wissenschaftliche Infrastruktur in erreichbarer europäischer Nähe.
 
