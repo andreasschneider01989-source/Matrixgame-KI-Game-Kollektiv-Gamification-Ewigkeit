@@ -70,6 +70,12 @@ The following research documents extend the Universal Knowledge Engine with a da
 
 The report distinguishes observations, estimates, forecasts, models, hypotheses, and fiction. Metrics must be interpreted with their own period, unit, definition, and source. In particular, installed capacity is not electricity generation; target gain is not net fusion-plant output; and a one-year temperature anomaly is not identical to a long-term warming level.
 
+## Social connection, wellbeing and safety — 6 November 2026
+
+A new research note integrates social connection, respectful dating and communication, emotion regulation, recovery-aware safeguards, and non-addictive gamification. It separates evidence from design models and open questions; it is a public concept document, not a clinical guide or an implemented feature.
+
+- [Social connection, wellbeing and safe self-regulation — research and design note](research/MATRIXGAME_CONNECTION_WELLBEING_SAFETY_2026-11-06.md)
+
 ## Open implementation quests
 
 The initial work is tracked as separate, reviewable GitHub issues:
