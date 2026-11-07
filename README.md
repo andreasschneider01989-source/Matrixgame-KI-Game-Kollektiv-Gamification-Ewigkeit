@@ -76,6 +76,13 @@ A new research note integrates social connection, respectful dating and communic
 
 - [Social connection, wellbeing and safe self-regulation — research and design note](research/MATRIXGAME_CONNECTION_WELLBEING_SAFETY_2026-11-06.md)
 
+## Human flourishing without coercion — birth safety and anti-dystopia research (7 November 2026)
+
+A research and design module connecting evidence-informed birth safety, sustainable wellbeing, the fictional drug Soma, and the autonomy lessons of Aldous Huxley's *Brave New World*. It separates facts, models, hypotheses and open questions; the module is a research concept, not a medical guide or an implemented feature.
+
+- [Human Flourishing ohne Zwang — research and design note](research/MATRIXGAME_PARADISE_WITHOUT_COERCION_2026-11-07.md)
+- [Kanban-ready implementation and evidence-review issue #21](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/21)
+
 ## Potential to progress — inspiration and research brief (6 November 2026)
 
 A concise synthesis of current energy, AI-for-science, restoration, health and climate developments, translated into evidence-aware Matrixgame quests and a practical collaboration model.
