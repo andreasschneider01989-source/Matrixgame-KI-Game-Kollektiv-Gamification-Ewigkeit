@@ -161,24 +161,20 @@ Eine humane Zukunftsvision wäre:
 
 **MODEL – Kausalkette für gesellschaftliche Innovation**
 
-~~~text
-MENSCHLICHES BEDÜRFNIS
-        ↓
-PROBLEM GENAU BESCHREIBEN
-        ↓
-FAKTEN / UNSICHERHEIT / WERTE TRENNEN
-        ↓
-MEHRERE LÖSUNGEN ENTWERFEN
-        ↓
-RISIKEN, RECHTE UND NEBENWIRKUNGEN PRÜFEN
-        ↓
-FREIWILLIGER, REVERSIBLER PILOT
-        ↓
-ERGEBNISSE UND SCHÄDEN MESSEN
-        ↓
-UNABHÄNGIG ÜBERPRÜFEN
-        ↓
-VERBESSERN, TEILEN ODER VERWERFEN
+~~~mermaid
+flowchart TD
+    A["Menschliches Bedürfnis"] --> B["Problem genau beschreiben"]
+    B --> C["Fakten, Unsicherheit und Werte trennen"]
+    C --> D["Mehrere Lösungen entwerfen"]
+    D --> E["Rechte, Risiken und Nebenwirkungen prüfen"]
+    E --> F["Freiwilliger, reversibler Pilot"]
+    F --> G["Nutzen und Schäden messen"]
+    G --> H["Unabhängig überprüfen"]
+    H --> I{"Trägt die Evidenz?"}
+    I -->|Ja| J["Verbessern und offen teilen"]
+    I -->|Nein / unklar| K["Überarbeiten oder stoppen"]
+    J --> A
+    K --> C
 ~~~
 
 ### 6.1 Mehrdimensionale Zielgrößen
