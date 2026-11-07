@@ -2,6 +2,7 @@ name: LUMINI MVP
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - "matrixgame-language/**"
       - ".github/workflows/lumini-mvp.yml"
