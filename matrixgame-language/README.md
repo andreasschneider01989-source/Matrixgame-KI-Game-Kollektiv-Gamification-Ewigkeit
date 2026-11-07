@@ -20,13 +20,13 @@ This is a compiler prototype, not a complete scientific simulator. Unit consiste
 Requires JDK 21 or newer.
 
 ```sh
-./test.sh
+sh test.sh
 ```
 
 ## Compile a model
 
 ```sh
-./run.sh examples/density.lumini
+sh run.sh examples/density.lumini
 ./run.sh examples/density.lumini --out build/density-model-ir.json
 ```
 
