@@ -76,6 +76,13 @@ A new research note integrates social connection, respectful dating and communic
 
 - [Social connection, wellbeing and safe self-regulation — research and design note](research/MATRIXGAME_CONNECTION_WELLBEING_SAFETY_2026-11-06.md)
 
+## LUMINI compiler, simulation and career scenario lab — 7 November 2026
+
+A proposed compiler and modeling architecture that translates reviewed LUMINI model descriptions into typed, unit-checked Model IR, then into reproducible runs through registered simulation engines. The roadmap connects the Java 21 Matrix Core, the older physics simulator, measured datasets, evidence tracking, and privacy-preserving career scenarios. The compiler and DSL are design proposals, not implemented features.
+
+- [LUMINI — compiler, modeling, simulation and career engine architecture](docs/LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md)
+- [Engineering Kanban and acceptance criteria — issue #22](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/22)
+
 ## Human flourishing without coercion — birth safety and anti-dystopia research (7 November 2026)
 
 A research and design module connecting evidence-informed birth safety, sustainable wellbeing, the fictional drug Soma, and the autonomy lessons of Aldous Huxley's *Brave New World*. It separates facts, models, hypotheses and open questions; the module is a research concept, not a medical guide or an implemented feature.
