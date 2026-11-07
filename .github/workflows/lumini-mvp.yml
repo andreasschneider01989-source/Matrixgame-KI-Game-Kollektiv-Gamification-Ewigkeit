@@ -54,3 +54,10 @@ jobs:
       - name: Compile the valid example to Model IR
         working-directory: matrixgame-language
         run: sh run.sh examples/density.lumini --out build/density-model-ir.json
+      - name: Confirm invalid example is rejected
+        working-directory: matrixgame-language
+        run: |
+          if sh run.sh examples/invalid-units.lumini; then
+            echo "Expected the invalid unit example to fail compilation."
+            exit 1
+          fi
