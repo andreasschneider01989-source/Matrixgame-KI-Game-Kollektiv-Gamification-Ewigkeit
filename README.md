@@ -76,6 +76,13 @@ A new research note integrates social connection, respectful dating and communic
 
 - [Social connection, wellbeing and safe self-regulation — research and design note](research/MATRIXGAME_CONNECTION_WELLBEING_SAFETY_2026-11-06.md)
 
+## Positive Change Lab — 7 November 2026
+
+A proposed voluntary micro-experiment framework connecting recovery, learning, social connection, and practical environmental improvements. It prioritizes user choice, small reversible actions, reflection, privacy, and recovery-aware gamification. It is a design specification, not an implemented wellbeing product.
+
+- [Positive Change Lab — design specification v0.1](docs/POSITIVE_CHANGE_LAB_2026-11-07.md)
+- [Implementation design issue #24](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/24)
+
 ## LUMINI compiler, simulation and career scenario lab — 7 November 2026
 
 A proposed compiler and modeling architecture that translates reviewed LUMINI model descriptions into typed, unit-checked Model IR, then into reproducible runs through registered simulation engines. The roadmap connects the Java 21 Matrix Core, the older physics simulator, measured datasets, evidence tracking, and privacy-preserving career scenarios. The compiler and DSL are design proposals, not implemented features.
