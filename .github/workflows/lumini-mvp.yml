@@ -20,10 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # The historical repository contains legacy filenames that exceed
-          # Linux filesystem limits. Only this isolated module is required.
+          # Non-cone patterns avoid checking out long legacy filenames at the repository root.
+          sparse-checkout-cone-mode: false
           sparse-checkout: |
-            matrixgame-language
+            /matrixgame-language/**
       - name: Set up Java 21
         uses: actions/setup-java@v4
         with:
