@@ -13,6 +13,8 @@ A first, dependency-free Java 21 prototype for a restricted modelling language.
 - line/column diagnostics;
 - no arbitrary Java, shell, file, or network execution from model files.
 
+CI downloads only the files in this module; it does not check out the repository's historical root archives.
+
 This is a compiler prototype, not a complete scientific simulator. Unit consistency is necessary but does not prove that a physical equation is scientifically valid.
 
 ## Build and test
@@ -27,7 +29,7 @@ sh test.sh
 
 ```sh
 sh run.sh examples/density.lumini
-./run.sh examples/density.lumini --out build/density-model-ir.json
+sh run.sh examples/density.lumini --out build/density-model-ir.json
 ```
 
 ## Negative example
@@ -35,7 +37,7 @@ sh run.sh examples/density.lumini
 `examples/invalid-units.lumini` intentionally adds mass and length. The compiler must reject it.
 
 ```sh
-./run.sh examples/invalid-units.lumini
+sh run.sh examples/invalid-units.lumini
 ```
 
 ## Example language
