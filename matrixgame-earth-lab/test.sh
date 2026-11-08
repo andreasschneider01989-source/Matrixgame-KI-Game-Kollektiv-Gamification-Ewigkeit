@@ -6,3 +6,5 @@ find src/test/java -name '*.java' -print > build/test-sources.txt
 javac --release 21 -Xlint:all -cp build/classes -d build/test-classes @build/test-sources.txt
 java -cp build/classes:build/test-classes de.matrixgame.earth.GaiaWaterBucketSelfTest
 java -cp build/classes:build/test-classes de.matrixgame.earth.GaiaForestWaterCycleSelfTest
+java -cp build/classes:build/test-classes de.matrixgame.earth.GaiaForcingSeriesSelfTest
+java -cp build/classes:build/test-classes de.matrixgame.earth.GaiaRunManifestSelfTest
