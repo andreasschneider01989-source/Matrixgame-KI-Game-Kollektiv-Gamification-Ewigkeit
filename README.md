@@ -262,3 +262,16 @@ mvn clean package
 # Ausführen
 java -jar target/matrixgame-simulator-1.0.0.jar
 ```
+
+## KIM source registry and cross-platform research — 9 November 2026
+
+A small privacy-aware source-ingestion slice is now available on the Gaia draft branch:
+
+- [KIM source registry (JSON)](research/KIM_SOURCE_REGISTRY_2026-11-09.json)
+- [Registry schema (JSON Schema 2020-12)](schemas/kim-source-registry.schema.json)
+- [Dependency-free validator](scripts/validate_kim_source_registry.py)
+- [Cross-platform research synthesis](docs/GENESIS_COMMONS_CROSS_PLATFORM_SYNTHESIS_2026-11-09.md)
+- [KIM interoperability atlas](docs/KIM_INTEROPERABILITY_ATLAS_2026-11-08.md)
+
+The registry is a manually curated snapshot, not a live crawler. It distinguishes public source links from private workspace metadata and does not publish private Drive, Docs, Sheets, notebook, chat or Discord URLs. Its validator and focused CI workflow are intended to make source discovery reusable without silently promoting title-only pages or copied AI context into verified evidence.
+
