@@ -96,6 +96,17 @@ A concise synthesis of current energy, AI-for-science, restoration, health and c
 
 - [Matrixgame Infinity — From potential to progress](research/MATRIXGAME_POTENTIAL_TO_PROGRESS_2026-11-06.md)
 
+## Gaia Commons — Earth systems, astrobiology and water-cycle MVP (8 November 2026)
+
+The Gaia research chapter is extended with a review of new astrobiology research, the supplied Harald Lesch transcript, rainforest monitoring, responsible AI-energy accounting, and a staged Earth-systems roadmap.
+
+- [Gaia Commons — astrobiology, Earth systems and responsible AI](docs/GAIA_ASTROBIOLOGY_AI_AND_EARTH_SIMULATION_2026-11-08.md)
+- [Matrixgame Earth Lab — executable water-cycle MVP](matrixgame-earth-lab/README.md)
+- [Planet Earth — Habitability and Evolution Project](docs/PLANET_EARTH_HABITABILITY_AND_EVOLUTION.md)
+- [Earth Project implementation issue #15](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/15)
+
+The Java 21 prototype is a single-bucket water-balance model with synthetic demonstration inputs and deterministic self-tests. It is not a validated rainforest or climate prediction model. CI status must be checked on the pull request before calling the implementation tested.
+
 ## Open implementation quests
 
 The initial work is tracked as separate, reviewable GitHub issues:
