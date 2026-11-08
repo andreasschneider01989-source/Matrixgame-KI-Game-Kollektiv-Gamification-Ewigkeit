@@ -36,8 +36,12 @@ jobs:
             matrixgame-earth-lab/src/main/java/de/matrixgame/earth/GaiaWaterBucketDemo.java
             matrixgame-earth-lab/src/main/java/de/matrixgame/earth/GaiaReviewCouncil.java
             matrixgame-earth-lab/src/main/java/de/matrixgame/earth/GaiaForestWaterCycle.java
+            matrixgame-earth-lab/src/main/java/de/matrixgame/earth/GaiaForcingSeries.java
+            matrixgame-earth-lab/src/main/java/de/matrixgame/earth/GaiaRunManifest.java
             matrixgame-earth-lab/src/test/java/de/matrixgame/earth/GaiaWaterBucketSelfTest.java
             matrixgame-earth-lab/src/test/java/de/matrixgame/earth/GaiaForestWaterCycleSelfTest.java
+            matrixgame-earth-lab/src/test/java/de/matrixgame/earth/GaiaForcingSeriesSelfTest.java
+            matrixgame-earth-lab/src/test/java/de/matrixgame/earth/GaiaRunManifestSelfTest.java
             matrixgame-earth-lab/build.sh
             matrixgame-earth-lab/test.sh
             matrixgame-earth-lab/run.sh
