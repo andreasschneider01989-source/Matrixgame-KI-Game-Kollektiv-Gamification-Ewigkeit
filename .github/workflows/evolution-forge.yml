@@ -1,0 +1,80 @@
+name: Evolution Forge integration
+
+on:
+  push:
+    branches:
+      - main
+      - feature/evolution-forge-bridge
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  python-and-java-bridge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out only simulator and test sources
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            /.github/workflows/
+            /python/evolution_forge/
+            /src/main/java/de/matrixgame/evolution/
+            /src/test/java/de/matrixgame/evolution/
+            /web/
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Check Infinity Canvas JavaScript and run physics smoke tests
+        run: |
+          set -e
+          for n in 5 6 7 8; do node web/tests/gravitylab_smoke.cjs web/Matrixgame_InfinityCanvas_GravityLab.html $n; done
+
+      - name: Test 3D Gravity Lab with 5 to 8 outer bodies
+        run: |
+          set -e
+          for n in 5 6 7 8; do node web/tests/gravitylab3d_smoke.cjs web/Matrixgame_GravityLab_3D.html $n; done
+
+      - name: Test 2D Gravity Cluster Lab
+        run: node web/tests/gravitycluster2d_smoke.cjs web/Matrixgame_GravityClusterLab_2D.html
+
+      - name: Install Python dependencies
+        run: python -m pip install "numpy>=2.1,<3" "matplotlib>=3.9,<4" "pytest>=8.3,<9"
+
+      - name: Run standard and optimized icy ocean experiments
+        run: |
+          python python/evolution_forge/evolution_forge.py --config python/evolution_forge/experiments/icy_ocean_standard.json --out build/icy-ocean-standard
+          python python/evolution_forge/evolution_forge.py --config python/evolution_forge/experiments/icy_ocean_energy_cooperation.json --out build/icy-ocean-optimized
+          echo "=== Icy ocean standard ==="
+          cat build/icy-ocean-standard/summary.json
+          echo "=== Icy ocean optimized ==="
+          cat build/icy-ocean-optimized/summary.json
+
+      - name: Run Python tests
+        env:
+          PYTHONPATH: python/evolution_forge
+        run: python -m pytest -q python/evolution_forge/tests
+
+      - name: Compile Java 11-compatible bridge and smoke test
+        run: |
+          mkdir -p build/classes
+          javac --release 11 -d build/classes src/main/java/de/matrixgame/evolution/*.java src/test/java/de/matrixgame/evolution/PythonEvolutionBridgeSmokeTest.java
+
+      - name: Run Java to Python smoke test
+        run: |
+          java -cp build/classes de.matrixgame.evolution.PythonEvolutionBridgeSmokeTest python python/evolution_forge/evolution_forge.py build/evolution-runs

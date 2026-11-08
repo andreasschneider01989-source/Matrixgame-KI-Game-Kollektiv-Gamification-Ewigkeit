@@ -1,0 +1,206 @@
+{
+  "schema_version": "1.0",
+  "package_id": "matrixgame-gravity-cluster-phase-sweep-2026-11-08",
+  "created_at": "2026-11-08",
+  "source": {
+    "uploaded_filename": "GravityClusterResearchDashboard_Replay_v2(1).html",
+    "original_html_sha256": "f2af785d085d6b55f30b2e7599da7ad8539cb32625ea6acafd322e79c5a4057a",
+    "embedded_records_sha256": "9064a32a978b6ce0ff898408b626768c0b6d7e6819a4065d48542cd7be49adb4",
+    "generator_script_path": "experiments/gravity_cluster_phase_sweep.py",
+    "generator_script_sha256_reported_in_source": "ec2123cdb571c1b66186b966c684b7c83b3b1aa913c84d3a9adac90c8df545e6",
+    "generator_hash_reverified": false,
+    "replay_v2_1_local_export_sha256": "4c23683ed39f955235278760f1e671ec685214041bd77045b67c5a60bfe1d992",
+    "replay_v2_1_github_blob_sha1": "8fdb15b3ce80af752b55ec96a08dbcc76cd86a52"
+  },
+  "model": {
+    "experiment": "gravity_cluster_phase_sweep",
+    "model": "classical_newtonian_n_body_plummer_softened",
+    "integrator": "velocity_verlet_fixed_dt",
+    "initialization_mode": "isolated_equilibrium",
+    "total_runs": 189,
+    "dt": 0.002,
+    "steps": 26000,
+    "script_sha256": "ec2123cdb571c1b66186b966c684b7c83b3b1aa913c84d3a9adac90c8df545e6",
+    "variant_summaries": {
+      "A_0sat": {
+        "runs": 7,
+        "contact_runs": 3,
+        "contact_fraction_of_sampled_grid": 0.42857142857142855,
+        "minimum_core_distance": 7.99482339,
+        "maximum_core_distance": 11.50044215,
+        "max_energy_drift_collision_free": 1.3256358568602932e-7,
+        "max_relative_linear_momentum_drift": 0,
+        "interpretation": "Descriptive fraction of this finite parameter grid; not a universal probability."
+      },
+      "B_1sat": {
+        "runs": 91,
+        "contact_runs": 37,
+        "contact_fraction_of_sampled_grid": 0.4065934065934066,
+        "minimum_core_distance": 7.99270576,
+        "maximum_core_distance": 11.64229964,
+        "max_energy_drift_collision_free": 0.0000010092036707924774,
+        "max_relative_linear_momentum_drift": 1.7544059300599135e-14,
+        "interpretation": "Descriptive fraction of this finite parameter grid; not a universal probability."
+      },
+      "C_2sat": {
+        "runs": 91,
+        "contact_runs": 52,
+        "contact_fraction_of_sampled_grid": 0.5714285714285714,
+        "minimum_core_distance": 7.99249557,
+        "maximum_core_distance": 11.17434775,
+        "max_energy_drift_collision_free": 3.1511090866661486e-7,
+        "max_relative_linear_momentum_drift": 1.596685432629202e-14,
+        "interpretation": "Descriptive fraction of this finite parameter grid; not a universal probability."
+      }
+    },
+    "dt_quality_control": [
+      {
+        "base_run_id": "A_b28_phase000_dt0.002",
+        "base": {
+          "dt": 0.002,
+          "min_core_distance_before_contact_or_end": 7.99986941,
+          "core_contact": true,
+          "first_contact_time": 38.224
+        },
+        "dt_0.001": {
+          "min_core_distance_before_contact_or_end": 7.99986832,
+          "core_contact": true,
+          "first_contact_time": 38.224,
+          "energy_drift": 0.00001506509309997558,
+          "linear_momentum_drift": 0,
+          "classification_switch": false
+        },
+        "dt_0.0005": {
+          "min_core_distance_before_contact_or_end": 7.99986805,
+          "core_contact": true,
+          "first_contact_time": 38.224,
+          "energy_drift": 0.000003766274049842505,
+          "linear_momentum_drift": 0,
+          "classification_switch": false
+        },
+        "numerically_sensitive": false
+      },
+      {
+        "base_run_id": "B_b28_phase270_dt0.002",
+        "base": {
+          "dt": 0.002,
+          "min_core_distance_before_contact_or_end": 7.9998352,
+          "core_contact": true,
+          "first_contact_time": 38.244
+        },
+        "dt_0.001": {
+          "min_core_distance_before_contact_or_end": 7.99983194,
+          "core_contact": true,
+          "first_contact_time": 38.244,
+          "energy_drift": 8.304657144364134e-7,
+          "linear_momentum_drift": 1.08156950496412e-14,
+          "classification_switch": false
+        },
+        "dt_0.0005": {
+          "min_core_distance_before_contact_or_end": 7.99983113,
+          "core_contact": true,
+          "first_contact_time": 38.244,
+          "energy_drift": 2.0761447418285188e-7,
+          "linear_momentum_drift": 1.8781395367652353e-14,
+          "classification_switch": false
+        },
+        "numerically_sensitive": false
+      },
+      {
+        "base_run_id": "B_b26_phase270_dt0.002",
+        "base": {
+          "dt": 0.002,
+          "min_core_distance_before_contact_or_end": 7.99979386,
+          "core_contact": true,
+          "first_contact_time": 37.176
+        },
+        "dt_0.001": {
+          "min_core_distance_before_contact_or_end": 7.99979272,
+          "core_contact": true,
+          "first_contact_time": 37.176,
+          "energy_drift": 0.00000218708620896811,
+          "linear_momentum_drift": 5.509837470375683e-15,
+          "classification_switch": false
+        },
+        "dt_0.0005": {
+          "min_core_distance_before_contact_or_end": 7.99979243,
+          "core_contact": true,
+          "first_contact_time": 37.176,
+          "energy_drift": 5.467765119958616e-7,
+          "linear_momentum_drift": 1.5116150505634283e-14,
+          "classification_switch": false
+        },
+        "numerically_sensitive": false
+      }
+    ],
+    "interpretation_note": "Contact fractions apply only to the sampled (impact, phase) grid; not universal probabilities.",
+    "model_parameters": {
+      "G": 1,
+      "plummer_softening_epsilon": 0.5,
+      "total_cluster_mass": 100,
+      "satellite_mass": 4,
+      "orbital_radius": 8,
+      "core_radius_fixed": 4,
+      "core_contact_distance": 8,
+      "impact_vertical_offset_factor": 0.5,
+      "cluster_a": {
+        "center_x": -50,
+        "center_vx": 1,
+        "center_vy": 0
+      },
+      "cluster_b": {
+        "center_x": 50,
+        "center_vx": -1,
+        "center_vy": 0
+      },
+      "phase_list_deg": [
+        0,
+        30,
+        60,
+        90,
+        120,
+        150,
+        180,
+        210,
+        240,
+        270,
+        300,
+        330,
+        46
+      ],
+      "impact_parameters": [
+        24,
+        26,
+        28,
+        29,
+        30,
+        32,
+        34
+      ],
+      "post_merger_observation_steps_generator": 10000,
+      "note": "Browser replay integrates the main encounter; post-merger satellite hints were generated separately by the Python sweep."
+    },
+    "model_version": "2.1.0",
+    "parameter_manifest_status": "explicitly recorded from companion generator and replay implementation",
+    "source_artifact_sha256": "f2af785d085d6b55f30b2e7599da7ad8539cb32625ea6acafd322e79c5a4057a",
+    "embedded_records_sha256": "9064a32a978b6ce0ff898408b626768c0b6d7e6819a4065d48542cd7be49adb4",
+    "generator": {
+      "path": "experiments/gravity_cluster_phase_sweep.py",
+      "sha256_reported_by_original_dashboard": "ec2123cdb571c1b66186b966c684b7c83b3b1aa913c84d3a9adac90c8df545e6",
+      "sha256_verification_status": "reported in source metadata; not independently re-hashed during packaging"
+    }
+  },
+  "interpretation": {
+    "status": "MODEL",
+    "claim": "Finite-grid encounter outcomes for the stated classical softened Newtonian model.",
+    "not_claimed": [
+      "universal collision probabilities",
+      "gravitational screening or repulsion",
+      "atomic or molecular structure",
+      "chemical bonding or nuclear fusion",
+      "validation of real astronomical systems"
+    ],
+    "merger": "perfectly inelastic core-collision proxy",
+    "dt_qc": "Three threshold-near cases were repeated at dt=0.002, 0.001 and 0.0005 without contact-classification changes; this is a spot check, not full convergence analysis."
+  }
+}

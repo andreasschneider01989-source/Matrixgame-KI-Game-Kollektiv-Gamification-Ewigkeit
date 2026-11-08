@@ -232,3 +232,39 @@ mvn clean package
 # Ausführen
 java -jar target/matrixgame-simulator-1.0.0.jar
 ```
+
+
+---
+
+## 🔖 Aktueller Forschungsstand und Wiederaufnahme
+
+Der zentrale Pausen- und Wiederaufnahme-Punkt (04.11.2026) enthält den Stand der Evolution Forge, Gravity Labs, 189er-Phasenstudie, 80er-Geschwindigkeitsstudie, Browser-Dashboard, offenen Fragen und priorisierten nächsten Schritte:
+
+- [Projekt-Pausen- und Wiederaufnahmeprotokoll](docs/PROJECT_PAUSE_RESUME_CHECKPOINT_20261104.md)
+- [Maschinenlesbare Ergebnisübersicht](results/project_checkpoint_20261104.json)
+- [Offener Entwicklungs-PR #4](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/pull/4)
+
+Der Pull Request ist ein Draft und noch nicht in `main` übernommen. Vor einer Wiederaufnahme bitte Branch und PR erneut prüfen.
+
+## Gravity Cluster Dashboard v2.1 — reproducible handoff (8 Nov 2026)
+
+The uploaded 189-run replay dashboard has a versioned, self-contained entry point and machine-readable exports:
+
+- [Interactive Replay Dashboard v2.1](web/GravityClusterResearchDashboard_Replay_v2_1.html)
+- [189-run JSON dataset and manifest](results/gravity_cluster_phase_sweep_dashboard_v2_20261108.json)
+- [189-run CSV export](results/gravity_cluster_phase_sweep_dashboard_v2_20261108.csv)
+- [Replay provenance manifest](results/gravity_cluster_replay_v2_1_manifest_20261108.json)
+- [Package integrity verifier](experiments/verify_gravity_cluster_dashboard_package.py)
+- [Audit and resume guide](docs/GRAVITY_CLUSTER_REPLAY_V2_AUDIT_20261108.md)
+- [Research pack index](docs/GRAVITY_CLUSTER_RESEARCH_PACK_20261108.md)
+
+This package reuses the existing generator, tests, protocol and results under `experiments/` and `docs/`. Variant fractions remain descriptive finite-grid outcomes, not universal probabilities. The dashboard replay is a second numerical execution, not a saved video or physical validation.
+
+Verify locally with:
+
+```bash
+python experiments/verify_gravity_cluster_dashboard_package.py
+```
+
+The PR remains a Draft and is not merged to `main`.
+
