@@ -1,0 +1,50 @@
+name: Gravity Cluster Data Package
+on:
+  push:
+    branches:
+      - feature/evolution-forge-bridge
+    paths:
+      - "web/GravityClusterResearchDashboard_Replay_v2_1.html"
+      - "results/gravity_cluster_phase_sweep_dashboard_v2_20261108.json"
+      - "results/gravity_cluster_phase_sweep_dashboard_v2_20261108.csv"
+      - "experiments/verify_gravity_cluster_dashboard_package.py"
+      - ".github/workflows/gravity-cluster-data-package.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "web/GravityClusterResearchDashboard_Replay_v2_1.html"
+      - "results/gravity_cluster_phase_sweep_dashboard_v2_20261108.json"
+      - "results/gravity_cluster_phase_sweep_dashboard_v2_20261108.csv"
+      - "experiments/verify_gravity_cluster_dashboard_package.py"
+      - ".github/workflows/gravity-cluster-data-package.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify JSON, CSV and embedded HTML records
+        run: python experiments/verify_gravity_cluster_dashboard_package.py
+      - name: Check dashboard JavaScript syntax
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          html = Path("web/GravityClusterResearchDashboard_Replay_v2_1.html").read_text(encoding="utf-8")
+          scripts = re.findall(r"<script>(.*?)</script>", html, flags=re.S)
+          if not scripts:
+              raise SystemExit("No inline dashboard script found")
+          Path("/tmp/gravity-dashboard.js").write_text("\n".join(scripts), encoding="utf-8")
+          PY
+          node --check /tmp/gravity-dashboard.js
