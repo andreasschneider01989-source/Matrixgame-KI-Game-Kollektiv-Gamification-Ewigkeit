@@ -24,7 +24,7 @@ public final class GaiaRunManifestSelfTest {
         if (json.indexOf("\"alpha\"") > json.indexOf("\"zeta\"")) {
             throw new AssertionError("Parameter keys are not sorted.");
         }
-        if (!json.contains("\"datasetLicense\": \"CC-BY-4.0\"")) {
+        if (!json.contains("\"datasetLicense\": \"not-applicable-synthetic-data\"")) {
             throw new AssertionError("Dataset licence was not serialised.");
         }
         if (!json.contains("\"missingDataPolicy\"")) {
