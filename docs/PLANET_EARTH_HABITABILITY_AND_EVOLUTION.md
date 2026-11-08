@@ -267,3 +267,14 @@ The ambition is not to maximize greenery, energy, biomass, or a single score. It
 **Make the planet more habitable. Make civilization wiser. Make the future worth living.**
 
 **Let's play and let's be.**
+
+
+## 16. Gaia Commons research and first executable slice — 8 November 2026
+
+The dated research review connects planetary chemical habitability, the faint young Sun, atmospheric oxygen and fire, AI energy demand, and the Fermi-paradox AI-filter hypothesis to the Earth project. It explicitly separates interior oxygen fugacity during core formation from atmospheric O2 partial pressure.
+
+- [Gaia Commons — astrobiology, Earth systems and responsible AI](GAIA_ASTROBIOLOGY_AI_AND_EARTH_SIMULATION_2026-11-08.md)
+- [Matrixgame Earth Lab — water-cycle MVP](../matrixgame-earth-lab/README.md)
+- [Earth Project implementation issue #15](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/15)
+
+The first code slice is a deterministic, single-bucket soil-water model with precipitation, infiltration, surface runoff, actual evapotranspiration, deep drainage, and a water-balance residual. It uses synthetic values and is classified as a prototype, not as a calibrated local or rainforest model. The next scientific gate is comparison with an authorized, documented, openly licensed observation dataset.
