@@ -78,3 +78,29 @@ The model must not be used to prescribe ecological interventions. Field actions 
 6. Connect the model to LUMINI Model IR and Matrix Core only through a versioned, reviewed adapter.
 
 See ../docs/GAIA_ASTROBIOLOGY_AI_AND_EARTH_SIMULATION_2026-11-08.md and ../docs/PLANET_EARTH_HABITABILITY_AND_EVOLUTION.md.
+
+## Dated forcing series and reproducible run manifests
+
+The 0.3 foundation adds:
+
+- `GaiaForcingSeries`: immutable daily rows with a calendar date and three forcing fields, all expressed in mm/day.
+- Missing observations remain explicit through `OptionalDouble.empty()`. They are not silently interpreted as zero.
+- Dates must be contiguous, and present values must be finite and non-negative. A simulation conversion fails on the first incomplete day.
+- `GaiaRunManifest`: a dependency-free provenance record containing run time, model/version, code revision, dataset identifier and URL, licence, spatial scope, temporal resolution, missing-data policy, parameters and initial state.
+- Stable JSON output with sorted parameter keys. The manifest records caller-supplied provenance; it does not authenticate the source or revision.
+
+These classes do not yet download, parse, or calibrate external datasets. That is a deliberate separation: data ingestion and scientific transformations must be reviewed and tested before being coupled to the hydrology model.
+
+### Candidate evidence sources for the next adapter
+
+- **DWD Climate Data Center:** station observations for Germany, including daily precipitation and meteorological variables. Historical and recent datasets have different quality-control states; retain station metadata and flag provisional recent records. [Dataset description](https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/daily/kl/DESCRIPTION_obsgermany-climate-daily-kl_en.pdf).
+- **Copernicus ERA5-Land:** global hourly land reanalysis from 1950 onward, including precipitation, evaporation, soil-water and energy variables; the catalogue lists a CC BY licence. Preserve product attribution and carefully handle accumulated-variable units and sign conventions. [Dataset catalogue](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land).
+- **CHIRPS v3:** near-global gridded precipitation with a daily product and public-domain terms. It is useful for tropical rainfall comparisons, but it supplies precipitation rather than a complete canopy/root-zone evapotranspiration forcing. [Earth Engine catalogue](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHC_CHIRPS_V3_DAILY_RNL).
+
+### Scientific safeguards before calibration
+
+1. A station point, a roughly 9 km reanalysis grid cell and a forest plot do not represent the same spatial footprint. Record the scale and do not treat them as interchangeable.
+2. Precipitation, potential evapotranspiration, actual evapotranspiration, canopy evaporation and root-zone uptake are distinct quantities. Do not copy an observed actual-ET value into a potential-ET input field.
+3. Evaporation variables in reanalysis products may be accumulated and use product-specific signs. Convert only from the official product documentation and record the transformation.
+4. No calibration or predictive claim is valid until the dataset, period, spatial support, missing-data treatment, parameters and independent validation metrics are documented.
+
