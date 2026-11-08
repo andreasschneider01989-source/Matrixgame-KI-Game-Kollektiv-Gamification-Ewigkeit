@@ -455,6 +455,36 @@
       "use": "discovery_only",
       "observed_at": "2026-11-09",
       "notes": "Generic article about the wiki concept, not a Gaia scientific source. Use encyclopedia references as a discovery layer and follow primary sources."
+    },
+    {
+      "id": "github.math.repo",
+      "name": "Mathematics and LUMINI language repository",
+      "platform": "GitHub",
+      "kind": "repository",
+      "url": "https://github.com/andreasschneider01989-source/Mathematics-in-the-Matrix-game-and-the-collective-AI-games-and-the-Lumini-language",
+      "access_status": "api_read",
+      "privacy_class": "public",
+      "review_state": "partial_review",
+      "license_status": "repository_license_check_required",
+      "claim_status": "FACT",
+      "use": "project_status",
+      "observed_at": "2026-11-09",
+      "notes": "README inspected. It contains historical proposals for modular repository structure, machine-readable records, knowledge graphs, API access and automated documentation. These are planning suggestions; they do not prove those services are deployed. Illustrative probability values in examples are not empirical measurements."
+    },
+    {
+      "id": "github.psych.repo",
+      "name": "Psychology and collective AI games repository",
+      "platform": "GitHub",
+      "kind": "repository",
+      "url": "https://github.com/andreasschneider01989-source/Psychologie-und-das-Matrixgame-und-die-Kollektiven-AI-Games",
+      "access_status": "api_read",
+      "privacy_class": "public",
+      "review_state": "title_only",
+      "license_status": "repository_license_check_required",
+      "claim_status": "OPEN",
+      "use": "discovery_only",
+      "observed_at": "2026-11-09",
+      "notes": "README contains only a short repository title and scope description. No deeper domain content was inspected; keep this repository separate until sources and privacy rules are reviewed."
     }
   ]
 }
