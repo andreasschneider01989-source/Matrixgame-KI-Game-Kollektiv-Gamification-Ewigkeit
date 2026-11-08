@@ -7,10 +7,11 @@
       "uploaded_filename": "GravityClusterResearchDashboard_Replay_v2(1).html",
       "original_html_sha256": "f2af785d085d6b55f30b2e7599da7ad8539cb32625ea6acafd322e79c5a4057a",
       "embedded_records_sha256": "9064a32a978b6ce0ff898408b626768c0b6d7e6819a4065d48542cd7be49adb4",
-      "replay_v2_1_html_sha256": "4c23683ed39f955235278760f1e671ec685214041bd77045b67c5a60bfe1d992",
       "generator_script_path": "experiments/gravity_cluster_phase_sweep.py",
       "generator_script_sha256_reported_in_source": "ec2123cdb571c1b66186b966c684b7c83b3b1aa913c84d3a9adac90c8df545e6",
-      "generator_hash_reverified": false
+      "generator_hash_reverified": false,
+      "replay_v2_1_local_export_sha256": "4c23683ed39f955235278760f1e671ec685214041bd77045b67c5a60bfe1d992",
+      "replay_v2_1_github_blob_sha1": "8fdb15b3ce80af752b55ec96a08dbcc76cd86a52"
     },
     "model": {
       "experiment": "gravity_cluster_phase_sweep",
