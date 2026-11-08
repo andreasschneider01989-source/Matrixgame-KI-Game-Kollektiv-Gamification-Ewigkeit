@@ -174,3 +174,70 @@ Therefore the present index is a source map, not a live synchronization service.
 4. Use the main Matrixgame repository as the integration hub; link specialized repositories instead of duplicating their source.
 5. Add a machine-readable source registry only after ownership, privacy class, license and review status are defined.
 6. Build a comment/discussion workflow with draft → human review → publish, never automatic publication.
+
+## 11. Additional browser-tab inventory — 8 November 2026
+
+This update records what was actually visible in the browser session. A visible title or link is discovery metadata, not proof that the linked source content has been read or scientifically checked.
+
+### Meta AI — Genesis Commons / Gaia Round 3
+
+Visible page title: **“Gaia Runde 3: Regenwald-Simulation”**. The page contains the transferred Genesis Commons campaign context: Gaia/Ares/Pelagia, the proposed collective specialist roles, research labels (FACT / MODEL / HYPOTHESIS / OPEN / FICTION / ACTION), the Lesch transcript, and previous Gaia development material.
+
+Status: visible and partly inspectable in the browser text view. The page appears to contain a pasted/transferred campaign and prior analysis. Do not count it as an independent Meta AI scientific review unless a separate Meta AI response with its own claims, sources and counterarguments is captured.
+
+Link: https://www.meta.ai/prompt/6e2d2274-596c-42c6-a7ea-77f666a5bc39
+
+### Google Earth — distinguish visualization from analysis
+
+The visible tab is currently a Google search results page for “google earth”, not a running Google Earth Engine analysis session.
+
+- Google Earth web entry point: https://earth.google.com/web
+- Google Earth web project/home view: https://earth.google.com/web/home
+- Google Earth site-analysis tools: https://earth.google.com/web/tools
+
+Use Google Earth for spatial inspection, map context and visualization. Do not treat visual inspection alone as a calibrated climate dataset. Google Earth Engine is a distinct geospatial processing platform; a future workflow should explicitly identify the selected dataset, collection ID, spatial/temporal filters, scale, units, code and export.
+
+Status: search results were visible; the Google Earth application itself and no Earth Engine script were inspected in this session.
+
+### Wikipedia — knowledge discovery layer
+
+Visible page: https://de.wikipedia.org/wiki/Wiki
+
+The current page is the general article about the wiki concept, not a specific climate or ecology article. Wikipedia can be a useful free discovery index and teaching surface. For Gaia facts, follow its references to primary papers, official datasets and authorities; do not cite the encyclopedia in place of the underlying measurement or paper when primary evidence is available.
+
+### Google Colab — notebook inventory
+
+Visible Colab home links include the following user notebooks:
+
+- [Matrixgame World Simulator Interaktiv Programming and Gamification and AI Game](https://colab.research.google.com/drive/15Brw6--Wi5Lc8ep94F8OgsZMZrKwx9HM)
+- [Simulator 04112026](https://colab.research.google.com/drive/1MI7xs-aVk7I_4BFoxulTBS_E6-uidHbM)
+- [Bewusstsein und Motivation und Kollektiv und Matrixgame](https://colab.research.google.com/drive/1ZXZ-iMOKqJjL1GDSBiDwPzK_2yHT7up-)
+- [Modellierung des Kollektiven Bewusstseins 2](https://colab.research.google.com/drive/1AA79BU6TDtcurrBpXVb4_rjK-foMvvz1)
+- [PyTorch Tutorial](https://colab.research.google.com/drive/1ZS9lcFbQ3JXGIc7ujNVNka2wp3DsiMFr)
+- [TakBot](https://colab.research.google.com/drive/14p6C0b0-g1TSV4K1iBjuP8d4hJdz8yHm)
+
+These are links and titles visible from the Colab home view. Their notebook code, outputs, runtime state, sharing permissions and dependencies have not been reviewed. Treat each notebook as a source to inspect individually before importing code. The official Gemini Cookbook managed-agent quickstart linked from Colab is separate from the user's notebooks:
+https://colab.research.google.com/github/google-gemini/cookbook/blob/main/quickstarts/Get_started_managed_agents.ipynb
+
+### SoundCloud — JOY and music discovery
+
+The visible tab is SoundCloud Discover: https://soundcloud.com/discover
+
+It shows discovery playlists and categories, but no specific track was selected in the captured view. Music can be an optional user-chosen ambience or creative reward for learning quests. A specific track should be identified by title/artist before discussing it; no music playback, download or reuse is implied by this source index.
+
+### Climate Quest application
+
+No separately identifiable Climate Quest app tab was present in the browser tab inventory captured on 8 November 2026. It may be an installed app or a different desktop surface outside the connected browser. Status: OPEN / not inspected. Do not infer its data sources, permissions, capabilities or account state from its name.
+
+### Integration rule for all the above
+
+Each future source entry should include: canonical URL or stable ID, platform, access mode, observed date, privacy class, licence/reuse status, review state and a named research task. Keep the following states distinct:
+
+- VISIBLE_METADATA — title/link only;
+- CONTENT_INSPECTED — relevant content read;
+- SOURCE_VERIFIED — underlying claims checked against primary evidence;
+- CODE_REPRODUCED — code executed with a recorded environment;
+- INDEPENDENTLY_REVIEWED — a second reviewer produced a traceable critique.
+
+An agent's repetition of transferred campaign text does not count as independent verification.
+
