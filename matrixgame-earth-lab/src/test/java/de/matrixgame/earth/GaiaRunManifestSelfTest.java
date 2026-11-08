@@ -57,6 +57,22 @@ public final class GaiaRunManifestSelfTest {
                         Instant.parse("2026-11-08T20:00:00Z"),
                         "GAIA_FOREST_WATER",
                         "0.3.0",
+                        "UNPINNED",
+                        "SYNTHETIC",
+                        "none",
+                        "not-applicable",
+                        "not-georeferenced",
+                        "1 calendar day",
+                        "REJECT_INCOMPLETE_ROWS",
+                        Map.of(),
+                        Map.of()));
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> new GaiaRunManifest(
+                        "run-1",
+                        Instant.parse("2026-11-08T20:00:00Z"),
+                        "GAIA_FOREST_WATER",
+                        "0.3.0",
                         " ",
                         "SYNTHETIC",
                         "none",
