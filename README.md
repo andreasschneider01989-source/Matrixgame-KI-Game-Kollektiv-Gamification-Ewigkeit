@@ -117,6 +117,15 @@ Gaia Earth Lab now includes a second, two-store conceptual model for canopy inte
 
 The two-store model is still a MODEL prototype with synthetic forcing, not a calibrated rainforest predictor.
 
+## KIM — cross-platform knowledge and research atlas (8 November 2026)
+
+A first source inventory connects the visible KIM/Matrixgame YouTube playlists, Instagram project entry points, Google Drive document titles, and the four GitHub repositories. It defines source records, typed knowledge-graph relationships, multi-agent review, and human-approved publishing.
+
+- [KIM cross-platform knowledge and research atlas](docs/KIM_INTEROPERABILITY_ATLAS_2026-11-08.md)
+- [Integration issue #27](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/27)
+
+The atlas records only visible titles and links. It does not claim to have reviewed every external document, playlist video, or private conversation.
+
 ## Open implementation quests
 
 The initial work is tracked as separate, reviewable GitHub issues:
