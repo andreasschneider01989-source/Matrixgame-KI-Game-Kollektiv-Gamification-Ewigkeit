@@ -1,6 +1,8 @@
 package de.matrixgame.earth;
 
-/** Dependency-free checks for the Gaia water bucket MVP. */
+import java.util.List;
+
+/** Dependency-free checks for the Gaia water bucket and reviewer council. */
 public final class GaiaWaterBucketSelfTest {
     private GaiaWaterBucketSelfTest() {
     }
@@ -12,7 +14,10 @@ public final class GaiaWaterBucketSelfTest {
         testDeterministicReplay();
         testNegativeForcingRejected();
         testInitialStorageAboveCapacityRejected();
-        System.out.println("GaiaWaterBucketSelfTest: 6 tests passed.");
+        testReviewerCouncilKeepsPerspectivesSeparate();
+        testReviewerCouncilFlagsBadWaterBalance();
+        testSyntheticInputsRemainClearlyLabelled();
+        System.out.println("GaiaWaterBucketSelfTest: 9 tests passed.");
     }
 
     private static void testHeavyRainBalance() {
@@ -86,6 +91,73 @@ public final class GaiaWaterBucketSelfTest {
                         new GaiaWaterBucket.Forcing(0.0, 0.0),
                         p),
                 "storage above capacity");
+    }
+
+    private static void testReviewerCouncilKeepsPerspectivesSeparate() {
+        GaiaWaterBucket.Parameters p = new GaiaWaterBucket.Parameters(30.0, 10.0);
+        GaiaWaterBucket.StepResult result = GaiaWaterBucket.step(
+                new GaiaWaterBucket.State(20.0),
+                new GaiaWaterBucket.Forcing(5.0, 2.0),
+                p);
+
+        List<GaiaReviewCouncil.Finding> findings = GaiaReviewCouncil.review(
+                result,
+                p,
+                GaiaReviewCouncil.InputClass.SYNTHETIC_EXAMPLE);
+
+        if (findings.size() != 5) {
+            throw new AssertionError("Expected five independent reviewer findings.");
+        }
+        assertFinding(findings, "HYDROLOGY", GaiaReviewCouncil.Status.PASS);
+        assertFinding(findings, "MODEL-INVARIANTS", GaiaReviewCouncil.Status.PASS);
+        assertFinding(findings, "ECOLOGY", GaiaReviewCouncil.Status.WARNING);
+        assertFinding(findings, "DATA-STEWARD", GaiaReviewCouncil.Status.WARNING);
+        assertFinding(findings, "RED-TEAM", GaiaReviewCouncil.Status.WARNING);
+    }
+
+    private static void testReviewerCouncilFlagsBadWaterBalance() {
+        GaiaWaterBucket.Parameters p = new GaiaWaterBucket.Parameters(30.0, 10.0);
+        GaiaWaterBucket.StepResult inconsistent = new GaiaWaterBucket.StepResult(
+                new GaiaWaterBucket.State(10.0),
+                5.0,
+                0.0,
+                2.0,
+                0.0,
+                1.0);
+
+        List<GaiaReviewCouncil.Finding> findings = GaiaReviewCouncil.review(
+                inconsistent,
+                p,
+                GaiaReviewCouncil.InputClass.SYNTHETIC_EXAMPLE);
+        assertFinding(findings, "HYDROLOGY", GaiaReviewCouncil.Status.WARNING);
+    }
+
+    private static void testSyntheticInputsRemainClearlyLabelled() {
+        GaiaWaterBucket.Parameters p = new GaiaWaterBucket.Parameters(30.0, 10.0);
+        GaiaWaterBucket.StepResult result = GaiaWaterBucket.step(
+                new GaiaWaterBucket.State(20.0),
+                new GaiaWaterBucket.Forcing(5.0, 2.0),
+                p);
+
+        List<GaiaReviewCouncil.Finding> findings = GaiaReviewCouncil.review(
+                result,
+                p,
+                GaiaReviewCouncil.InputClass.SYNTHETIC_EXAMPLE);
+        assertFinding(findings, "DATA-STEWARD", GaiaReviewCouncil.Status.WARNING);
+    }
+
+    private static void assertFinding(
+            List<GaiaReviewCouncil.Finding> findings,
+            String agent,
+            GaiaReviewCouncil.Status expectedStatus) {
+        GaiaReviewCouncil.Finding finding = findings.stream()
+                .filter(item -> item.agent().equals(agent))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Missing reviewer: " + agent));
+        if (finding.status() != expectedStatus) {
+            throw new AssertionError(
+                    agent + ": expected " + expectedStatus + " but got " + finding.status());
+        }
     }
 
     private static void assertClose(double expected, double actual, String label) {
