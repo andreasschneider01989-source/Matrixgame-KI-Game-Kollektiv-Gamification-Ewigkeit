@@ -1,6 +1,6 @@
 package de.matrixgame.earth;
 
-/** Prints a synthetic wet-day and dry-day example. */
+/** Prints synthetic wet/dry examples and rule-based reviewer findings. */
 public final class GaiaWaterBucketDemo {
     private GaiaWaterBucketDemo() {
     }
@@ -15,6 +15,15 @@ public final class GaiaWaterBucketDemo {
                 new GaiaWaterBucket.Forcing(35.0, 3.0),
                 parameters);
         print("Synthetic wet day", wetDay);
+
+        System.out.println("Independent reviewer findings");
+        for (GaiaReviewCouncil.Finding finding : GaiaReviewCouncil.review(
+                wetDay,
+                parameters,
+                GaiaReviewCouncil.InputClass.SYNTHETIC_EXAMPLE)) {
+            System.out.printf("  [%s] %s: %s%n",
+                    finding.status(), finding.agent(), finding.summary());
+        }
 
         GaiaWaterBucket.StepResult dryDay = GaiaWaterBucket.step(
                 wetDay.nextState(),
