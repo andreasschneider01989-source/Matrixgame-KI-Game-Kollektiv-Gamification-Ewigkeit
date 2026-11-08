@@ -34,6 +34,12 @@ public record GaiaRunManifest(
         requireText(modelId, "modelId");
         requireText(modelVersion, "modelVersion");
         requireText(codeRevision, "codeRevision");
+        if (!codeRevision.matches("(?i)[0-9a-f]{7,40}")
+                && !"SYNTHETIC-UNPINNED".equals(codeRevision)) {
+            throw new IllegalArgumentException(
+                    "codeRevision must be a 7-40 digit Git commit SHA; "
+                            + "use SYNTHETIC-UNPINNED only for synthetic test runs.");
+        }
         requireText(datasetId, "datasetId");
         requireText(datasetUrl, "datasetUrl");
         requireText(datasetLicense, "datasetLicense");
