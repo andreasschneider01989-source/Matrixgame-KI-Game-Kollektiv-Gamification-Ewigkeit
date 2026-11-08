@@ -241,3 +241,34 @@ Each future source entry should include: canonical URL or stable ID, platform, a
 
 An agent's repetition of transferred campaign text does not count as independent verification.
 
+## 12. Additional source inventory and reusable integration — 9 November 2026
+
+The next snapshot is maintained separately in:
+
+- [KIM Source Registry — JSON](../research/KIM_SOURCE_REGISTRY_2026-11-09.json)
+- [KIM Source Registry — JSON Schema](../schemas/kim-source-registry.schema.json)
+- [Genesis Commons cross-platform research synthesis](GENESIS_COMMONS_CROSS_PLATFORM_SYNTHESIS_2026-11-09.md)
+- [Registry validator](../scripts/validate_kim_source_registry.py)
+
+The registry records 31 source entries and distinguishes API reads, inspected library artifacts, partial browser content, title-only tabs, folder listings, render errors, permission denials, and unextracted binaries. It intentionally does not include private Drive, Docs, Sheets, notebook, chat, or Discord URLs. It is a manually curated snapshot, not a crawler or live synchronization service.
+
+### New public and project sources
+
+- The public Java projects repository contains the original 2021 GravityMaterieSimulator ZIP and demo JAR. Their file pages are linked in the research synthesis. The binaries were retrievable through the GitHub contents API, but have not yet been extracted or audited.
+- The private library copy of GravityLab3D was source-inspected: it includes 3D Newtonian N-body dynamics, Velocity-Verlet, energy-drift readout and JSON import/export. Its atomic-orbital analogy and optional satellite repulsion are explicitly model simplifications; the file is not copied into this public repository by this index.
+- The newly visible Gen Z regelt page, Morse Code World, EVE Online, SoundCloud Discover, Google Earth search page, generic Wikipedia page and documentary titles are classified as discovery or creative references according to their actual inspection state. A visible title is not treated as evidence for the contents of a video or application.
+
+### Private and inaccessible workspace sources
+
+- GravitySimNeu exposed only a 2025 folder listing; its child files remain unreviewed.
+- The Matrixgame Journal exposed a partial view of headings; it remains private workspace material.
+- Tagesziele 13 returned a browser rendering error; no cell values were read.
+- Manus exposed project names and a prompt, not reviewed task outputs.
+- Meta AI, Gemini and Qwen pages contain mixtures of prior transferred context and generated suggestions. Repetition of that context is not independent review.
+- Grok, Mistral and Discord were blocked by browser extension permissions; no content was read or posted.
+- Colab notebook titles were visible in an earlier tab inventory; code, outputs, dependencies and runtimes were not inspected.
+
+### Integration rule
+
+Each new source should first receive a stable ID, observed date, access state, privacy class, reuse status and review state. Only then should selected content be transformed into knowledge nodes, evidence records, model inputs or learning quests. Keep human approval before public publication, merges or external actions.
+
