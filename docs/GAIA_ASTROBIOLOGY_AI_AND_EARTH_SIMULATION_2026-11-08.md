@@ -262,3 +262,44 @@ The Matrixgame journal and the opened cross-model discussions repeatedly return 
 A result from one micro-model must not be silently scaled into a global claim. Aggregation requires spatial coverage, representativeness, time period, and uncertainty.
 
 Gaia is the calibration world. Mars and fictional ocean planets may reuse schemas, but each requires its own atmosphere, gravity, radiation, geochemistry, water state, and biological assumptions. The transition from Gaia to Ares/Pelagia must never imply that Earth parameters transfer unchanged.
+
+
+## 12. Gaia v0.2 — canopy and root-zone water stores
+
+The Earth Lab now adds `GaiaForestWaterCycle`, a two-store conceptual model:
+
+- canopy-water storage and its finite interception capacity;
+- throughfall from rainfall not intercepted;
+- canopy evaporation limited by canopy water;
+- infiltration from throughfall and surface runoff;
+- root-zone water storage and capacity;
+- root-zone evapotranspiration limited by stored water;
+- deep drainage when root-zone input exceeds capacity.
+
+The complete balance is:
+
+`precipitation + initial canopy storage + initial root-zone storage`
+
+`= surface runoff + deep drainage + canopy evaporation + root-zone ET + final canopy storage + final root-zone storage`
+
+Interception and throughfall are internal transfers and are not counted as losses. Fluxes are ordered within one lumped model step; this makes the bookkeeping explicit but does not resolve sub-daily storm or canopy-drip dynamics.
+
+The new model has seven dedicated tests for:
+- canopy interception and a closed two-store balance;
+- root-zone overflow and deep drainage;
+- evaporation limited by available stores;
+- zero canopy capacity;
+- deterministic replay;
+- invalid forcing;
+- initial stores exceeding configured capacities.
+
+The current demonstration is synthetic. It does not model species-specific transpiration, leaf-area index, layered canopies, detailed root profiles, multiple soil horizons, groundwater, catchment routing, or surface-energy feedbacks. It is a learning model, not a validated forest predictor.
+
+### Current code maturity
+
+- Single soil bucket: PROTOTYPE, Java 21 CI previously passed nine tests with reviewer council.
+- Canopy/root-zone extension: PROTOTYPE, CI run required on the latest branch head.
+- Real-world calibration: NOT STARTED.
+- LLM multi-provider adapters: SPECIFICATION ONLY; reviewer council is currently deterministic Java rule logic.
+
+The next scientific stage should add dated forcing data and a reproducible run manifest, then validate against documented, licensed observations before introducing additional biological or climatic complexity.
