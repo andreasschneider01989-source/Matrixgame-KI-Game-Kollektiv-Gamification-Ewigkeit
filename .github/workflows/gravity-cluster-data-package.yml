@@ -27,12 +27,36 @@ jobs:
   verify-package:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+      - name: Download only package files (avoid unrelated long legacy filenames)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_REF: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=(
+            web/GravityClusterResearchDashboard_Replay_v2_1.html
+            results/gravity_cluster_phase_sweep_dashboard_v2_20261108.json
+            results/gravity_cluster_phase_sweep_dashboard_v2_20261108.csv
+            experiments/verify_gravity_cluster_dashboard_package.py
+          )
+          for file in "${files[@]}"; do
+            mkdir -p "$(dirname "$file")"
+            curl --fail --silent --show-error --location \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github.raw+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/$GITHUB_REPOSITORY/contents/$file?ref=$SOURCE_REF" \
+              --output "$file"
+          done
       - name: Verify JSON, CSV and embedded HTML records
         run: python experiments/verify_gravity_cluster_dashboard_package.py
       - name: Check dashboard JavaScript syntax
