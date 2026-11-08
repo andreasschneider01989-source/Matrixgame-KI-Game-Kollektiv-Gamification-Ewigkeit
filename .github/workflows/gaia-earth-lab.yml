@@ -34,6 +34,7 @@ jobs:
           files=(
             matrixgame-earth-lab/src/main/java/de/matrixgame/earth/GaiaWaterBucket.java
             matrixgame-earth-lab/src/main/java/de/matrixgame/earth/GaiaWaterBucketDemo.java
+            matrixgame-earth-lab/src/main/java/de/matrixgame/earth/GaiaReviewCouncil.java
             matrixgame-earth-lab/src/test/java/de/matrixgame/earth/GaiaWaterBucketSelfTest.java
             matrixgame-earth-lab/build.sh
             matrixgame-earth-lab/test.sh
