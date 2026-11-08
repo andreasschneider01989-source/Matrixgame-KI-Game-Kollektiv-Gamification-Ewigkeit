@@ -107,6 +107,16 @@ The Gaia research chapter is extended with a review of new astrobiology research
 
 The Java 21 prototype is a single-bucket water-balance model with synthetic demonstration inputs and deterministic self-tests. It is not a validated rainforest or climate prediction model. CI status must be checked on the pull request before calling the implementation tested.
 
+## Gaia Commons — canopy/root-zone water model (8 November 2026)
+
+Gaia Earth Lab now includes a second, two-store conceptual model for canopy interception, throughfall, root-zone storage, ET, runoff and drainage, alongside the original soil bucket. It includes an independent test suite and Java 21 CI.
+
+- [Gaia Earth Lab module](matrixgame-earth-lab/README.md)
+- [Gaia research and astrobiology review](docs/GAIA_ASTROBIOLOGY_AI_AND_EARTH_SIMULATION_2026-11-08.md)
+- [Draft PR #26](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/pull/26)
+
+The two-store model is still a MODEL prototype with synthetic forcing, not a calibrated rainforest predictor.
+
 ## Open implementation quests
 
 The initial work is tracked as separate, reviewable GitHub issues:
