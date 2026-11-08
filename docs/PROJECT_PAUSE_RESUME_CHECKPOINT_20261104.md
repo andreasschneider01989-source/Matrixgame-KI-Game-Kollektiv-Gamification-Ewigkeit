@@ -149,3 +149,28 @@ Diesen Abschnitt oder den Link zu diesem Dokument in den neuen Chat kopieren und
 **Letzter bekannter Projektstatus:** Pull Request #4 ist offen, Draft und nicht gemergt. Vor jeder Wiederaufnahme den aktuellen Branch-/PR-Stand erneut prüfen.
 
 **Pausenregel:** Die Pause ist ausdrücklich Teil des Arbeitsprozesses. Messdaten und Ideen bleiben versioniert verfügbar; es ist nicht nötig, sofort weitere Experimente auszuführen.
+
+## 8. Gravity Replay v2.1 handoff (08.11.2026)
+
+The user's uploaded `GravityClusterResearchDashboard_Replay_v2(1).html` was recovered and added as a separate v2.1 dashboard. The original HTML is preserved as the source artifact; the v2.1 copy has an explicit `META.model_parameters` manifest, and replay initialization/contact logic reads those parameters.
+
+New files:
+- `web/GravityClusterResearchDashboard_Replay_v2_1.html`
+- `results/gravity_cluster_phase_sweep_dashboard_v2_20261108.json`
+- `results/gravity_cluster_phase_sweep_dashboard_v2_20261108.csv`
+- `results/gravity_cluster_replay_v2_1_manifest_20261108.json`
+- `experiments/verify_gravity_cluster_dashboard_package.py`
+- `docs/GRAVITY_CLUSTER_REPLAY_V2_AUDIT_20261108.md`
+- `docs/GRAVITY_CLUSTER_RESEARCH_PACK_20261108.md`
+
+The JSON and CSV are exports of the same 189 records; the verifier checks unique run IDs/parameter tuples, variant counts and consistency across the exports and embedded dashboard. This checks data integrity, not physical realism.
+
+Verified finite-grid counts:
+- A / 0 satellites: 3/7 contacts.
+- B / 1 satellite: 37/91 contacts.
+- C / 2 satellites: 52/91 contacts.
+
+The model remains classical, planar, Newtonian with Plummer softening and Velocity-Verlet. Contact at distance 8 is a declared geometry rule. The merger is a perfectly inelastic proxy, not nuclear fusion. The 3 dt spot checks are not a full convergence study.
+
+Resume point: manually test the browser replay, then broaden dt convergence and compare selected runs with REBOUND IAS15. Do not merge PR #4 automatically; it remains a Draft.
+
