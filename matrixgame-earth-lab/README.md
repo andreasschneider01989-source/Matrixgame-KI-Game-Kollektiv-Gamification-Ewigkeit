@@ -15,6 +15,18 @@ Governing balance:
 
 All water quantities are millimetres of water equivalent per model step. A residual close to zero is a necessary bookkeeping check, not proof that the model represents a real catchment accurately.
 
+## Deterministic multi-perspective reviewer council
+
+The demo also runs five separate rule-based reviewer roles:
+
+- HYDROLOGY checks the water-balance residual.
+- MODEL-INVARIANTS checks storage bounds.
+- ECOLOGY warns that the model does not represent species, habitats, or biodiversity.
+- DATA-STEWARD checks the declared input class and provenance status.
+- RED-TEAM highlights important omitted processes and calibration gaps.
+
+These are deterministic Java reviewers, not language models or a live multi-AI service. A PASS means only that the specific software check passed. A WARNING must remain visible; one passing check cannot cancel another discipline's warning. The declared provenance class is supplied by the caller and is not independently authenticated by the council.
+
 ## Quick start
 
 Requires JDK 21 or newer.
@@ -22,7 +34,7 @@ Requires JDK 21 or newer.
     sh test.sh
     sh run.sh
 
-The self-test is dependency-free. The demo prints a synthetic wet-day step followed by a synthetic dry-day step.
+The self-test is dependency-free. The demo prints synthetic wet/dry steps and the independent reviewer findings.
 
 ## Epistemic boundaries
 
