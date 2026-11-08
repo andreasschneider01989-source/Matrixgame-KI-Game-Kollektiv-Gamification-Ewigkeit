@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Java 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "21"
@@ -35,7 +35,9 @@ jobs:
             matrixgame-earth-lab/src/main/java/de/matrixgame/earth/GaiaWaterBucket.java
             matrixgame-earth-lab/src/main/java/de/matrixgame/earth/GaiaWaterBucketDemo.java
             matrixgame-earth-lab/src/main/java/de/matrixgame/earth/GaiaReviewCouncil.java
+            matrixgame-earth-lab/src/main/java/de/matrixgame/earth/GaiaForestWaterCycle.java
             matrixgame-earth-lab/src/test/java/de/matrixgame/earth/GaiaWaterBucketSelfTest.java
+            matrixgame-earth-lab/src/test/java/de/matrixgame/earth/GaiaForestWaterCycleSelfTest.java
             matrixgame-earth-lab/build.sh
             matrixgame-earth-lab/test.sh
             matrixgame-earth-lab/run.sh
