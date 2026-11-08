@@ -27,6 +27,8 @@ The current draft work includes:
 
 These PRs remain open drafts. This report does not merge them or change main.
 
+The two specialist repositories were also inspected at README level: the mathematics/LUMINI repository contains historical architecture suggestions for machine-readable formats and knowledge-graph/API access; the psychology repository currently has only a short scope description. Neither README establishes a deployed cross-repository service or reviewed psychological evidence. The four repositories are linked as separate source domains, not treated as a single audited codebase.
+
 ### Original Java GravitySim — recovered as a source link
 
 The public Java projects README identifies the original 2021 3D particle simulator, names the ZIP and demo JAR, and describes the historical entry point. Both binary files are present in the public repository and were retrieved through the GitHub contents API. Their archives have **not** yet been extracted or executed, so their internal code remains unreviewed.
