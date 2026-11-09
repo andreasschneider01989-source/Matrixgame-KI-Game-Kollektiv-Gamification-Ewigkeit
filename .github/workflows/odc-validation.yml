@@ -17,10 +17,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+      # Avoid a full checkout: legacy repository paths exceed runner filename limits.
+      - name: Fetch only ODC source files through GitHub Contents API
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p research/odc
+          gh api "/repos/${GITHUB_REPOSITORY}/contents/research/odc/odc_analyzer.py?ref=${GITHUB_SHA}" --header "Accept: application/vnd.github.raw" > research/odc/odc_analyzer.py
+          gh api "/repos/${GITHUB_REPOSITORY}/contents/research/odc/test_odc_analyzer.py?ref=${GITHUB_SHA}" --header "Accept: application/vnd.github.raw" > research/odc/test_odc_analyzer.py
       - name: Compile analyzer and tests
         run: python -m py_compile research/odc/odc_analyzer.py research/odc/test_odc_analyzer.py
       - name: Run unit tests
