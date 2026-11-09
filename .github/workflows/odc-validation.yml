@@ -1,0 +1,28 @@
+name: ODC validation
+
+on:
+  push:
+    paths:
+      - "research/odc/**"
+      - ".github/workflows/odc-validation.yml"
+  pull_request:
+    paths:
+      - "research/odc/**"
+      - ".github/workflows/odc-validation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Compile analyzer and tests
+        run: python -m py_compile research/odc/odc_analyzer.py research/odc/test_odc_analyzer.py
+      - name: Run unit tests
+        working-directory: research/odc
+        run: python -m unittest -v
