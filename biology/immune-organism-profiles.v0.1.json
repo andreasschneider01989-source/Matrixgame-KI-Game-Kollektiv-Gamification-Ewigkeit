@@ -1,0 +1,324 @@
+{
+  "schemaVersion": "matrixgame.bio.profiles/0.1",
+  "title": "Human organism and immune-system starter profiles",
+  "createdAt": "2026-11-10",
+  "status": "MODEL_START_WITH_REFERENCE_ANCHORS",
+  "scope": {
+    "species": "Homo sapiens",
+    "intendedUse": "educational and research simulation prototype",
+    "medicalUse": false,
+    "cellAgentScale": "Representative simulated agents; never assume one simulated agent equals one real cell.",
+    "spatialUnit": "um",
+    "timeUnit": "min",
+    "normalizedValueRange": [0.0, 1.0],
+    "normalizedValuesMeaning": "Model design weights only; not measured biological concentrations or probabilities unless an evidence record explicitly says so."
+  },
+  "provenanceClasses": [
+    "MEASURED_REFERENCE",
+    "ASSAY_SPECIFIC",
+    "MODEL_START",
+    "UNCALIBRATED",
+    "USER_SCENARIO"
+  ],
+  "epistemicLabels": ["FACT", "MODEL", "HYPOTHESIS", "OPEN", "FICTION"],
+  "commonStateFields": {
+    "entityId": {"type": "string"},
+    "entityKind": {"enum": ["CELL", "MICROBE", "VIRION", "MOLECULE", "TISSUE", "VESSEL", "FIELD", "RESOURCE"]},
+    "typeId": {"type": "string"},
+    "speciesId": {"type": "string"},
+    "compartmentId": {"type": "string"},
+    "positionUm": {"type": "vector3", "unit": "um", "nullable": true},
+    "velocityUmPerMin": {"type": "vector3", "unit": "um/min", "nullable": true},
+    "ageMin": {"type": "number", "unit": "min", "nullable": true},
+    "lifecycleState": {"enum": ["DEVELOPING", "RESTING", "ACTIVATED", "MIGRATING", "INTERACTING", "DIVIDING", "DEAD", "CLEARED"]},
+    "viability01": {"type": "number", "range": [0.0, 1.0], "provenance": "MODEL_START"},
+    "activation01": {"type": "number", "range": [0.0, 1.0], "provenance": "MODEL_START"},
+    "energyReserve01": {"type": "number", "range": [0.0, 1.0], "provenance": "MODEL_START"},
+    "damage01": {"type": "number", "range": [0.0, 1.0], "provenance": "MODEL_START"},
+    "modelProfileId": {"type": "string"}
+  },
+  "referenceAnchors": {
+    "wholeBodyImmuneCellEstimate": {
+      "value": 1.8e12,
+      "unit": "cells",
+      "confidenceInterval95": [1.5e12, 2.3e12],
+      "epistemicStatus": "FACT",
+      "source": "https://doi.org/10.1073/pnas.2308511120",
+      "note": "Estimated total across the body; not a blood concentration."
+    },
+    "wholeBodyCellCount": {
+      "range": [2.7e13, 3.7e13],
+      "unit": "cells",
+      "epistemicStatus": "FACT",
+      "source": "https://www.nature.com/articles/s41597-026-06642-4",
+      "note": "Estimate varies by body assumptions and cell-type definitions."
+    },
+    "neutrophilChemotaxisSpeed": {
+      "value": 18,
+      "unit": "um/min",
+      "context": "Healthy-volunteer microfluidic assay using fMLP",
+      "provenance": "ASSAY_SPECIFIC",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2912851/",
+      "note": "Do not use as a universal in-vivo velocity."
+    },
+    "neutrophilBloodHalfLife": {
+      "range": [13, 19],
+      "unit": "hours",
+      "provenance": "MEASURED_REFERENCE",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8207393/",
+      "note": "Circulating half-life; distinguish from bone-marrow maturation/transit."
+    },
+    "macrophageMigrationSpeed": {
+      "value": 1,
+      "unit": "um/min",
+      "context": "Approximate in-vitro review summary",
+      "provenance": "ASSAY_SPECIFIC",
+      "source": "https://onlinelibrary.wiley.com/doi/10.1155/2012/501962",
+      "note": "Not a universal human tissue value."
+    },
+    "oxygenTransport": {
+      "hemoglobinBoundFractionApprox": 0.98,
+      "dissolvedFractionApprox": 0.02,
+      "unit": "fraction",
+      "provenance": "MEASURED_REFERENCE",
+      "source": "https://www.ncbi.nlm.nih.gov/sites/books/NBK538336/",
+      "note": "Approximate fractions of oxygen carried in blood; not the same as oxygen saturation."
+    }
+  },
+  "wholeBodyImmunePopulationEstimates": [
+    {"typeId": "CELL.IMMUNE.T_CELL", "count": 5.0e11, "ci95": [3.0e11, 7.0e11], "unit": "cells", "source": "https://doi.org/10.1073/pnas.2308511120"},
+    {"typeId": "CELL.IMMUNE.B_CELL", "count": 3.0e11, "ci95": [2.0e11, 4.0e11], "unit": "cells", "source": "https://doi.org/10.1073/pnas.2308511120"},
+    {"typeId": "CELL.IMMUNE.NEUTROPHIL", "count": 7.0e11, "ci95": [5.0e11, 8.0e11], "unit": "cells", "source": "https://doi.org/10.1073/pnas.2308511120"},
+    {"typeId": "CELL.IMMUNE.MACROPHAGE", "count": 2.0e11, "ci95": [1.3e11, 3.0e11], "unit": "cells", "source": "https://doi.org/10.1073/pnas.2308511120"},
+    {"typeId": "CELL.IMMUNE.MAST", "count": 9.0e10, "ci95": [6.0e10, 1.4e11], "unit": "cells", "source": "https://doi.org/10.1073/pnas.2308511120"},
+    {"typeId": "CELL.IMMUNE.DENDRITIC", "count": 5.0e10, "ci95": [3.0e10, 8.0e10], "unit": "cells", "source": "https://doi.org/10.1073/pnas.2308511120"},
+    {"typeId": "CELL.IMMUNE.EOSINOPHIL", "count": 4.0e10, "ci95": [2.0e10, 8.0e10], "unit": "cells", "source": "https://doi.org/10.1073/pnas.2308511120"},
+    {"typeId": "CELL.IMMUNE.NK", "count": 2.0e10, "ci95": [9.0e9, 4.0e10], "unit": "cells", "source": "https://doi.org/10.1073/pnas.2308511120"},
+    {"typeId": "CELL.IMMUNE.PLASMA", "count": 2.0e10, "ci95": [5.0e9, 6.0e10], "unit": "cells", "source": "https://doi.org/10.1073/pnas.2308511120"},
+    {"typeId": "CELL.IMMUNE.MONOCYTE", "count": 3.0e10, "ci95": [2.0e10, 4.0e10], "unit": "cells", "source": "https://doi.org/10.1073/pnas.2308511120"},
+    {"typeId": "CELL.IMMUNE.BASOPHIL", "count": 2.0e9, "ci95": [4.0e8, 7.0e9], "unit": "cells", "source": "https://doi.org/10.1073/pnas.2308511120"}
+  ],
+  "profiles": [
+    {
+      "typeId": "CELL.IMMUNE.NEUTROPHIL",
+      "lineage": "MYELOID",
+      "role": ["RAPID_RECRUITMENT", "PHAGOCYTOSIS", "GRANULE_RELEASE", "ROS", "NETOSIS"],
+      "capabilities": ["SENSE_CHEMOKINE", "CHEMOTAXIS", "ADHERE", "TRANSMIGRATE", "PHAGOCYTOSE", "SECRETE"],
+      "parameters": {
+        "chemotaxisSpeedUmPerMin": {"value": 18, "range": [1, 20], "unit": "um/min", "provenance": "ASSAY_SPECIFIC", "context": "fMLP microfluidic healthy-volunteer assay"},
+        "phagocytosisCapacity01": {"value": 0.9, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "chemokineSensitivity01": {"value": 0.85, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "ROSReleaseCapacity01": {"value": 0.75, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "collateralDamageRisk01": {"value": 0.65, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "bloodHalfLifeHours": {"range": [13, 19], "unit": "hours", "provenance": "MEASURED_REFERENCE"}
+      }
+    },
+    {
+      "typeId": "CELL.IMMUNE.MACROPHAGE",
+      "lineage": "MYELOID_OR_TISSUE_RESIDENT",
+      "role": ["SENTINEL", "PHAGOCYTOSIS", "CYTOKINE_COORDINATION", "ANTIGEN_PRESENTATION", "REPAIR"],
+      "capabilities": ["SENSE_PAMP_DAMP", "CHEMOTAXIS", "PHAGOCYTOSE", "PROCESS_ANTIGEN", "PRESENT_ANTIGEN", "SECRETE", "REPAIR_SIGNAL"],
+      "parameters": {
+        "chemotaxisSpeedUmPerMin": {"value": 1, "unit": "um/min", "provenance": "ASSAY_SPECIFIC", "context": "Approximate in-vitro review summary"},
+        "phagocytosisCapacity01": {"value": 0.85, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "antigenPresentationCapacity01": {"value": 0.6, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "cytokineCoordination01": {"value": 0.75, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "repairSupport01": {"value": 0.55, "range": [0.0, 1.0], "provenance": "MODEL_START"}
+      }
+    },
+    {
+      "typeId": "CELL.IMMUNE.DENDRITIC",
+      "lineage": "MYELOID",
+      "role": ["ANTIGEN_SAMPLING", "ANTIGEN_PRESENTATION", "T_CELL_PRIMING"],
+      "capabilities": ["SENSE_PAMP_DAMP", "UPTAKE_ANTIGEN", "PROCESS_ANTIGEN", "PRESENT_ANTIGEN", "COSTIMULATE", "MIGRATE_TO_LYMPH_NODE", "SECRETE"],
+      "parameters": {
+        "antigenUptakeCapacity01": {"value": 0.8, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "antigenPresentationCapacity01": {"value": 0.95, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "matureCostimulation01": {"value": 0.85, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "migrationSpeedUmPerMin": {"value": null, "unit": "um/min", "provenance": "UNCALIBRATED"}
+      }
+    },
+    {
+      "typeId": "CELL.IMMUNE.T_CD4",
+      "lineage": "LYMPHOID",
+      "role": ["COORDINATION", "HELP_B_CELL", "HELP_MACROPHAGE", "REGULATION_DEPENDS_ON_SUBTYPE"],
+      "capabilities": ["RECOGNIZE_PEPTIDE_MHC_II", "RECEIVE_COSTIMULATION", "SECRETE_CYTOKINE", "PROLIFERATE", "DIFFERENTIATE", "FORM_MEMORY"],
+      "parameters": {
+        "coordination01": {"value": 0.9, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "phagocytosisCapacity01": {"value": 0.0, "provenance": "MODEL_START"},
+        "antigenSpecificity": {"value": "TCR_PEPTIDE_MHC_II", "provenance": "FACT"},
+        "migrationSpeedUmPerMin": {"value": null, "unit": "um/min", "provenance": "UNCALIBRATED"}
+      }
+    },
+    {
+      "typeId": "CELL.IMMUNE.T_CD8",
+      "lineage": "LYMPHOID",
+      "role": ["ANTIGEN_SPECIFIC_CYTOTOXICITY", "MEMORY"],
+      "capabilities": ["RECOGNIZE_PEPTIDE_MHC_I", "RECEIVE_COSTIMULATION", "KILL_TARGET", "SECRETE_CYTOKINE", "PROLIFERATE", "FORM_MEMORY"],
+      "parameters": {
+        "cytotoxicCapacity01": {"value": 0.9, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "targetRecognition01": {"value": 0.8, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "antigenSpecificity": {"value": "TCR_PEPTIDE_MHC_I", "provenance": "FACT"},
+        "migrationSpeedUmPerMin": {"value": null, "unit": "um/min", "provenance": "UNCALIBRATED"}
+      }
+    },
+    {
+      "typeId": "CELL.IMMUNE.B_CELL",
+      "lineage": "LYMPHOID",
+      "role": ["BCR_RECOGNITION", "ANTIGEN_UPTAKE", "ANTIGEN_PRESENTATION", "DIFFERENTIATION"],
+      "capabilities": ["BIND_NATIVE_ANTIGEN", "UPTAKE_ANTIGEN", "PRESENT_ANTIGEN", "RECEIVE_T_CELL_HELP", "PROLIFERATE", "DIFFERENTIATE_TO_PLASMA_OR_MEMORY"],
+      "parameters": {
+        "antigenUptakeCapacity01": {"value": 0.65, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "antigenPresentationCapacity01": {"value": 0.55, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "antibodySecretion01": {"value": 0.1, "range": [0.0, 1.0], "provenance": "MODEL_START"}
+      }
+    },
+    {
+      "typeId": "CELL.IMMUNE.PLASMA",
+      "lineage": "LYMPHOID_B_CELL_DERIVED",
+      "role": ["ANTIBODY_SECRETION"],
+      "capabilities": ["SECRETE_ANTIBODY"],
+      "parameters": {
+        "antibodySecretion01": {"value": 0.98, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "migrationSpeedUmPerMin": {"value": null, "unit": "um/min", "provenance": "UNCALIBRATED"}
+      }
+    },
+    {
+      "typeId": "CELL.IMMUNE.NK",
+      "lineage": "LYMPHOID",
+      "role": ["INNATE_CYTOTOXICITY", "STRESS_LIGAND_RECOGNITION"],
+      "capabilities": ["SENSE_STRESS_OR_MISSING_SELF", "KILL_TARGET", "SECRETE_CYTOKINE"],
+      "parameters": {
+        "cytotoxicCapacity01": {"value": 0.85, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "phagocytosisCapacity01": {"value": 0.0, "provenance": "MODEL_START"},
+        "antigenSpecificity": {"value": "INNATE_RECEPTOR_BALANCE_NOT_TCR_CLONE", "provenance": "FACT"}
+      }
+    },
+    {
+      "typeId": "CELL.HOST.EPITHELIAL",
+      "lineage": "NON_HEMATOPOIETIC",
+      "role": ["BARRIER", "LOCAL_SENSING", "ANTIMICROBIAL_DEFENSE", "REPAIR"],
+      "capabilities": ["FORM_BARRIER", "SENSE_PAMP_DAMP", "SECRETE_CHEMOKINE", "REPAIR"],
+      "parameters": {
+        "barrierIntegrity01": {"value": 0.95, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "antimicrobialResponse01": {"value": 0.45, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "repairCapacity01": {"value": 0.6, "range": [0.0, 1.0], "provenance": "MODEL_START"}
+      }
+    },
+    {
+      "typeId": "CELL.HOST.ENDOTHELIAL",
+      "lineage": "NON_HEMATOPOIETIC",
+      "role": ["VASCULAR_BARRIER", "LEUKOCYTE_RECRUITMENT_GATE", "PERFUSION"],
+      "capabilities": ["REGULATE_ADHESION", "REGULATE_PERMEABILITY", "ALLOW_TRANSMIGRATION", "REGULATE_PERFUSION"],
+      "parameters": {
+        "barrierIntegrity01": {"value": 0.9, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "recruitmentGate01": {"value": 0.2, "range": [0.0, 1.0], "provenance": "MODEL_START"}
+      }
+    },
+    {
+      "typeId": "CELL.BLOOD.RBC",
+      "lineage": "ERYTHROID",
+      "role": ["OXYGEN_TRANSPORT", "CO2_TRANSPORT"],
+      "capabilities": ["LOAD_OXYGEN", "UNLOAD_OXYGEN", "TRANSPORT_GAS"],
+      "parameters": {
+        "hemoglobinOxygenCapacity": {"value": 4, "unit": "O2 molecules per hemoglobin tetramer", "provenance": "FACT"},
+        "oxygenCarriedByHemoglobinFractionApprox": {"value": 0.98, "unit": "fraction", "provenance": "MEASURED_REFERENCE"}
+      }
+    },
+    {
+      "typeId": "MICROBE.PATHOGEN.VIRUS",
+      "entityKind": "VIRION",
+      "role": ["HOST_CELL_ENTRY", "HOST_DEPENDENT_REPLICATION", "IMMUNE_EVASION_VARIANTS"],
+      "capabilities": ["BIND_HOST_RECEPTOR", "ENTER_HOST_CELL", "REPLICATE_USING_HOST", "RELEASE_VIRIONS"],
+      "parameters": {
+        "replicationRatePerHour": {"value": null, "unit": "virions/hour", "provenance": "UNCALIBRATED", "note": "Must be specific to virus strain, host cell and assay."},
+        "hostCellDependency": {"value": true, "provenance": "FACT"}
+      }
+    },
+    {
+      "typeId": "MICROBE.PATHOGEN.BACTERIUM",
+      "entityKind": "MICROBE",
+      "role": ["AUTONOMOUS_CELL_METABOLISM", "REPLICATION", "HOST_INTERACTION"],
+      "capabilities": ["CONSUME_RESOURCE", "REPLICATE", "SECRETE_OR_RELEASE_FACTORS", "COMPETE_FOR_NICHE"],
+      "parameters": {
+        "replicationRatePerHour": {"value": null, "unit": "divisions/hour", "provenance": "UNCALIBRATED", "note": "Must be species/strain/environment-specific."}
+      }
+    },
+    {
+      "typeId": "MICROBE.SYMBIONT",
+      "entityKind": "MICROBE",
+      "role": ["NICHE_COMPETITION", "METABOLIC_EXCHANGE", "BARRIER_SUPPORT"],
+      "capabilities": ["CONSUME_RESOURCE", "RELEASE_METABOLITE", "COMPETE_FOR_NICHE", "INTERACT_WITH_HOST_IMMUNITY"],
+      "parameters": {
+        "nicheCompetition01": {"value": 0.65, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "hostBenefit01": {"value": 0.5, "range": [0.0, 1.0], "provenance": "MODEL_START"},
+        "hostHarm01": {"value": 0.1, "range": [0.0, 1.0], "provenance": "MODEL_START"}
+      }
+    }
+  ],
+  "interactionTypes": [
+    "CHEMOTACTIC_SIGNAL",
+    "ROLLING_AND_ADHESION",
+    "TRANSMIGRATION",
+    "PATTERN_RECOGNITION",
+    "PHAGOCYTOSIS",
+    "OPSONIZATION",
+    "ANTIGEN_PRESENTATION",
+    "COSTIMULATION",
+    "INHIBITION",
+    "CLONAL_EXPANSION",
+    "ANTIBODY_BINDING",
+    "NEUTRALIZATION",
+    "COMPLEMENT_CASCADE",
+    "CYTOTOXIC_HIT",
+    "CYTOKINE_FEEDBACK",
+    "TOLERANCE_OR_REGULATION",
+    "APOPTOSIS_AND_EFFEROCYTOSIS",
+    "TISSUE_REPAIR",
+    "MICROBIOME_COMPETITION",
+    "HOST_CELL_INFECTION",
+    "VIRAL_REPLICATION",
+    "OXYGEN_DELIVERY",
+    "OXYGEN_DIFFUSION",
+    "METABOLIC_UPTAKE",
+    "METABOLIC_WASTE"
+  ],
+  "modelStartBehaviorWeights": {
+    "note": "These normalized values are transparent game-design starting weights only. They are not empirical values. Calibrate or replace them before using the model for scientific prediction.",
+    "profiles": {
+      "neutrophil": {"chemotaxis": 0.9, "phagocytosis": 0.9, "antigenPresentation": 0.1, "inflammatoryOutput": 0.8, "tissueDamageRisk": 0.65},
+      "macrophage": {"chemotaxis": 0.5, "phagocytosis": 0.85, "antigenPresentation": 0.6, "cytokineCoordination": 0.75, "repairSupport": 0.55},
+      "dendriticCell": {"antigenUptake": 0.8, "antigenPresentation": 0.95, "matureCostimulation": 0.85, "cytotoxicity": 0.0},
+      "cd4T": {"coordination": 0.9, "antigenSpecificRecognition": 0.95, "cytotoxicity": 0.1, "phagocytosis": 0.0},
+      "cd8T": {"targetRecognition": 0.9, "cytotoxicity": 0.9, "phagocytosis": 0.0, "memoryPotential": 0.7},
+      "bCell": {"nativeAntigenRecognition": 0.9, "antigenPresentation": 0.55, "antibodySecretion": 0.1, "phagocytosis": 0.0},
+      "plasmaCell": {"antibodySecretion": 0.98, "chemotaxis": 0.1, "phagocytosis": 0.0},
+      "nkCell": {"innateTargetRecognition": 0.8, "cytotoxicity": 0.85, "phagocytosis": 0.0},
+      "epithelialCell": {"barrierIntegrity": 0.95, "localSensing": 0.6, "antimicrobialResponse": 0.45, "repair": 0.6},
+      "endothelialCell": {"barrierIntegrity": 0.9, "recruitmentGate": 0.2, "perfusionSupport": 0.9},
+      "rbc": {"oxygenTransport": 0.98, "immuneAttack": 0.0},
+      "symbiont": {"nicheCompetition": 0.65, "metabolicExchange": 0.5, "hostBenefit": 0.5, "hostHarm": 0.1}
+    }
+  },
+  "sources": [
+    {"id": "SRC_HRA_2026", "url": "https://www.nature.com/articles/s41597-026-06642-4", "supports": ["wholeBodyCellCount", "cellTypeDiversity"], "status": "SOURCE_VERIFIED"},
+    {"id": "SRC_PNAS_IMMUNE_COUNTS", "url": "https://doi.org/10.1073/pnas.2308511120", "supports": ["wholeBodyImmuneCellEstimate", "wholeBodyImmunePopulationEstimates"], "status": "SOURCE_VERIFIED"},
+    {"id": "SRC_NEUTROPHIL_SPEED", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2912851/", "supports": ["neutrophilChemotaxisSpeed"], "status": "ASSAY_SPECIFIC"},
+    {"id": "SRC_NEUTROPHIL_HALF_LIFE", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8207393/", "supports": ["neutrophilBloodHalfLife"], "status": "SOURCE_VERIFIED"},
+    {"id": "SRC_MACROPHAGE_SPEED", "url": "https://onlinelibrary.wiley.com/doi/10.1155/2012/501962", "supports": ["macrophageMigrationSpeed"], "status": "ASSAY_SPECIFIC"},
+    {"id": "SRC_OXYGEN_TRANSPORT", "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK538336/", "supports": ["oxygenTransport"], "status": "SOURCE_VERIFIED"},
+    {"id": "SRC_ALLEN_IMMUNE_ATLAS", "url": "https://apps.allenimmunology.org/aifi/resources/imm-health-atlas/", "supports": ["immuneCellSubtypes"], "status": "SOURCE_VERIFIED"}
+  ],
+  "validationRules": [
+    "All normalized 0..1 values must declare MODEL_START unless they have a direct assay mapping.",
+    "All physical values must include units and compartment context.",
+    "No generic universal replication rate for virus, bacterium or fungus.",
+    "Virus profiles must not expose autonomous cellular ATP production or glucose uptake.",
+    "Only phagocyte-capable profiles can invoke PHAGOCYTOSIS.",
+    "Only APC-capable profiles can invoke ANTIGEN_PRESENTATION.",
+    "T-cell activation requires peptide-MHC recognition and contextual co-stimulation/inhibition in the MVP.",
+    "A failed/rejected event must not mutate entity state.",
+    "Store model agent-to-real-cell scale factor separately from entity count.",
+    "All outputs must record random seed, model version, code revision, time step and evidence provenance."
+  ]
+}
