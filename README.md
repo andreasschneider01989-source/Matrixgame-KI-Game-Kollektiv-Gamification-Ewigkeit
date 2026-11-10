@@ -96,6 +96,36 @@ A concise synthesis of current energy, AI-for-science, restoration, health and c
 
 - [Matrixgame Infinity — From potential to progress](research/MATRIXGAME_POTENTIAL_TO_PROGRESS_2026-11-06.md)
 
+## Gaia Commons — Earth systems, astrobiology and water-cycle MVP (8 November 2026)
+
+The Gaia research chapter is extended with a review of new astrobiology research, the supplied Harald Lesch transcript, rainforest monitoring, responsible AI-energy accounting, and a staged Earth-systems roadmap.
+
+- [Gaia Commons — astrobiology, Earth systems and responsible AI](docs/GAIA_ASTROBIOLOGY_AI_AND_EARTH_SIMULATION_2026-11-08.md)
+- [Matrixgame Earth Lab — executable water-cycle MVP](matrixgame-earth-lab/README.md)
+- [Planet Earth — Habitability and Evolution Project](docs/PLANET_EARTH_HABITABILITY_AND_EVOLUTION.md)
+- [Earth Project implementation issue #15](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/15)
+
+The Java 21 prototype is a single-bucket water-balance model with synthetic demonstration inputs and deterministic self-tests. It is not a validated rainforest or climate prediction model. CI status must be checked on the pull request before calling the implementation tested.
+
+## Gaia Commons — canopy/root-zone water model (8 November 2026)
+
+Gaia Earth Lab now includes a second, two-store conceptual model for canopy interception, throughfall, root-zone storage, ET, runoff and drainage, alongside the original soil bucket. It includes an independent test suite and Java 21 CI.
+
+- [Gaia Earth Lab module](matrixgame-earth-lab/README.md)
+- [Gaia research and astrobiology review](docs/GAIA_ASTROBIOLOGY_AI_AND_EARTH_SIMULATION_2026-11-08.md)
+- [Draft PR #26](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/pull/26)
+
+The two-store model is still a MODEL prototype with synthetic forcing, not a calibrated rainforest predictor.
+
+## KIM — cross-platform knowledge and research atlas (8 November 2026)
+
+A first source inventory connects the visible KIM/Matrixgame YouTube playlists, Instagram project entry points, Google Drive document titles, and the four GitHub repositories. It defines source records, typed knowledge-graph relationships, multi-agent review, and human-approved publishing.
+
+- [KIM cross-platform knowledge and research atlas](docs/KIM_INTEROPERABILITY_ATLAS_2026-11-08.md)
+- [Integration issue #27](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/27)
+
+The atlas records only visible titles and links. It does not claim to have reviewed every external document, playlist video, or private conversation.
+
 ## Open implementation quests
 
 The initial work is tracked as separate, reviewable GitHub issues:
@@ -232,3 +262,16 @@ mvn clean package
 # Ausführen
 java -jar target/matrixgame-simulator-1.0.0.jar
 ```
+
+## KIM source registry and cross-platform research — 9 November 2026
+
+A small privacy-aware source-ingestion slice is now available on the Gaia draft branch:
+
+- [KIM source registry (JSON)](research/KIM_SOURCE_REGISTRY_2026-11-09.json)
+- [Registry schema (JSON Schema 2020-12)](schemas/kim-source-registry.schema.json)
+- [Dependency-free validator](scripts/validate_kim_source_registry.py)
+- [Cross-platform research synthesis](docs/GENESIS_COMMONS_CROSS_PLATFORM_SYNTHESIS_2026-11-09.md)
+- [KIM interoperability atlas](docs/KIM_INTEROPERABILITY_ATLAS_2026-11-08.md)
+
+The registry is a manually curated snapshot, not a live crawler. It distinguishes public source links from private workspace metadata and does not publish private Drive, Docs, Sheets, notebook, chat or Discord URLs. Its validator and focused CI workflow are intended to make source discovery reusable without silently promoting title-only pages or copied AI context into verified evidence.
+

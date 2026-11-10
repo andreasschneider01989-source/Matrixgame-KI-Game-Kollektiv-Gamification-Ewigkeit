@@ -1,0 +1,65 @@
+name: KIM Source Registry Validation
+
+on:
+  pull_request:
+    paths:
+      - "schemas/kim-source-registry.schema.json"
+      - "research/KIM_SOURCE_REGISTRY_2026-11-09.json"
+      - "scripts/validate_kim_source_registry.py"
+      - "docs/GENESIS_COMMONS_CROSS_PLATFORM_SYNTHESIS_2026-11-09.md"
+      - ".github/workflows/kim-source-registry.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Do not check out the entire legacy repository: historical filenames
+      # can exceed runner filesystem limits. Fetch only the four small inputs.
+      - name: Fetch source-registry files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
+          GH_REF: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import base64
+          import json
+          import os
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+
+          repo = os.environ["GH_REPOSITORY"]
+          ref = os.environ["GH_REF"]
+          token = os.environ["GH_TOKEN"]
+          paths = [
+              "schemas/kim-source-registry.schema.json",
+              "research/KIM_SOURCE_REGISTRY_2026-11-09.json",
+              "scripts/validate_kim_source_registry.py",
+          ]
+          for path in paths:
+              url = f"https://api.github.com/repos/{repo}/contents/{path}?ref={ref}"
+              request = Request(url, headers={
+                  "Accept": "application/vnd.github+json",
+                  "Authorization": f"Bearer {token}",
+                  "X-GitHub-Api-Version": "2022-11-28",
+              })
+              with urlopen(request, timeout=30) as response:
+                  payload = json.load(response)
+              content = base64.b64decode(payload["content"])
+              destination = Path(path)
+              destination.parent.mkdir(parents=True, exist_ok=True)
+              destination.write_bytes(content)
+              print(f"Fetched {path} ({len(content)} bytes)")
+          PY
+
+      - name: Validate registry and run validator self-tests
+        run: python scripts/validate_kim_source_registry.py --self-test

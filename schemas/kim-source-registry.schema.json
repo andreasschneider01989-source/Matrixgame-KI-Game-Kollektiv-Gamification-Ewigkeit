@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KIM Source Registry",
+  "description": "Privacy-aware, provenance-first registry for Matrixgame research sources.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "registry_version",
+    "observed_at",
+    "scope",
+    "sources"
+  ],
+  "properties": {
+    "registry_version": {
+      "const": "1.0.0"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "scope": {
+      "type": "string",
+      "minLength": 10
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "platform",
+        "kind",
+        "access_status",
+        "privacy_class",
+        "review_state",
+        "license_status",
+        "claim_status",
+        "use",
+        "observed_at",
+        "notes"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{2,100}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 2
+        },
+        "platform": {
+          "type": "string",
+          "minLength": 2
+        },
+        "kind": {
+          "enum": [
+            "repository",
+            "pull_request",
+            "issue",
+            "binary_file",
+            "code_artifact",
+            "folder",
+            "document",
+            "spreadsheet",
+            "conversation",
+            "workspace",
+            "web_page",
+            "video",
+            "playlist",
+            "search_page"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "access_status": {
+          "enum": [
+            "api_read",
+            "browser_read",
+            "library_read",
+            "visible_partial_content",
+            "title_only",
+            "folder_listing_only",
+            "render_error",
+            "host_permission_denied",
+            "binary_available_uninspected",
+            "metadata_only"
+          ]
+        },
+        "privacy_class": {
+          "enum": [
+            "public",
+            "user_workspace",
+            "private",
+            "unknown"
+          ]
+        },
+        "review_state": {
+          "enum": [
+            "content_inspected",
+            "partial_review",
+            "title_only",
+            "not_reviewed",
+            "not_accessible",
+            "binary_not_extracted"
+          ]
+        },
+        "license_status": {
+          "enum": [
+            "not_assessed",
+            "public_link_only",
+            "repository_license_check_required",
+            "user_workspace_no_republication",
+            "source_site_reuse_not_assessed"
+          ]
+        },
+        "claim_status": {
+          "enum": [
+            "FACT",
+            "MODEL",
+            "HYPOTHESIS",
+            "OPEN",
+            "FICTION"
+          ]
+        },
+        "use": {
+          "enum": [
+            "project_status",
+            "research_candidate",
+            "code_recovery",
+            "creative_reference",
+            "learning_quest",
+            "discovery_only"
+          ]
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 5
+        },
+        "related_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "privacy_class": {
+                "enum": [
+                  "user_workspace",
+                  "private"
+                ]
+              }
+            },
+            "required": [
+              "privacy_class"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "url"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "privacy_class": {
+                "const": "public"
+              }
+            },
+            "required": [
+              "privacy_class"
+            ]
+          },
+          "then": {
+            "required": [
+              "url"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
