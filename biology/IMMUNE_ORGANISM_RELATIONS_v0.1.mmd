@@ -1,0 +1,199 @@
+erDiagram
+    ORGANISM ||--o{ COMPARTMENT : contains
+    COMPARTMENT ||--o{ TISSUE : contains
+    TISSUE ||--o{ ENTITY_STATE : hosts
+    ENTITY ||--o{ ENTITY_STATE : has_state
+    ENTITY ||--o{ BIO_EVENT : source
+    ENTITY ||--o{ BIO_EVENT : target
+    BIO_EVENT }o--|| COMPARTMENT : occurs_in
+    ENTITY ||--o{ CAPABILITY : supports
+    CAPABILITY ||--o{ BIO_EVENT : enables
+    CELL ||--|| ENTITY : is_a
+    MICROBE ||--|| ENTITY : is_a
+    VIRION ||--|| ENTITY : is_a
+    MOLECULE ||--|| ENTITY : is_a
+    CELL ||--o{ RECEPTOR : expresses
+    CELL ||--o{ LIGAND : expresses
+    RECEPTOR }o--o{ LIGAND : binds
+    ANTIGEN ||--o{ ANTIGEN_PRESENTATION : processed_into
+    CELL ||--o{ ANTIGEN_PRESENTATION : presents
+    ANTIGEN_PRESENTATION }o--o{ T_CELL : recognized_by
+    ANTIBODY ||--o{ OPSONIZATION : mediates
+    COMPLEMENT_COMPONENT ||--o{ OPSONIZATION : mediates
+    OPSONIZATION }o--|| PATHOGEN : marks
+    PHAGOCYTE ||--o{ PHAGOCYTOSIS : performs
+    PHAGOCYTOSIS }o--|| PATHOGEN : engulfs
+    CELL ||--o{ SIGNAL_RELEASE : secretes
+    SIGNAL_RELEASE }o--|| SIGNAL : releases
+    SIGNAL ||--o{ FIELD : contributes_to
+    FIELD ||--o{ CELL_RESPONSE : drives
+    CELL ||--o{ CELL_RESPONSE : performs
+    CELL ||--o{ METABOLIC_FLUX : has
+    METABOLIC_FLUX }o--|| RESOURCE : consumes_or_releases
+    VESSEL ||--o{ TRANSMIGRATION : allows
+    IMMUNE_CELL ||--o{ TRANSMIGRATION : performs
+    RBC ||--o{ OXYGEN_TRANSPORT : performs
+    OXYGEN_TRANSPORT }o--|| TISSUE : supplies
+    ENTITY ||--o{ MEMORY_LINK : associated
+    MEMORY_LINK }o--|| ANTIGEN : references
+    SIMULATION_RUN ||--o{ BIO_EVENT : records
+    SIMULATION_RUN ||--o{ METRIC : records
+    MODEL_PROFILE ||--o{ ENTITY_STATE : configures
+
+    ORGANISM {
+        string organismId PK
+        string speciesId
+    }
+    COMPARTMENT {
+        string compartmentId PK
+        string anatomyId
+        string name
+    }
+    TISSUE {
+        string tissueId PK
+        string compartmentId FK
+        float barrierIntegrity01
+    }
+    ENTITY {
+        string entityId PK
+        string entityKind
+        string typeId
+        string speciesId
+    }
+    ENTITY_STATE {
+        string entityId FK
+        long tick
+        float viability01
+        float activation01
+        float energyReserve01
+        string lifecycleState
+    }
+    BIO_EVENT {
+        string eventId PK
+        string sourceEntityId FK
+        string targetEntityId FK
+        string interactionType
+        float magnitude
+        string unit
+        string epistemicStatus
+    }
+    CAPABILITY {
+        string capabilityId PK
+        string capabilityName
+    }
+    RECEPTOR {
+        string receptorId PK
+        string receptorType
+    }
+    LIGAND {
+        string ligandId PK
+        string ligandType
+    }
+    ANTIGEN {
+        string antigenId PK
+        string epitopeId
+    }
+    ANTIGEN_PRESENTATION {
+        string presentationId PK
+        string mhcClass
+        string peptideId
+    }
+    T_CELL {
+        string entityId FK
+        string subtype
+    }
+    ANTIBODY {
+        string antibodyId PK
+        string isotype
+    }
+    COMPLEMENT_COMPONENT {
+        string componentId PK
+        string componentType
+    }
+    OPSONIZATION {
+        string eventId FK
+        float opsoninLoad01
+    }
+    PHAGOCYTE {
+        string entityId FK
+        string phagocyteType
+    }
+    PHAGOCYTOSIS {
+        string eventId FK
+        float success01
+    }
+    SIGNAL {
+        string signalId PK
+        string moleculeId
+        string signalType
+    }
+    SIGNAL_RELEASE {
+        string eventId FK
+        float releaseRate
+        string unit
+    }
+    FIELD {
+        string fieldId PK
+        string moleculeId
+        string spatialScale
+    }
+    CELL_RESPONSE {
+        string eventId FK
+        float response01
+    }
+    METABOLIC_FLUX {
+        string fluxId PK
+        string resourceId FK
+        float rate
+        string unit
+    }
+    RESOURCE {
+        string resourceId PK
+        string moleculeId
+        string unit
+    }
+    VESSEL {
+        string vesselId PK
+        string vesselType
+        float perfusion01
+    }
+    TRANSMIGRATION {
+        string eventId FK
+        float adhesion01
+    }
+    IMMUNE_CELL {
+        string entityId FK
+        string lineage
+    }
+    RBC {
+        string entityId FK
+        float hemoglobinContent
+    }
+    OXYGEN_TRANSPORT {
+        string eventId FK
+        float oxygenDelivered
+        string unit
+    }
+    MEMORY_LINK {
+        string memoryId PK
+        string antigenId FK
+        float affinity01
+    }
+    SIMULATION_RUN {
+        string runId PK
+        string modelVersion
+        long seed
+        float dtMinutes
+    }
+    METRIC {
+        string metricId PK
+        string name
+        float value
+        string unit
+        string sourceId
+    }
+    MODEL_PROFILE {
+        string profileId PK
+        string profileVersion
+        string provenanceClass
+    }
