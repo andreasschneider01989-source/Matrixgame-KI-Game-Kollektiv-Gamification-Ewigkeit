@@ -3,7 +3,7 @@
 **Last checkpoint:** 2026-11-10  
 **Checkpoint branch:** `agent/continuity-2026-11-10`
 
-Read this index first when continuing work. Then read the dated checkpoint, browser research synthesis, immune/organism entity catalog, machine-readable profiles, and implementation backlog before changing code.
+Read this index first when continuing work. Then read the dated checkpoint, browser research synthesis, immune/organism entity catalog, machine-readable profiles, ER diagram and implementation backlog before changing code.
 
 ## Canonical references
 
@@ -11,20 +11,21 @@ Read this index first when continuing work. Then read the dated checkpoint, brow
 2. [Browser research synthesis 2026-11-10](BROWSER_RESEARCH_SYNTHESIS_2026-11-10.md)
 3. [Immune & Human Organism Entity Catalog v0.1](../biology/IMMUNE_ORGANISM_ENTITY_CATALOG_v0.1.md)
 4. [Machine-readable immune/organism profiles v0.1](../biology/immune-organism-profiles.v0.1.json)
-5. [Implementation backlog 2026-11-10](IMPLEMENTATION_BACKLOG_2026-11-10.md)
-6. [Root README](../README.md)
-7. [Existing Matrixgame Protocol](../matrixgame-protocol/README.md)
-8. [Java 21 Matrix Core](../matrixgame-core/matrixgame-core/README.md)
-9. [LUMINI compiler architecture and career engine](LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md)
-10. [Universal Knowledge Engine](UNIVERSAL_KNOWLEDGE_ENGINE.md)
-11. [Collective Improvement Network](COLLECTIVE_IMPROVEMENT_NETWORK.md)
-12. [KIM interoperability source atlas — currently in Gaia feature PR](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/blob/feature/gaia-water-cycle-mvp-2026-11-08/docs/KIM_INTEROPERABILITY_ATLAS_2026-11-08.md)
+5. [Immune organism Entity-Relationship diagram](../biology/IMMUNE_ORGANISM_RELATIONS_v0.1.mmd)
+6. [Implementation backlog 2026-11-10](IMPLEMENTATION_BACKLOG_2026-11-10.md)
+7. [Root README](../README.md)
+8. [Existing Matrixgame Protocol](../matrixgame-protocol/README.md)
+9. [Java 21 Matrix Core](../matrixgame-core/matrixgame-core/README.md)
+10. [LUMINI compiler architecture and career engine](LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md)
+11. [Universal Knowledge Engine](UNIVERSAL_KNOWLEDGE_ENGINE.md)
+12. [Collective Improvement Network](COLLECTIVE_IMPROVEMENT_NETWORK.md)
+13. [KIM interoperability source atlas — currently in Gaia feature PR](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/blob/feature/gaia-water-cycle-mvp-2026-11-08/docs/KIM_INTEROPERABILITY_ATLAS_2026-11-08.md)
 
 ## Continuation prompt
 
 Copy this into a new development session:
 
-> Continue the existing Matrixgame project; do not start from zero. Read `docs/CONTINUITY_INDEX.md`, the latest checkpoint, browser research synthesis, immune entity catalog, machine-readable profiles and backlog. Inspect the real current branch, source files and tests. Report what is implemented, tested, proposed or blocked. Choose one smallest high-value backlog item, make the change on a feature branch, run relevant tests, record exact commands/results, and update the checkpoint. Do not merge to main or publish private material without explicit approval. Keep FACT/MODEL/HYPOTHESIS/OPEN/FICTION separate from implementation status. Reuse existing schemas and modules rather than inventing parallel systems.
+> Continue the existing Matrixgame project; do not start from zero. Read `docs/CONTINUITY_INDEX.md`, the latest checkpoint, browser research synthesis, immune entity catalog, machine-readable profiles, ER diagram and backlog. Inspect the real current branch, source files and tests. Report what is implemented, tested, proposed or blocked. Choose one smallest high-value backlog item, make the change on a feature branch, run relevant tests, record exact commands/results, and update the checkpoint. Do not merge to main or publish private material without explicit approval. Keep FACT/MODEL/HYPOTHESIS/OPEN/FICTION separate from implementation status. Reuse existing schemas and modules rather than inventing parallel systems.
 
 ## Storage boundary
 
