@@ -1,0 +1,8 @@
+// First LUMINI MVP example: dimensional analysis of density.
+project "density-demo" {
+  claim_status = MODEL;
+  parameter mass = 10 kg;
+  parameter volume = 2 m^3;
+  derive density = mass / volume;
+  assert_unit density = kg / m^3;
+}

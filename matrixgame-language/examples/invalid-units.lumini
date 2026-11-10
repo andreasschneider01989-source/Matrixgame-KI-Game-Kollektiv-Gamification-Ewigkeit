@@ -1,0 +1,7 @@
+// This intentionally invalid example must be rejected by the compiler.
+project "invalid-dimensions" {
+  claim_status = MODEL;
+  parameter mass = 5 kg;
+  parameter distance = 3 m;
+  derive impossible = mass + distance;
+}

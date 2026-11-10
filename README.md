@@ -83,6 +83,14 @@ A proposed compiler and modeling architecture that translates reviewed LUMINI mo
 - [LUMINI — compiler, modeling, simulation and career engine architecture](docs/LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md)
 - [Engineering Kanban and acceptance criteria — issue #22](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/22)
 
+## LUMINI compiler MVP — 7 November 2026
+
+A first Java 21 compiler prototype now lives in `matrixgame-language/`. It supports a restricted modelling syntax, SI dimensional analysis for kg/m/s, derived expressions, unit assertions and deterministic JSON Model IR output. The implementation is intentionally small and is not yet connected to a physics or Matrix Core engine.
+
+- [LUMINI compiler MVP and examples](matrixgame-language/README.md)
+- [Compiler, modelling and career-engine architecture](docs/LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md)
+- [Compiler MVP review and integration task — issue #22](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/22)
+
 ## Human flourishing without coercion — birth safety and anti-dystopia research (7 November 2026)
 
 A research and design module connecting evidence-informed birth safety, sustainable wellbeing, the fictional drug Soma, and the autonomy lessons of Aldous Huxley's *Brave New World*. It separates facts, models, hypotheses and open questions; the module is a research concept, not a medical guide or an implemented feature.
