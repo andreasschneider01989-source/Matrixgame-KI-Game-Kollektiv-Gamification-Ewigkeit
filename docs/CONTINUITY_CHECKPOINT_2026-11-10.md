@@ -14,7 +14,8 @@ Preserve continuity across sessions and tools. Continue from verified existing w
 2. [Browser research synthesis 2026-11-10](BROWSER_RESEARCH_SYNTHESIS_2026-11-10.md)
 3. [Immune & Human Organism Entity Catalog v0.1](../biology/IMMUNE_ORGANISM_ENTITY_CATALOG_v0.1.md)
 4. [Machine-readable immune/organism profiles v0.1](../biology/immune-organism-profiles.v0.1.json)
-5. [Implementation backlog](IMPLEMENTATION_BACKLOG_2026-11-10.md)
+5. [Immune organism Entity-Relationship diagram](../biology/IMMUNE_ORGANISM_RELATIONS_v0.1.mmd)
+6. [Implementation backlog](IMPLEMENTATION_BACKLOG_2026-11-10.md)
 
 ## Current source-of-truth map
 
@@ -29,7 +30,7 @@ Preserve continuity across sessions and tools. Continue from verified existing w
 | Positive Change Lab | draft [PR #25](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/pull/25) | Design specification only; not an implemented application |
 | ODC hypothesis audit | draft [PR #29](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/pull/29) | Python analyzer and tests per PR; no empirical sample dataset yet; density-only hypothesis is not established |
 | Knowledge graph / KIM | `docs/UNIVERSAL_KNOWLEDGE_ENGINE.md`, `docs/KNOWLEDGE_NODE_AND_EVIDENCE_SCHEMA.md`, KIM atlas on [PR #26 branch](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/blob/feature/gaia-water-cycle-mvp-2026-11-08/docs/KIM_INTEROPERABILITY_ATLAS_2026-11-08.md), [Issue #27](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/27) | Source atlas and proposals exist; not a live cross-platform sync service |
-| Immune/organism ontology | `biology/IMMUNE_ORGANISM_ENTITY_CATALOG_v0.1.md` and `biology/immune-organism-profiles.v0.1.json` | New research-backed model specification and JSON starter profiles; not yet a Java runtime or calibrated biological simulator |
+| Immune/organism ontology | `biology/IMMUNE_ORGANISM_ENTITY_CATALOG_v0.1.md`, `biology/immune-organism-profiles.v0.1.json`, `biology/IMMUNE_ORGANISM_RELATIONS_v0.1.mmd` | New research-backed specification, JSON starter profiles and ER diagram; not yet a Java runtime or calibrated biological simulator |
 | Collective improvement lifecycle | `docs/COLLECTIVE_IMPROVEMENT_NETWORK.md` | Proposal: observe → describe → triage → analyze → quest → implement → verify → publish |
 | Integration reference kit | Local `Matrixgame_Integration_Kit_v0.1.zip` | Separate artifact; examples previously tested; adapters are not deployed |
 
