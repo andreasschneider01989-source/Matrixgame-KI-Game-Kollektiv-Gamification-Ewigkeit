@@ -83,6 +83,12 @@ A proposed compiler and modeling architecture that translates reviewed LUMINI mo
 - [LUMINI — compiler, modeling, simulation and career engine architecture](docs/LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md)
 - [Engineering Kanban and acceptance criteria — issue #22](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/22)
 
+## LUMINI Idea Inbox, compiler filters and multilingual interoperability — 11 November 2026
+
+A specification for preserving raw ideas, tracing transparent compiler filters, separating evidence from models and hypotheses, proposing causal graphs, routing ideas into quests or code modules, and translating a shared semantic model into multiple natural languages and programming targets. Includes multi-LLM proposal/review roles, privacy and provenance rules, and a staged Java MVP. This is a design, not an implemented compiler.
+
+- [LUMINI Idea Inbox, compiler filters and multilingual interoperability](docs/LUMINI_IDEA_COMPILER_FILTERS_MULTILINGUAL_INTEROP_2026-11-11.md)
+
 ## Infinite Canvas, dual interfaces and model quality — 11 November 2026
 
 A specification for one shared simulation snapshot with human-readable console output, machine-readable JSONL events and an interactive Infinite Canvas. It defines variable-driven axes, a dynamic scale legend, reproducible RunManifests, agent communication phases, transcript-to-module provenance and testable quality gates. This is a design and acceptance document, not a claim that the full implementation already exists.
