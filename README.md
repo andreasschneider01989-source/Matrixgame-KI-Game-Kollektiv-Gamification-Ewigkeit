@@ -83,6 +83,12 @@ A proposed compiler and modeling architecture that translates reviewed LUMINI mo
 - [LUMINI — compiler, modeling, simulation and career engine architecture](docs/LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md)
 - [Engineering Kanban and acceptance criteria — issue #22](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/22)
 
+## Cross-LLM GitHub collaboration protocol — 12 November 2026
+
+A practical operating protocol for ChatGPT, Gemini, Qwen, Mistral, Grok, and human contributors to use the repository as a shared, versioned knowledge surface. It defines contribution records, provenance, branch/PR review, security boundaries, optional provider adapters, and a staged automation roadmap. Provider integrations and orchestration remain proposed until separately configured and tested.
+
+- [Cross-LLM GitHub Collaboration Protocol](docs/CROSS_LLM_GITHUB_COLLABORATION_PROTOCOL_2026-11-12.md)
+
 ## LUMINI Idea Inbox, compiler filters and multilingual interoperability — 11 November 2026
 
 A specification for preserving raw ideas, tracing transparent compiler filters, separating evidence from models and hypotheses, proposing causal graphs, routing ideas into quests or code modules, and translating a shared semantic model into multiple natural languages and programming targets. Includes multi-LLM proposal/review roles, privacy and provenance rules, and a staged Java MVP. This is a design, not an implemented compiler.
