@@ -258,3 +258,13 @@ mvn clean package
 # Ausführen
 java -jar target/matrixgame-simulator-1.0.0.jar
 ```
+
+
+## Infinity-Lab — cosmic worlds, science learning and human flourishing — 12 November 2026
+
+A new learning-and-simulation design connects Boolean logic, arithmetic, rhetoric, grammar and English micro-learning with computing/internet history, AI, astrobiology, evolution, orbital mechanics, energy systems, quantum networks and civilization-scale scenarios. It distinguishes established science from hypotheses and FICTION, keeps deterministic simulation state authoritative, and uses voluntary XP without penalties for rest.
+
+- [Infinity-Lab: Cosmic Worlds, Science Learning and Human Flourishing](research/INFINITY_LAB_COSMIC_WORLDS_LEARNING_XP_2026-11-12.md)
+
+Browser coverage and access limitations are documented in the research note. Some external AI-chat and video tabs were visible only by title or blocked by browser permissions; no unseen transcript contents are claimed.
+
