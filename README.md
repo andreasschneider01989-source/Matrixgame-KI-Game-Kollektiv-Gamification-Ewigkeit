@@ -89,6 +89,14 @@ A practical operating protocol for ChatGPT, Gemini, Qwen, Mistral, Grok, and hum
 
 - [Cross-LLM GitHub Collaboration Protocol](docs/CROSS_LLM_GITHUB_COLLABORATION_PROTOCOL_2026-11-12.md)
 
+## LLM landscape, Matrix-Game 4.0 and human flourishing — 12 November 2026
+
+An evidence-aware synthesis of the open model-comparison tabs, verified provider announcements, Skywork Matrix-Game 4.0, multi-agent evaluation research, European AI compute infrastructure, and wellbeing/healthy-ageing evidence. It separates verified product announcements from unverified model labels, and design proposals from implemented code.
+
+- [Matrixgame LLM, collective intelligence and flourishing research update](research/MATRIXGAME_LLM_COLLECTIVE_INTELLIGENCE_AND_FLOURISHING_2026-11-12.md)
+
+The report explicitly records browser-access limitations: some video and conversation tabs could not be read, and the Google Docs tab exposed only its outline. It therefore does not claim to have analyzed every transcript.
+
 ## LUMINI Idea Inbox, compiler filters and multilingual interoperability — 11 November 2026
 
 A specification for preserving raw ideas, tracing transparent compiler filters, separating evidence from models and hypotheses, proposing causal graphs, routing ideas into quests or code modules, and translating a shared semantic model into multiple natural languages and programming targets. Includes multi-LLM proposal/review roles, privacy and provenance rules, and a staged Java MVP. This is a design, not an implemented compiler.
