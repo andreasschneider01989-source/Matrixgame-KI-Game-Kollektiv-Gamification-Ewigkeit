@@ -302,9 +302,9 @@
       "source": {
         "title": "Copernicus – 2026 temperature outlook",
         "url": "https://climate.copernicus.eu/copernicus-warmest-october-record-2026-virtually-certain-exceed-15degc",
-        "published_at": "2026-11-11"
+        "published_at": "2026-11-05"
       },
-      "notes": "Annual anomaly estimate; not equivalent to the Paris Agreement's long-term threshold definition."
+      "notes": "Annual anomaly estimate; not equivalent to the Paris Agreement's long-term threshold definition. Copernicus bulletin predates the 2026-11-06 comparison baseline; retained as context, not a new weekly update."
     },
     {
       "id": "MANGROVE-NET-CHANGE-1984-2023",
