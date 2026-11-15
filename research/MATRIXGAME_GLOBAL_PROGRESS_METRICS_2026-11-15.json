@@ -1,0 +1,510 @@
+{
+  "schema_version": "1.0.0",
+  "snapshot_date": "2026-11-15",
+  "comparison_window": {
+    "from": "2026-11-06",
+    "to": "2026-11-15"
+  },
+  "repository": "andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit",
+  "notes": [
+    "Values are not directly comparable when scope, definitions, units, or methods differ.",
+    "Forecasts and vendor-reported values are not observations.",
+    "The 2026-11-06 report's 29.56 value was mislabelled: it is GW power capacity, not million H100-equivalents."
+  ],
+  "metrics": [
+    {
+      "id": "AI-COMPUTE-H100E-2025Q4",
+      "name": "Global AI chip compute capacity",
+      "value": 17.07,
+      "unit": "million H100-equivalents",
+      "period": "2025-Q4",
+      "status": "ESTIMATE",
+      "source": {
+        "title": "Stanford AI Index 2026, Figure 1.2.3",
+        "url": "https://hai.stanford.edu/assets/files/ai_index_report_2026.pdf",
+        "published_at": "2026"
+      },
+      "notes": "Estimated from revenue data, financial disclosures and analyst reports; not an exact chip inventory. AI Index reports approximately 3.3x annual growth since 2022."
+    },
+    {
+      "id": "AI-DC-POWER-2025Q4",
+      "name": "Total cumulative AI data-center power capacity",
+      "value": 29.56,
+      "unit": "GW",
+      "period": "2025-Q4",
+      "status": "ESTIMATE",
+      "source": {
+        "title": "Stanford AI Index 2026, Figure 1.2.4",
+        "url": "https://hai.stanford.edu/assets/files/ai_index_report_2026.pdf",
+        "published_at": "2026"
+      },
+      "notes": "Approximately 11.82 GW AI-chip TDP plus 17.74 GW cooling, networking and other infrastructure. Power capacity is not annual energy consumption."
+    },
+    {
+      "id": "AI-AGENT-FERMAT-COUNT",
+      "name": "Agents in Fable 5.2 proof-formalization experiment",
+      "value": 1000,
+      "unit": "agents",
+      "period": "2026-11-09",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "Anthropic technical report",
+        "url": "https://claude.dev/blog/safely-scaling-multi-agent-teams-with-fable-5-2/",
+        "published_at": "2026-11-09"
+      },
+      "notes": "Vendor-reported single experiment. Formalized a known proof; 47 prior lemmas were supplied. Not a new discovery of Fermat's Last Theorem."
+    },
+    {
+      "id": "AI-AGENT-FERMAT-TIME",
+      "name": "Elapsed time for Fable 5.2 proof-formalization experiment",
+      "value": 28.7,
+      "unit": "hours",
+      "period": "2026-11-09",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "Anthropic technical report",
+        "url": "https://claude.dev/blog/safely-scaling-multi-agent-teams-with-fable-5-2/",
+        "published_at": "2026-11-09"
+      },
+      "notes": "Vendor-reported elapsed time for one experiment; not a general benchmark."
+    },
+    {
+      "id": "AI-AGENT-FERMAT-STATEMENTS",
+      "name": "Statements proved/formalized",
+      "value": 54,
+      "unit": "statements out of 60",
+      "period": "2026-11-09",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "Anthropic technical report",
+        "url": "https://claude.dev/blog/safely-scaling-multi-agent-teams-with-fable-5-2/",
+        "published_at": "2026-11-09"
+      },
+      "notes": "Five statements were made unnecessary by other results; one was dropped. Lean kernel checks formal proof steps."
+    },
+    {
+      "id": "AI-SKILLS-PLATFORMS",
+      "name": "Reported Agent Skills platform integrations",
+      "value": 70,
+      "unit": "platforms (more than)",
+      "period": "2026-10-22",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "Anthropic – Agent Skills donation to AAIF",
+        "url": "https://www.anthropic.com/news/donating-agent-skills-to-the-agentic-ai-foundation",
+        "published_at": "2026-10-22"
+      },
+      "notes": "Anthropic-reported ecosystem count; not independently audited. Agent Skills is a workflow packaging standard, not an evidence schema."
+    },
+    {
+      "id": "AI-SKILLS-PUBLISHED",
+      "name": "Reported Agent Skills published",
+      "value": 1000000,
+      "unit": "skills (approximately)",
+      "period": "2026-10-22",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "Anthropic – Agent Skills donation to AAIF",
+        "url": "https://www.anthropic.com/news/donating-agent-skills-to-the-agentic-ai-foundation",
+        "published_at": "2026-10-22"
+      },
+      "notes": "Vendor-reported approximate count."
+    },
+    {
+      "id": "AI-SKILLS-INSTALLED",
+      "name": "Reported Agent Skills installations",
+      "value": 280000000,
+      "unit": "installs (nearly)",
+      "period": "2026-10-22",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "Anthropic – Agent Skills donation to AAIF",
+        "url": "https://www.anthropic.com/news/donating-agent-skills-to-the-agentic-ai-foundation",
+        "published_at": "2026-10-22"
+      },
+      "notes": "Vendor-reported approximate count; installation events are not unique users."
+    },
+    {
+      "id": "HEXAGON-HP-COEFFICIENT",
+      "name": "Weak-coupling Hawking-Page quartic coefficient claimed in preprint",
+      "value": -0.00148,
+      "unit": "coefficient multiplying lambda squared",
+      "period": "2026-11-07",
+      "status": "HYPOTHESIS",
+      "source": {
+        "title": "The Hawking-Page Transition at Weak Coupling",
+        "url": "https://hexagonmath.org/2611.00175v1",
+        "published_at": "2026-11-07"
+      },
+      "notes": "AI-assisted preprint; human physicist checked special cases. Not peer-reviewed or independently externally replicated."
+    },
+    {
+      "id": "HEXAGON-MODULAR-BOUND",
+      "name": "Modular-bootstrap bound claimed in preprint",
+      "value": 9.1266,
+      "unit": "dimensionless coefficient",
+      "period": "2026-11-07",
+      "status": "HYPOTHESIS",
+      "source": {
+        "title": "The Spinless Modular Bootstrap at Large Central Charge",
+        "url": "https://hexagonmath.org/2611.00174v1",
+        "published_at": "2026-11-07"
+      },
+      "notes": "AI-assisted preprint with human review; independent external verification pending."
+    },
+    {
+      "id": "DATACENTER-DEMAND-2035-BNEF",
+      "name": "Data-center electricity demand forecast",
+      "value": 2354,
+      "unit": "TWh/year",
+      "period": "2035",
+      "status": "FORECAST",
+      "source": {
+        "title": "BloombergNEF – Data Center Power Demand",
+        "url": "https://about.bnef.com/insights/data-centers/data-center-power-demand-is-set-to-surge-raising-new-climate-challenges-bloombergnef/",
+        "published_at": "2026-11-11"
+      },
+      "notes": "BNEF forecast, approximately 7% of global electricity demand; scope and model differ from IEA scenarios."
+    },
+    {
+      "id": "DATACENTER-GAS-PIPELINE",
+      "name": "Announced gas-fired capacity proposed alongside data centers",
+      "value": 181,
+      "unit": "GW",
+      "period": "2026-11-11",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "BloombergNEF – Data Center Power Demand",
+        "url": "https://about.bnef.com/insights/data-centers/data-center-power-demand-is-set-to-surge-raising-new-climate-challenges-bloombergnef/",
+        "published_at": "2026-11-11"
+      },
+      "notes": "Announced pipeline with more than 90% in the US; maturity and timing vary widely; not a forecast of what will be built."
+    },
+    {
+      "id": "RENEWABLE-CAPACITY-ADDITIONS-2025",
+      "name": "New renewable capacity additions",
+      "value": 800,
+      "unit": "GW (approximately)",
+      "period": "2025",
+      "status": "ESTIMATE",
+      "source": {
+        "title": "IEA Global Energy Review 2026 – Electricity Supply",
+        "url": "https://www.iea.org/reports/global-energy-review-2026/electricity-supply",
+        "published_at": "2026"
+      },
+      "notes": "Installed power capacity additions, not energy generation in TWh."
+    },
+    {
+      "id": "BATTERY-POWER-ADDITIONS-2025",
+      "name": "New battery-storage power capacity",
+      "value": 108,
+      "unit": "GW",
+      "period": "2025",
+      "status": "ESTIMATE",
+      "source": {
+        "title": "IEA Global Energy Review 2026 – Battery Storage",
+        "url": "https://www.iea.org/reports/global-energy-review-2026/technology-battery-storage",
+        "published_at": "2026"
+      },
+      "notes": "Power capacity, not stored energy capacity in GWh; approximately 40% above 2024."
+    },
+    {
+      "id": "GLOBAL-POPULATION-2024",
+      "name": "Global population",
+      "value": 8.2,
+      "unit": "billion people (approximately)",
+      "period": "2024",
+      "status": "ESTIMATE",
+      "source": {
+        "title": "UN World Population Prospects",
+        "url": "https://www.un.org/en/node/219445",
+        "published_at": "2024"
+      },
+      "notes": "UN estimate; not an exponential extrapolation."
+    },
+    {
+      "id": "GLOBAL-POPULATION-PEAK",
+      "name": "Projected global population peak",
+      "value": 10.3,
+      "unit": "billion people (approximately)",
+      "period": "mid-2080s",
+      "status": "FORECAST",
+      "source": {
+        "title": "UN World Population Prospects",
+        "url": "https://www.un.org/en/node/219445",
+        "published_at": "2024"
+      },
+      "notes": "Median projection; uncertainty increases with forecast horizon."
+    },
+    {
+      "id": "LIFE-EXPECTANCY-2024",
+      "name": "Global life expectancy at birth",
+      "value": 73.3,
+      "unit": "years",
+      "period": "2024",
+      "status": "ESTIMATE",
+      "source": {
+        "title": "UN World Population Prospects",
+        "url": "https://www.un.org/en/node/219445",
+        "published_at": "2024"
+      },
+      "notes": "Global estimate; not an exponential trend."
+    },
+    {
+      "id": "CHILD-MORTALITY-U5-2024",
+      "name": "Deaths among children under five",
+      "value": 4.9,
+      "unit": "million deaths",
+      "period": "2024",
+      "status": "ESTIMATE",
+      "source": {
+        "title": "WHO – Child Mortality",
+        "url": "https://www.who.int/news-room/fact-sheets/detail/child-mortality-under-5-years",
+        "published_at": "2025"
+      },
+      "notes": "WHO/UN estimates; progress has slowed since 2015."
+    },
+    {
+      "id": "LABOUR-PRODUCTIVITY-GROWTH-2025",
+      "name": "Global labour productivity growth",
+      "value": 1.7,
+      "unit": "percent year over year",
+      "period": "2025",
+      "status": "ESTIMATE",
+      "source": {
+        "title": "UN SDG Goal 8 Report 2026",
+        "url": "https://unstats.un.org/sdgs/report/2026/goal-08/",
+        "published_at": "2026"
+      },
+      "notes": "Output per worker; not a Moore's Law process."
+    },
+    {
+      "id": "EXTREME-POVERTY-2026",
+      "name": "People below the 3 USD/day poverty line",
+      "value": 811,
+      "unit": "million people (approximately)",
+      "period": "2026",
+      "status": "ESTIMATE",
+      "source": {
+        "title": "World Bank – Poverty, Prosperity and Planet",
+        "url": "https://www.worldbank.org/en/publication/poverty-prosperity-and-planet",
+        "published_at": "2026"
+      },
+      "notes": "Based on 2021 PPP threshold; nowcast and survey coverage uncertainty apply."
+    },
+    {
+      "id": "CLIMATE-ANNUAL-ANOMALY-2026",
+      "name": "Projected 2026 global temperature anomaly",
+      "value": "1.56–1.61",
+      "unit": "°C above 1850–1900",
+      "period": "2026",
+      "status": "FORECAST",
+      "source": {
+        "title": "Copernicus – 2026 temperature outlook",
+        "url": "https://climate.copernicus.eu/copernicus-warmest-october-record-2026-virtually-certain-exceed-15degc",
+        "published_at": "2026-11-11"
+      },
+      "notes": "Annual anomaly estimate; not equivalent to the Paris Agreement's long-term threshold definition."
+    },
+    {
+      "id": "MANGROVE-NET-CHANGE-1984-2023",
+      "name": "Global mangrove-area net change",
+      "value": -0.5,
+      "unit": "percent (±1.4 percentage points)",
+      "period": "1984–2023",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "Science study on mangrove forests",
+        "url": "https://doi.org/10.1126/science.aec9773",
+        "published_at": "2026-06-04"
+      },
+      "notes": "Global near-stability hides substantial regional losses and gains."
+    },
+    {
+      "id": "MANGROVE-GAIN-2010-2023",
+      "name": "Mangrove area gain",
+      "value": 2000,
+      "unit": "km² (nearly)",
+      "period": "2010–2023",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "NASA Earth Observatory – Global Rebound for Mangroves",
+        "url": "https://earthobservatory.nasa.gov/images/154827/a-global-rebound-for-mangroves",
+        "published_at": "2026-11-13"
+      },
+      "notes": "Approximately two-thirds attributed to natural colonization and one-third to restoration/regrowth in the NASA summary."
+    },
+    {
+      "id": "ESCAPADE-POWERED-FLYBYS",
+      "name": "Powered Earth flybys by ESCAPADE",
+      "value": 2,
+      "unit": "flybys",
+      "period": "2026-11-07 to 2026-11-09",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "NASA – ESCAPADE completes powered Earth flybys",
+        "url": "https://science.nasa.gov/science-research/heliophysics/nasas-escapade-completes-powered-earth-flybys-now-en-route-to-mars/",
+        "published_at": "2026-11"
+      },
+      "notes": "Combined gravity and engine-burn manoeuvre; not a pure gravitational assist."
+    },
+    {
+      "id": "VOYAGER1-LIGHTDAY",
+      "name": "Voyager 1 one-light-day milestone",
+      "value": "2026-11-18T02:16:07-08:00",
+      "unit": "timestamp",
+      "period": "2026-11-18",
+      "status": "FORECAST",
+      "source": {
+        "title": "NASA – Where Are Voyager 1 and 2 Now?",
+        "url": "https://science.nasa.gov/mission/voyager/where-are-voyager-1-and-voyager-2-now/",
+        "published_at": "2026-11"
+      },
+      "notes": "More than 16 billion miles / 25.902 billion km; one-way radio-signal travel time approximately 24 hours."
+    },
+    {
+      "id": "LISA-EXOPLANET-DETECTION",
+      "name": "Modelled future LISA sensitivity to planets around double white dwarfs",
+      "value": "sub-Jupiter under favourable conditions",
+      "unit": "planet mass class",
+      "period": "future LISA mission, planned mid-2030s",
+      "status": "MODEL",
+      "source": {
+        "title": "NASA – Gravitational Waves Can Reveal New Worlds",
+        "url": "https://science.nasa.gov/missions/lisa/gravitational-waves-can-reveal-new-worlds/",
+        "published_at": "2026-11-10"
+      },
+      "notes": "Theoretical forecast; no such planet has been detected by LISA."
+    },
+    {
+      "id": "DHS-UNDERFUNDED-SURVEY",
+      "name": "Surveyed addiction-counselling facilities reporting non-cost-covering 2026 funding",
+      "value": 77,
+      "unit": "percent of surveyed facilities (approximately)",
+      "period": "2026",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "DHS Action Day for Addiction Counselling",
+        "url": "https://www.dhs.de/service/presse/pressemeldungen/meldung/dhs-pressemitteilung-aktionstag-suchtberatung-am-12-november-2026-nah-wirksam-unverzichtbar/",
+        "published_at": "2026-11-11"
+      },
+      "notes": "Survey respondents only; not a census of all facilities."
+    },
+    {
+      "id": "EMOTION-REGULATION-META",
+      "name": "Studies in cognitive-control and emotion-regulation meta-analysis",
+      "value": 215,
+      "unit": "studies",
+      "period": "published 2026-09",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "Neuroscience & Biobehavioral Reviews meta-analysis",
+        "url": "https://doi.org/10.1016/j.neubiorev.2026.106708",
+        "published_at": "2026-09"
+      },
+      "notes": "Associations with reappraisal and rumination/worry were small; all notable effects |r| < 0.15."
+    },
+    {
+      "id": "AI-COMPANIONS-LONGITUDINAL-SAMPLE",
+      "name": "Participants in 12-month AI companionship and loneliness study",
+      "value": 2149,
+      "unit": "adults across four Western countries",
+      "period": "2026 publication; 12-month follow-up",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "Folk & Dunn – Psychological Science",
+        "url": "https://doi.org/10.1177/09567976261427747",
+        "published_at": "2026"
+      },
+      "notes": "Exploratory observational longitudinal analysis; emotional isolation finding used a single-item measure; not causal."
+    },
+    {
+      "id": "AI-COMPANIONS-GERMANY-SAMPLE",
+      "name": "Participants in German AI chatbot use and well-being study",
+      "value": 7312,
+      "unit": "adults",
+      "period": "published 2026-09-22",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "Computers in Human Behavior / TU Dresden",
+        "url": "https://doi.org/10.1016/j.chb.2026.109199",
+        "published_at": "2026-09-22"
+      },
+      "notes": "Cross-sectional survey; mostly small effects; emotional use and problematic use are associated, not shown to be causal."
+    },
+    {
+      "id": "WBS-DATA-ANALYTICS-START",
+      "name": "Next listed WBS Data Analytics & AI course start",
+      "value": "2026-11-23",
+      "unit": "date",
+      "period": "2026-11-15 check",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "WBS Training – Data Analytics & AI",
+        "url": "https://www.wbstraining.de/kurse/lokal/weiterbildung/darmstadt/data-analytics-ai-englisch-vollzeit/",
+        "published_at": "2026-11-15"
+      },
+      "notes": "Eight months plus two-month internship, full-time live online, English; funding depends on individual approval."
+    },
+    {
+      "id": "LOGSERV-APPRENTICESHIP-START",
+      "name": "Logserv Fachinformatiker Systemintegration apprenticeship start",
+      "value": "2027-08-01",
+      "unit": "date in body text; page metadata says 2027-08-02",
+      "period": "2027",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "Logserv official apprenticeship page",
+        "url": "https://www.logserv.biz/de-DE/jobs/ausbildung-fachinformatiker",
+        "published_at": "2026-11-15"
+      },
+      "notes": "Griesheim; system integration, not application development. Date discrepancy should be clarified with employer."
+    },
+    {
+      "id": "KIM-YOUTUBE-PLAYLIST-SNAPSHOT",
+      "name": "Public YouTube playlists in existing KIM atlas snapshot",
+      "value": 13,
+      "unit": "playlists",
+      "period": "2026-11-08 snapshot",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "KIM Interoperability Atlas",
+        "url": "https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/blob/feature/gaia-water-cycle-mvp-2026-11-08/docs/KIM_INTEROPERABILITY_ATLAS_2026-11-08.md",
+        "published_at": "2026-11-08"
+      },
+      "notes": "Live playlist IDs, counts and transcripts were not revalidated in this run."
+    },
+    {
+      "id": "REPO-PATH-LENGTH-ISSUE",
+      "name": "Tracked filename components exceeding 255 UTF-8 bytes",
+      "value": 11,
+      "unit": "file-name components",
+      "period": "main branch checked 2026-11-15",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "GitHub repository tree and Actions checkout log",
+        "url": "https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/actions/runs/43402783691",
+        "published_at": "2026-11-15"
+      },
+      "notes": "General Python Application workflow fails during checkout before tests. No files were renamed or deleted."
+    }
+  ],
+  "corrections": [
+    {
+      "id": "CORR-AI-INDEX-2026-11-15-01",
+      "supersedes": "research/MATRIXGAME_GLOBAL_RESEARCH_2026-11-06.md",
+      "previous_misreading": "29.56 million H100-equivalents",
+      "corrected_value": 29.56,
+      "corrected_unit": "GW",
+      "correct_compute_capacity": 17.07,
+      "correct_compute_unit": "million H100-equivalents",
+      "status": "OBSERVATION",
+      "source": {
+        "title": "Stanford AI Index 2026, Figures 1.2.3 and 1.2.4",
+        "url": "https://hai.stanford.edu/assets/files/ai_index_report_2026.pdf",
+        "published_at": "2026"
+      },
+      "notes": "The previous report read the Figure 1.2.4 power-capacity value as a compute-capacity value. The historical file remains unchanged for auditability; this dated snapshot is the correction."
+    }
+  ]
+}
