@@ -13,7 +13,7 @@ Die wichtigste Qualitätskorrektur betrifft den AI Index: **17,07 Millionen H100
 
 ---
 
-## A. Lagebild – sieben wichtige Entwicklungen
+## A. Lagebild – sechs neue Entwicklungen plus ein Risikokontext
 
 ### 1. KI-Agenten formalisieren einen bekannten mathematischen Beweis
 
@@ -75,9 +75,9 @@ Das ist eine positive Regenerationsgeschichte, aber kein Beleg für eine vollst�
 
 Quellen: [NASA Earth Observatory](https://earthobservatory.nasa.gov/images/154827/a-global-rebound-for-mangroves), [Science – zugrunde liegende Studie](https://doi.org/10.1126/science.aec9773).
 
-### 7. Klima und Konflikte: Fortschritt bleibt verletzlich
+### 7. Klima-Risikokontext und aktuelle Konflikte: Fortschritt bleibt verletzlich
 
-**OBSERVATION / FORECAST – Copernicus, 11. November:** 2026 ist praktisch sicher eines der wärmsten Jahre der Messreihe; die Jahresanomalie wird auf etwa 1,56–1,61 °C gegenüber 1850–1900 geschätzt. Auch der Mittelwert 2023–2026 dürfte über 1,5 °C liegen. Das ist ernst, aber nicht identisch mit dem formalen langfristigen Paris-Schwellenwert, der auf einem längerfristigen Mittel beruht.
+**OBSERVATION / FORECAST – Copernicus-Monatsbulletin vom 5. November (Datenzeitraum Oktober; bereits vor dem vorherigen Brief verfügbar):** 2026 ist praktisch sicher eines der wärmsten Jahre der Messreihe; die Jahresanomalie wird auf etwa 1,56–1,61 °C gegenüber 1850–1900 geschätzt. Auch der Mittelwert 2023–2026 dürfte über 1,5 °C liegen. Diese Klimazahlen sind kein neuer Wochenbefund seit dem 6. November, sondern ein fortbestehender Risikokontext. Das ist ernst, aber nicht identisch mit dem formalen langfristigen Paris-Schwellenwert, der auf einem längerfristigen Mittel beruht.
 
 **Humanitäre Lage:** OCHA meldete am 13. November erhebliche Überschwemmungsschäden in Gaza: etwa 46.000 Haushalte waren von Regen und Überflutung betroffen, mehr als 40.000 Familienunterkünfte beschädigt. Im Golfraum meldete Reuters am 15. November abgefangene iranische Luftangriffe in Bahrain; die iranische Behauptung eines erfolgreichen Treffers auf ein US-Radarziel war von US- oder bahrainischen Stellen nicht bestätigt.
 
