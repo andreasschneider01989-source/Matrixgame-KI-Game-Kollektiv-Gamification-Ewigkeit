@@ -16,7 +16,8 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [Collective Improvement Network](COLLECTIVE_IMPROVEMENT_NETWORK.md) — Vision und Roadmap für freiwillige Zusammenarbeit.
 - [LUMINI Compiler and Simulation](LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md) — Entwurf für typisierte Modelle und reproduzierbare Simulationen.
 - [Cross-Project Integration Map](MATRIXGAME_CROSS_PROJECT_INTEGRATION_MAP_2026-11-17.md) — Bestandskarte und Integrationsplan für Universal Grid Lab, Matrix Core, Gravitation, LUMINI, kollektive KI-Games und Zukunftsszenarien.
-- [Measurement-to-Model Pipeline](MATRIXGAME_MEASUREMENT_TO_MODEL_PIPELINE_2026-11-17.md) — v0.9 Messdatenexport, CSV-Beobachtungen, Kalibrierung, Validierung und die spätere LUMINI-Compiler-Pipeline.
+- [Measurement-to-Model Pipeline](MATRIXGAME_MEASUREMENT_TO_MODEL_PIPELINE_2026-11-17.md) — Architektur für Messdaten, Kalibrierung, Validierung und die zukünftige LUMINI-Compiler-Pipeline.
+- [Universal Grid Lab v0.9 – Experiment Studio](MATRIXGAME_UNIVERSAL_GRID_LAB_V09_EXPERIMENT_STUDIO.md) — Implementierungscheckpoint mit Run-Export, Zeitreihen, CSV-Beobachtungen und erster Parameterkalibrierung.
 - [Matrixgame Protocol](../matrixgame-protocol/README.md) — lokaler Prototyp, kein öffentlicher Multiplayer-Dienst.
 
 ## Lernen und soziale Gestaltung
