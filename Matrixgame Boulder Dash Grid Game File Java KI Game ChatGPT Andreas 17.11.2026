@@ -1,0 +1,1938 @@
+package rhgr;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import java.util.List;
+
+/**
+ * Matrixgame Universal Grid Lab v0.5 – pluggable decision algorithms over 33 actions.
+ *
+ * Core contract:
+ *   - Every entity is a GameObject stored in one World object list.
+ *   - Every GameObject shares one fixed 33-option vocabulary per tick:
+ *       WAIT + 4 MOVE options + 7 typed interactions in each direction.
+ *   - Each controller chooses one legal option; the resolver validates it centrally.
+ *   - Direction always means one adjacent grid cell: UP, DOWN, LEFT, RIGHT.
+ *   - All strategies read the same immutable tick snapshot.
+ *   - Actions are validated and resolved centrally by World.
+ *   - Interactions are pluggable rules, not hard-coded into the renderer.
+ *
+ * Controls:
+ *   Every GameObject has the same 33-option vocabulary per tick:
+ *       WAIT + MOVE(4 directions) + DIG/PUSH/ATTACK/COLLECT/DROP/BUILD/USE(4 directions).
+ *   Arrow keys / WASD : execute the selected mode in that direction
+ *   Q / E             : cycle MOVE, DIG, PUSH, ATTACK, COLLECT, DROP, BUILD, USE
+ *   Left click        : select a GameObject (editor mode)
+ *   Right drag        : pan camera
+ *   Mouse wheel       : cursor-centred zoom
+ *   Space             : WAIT / advance one tick
+ *   H                 : spawn intelligent hunter
+ *   J                 : spawn random-moving enemy
+ *   I                 : toggle enemy decision algorithm (adaptive softmax / random legal)
+ *   R                 : reset level
+ *   P                 : pause
+ *
+ * Java 17+; no external libraries.
+ */
+public final class MatrixgameUniversalGridLab_v05 extends JFrame {
+    private static final long serialVersionUID = 1L;
+    private static final long SEED = 20261116L;
+
+    private final transient GameWorld world = GameWorld.createBoulderScenario(SEED, 32, 22);
+    private final WorldCanvas canvas = new WorldCanvas(world);
+    private final JLabel statusLabel = new JLabel();
+    private final JLabel stateLabel = new JLabel();
+    private final JLabel selectionLabel = new JLabel();
+    private final JLabel actionLabel = new JLabel("Modus: MOVE | Aktionsraum: 33");
+    private final JToggleButton playerModeButton = new JToggleButton("Spielermodus: AUS");
+    private JButton enemyAlgorithmButton;
+    private boolean randomEnemyAlgorithm;
+    private ActionMode actionMode = ActionMode.MOVE;
+    private boolean playerMode;
+    private boolean paused;
+    private String selectedObjectId = "player";
+
+    public MatrixgameUniversalGridLab_v05() {
+        super("Matrixgame – Universal Grid Lab");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout(4, 4));
+
+        JPanel header = new JPanel(new GridLayout(3, 1));
+        statusLabel.setBorder(BorderFactory.createEmptyBorder(5, 9, 1, 9));
+        stateLabel.setBorder(BorderFactory.createEmptyBorder(1, 9, 1, 9));
+        selectionLabel.setBorder(BorderFactory.createEmptyBorder(1, 9, 5, 9));
+        header.add(statusLabel);
+        header.add(stateLabel);
+        header.add(selectionLabel);
+        add(header, BorderLayout.NORTH);
+
+        add(canvas, BorderLayout.CENTER);
+        add(buildControls(), BorderLayout.SOUTH);
+
+        installKeyBindings();
+        refresh();
+        setSize(1220, 820);
+        setMinimumSize(new Dimension(850, 600));
+        setLocationRelativeTo(null);
+        canvas.requestFocusInWindow();
+    }
+
+    private JPanel buildControls() {
+        JPanel controls = new JPanel(new GridLayout(2, 1, 0, 3));
+        JPanel actionRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 3));
+        JPanel playRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 3));
+
+        JButton previousAction = new JButton("Aktion ← (Q)");
+        previousAction.addActionListener(e -> changeActionMode(-1));
+        JButton nextAction = new JButton("Aktion → (E)");
+        nextAction.addActionListener(e -> changeActionMode(1));
+        playerModeButton.addActionListener(e -> {
+            playerMode = playerModeButton.isSelected();
+            if (playerMode) selectedObjectId = "player";
+            playerModeButton.setText(playerMode ? "Spielermodus: EIN" : "Spielermodus: AUS");
+            canvas.setPlayerMode(playerMode);
+            refresh();
+            canvas.requestFocusInWindow();
+        });
+        actionRow.add(previousAction);
+        actionRow.add(actionLabel);
+        actionRow.add(nextAction);
+        actionRow.add(playerModeButton);
+
+        playRow.add(directionButton("↑ Hoch", Direction.UP));
+        playRow.add(directionButton("← Links", Direction.LEFT));
+        playRow.add(directionButton("↓ Runter", Direction.DOWN));
+        playRow.add(directionButton("Rechts →", Direction.RIGHT));
+        JButton wait = new JButton("Warten / Tick (Space)");
+        wait.addActionListener(e -> advanceWait());
+        playRow.add(wait);
+        JButton hunter = new JButton("Hybrid-Gegner + (H)");
+        hunter.addActionListener(e -> { world.spawnHunter(); refresh(); canvas.requestFocusInWindow(); });
+        playRow.add(hunter);
+        JButton wanderer = new JButton("Wanderer + (J)");
+        wanderer.addActionListener(e -> { world.spawnWanderer(); refresh(); canvas.requestFocusInWindow(); });
+        playRow.add(wanderer);
+        enemyAlgorithmButton = new JButton("Gegner-KI: ADAPTIVE SOFTMAX (I)");
+        enemyAlgorithmButton.addActionListener(e -> toggleEnemyAlgorithm());
+        playRow.add(enemyAlgorithmButton);
+        JButton pause = new JButton("Pause (P)");
+        pause.addActionListener(e -> togglePause());
+        playRow.add(pause);
+        JButton reset = new JButton("Neustart (R)");
+        reset.addActionListener(e -> restart());
+        playRow.add(reset);
+
+        controls.add(actionRow);
+        controls.add(playRow);
+        return controls;
+    }
+
+    private JButton directionButton(String label, Direction direction) {
+        JButton button = new JButton(label);
+        button.addActionListener(e -> submitDirection(direction));
+        return button;
+    }
+
+    private void changeActionMode(int delta) {
+        ActionMode[] modes = ActionMode.values();
+        int next = Math.floorMod(actionMode.ordinal() + delta, modes.length);
+        actionMode = modes[next];
+        canvas.setActionMode(actionMode);
+        actionLabel.setText("Aktion: " + actionMode.label + " | Aktionsraum: 33");
+        canvas.requestFocusInWindow();
+    }
+
+    private void installKeyBindings() {
+        InputMap input = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actions = getRootPane().getActionMap();
+        bind(input, actions, "UP", "up", () -> submitDirection(Direction.UP));
+        bind(input, actions, "W", "upW", () -> submitDirection(Direction.UP));
+        bind(input, actions, "DOWN", "down", () -> submitDirection(Direction.DOWN));
+        bind(input, actions, "S", "downS", () -> submitDirection(Direction.DOWN));
+        bind(input, actions, "LEFT", "left", () -> submitDirection(Direction.LEFT));
+        bind(input, actions, "A", "leftA", () -> submitDirection(Direction.LEFT));
+        bind(input, actions, "RIGHT", "right", () -> submitDirection(Direction.RIGHT));
+        bind(input, actions, "D", "rightD", () -> submitDirection(Direction.RIGHT));
+        bind(input, actions, "SPACE", "wait", this::advanceWait);
+        bind(input, actions, "R", "reset", this::restart);
+        bind(input, actions, "P", "pause", this::togglePause);
+        bind(input, actions, "H", "spawnHunter", () -> { world.spawnHunter(); refresh(); });
+        bind(input, actions, "J", "spawnWanderer", () -> { world.spawnWanderer(); refresh(); });
+        bind(input, actions, "I", "toggleEnemyAlgorithm", this::toggleEnemyAlgorithm);
+        bind(input, actions, "Q", "previousAction", () -> changeActionMode(-1));
+        bind(input, actions, "E", "nextAction", () -> changeActionMode(1));
+    }
+
+    private static void bind(InputMap input, ActionMap actions, String key, String name, Runnable runnable) {
+        input.put(KeyStroke.getKeyStroke(key), name);
+        actions.put(name, new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+            @Override public void actionPerformed(ActionEvent e) { runnable.run(); }
+        });
+    }
+
+    private void submitDirection(Direction direction) {
+        if (paused || world.gameOver) return;
+        GameAction action = GameAction.fromMode(actionMode, direction);
+        String controlledId = playerMode ? "player" : selectedObjectId;
+        world.submitAction(controlledId, action);
+        world.tick();
+        refresh();
+    }
+
+    private void advanceWait() {
+        if (paused || world.gameOver) return;
+        world.submitAction(playerMode ? "player" : selectedObjectId, GameAction.waitAction());
+        world.tick();
+        refresh();
+    }
+
+    private void toggleEnemyAlgorithm() {
+        randomEnemyAlgorithm = !randomEnemyAlgorithm;
+        world.setEnemyDecisionAlgorithm(randomEnemyAlgorithm);
+        if (enemyAlgorithmButton != null) {
+            enemyAlgorithmButton.setText(randomEnemyAlgorithm
+                    ? "Gegner-KI: RANDOM LEGAL (I)" : "Gegner-KI: ADAPTIVE SOFTMAX (I)");
+        }
+        world.message = randomEnemyAlgorithm
+                ? "Gegner-KI: RANDOM_LEGAL – gleichverteilte Auswahl aus legalen Aktionen."
+                : "Gegner-KI: ADAPTIVE_SOFTMAX – Controller-Präferenz und gelernte Aktionswerte beeinflussen die Wahrscheinlichkeit; Exploration bleibt aktiv.";
+        refresh();
+        canvas.requestFocusInWindow();
+    }
+
+    private void togglePause() {
+        paused = !paused;
+        refresh();
+    }
+
+    private void restart() {
+        world.reset();
+        randomEnemyAlgorithm = false;
+        if (enemyAlgorithmButton != null) enemyAlgorithmButton.setText("Gegner-KI: ADAPTIVE SOFTMAX (I)");
+        selectedObjectId = "player";
+        paused = false;
+        canvas.resetCamera();
+        refresh();
+        canvas.requestFocusInWindow();
+    }
+
+    private void selectObject(String id) {
+        if (!playerMode && world.getObject(id) != null) {
+            selectedObjectId = id;
+            refresh();
+        }
+    }
+
+    private void refresh() {
+        statusLabel.setText("<html><b>" + escapeHtml(world.message) + "</b>"
+                + (paused ? " &nbsp; | &nbsp; PAUSE" : "")
+                + (world.gameOver ? " &nbsp; | &nbsp; SPIEL BEENDET" : "") + "</html>");
+        GameObject player = world.getObject("player");
+        double hp = player == null ? 0.0 : player.value("hp");
+        double energy = player == null ? 0.0 : player.value("energy");
+        stateLabel.setText(String.format(Locale.ROOT,
+                "Tick: %d  |  GameObjects: %d  |  33 Optionen/Objekt  |  Gesamt gesammelt: %d/%d  |  Inventar: %.0f  |  Punkte: %d  |  HP: %.0f  |  Energie: %.1f",
+                world.tick, world.objects.size(), world.gemsCollected, world.gemsRequired,
+                player == null ? 0.0 : player.value("inventoryGems"), world.score, hp, energy));
+        GameObject selected = world.getObject(selectedObjectId);
+        if (selected == null) {
+            selectedObjectId = "player";
+            selected = world.getObject(selectedObjectId);
+        }
+        if (selected != null) {
+            selectionLabel.setText("Ausgewählt: " + selected.id + " [" + selected.type + "]"
+                    + "  |  KI: " + selected.decisionAlgorithm.name()
+                    + "  |  Fähigkeiten: " + selected.capabilities
+                    + "  |  gelernte Züge: " + selected.learnedActionValues.size()
+                    + "  |  Position: (" + selected.x + ", " + selected.y + ")"
+                    + (playerMode ? "  |  SPIELERMODUS: nur Spieler manuell, alle anderen per KI"
+                                  : "  |  EDITOR: gewähltes Objekt manuell steuern"));
+        } else {
+            selectionLabel.setText("Kein Objekt ausgewählt.");
+        }
+        canvas.setSelectedObjectId(selectedObjectId);
+        canvas.setPaused(paused);
+        canvas.repaint();
+    }
+
+    private static String escapeHtml(String text) {
+        return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    }
+
+    public static void main(String[] args) {
+        if (args.length > 0 && "--self-test".equals(args[0])) {
+            runSelfTests();
+            return;
+        }
+        SwingUtilities.invokeLater(() -> new MatrixgameUniversalGridLab_v05().setVisible(true));
+    }
+
+    // ---------------------------------------------------------------------
+    // 1) Universal action model
+    // ---------------------------------------------------------------------
+
+    enum Direction {
+        UP(0, -1, "gridY", -1),
+        DOWN(0, 1, "gridY", 1),
+        LEFT(-1, 0, "gridX", -1),
+        RIGHT(1, 0, "gridX", 1);
+
+        final int dx;
+        final int dy;
+        final String variable;
+        final int delta;
+
+        Direction(int dx, int dy, String variable, int delta) {
+            this.dx = dx;
+            this.dy = dy;
+            this.variable = variable;
+            this.delta = delta;
+        }
+    }
+
+    /** Human-selectable operation; Q/E cycles through these modes. */
+    enum ActionMode {
+        MOVE("MOVE", null), DIG("DIG", InteractionType.DIG), PUSH("PUSH", InteractionType.PUSH),
+        ATTACK("ATTACK", InteractionType.ATTACK), COLLECT("COLLECT", InteractionType.COLLECT),
+        DROP("DROP", InteractionType.DROP), BUILD("BUILD", InteractionType.BUILD), USE("USE", InteractionType.USE);
+        final String label;
+        final InteractionType interactionType;
+        ActionMode(String label, InteractionType interactionType) {
+            this.label = label;
+            this.interactionType = interactionType;
+        }
+    }
+
+    enum InteractionType { DIG, PUSH, ATTACK, COLLECT, DROP, BUILD, USE }
+
+    enum Capability {
+        MOVE, DIG, PUSH, ATTACK, COLLECT, DROP, BUILD,
+        DIGGABLE, PUSHABLE, ATTACKABLE, COLLECTABLE, STACKABLE, FALLS
+    }
+
+    /** Base operation; INTERACT is refined by a typed InteractionType. */
+    enum ActionKind { MOVE, INTERACT, WAIT }
+
+    record GameAction(ActionKind kind, Direction direction, InteractionType interactionType) {
+        GameAction {
+            Objects.requireNonNull(kind, "kind");
+            if (kind == ActionKind.WAIT && (direction != null || interactionType != null))
+                throw new IllegalArgumentException("WAIT has no direction or interaction type");
+            if (kind == ActionKind.MOVE && (direction == null || interactionType != null))
+                throw new IllegalArgumentException("MOVE requires a direction and no interaction type");
+            if (kind == ActionKind.INTERACT && (direction == null || interactionType == null))
+                throw new IllegalArgumentException("INTERACT requires direction and interaction type");
+        }
+        static GameAction move(Direction direction) {
+            return new GameAction(ActionKind.MOVE, Objects.requireNonNull(direction), null);
+        }
+        static GameAction interact(Direction direction, InteractionType type) {
+            return new GameAction(ActionKind.INTERACT, Objects.requireNonNull(direction), Objects.requireNonNull(type));
+        }
+        /** Compatibility convenience: generic USE, for custom registered interactions. */
+        static GameAction interact(Direction direction) { return interact(direction, InteractionType.USE); }
+        static GameAction waitAction() { return new GameAction(ActionKind.WAIT, null, null); }
+        static GameAction fromMode(ActionMode mode, Direction direction) {
+            return mode == ActionMode.MOVE ? move(direction) : interact(direction, mode.interactionType);
+        }
+        String key() {
+            return kind == ActionKind.WAIT ? "WAIT"
+                    : kind == ActionKind.MOVE ? "MOVE_" + direction
+                    : interactionType + "_" + direction;
+        }
+        /** Fixed universal vocabulary: WAIT + four MOVE + seven directional interaction types. */
+        static List<GameAction> allActionOptions() {
+            List<GameAction> options = new ArrayList<>(33);
+            options.add(waitAction());
+            for (Direction direction : Direction.values()) {
+                options.add(move(direction));
+                for (InteractionType type : InteractionType.values()) options.add(interact(direction, type));
+            }
+            return List.copyOf(options);
+        }
+    }
+
+    interface ObjectController {
+        GameAction chooseAction(Perception perception);
+        String name();
+    }
+
+    interface InteractionRule {
+        String apply(GameWorld world, GameObject actor, GameObject target, Direction direction);
+    }
+
+    record InteractionKey(String actorType, String targetType, InteractionType interactionType) { }
+
+    static final class GameObject {
+        final String id;
+        final String type;
+        final String name;
+        final String glyph;
+        final Color color;
+        final boolean blocksMovement;
+        final int initiative;
+        final Map<String, Double> variables = new LinkedHashMap<>();
+        final EnumSet<Capability> capabilities = EnumSet.noneOf(Capability.class);
+        final Map<String, Double> learnedActionValues = new LinkedHashMap<>();
+        final Map<String, Integer> learnedActionVisits = new LinkedHashMap<>();
+        ObjectController controller;
+        DecisionAlgorithm decisionAlgorithm;
+        int x;
+        int y;
+        boolean alive = true;
+
+        GameObject(String id, String type, String name, String glyph, Color color,
+                   int x, int y, boolean blocksMovement, int initiative, ObjectController controller) {
+            this.id = id;
+            this.type = type;
+            this.name = name;
+            this.glyph = glyph;
+            this.color = color;
+            this.x = x;
+            this.y = y;
+            this.blocksMovement = blocksMovement;
+            this.initiative = initiative;
+            this.controller = controller;
+            this.decisionAlgorithm = new GreedyDecisionAlgorithm();
+            configureDefaultCapabilities(type);
+            variables.put("hp", 1.0);
+            variables.put("maxHp", 1.0);
+            variables.put("energy", 100.0);
+            variables.put("motivation", 50.0);
+            variables.put("cooperation", 50.0);
+            variables.put("stress", 0.0);
+            variables.put("score", 0.0);
+            variables.put("inventoryGems", 0.0);
+            variables.put("attackable", 0.0);
+            variables.put("attackDamage", 1.0);
+            variables.put("diggable", 0.0);
+            variables.put("pushable", 0.0);
+            variables.put("stack", 1.0);
+            variables.put("visionRange", 6.0);
+            if ("PLAYER".equals(type)) variables.put("attackable", 1.0);
+            if ("DIRT".equals(type)) variables.put("diggable", 1.0);
+            if ("ROCK".equals(type)) variables.put("pushable", 1.0);
+            if ("GEM".equals(type)) variables.put("stack", 1.0);
+            if ("HUNTER".equals(type) || "WANDERER".equals(type)) {
+                variables.put("attackable", 1.0);
+                variables.put("attackDamage", 20.0);
+                variables.put("visionRange", 8.0);
+            }
+            syncPosition();
+        }
+
+        private void configureDefaultCapabilities(String objectType) {
+            switch (objectType) {
+                case "PLAYER" -> capabilities.addAll(EnumSet.of(Capability.MOVE, Capability.DIG,
+                        Capability.PUSH, Capability.ATTACK, Capability.COLLECT, Capability.DROP, Capability.BUILD, Capability.ATTACKABLE));
+                case "DIRT" -> capabilities.add(Capability.DIGGABLE);
+                case "ROCK" -> capabilities.addAll(EnumSet.of(Capability.MOVE, Capability.PUSHABLE, Capability.FALLS));
+                case "GEM" -> capabilities.addAll(EnumSet.of(Capability.COLLECTABLE, Capability.STACKABLE));
+                case "HUNTER", "WANDERER" -> capabilities.addAll(EnumSet.of(Capability.MOVE,
+                        Capability.ATTACK, Capability.ATTACKABLE));
+                case "BUILDING" -> capabilities.add(Capability.PUSHABLE);
+                default -> { }
+            }
+        }
+        boolean has(Capability capability) { return capabilities.contains(capability); }
+        void grantCapability(Capability capability) { capabilities.add(Objects.requireNonNull(capability)); }
+        void revokeCapability(Capability capability) { capabilities.remove(Objects.requireNonNull(capability)); }
+        double value(String key) { return variables.getOrDefault(key, 0.0); }
+        void set(String key, double value) { variables.put(key, value); }
+        void syncPosition() { set("gridX", x); set("gridY", y); }
+        void learn(GameAction action, double reward) {
+            String key = action.key();
+            double oldValue = learnedActionValues.getOrDefault(key, 0.0);
+            double alpha = 0.20;
+            learnedActionValues.put(key, oldValue + alpha * (reward - oldValue));
+            learnedActionVisits.merge(key, 1, Integer::sum);
+        }
+        List<GameAction> actionOptionsForTick() { return GameAction.allActionOptions(); }
+    }
+
+    record ObjectView(String id, String type, String name, int x, int y,
+                      boolean blocksMovement, boolean alive, double hp,
+                      Map<String, Double> variables, Set<Capability> capabilities,
+                      Map<String, Double> learnedActionValues) {
+        double value(String key) { return variables.getOrDefault(key, 0.0); }
+        boolean has(Capability capability) { return capabilities.contains(capability); }
+    }
+
+    static final class WorldSnapshot {
+        final int width;
+        final int height;
+        final int tick;
+        final List<ObjectView> objects;
+        final Map<String, ObjectView> byId;
+
+        WorldSnapshot(int width, int height, int tick, List<ObjectView> objects) {
+            this.width = width;
+            this.height = height;
+            this.tick = tick;
+            this.objects = List.copyOf(objects);
+            Map<String, ObjectView> index = new LinkedHashMap<>();
+            for (ObjectView object : objects) index.put(object.id(), object);
+            this.byId = Collections.unmodifiableMap(index);
+        }
+
+        ObjectView get(String id) { return byId.get(id); }
+
+        List<ObjectView> at(int x, int y) {
+            List<ObjectView> found = new ArrayList<>();
+            for (ObjectView object : objects) {
+                if (object.alive() && object.x() == x && object.y() == y) found.add(object);
+            }
+            return found;
+        }
+
+        boolean isBlocked(int x, int y, String ignoreId) {
+            if (x < 0 || y < 0 || x >= width || y >= height) return true;
+            for (ObjectView object : objects) {
+                if (object.alive() && object.blocksMovement() && !object.id().equals(ignoreId)
+                        && object.x() == x && object.y() == y) return true;
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Limited observation supplied to a GameObject controller. The simulation core keeps
+     * the full world; the controller receives only objects inside its vision radius.
+     */
+    record Perception(ObjectView self, List<ObjectView> visibleObjects,
+                      int worldWidth, int worldHeight, int visionRadius) {
+        Perception {
+            Objects.requireNonNull(self, "self");
+            visibleObjects = List.copyOf(visibleObjects);
+            if (visionRadius < 1) throw new IllegalArgumentException("visionRadius must be positive");
+        }
+        List<ObjectView> at(int x, int y) {
+            return visibleObjects.stream().filter(o -> o.alive() && o.x() == x && o.y() == y).toList();
+        }
+        boolean isVisible(int x, int y) {
+            return x >= 0 && y >= 0 && x < worldWidth && y < worldHeight
+                    && Math.abs(x - self.x()) + Math.abs(y - self.y()) <= visionRadius;
+        }
+        boolean isBlocked(int x, int y, String ignoreId) {
+            if (!isVisible(x, y)) return true;
+            for (ObjectView object : at(x, y)) {
+                if (object.blocksMovement() && !object.id().equals(ignoreId)) return true;
+            }
+            return false;
+        }
+    }
+
+    /** Input to the decision operation: local perception, fixed vocabulary and legal-action mask. */
+    record DecisionContext(Perception perception, ObjectView self,
+                           List<GameAction> actionSpace, List<GameAction> legalOptions) {
+        DecisionContext {
+            Objects.requireNonNull(perception, "perception");
+            Objects.requireNonNull(self, "self");
+            if (!perception.self().id().equals(self.id()))
+                throw new IllegalArgumentException("Perception and self must describe the same object");
+            actionSpace = List.copyOf(actionSpace);
+            legalOptions = List.copyOf(legalOptions);
+            if (actionSpace.size() != 33) throw new IllegalArgumentException("Canonical action space must contain 33 actions");
+            if (!actionSpace.containsAll(legalOptions)) throw new IllegalArgumentException("Legal options must belong to canonical action space");
+        }
+    }
+
+    interface ActionEvaluator {
+        double score(DecisionContext context, GameAction action);
+        String name();
+    }
+
+    /** Selects one action from the same finite 33-option vocabulary for every GameObject. */
+    interface DecisionAlgorithm {
+        GameAction chooseAction(DecisionContext context, ActionEvaluator evaluator);
+        String name();
+    }
+
+    // ---------------------------------------------------------------------
+    // 2) Generic world, tick loop, conflict resolution and interaction rules
+    // ---------------------------------------------------------------------
+
+    static final class GameWorld {
+        final int width;
+        final int height;
+        final long seed;
+        final List<GameObject> objects = new ArrayList<>();
+        final Map<String, GameAction> queuedActions = new LinkedHashMap<>();
+        final Map<InteractionKey, InteractionRule> interactionRules = new LinkedHashMap<>();
+        int tick;
+        int score;
+        int gemsCollected;
+        int gemsRequired = 5;
+        int nextId = 1;
+        boolean gameOver;
+        boolean won;
+        boolean randomEnemyDecision;
+        String message = "Wähle ein Objekt und sende pro Tick eine Aktion.";
+
+        private GameWorld(long seed, int width, int height) {
+            if (width < 8 || height < 8) throw new IllegalArgumentException("World must be at least 8x8");
+            this.seed = seed;
+            this.width = width;
+            this.height = height;
+            registerDefaultRules();
+        }
+
+        static GameWorld createBoulderScenario(long seed, int width, int height) {
+            GameWorld world = new GameWorld(seed, width, height);
+            world.reset();
+            return world;
+        }
+
+        void reset() {
+            objects.clear();
+            queuedActions.clear();
+            tick = 0;
+            score = 0;
+            gemsCollected = 0;
+            gameOver = false;
+            won = false;
+            randomEnemyDecision = false;
+            nextId = 1;
+            message = "Sammle Edelsteine, interagiere mit Objekten und erreiche den Ausgang.";
+            Random random = new Random(seed);
+
+            // Boundary walls and diggable soil are ordinary GameObjects too.
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    boolean border = x == 0 || y == 0 || x == width - 1 || y == height - 1;
+                    if (border) addObject(object("wall", "WALL", "Grenze", "■", new Color(82, 100, 118), x, y, true, 0, new IdleController()));
+                    else if (random.nextDouble() < 0.34) addObject(object("dirt", "DIRT", "Erde", "▪", new Color(139, 88, 53), x, y, true, 0, new IdleController()));
+                }
+            }
+
+            GameObject player = objectWithStats("player", "PLAYER", "Spieler", "●", new Color(255, 213, 74),
+                    1, 1, true, 100, new IdleController(), 100, 100);
+            player.set("motivation", 85.0);
+            player.set("cooperation", 65.0);
+            player.set("stress", 5.0);
+            player.set("inventoryGems", 0.0);
+            player.set("attackDamage", 1.0);
+            addObject(player);
+            clearCell(1, 1);
+
+            for (int i = 0; i < 27; i++) {
+                int[] p = randomFreeCell(random, 2, width - 3, 2, height - 3);
+                if (p != null) addObject(object("rock", "ROCK", "Felsen", "●", new Color(160, 174, 190), p[0], p[1], true, 70, new GravityController()));
+            }
+            for (int i = 0; i < 15; i++) {
+                int[] p = randomFreeCell(random, 2, width - 3, 2, height - 3);
+                if (p != null) addObject(object("gem", "GEM", "Edelstein", "◆", new Color(40, 205, 220), p[0], p[1], false, 5, new IdleController()));
+            }
+            clearCell(1, 2); clearCell(1, 3); clearCell(2, 1); clearCell(3, 1); clearCell(4, 1);
+            clearCell(width - 2, height - 2);
+            addObject(object("exit", "EXIT", "Ausgang", "▣", new Color(72, 176, 104),
+                    width - 2, height - 2, false, 1, new IdleController()));
+            clearCell(width - 3, 1);
+            GameObject initialHunter = object("hunter", "HUNTER", "Hybrid-Verfolger", "◆",
+                    new Color(234, 85, 93), width - 3, 1, true, 60, new HybridHunterController(6));
+            initialHunter.set("hp", 3.0);
+            initialHunter.set("maxHp", 3.0);
+            addObject(initialHunter);
+            message = "Szenario bereit: 33 feste Aktionen je Objekt. Q/E wechseln MOVE, DIG, PUSH, ATTACK, COLLECT, DROP, BUILD und USE.";
+        }
+
+        private int[] randomFreeCell(Random random, int minX, int maxX, int minY, int maxY) {
+            for (int attempt = 0; attempt < 300; attempt++) {
+                int x = minX + random.nextInt(Math.max(1, maxX - minX + 1));
+                int y = minY + random.nextInt(Math.max(1, maxY - minY + 1));
+                if (objectsAt(x, y).isEmpty()) return new int[]{x, y};
+            }
+            return null;
+        }
+
+        private void clearCell(int x, int y) {
+            objects.removeIf(object -> object.x == x && object.y == y
+                    && ("DIRT".equals(object.type) || "ROCK".equals(object.type) || "GEM".equals(object.type)));
+        }
+
+        private GameObject object(String idPrefix, String type, String name, String glyph, Color color,
+                                  int x, int y, boolean blocks, int initiative, ObjectController controller) {
+            String id = idPrefix + "-" + String.format(Locale.ROOT, "%04d", nextId++);
+            GameObject created = new GameObject(id, type, name, glyph, color, x, y, blocks, initiative, controller);
+            if (type.equals("HUNTER") || type.equals("WANDERER")) created.decisionAlgorithm = newEnemyAlgorithm(created);
+            return created;
+        }
+
+        private GameObject objectWithStats(String id, String type, String name, String glyph, Color color,
+                                           int x, int y, boolean blocks, int initiative,
+                                           ObjectController controller, double hp, double energy) {
+            GameObject object = new GameObject(id, type, name, glyph, color, x, y, blocks, initiative, controller);
+            object.set("hp", hp);
+            object.set("maxHp", hp);
+            object.set("energy", energy);
+            return object;
+        }
+
+        private DecisionAlgorithm newEnemyAlgorithm(GameObject object) {
+            long objectSeed = seed ^ object.id.hashCode() ^ tick;
+            return randomEnemyDecision
+                    ? new RandomLegalDecisionAlgorithm(objectSeed)
+                    : new AdaptiveSoftmaxDecisionAlgorithm(0.10, 0.80, objectSeed);
+        }
+
+        void addObject(GameObject object) {
+            if (getObject(object.id) != null) throw new IllegalArgumentException("Duplicate GameObject id: " + object.id);
+            if (!inside(object.x, object.y)) throw new IllegalArgumentException("Object outside world: " + object.id);
+            objects.add(object);
+            object.syncPosition();
+        }
+
+        GameObject getObject(String id) {
+            for (GameObject object : objects) if (object.alive && object.id.equals(id)) return object;
+            return null;
+        }
+
+        List<GameObject> objectsAt(int x, int y) {
+            List<GameObject> found = new ArrayList<>();
+            for (GameObject object : objects) {
+                if (object.alive && object.x == x && object.y == y) found.add(object);
+            }
+            return found;
+        }
+
+        boolean isBlocked(int x, int y, String ignoreId) {
+            if (!inside(x, y)) return true;
+            for (GameObject object : objects) {
+                if (object.alive && object.blocksMovement && !object.id.equals(ignoreId)
+                        && object.x == x && object.y == y) return true;
+            }
+            return false;
+        }
+
+        boolean isCompletelyEmpty(int x, int y, String ignoreId) {
+            if (!inside(x, y)) return false;
+            for (GameObject object : objects) {
+                if (object.alive && !object.id.equals(ignoreId) && object.x == x && object.y == y) return false;
+            }
+            return true;
+        }
+
+        boolean inside(int x, int y) { return x >= 0 && y >= 0 && x < width && y < height; }
+
+        void submitAction(String objectId, GameAction action) {
+            if (getObject(objectId) == null) return;
+            queuedActions.put(objectId, Objects.requireNonNull(action));
+        }
+
+        WorldSnapshot snapshot() {
+            List<ObjectView> views = new ArrayList<>();
+            for (GameObject object : objects) {
+                if (!object.alive) continue;
+                views.add(new ObjectView(object.id, object.type, object.name, object.x, object.y,
+                        object.blocksMovement, object.alive, object.value("hp"),
+                        Collections.unmodifiableMap(new LinkedHashMap<>(object.variables)),
+                        Collections.unmodifiableSet(EnumSet.copyOf(object.capabilities)),
+                        Collections.unmodifiableMap(new LinkedHashMap<>(object.learnedActionValues))));
+            }
+            return new WorldSnapshot(width, height, tick, views);
+        }
+
+        DecisionContext decisionContext(GameObject object, WorldSnapshot snapshot) {
+            ObjectView self = snapshot.get(object.id);
+            if (self == null) throw new IllegalArgumentException("Object is absent from snapshot: " + object.id);
+            List<GameAction> all = GameAction.allActionOptions();
+            List<GameAction> legal = new ArrayList<>();
+            for (GameAction action : all) {
+                if (action.kind() == ActionKind.WAIT) {
+                    legal.add(action);
+                } else if (action.kind() == ActionKind.MOVE) {
+                    int nx = self.x() + action.direction().dx;
+                    int ny = self.y() + action.direction().dy;
+                    if (self.has(Capability.MOVE) && !snapshot.isBlocked(nx, ny, self.id())) legal.add(action);
+                } else {
+                    int nx = self.x() + action.direction().dx;
+                    int ny = self.y() + action.direction().dy;
+                    List<ObjectView> nearby = snapshot.at(nx, ny);
+                    ObjectView target = nearby.stream()
+                            .max(Comparator.comparing(ObjectView::blocksMovement)).orElse(null);
+                    String targetType = target == null ? "EMPTY" : target.type();
+                    InteractionKey key = new InteractionKey(self.type(), targetType, action.interactionType());
+                    boolean hasRule = interactionRules.containsKey(key)
+                            || interactionRules.containsKey(new InteractionKey("*", targetType, action.interactionType()))
+                            || interactionRules.containsKey(new InteractionKey("*", "*", action.interactionType()));
+                    if (hasRule && isInteractionAvailable(snapshot, self, target, nx, ny,
+                                    action.direction(), action.interactionType())) {
+                        legal.add(action);
+                    }
+                }
+            }
+            int visionRadius = (int) Math.max(1.0, Math.min(64.0, self.value("visionRange")));
+            List<ObjectView> visible = snapshot.objects.stream()
+                    .filter(view -> Math.abs(view.x() - self.x()) + Math.abs(view.y() - self.y()) <= visionRadius)
+                    .toList();
+            Perception perception = new Perception(self, visible, snapshot.width, snapshot.height, visionRadius);
+            return new DecisionContext(perception, self, all, legal);
+        }
+
+        private boolean isInteractionAvailable(WorldSnapshot snapshot, ObjectView actor, ObjectView target,
+                                               int tx, int ty, Direction direction, InteractionType type) {
+            if (tx < 0 || ty < 0 || tx >= snapshot.width || ty >= snapshot.height) return false;
+            String targetType = target == null ? "EMPTY" : target.type();
+            return switch (type) {
+                case DIG -> actor.has(Capability.DIG) && target != null && target.has(Capability.DIGGABLE);
+                case PUSH -> actor.has(Capability.PUSH) && target != null && target.has(Capability.PUSHABLE)
+                        && snapshot.at(tx + direction.dx, ty + direction.dy).isEmpty()
+                        && !snapshot.isBlocked(tx + direction.dx, ty + direction.dy, target.id());
+                case ATTACK -> (actor.has(Capability.ATTACK) && target != null
+                        && target.has(Capability.ATTACKABLE) && target.hp() > 0.0)
+                        || (actor.type().equals("ROCK") && actor.has(Capability.FALLS)
+                        && target != null && target.type().equals("PLAYER"));
+                case COLLECT -> actor.has(Capability.COLLECT) && target != null
+                        && target.has(Capability.COLLECTABLE)
+                        && (!target.type().equals("GEM") || target.value("stack") > 0.0);
+                case DROP -> actor.has(Capability.DROP) && actor.value("inventoryGems") >= 1.0
+                        && (target == null || (target.type().equals("GEM") && target.value("stack") < 9.0));
+                case BUILD -> actor.has(Capability.BUILD) && actor.value("inventoryGems") >= 2.0
+                        && target == null && snapshot.at(tx, ty).isEmpty();
+                case USE -> interactionRules.containsKey(new InteractionKey(actor.type(), targetType, type));
+            };
+        }
+
+        void setEnemyDecisionAlgorithm(boolean randomLegal) {
+            randomEnemyDecision = randomLegal;
+            for (GameObject object : objects) {
+                if (object.type.equals("HUNTER") || object.type.equals("WANDERER")) {
+                    object.decisionAlgorithm = newEnemyAlgorithm(object);
+                }
+            }
+        }
+
+        void tick() {
+            if (gameOver) return;
+            WorldSnapshot snapshot = snapshot();
+            Map<String, GameAction> manual = new LinkedHashMap<>(queuedActions);
+            queuedActions.clear();
+            List<PlannedAction> planned = new ArrayList<>();
+
+            // PLAN: all controllers see exactly the same immutable snapshot.
+            for (GameObject object : objects) {
+                if (!object.alive) continue;
+                ObjectView self = snapshot.get(object.id);
+                if (self == null) continue;
+                GameAction action = manual.get(object.id);
+                boolean humanOverride = action != null;
+                if (action == null) {
+                    DecisionContext context = decisionContext(object, snapshot);
+                    ActionEvaluator evaluator = new ControllerPreferenceEvaluator(object.controller, context);
+                    DecisionAlgorithm algorithm = object.decisionAlgorithm == null
+                            ? new GreedyDecisionAlgorithm() : object.decisionAlgorithm;
+                    action = algorithm.chooseAction(context, evaluator);
+                }
+                if (action == null || !GameAction.allActionOptions().contains(action)) action = GameAction.waitAction();
+                int priority = object.initiative + (humanOverride ? 10_000 : 0);
+                planned.add(new PlannedAction(object.id, action, priority, object.x, object.y, humanOverride));
+            }
+
+            // RESOLVE: deterministic order. Every action is revalidated against the live state.
+            planned.sort(Comparator.comparingInt(PlannedAction::priority).reversed()
+                    .thenComparing(PlannedAction::objectId));
+            int changed = 0;
+            for (PlannedAction intent : planned) {
+                GameObject actor = getObject(intent.objectId());
+                if (actor == null || gameOver) continue;
+                // A prior action may have pushed or otherwise displaced this object.
+                // Its old snapshot intent is stale and must not cause a second action this tick.
+                if (actor.x != intent.startX() || actor.y != intent.startY()) continue;
+                double scoreBefore = actor.value("score");
+                double hpBefore = actor.value("hp");
+                boolean resolved = resolve(actor, intent.action(), intent.humanOverride());
+                double reward = actionReward(intent.action(), resolved, actor, scoreBefore, hpBefore);
+                actor.learn(intent.action(), reward);
+                if (resolved) changed++;
+            }
+            tick++;
+            if (changed == 0 && !gameOver) message = "Tick " + tick + ": keine gültige Aktion ausgeführt.";
+        }
+
+        private boolean resolve(GameObject actor, GameAction action, boolean manualOverride) {
+            return switch (action.kind()) {
+                case WAIT -> {
+                    if (manualOverride) message = actor.name + " wartet einen Tick.";
+                    yield true;
+                }
+                case MOVE -> move(actor, action.direction());
+                case INTERACT -> interact(actor, action.direction(), action.interactionType());
+            };
+        }
+
+        private boolean move(GameObject actor, Direction direction) {
+            int nx = actor.x + direction.dx;
+            int ny = actor.y + direction.dy;
+            if (isBlocked(nx, ny, actor.id)) return false;
+            int oldX = actor.x;
+            int oldY = actor.y;
+            actor.x = nx;
+            actor.y = ny;
+            actor.syncPosition();
+            String enterMessage = applyEnterRules(actor);
+            if (actor.type.equals("PLAYER")) {
+                actor.set("energy", clamp(actor.value("energy") - 0.2, 0, 100));
+                actor.set("stress", clamp(actor.value("stress") + 0.1, 0, 100));
+            }
+            if (gameOver) {
+                if (enterMessage != null) message = enterMessage;
+                return true;
+            }
+            message = enterMessage != null ? enterMessage
+                    : actor.name + " bewegt sich " + direction + " von (" + oldX + "," + oldY + ") nach (" + nx + "," + ny + ").";
+            return true;
+        }
+
+        private String applyEnterRules(GameObject actor) {
+            String feedback = null;
+            for (GameObject target : new ArrayList<>(objectsAt(actor.x, actor.y))) {
+                if (target == actor) continue;
+                if (actor.type.equals("PLAYER") && target.type.equals("GEM")) {
+                    collectGem(actor, target);
+                    feedback = "Edelstein beim Betreten gesammelt: +10 Punkte.";
+                } else if (actor.type.equals("PLAYER") && target.type.equals("EXIT")) {
+                    feedback = checkExit(actor);
+                } else if (actor.type.equals("ROCK") && target.type.equals("GEM")) {
+                    removeObject(target);
+                }
+            }
+            return feedback;
+        }
+
+        private GameObject adjacentTarget(GameObject actor, Direction direction) {
+            return firstInteractableAt(actor.x + direction.dx, actor.y + direction.dy, actor.id);
+        }
+
+        private boolean drop(GameObject actor, Direction direction) {
+            int x = actor.x + direction.dx;
+            int y = actor.y + direction.dy;
+            int inventory = (int) actor.value("inventoryGems");
+            if (inventory <= 0) {
+                message = "ABLEGEN: Das Inventar enthält keine Edelsteine.";
+                return false;
+            }
+            if (!inside(x, y) || isBlocked(x, y, actor.id)) {
+                message = "ABLEGEN: Das Nachbarfeld ist blockiert.";
+                return false;
+            }
+            GameObject stack = null;
+            for (GameObject object : objectsAt(x, y)) {
+                if (object.type.equals("GEM")) { stack = object; break; }
+                if (!object.id.equals(actor.id)) {
+                    message = "ABLEGEN: Das Zielfeld ist nicht frei.";
+                    return false;
+                }
+            }
+            if (stack != null) {
+                if (stack.value("stack") >= 9.0) {
+                    message = "ABLEGEN: Auf diesem Feld liegen bereits maximal 9 Ressourcen.";
+                    return false;
+                }
+                stack.set("stack", stack.value("stack") + 1.0);
+            } else {
+                GameObject gem = object("gem", "GEM", "Edelstein", "◆", new Color(40, 205, 220),
+                        x, y, false, 5, new IdleController());
+                addObject(gem);
+            }
+            actor.set("inventoryGems", inventory - 1.0);
+            message = actor.name + " legt einen Edelstein Richtung " + direction + " ab.";
+            return true;
+        }
+
+        private String build(GameObject actor, Direction direction) {
+            int x = actor.x + direction.dx;
+            int y = actor.y + direction.dy;
+            if (actor.value("inventoryGems") < 2.0 || !isCompletelyEmpty(x, y, actor.id))
+                return "BUILD: Benötigt zwei Edelsteine und ein freies Nachbarfeld.";
+            actor.set("inventoryGems", actor.value("inventoryGems") - 2.0);
+            GameObject building = object("building", "BUILDING", "Gebäude", "▤",
+                    new Color(190, 150, 75), x, y, true, 0, new IdleController());
+            building.set("hp", 30.0);
+            building.set("maxHp", 30.0);
+            addObject(building);
+            return "BUILD: Ein Gebäude wurde errichtet (Kosten: 2 Edelsteine).";
+        }
+
+        private boolean interact(GameObject actor, Direction direction, InteractionType type) {
+            int tx = actor.x + direction.dx;
+            int ty = actor.y + direction.dy;
+            GameObject target = firstInteractableAt(tx, ty, actor.id);
+            String targetType = target == null ? "EMPTY" : target.type;
+            InteractionRule rule = interactionRules.get(new InteractionKey(actor.type, targetType, type));
+            if (rule == null) rule = interactionRules.get(new InteractionKey("*", targetType, type));
+            if (rule == null) rule = interactionRules.get(new InteractionKey("*", "*", type));
+            if (rule == null) {
+                message = type + ": " + actor.name + " kann diese Aktion Richtung " + direction + " hier nicht ausführen.";
+                return false;
+            }
+            String result = rule.apply(this, actor, target, direction);
+            if (result != null && !result.isBlank()) message = result;
+            return true;
+        }
+
+        private GameObject firstInteractableAt(int x, int y, String ignoreId) {
+            GameObject best = null;
+            for (GameObject object : objects) {
+                if (!object.alive || object.id.equals(ignoreId) || object.x != x || object.y != y) continue;
+                if (best == null || (object.blocksMovement && !best.blocksMovement)) best = object;
+            }
+            return best;
+        }
+
+        void registerInteractionRule(String actorType, String targetType, InteractionType type, InteractionRule rule) {
+            interactionRules.put(new InteractionKey(Objects.requireNonNull(actorType),
+                    Objects.requireNonNull(targetType), Objects.requireNonNull(type)), Objects.requireNonNull(rule));
+        }
+
+        /** Generic custom-interaction convenience; specific game rules should name their type. */
+        void registerInteractionRule(String actorType, String targetType, InteractionRule rule) {
+            registerInteractionRule(actorType, targetType, InteractionType.USE, rule);
+        }
+
+        private void registerDefaultRules() {
+            // Generic rules are keyed by target capability/type, not by one special player class.
+            registerInteractionRule("*", "*", InteractionType.DIG, (w, actor, target, direction) -> {
+                if (target == null || !target.has(Capability.DIGGABLE)) return "DIG: Ziel ist nicht abtragbar.";
+                w.removeObject(target);
+                w.score += 1;
+                actor.set("score", actor.value("score") + 1);
+                return "DIG: " + target.name + " wurde Richtung " + direction + " abgetragen (+1).";
+            });
+            registerInteractionRule("*", "*", InteractionType.PUSH, (w, actor, target, direction) -> {
+                if (target == null || !target.has(Capability.PUSHABLE)) return "PUSH: Ziel ist nicht verschiebbar.";
+                int beyondX = target.x + direction.dx;
+                int beyondY = target.y + direction.dy;
+                if (!w.isCompletelyEmpty(beyondX, beyondY, target.id)) return "PUSH: Feld hinter dem Objekt ist blockiert.";
+                int oldX = target.x, oldY = target.y;
+                target.x = beyondX;
+                target.y = beyondY;
+                target.syncPosition();
+                actor.x = oldX;
+                actor.y = oldY;
+                actor.syncPosition();
+                return "PUSH: " + target.name + " verschoben; " + actor.name + " rückt auf das alte Feld.";
+            });
+            registerInteractionRule("*", "*", InteractionType.ATTACK, (w, actor, target, direction) -> {
+                if (target == null) return "ATTACK: Kein Ziel im Nachbarfeld.";
+                if (actor.type.equals("ROCK") && actor.has(Capability.FALLS) && target.type.equals("PLAYER")) {
+                    target.set("hp", 0.0);
+                    w.gameOver = true;
+                    w.won = false;
+                    return "COLLISION: Ein fallender Felsen trifft den Spieler.";
+                }
+                if (!target.has(Capability.ATTACKABLE)) return "ATTACK: Ziel ist nicht angreifbar.";
+                if (target.type.equals("PLAYER")) return w.enemyAttack(actor, target);
+                return w.damageTarget(actor, target);
+            });
+            registerInteractionRule("*", "*", InteractionType.COLLECT, (w, actor, target, direction) -> {
+                if (target == null || !target.has(Capability.COLLECTABLE)) return "COLLECT: Ziel ist nicht sammelbar.";
+                if (target.type.equals("GEM")) {
+                    w.collectGem(actor, target);
+                    return "COLLECT: Edelstein aufgenommen (+10 Punkte).";
+                }
+                w.removeObject(target);
+                actor.set("inventoryGems", actor.value("inventoryGems") + 1.0);
+                return "COLLECT: " + target.name + " aufgenommen.";
+            });
+            registerInteractionRule("*", "EMPTY", InteractionType.DROP, (w, actor, target, direction) -> w.drop(actor, direction)
+                    ? "DROP: Ressource auf dem Nachbarfeld abgelegt."
+                    : "DROP: Ablegen nicht möglich.");
+            registerInteractionRule("*", "GEM", InteractionType.DROP, (w, actor, target, direction) -> w.dropIntoStack(actor, target));
+            registerInteractionRule("*", "EMPTY", InteractionType.BUILD, (w, actor, target, direction) -> w.build(actor, direction));
+            registerInteractionRule("PLAYER", "EXIT", InteractionType.USE, (w, actor, target, direction) -> w.checkExit(actor));
+        }
+
+        private double actionReward(GameAction action, boolean success, GameObject actor,
+                                    double scoreBefore, double hpBefore) {
+            if (!success) return -0.20;
+            double scoreGain = actor.value("score") - scoreBefore;
+            double hpChange = hpBefore - actor.value("hp");
+            double base = switch (action.kind()) {
+                case WAIT -> 0.0;
+                case MOVE -> 0.05;
+                case INTERACT -> switch (action.interactionType()) {
+                    case DIG -> 0.20;
+                    case PUSH -> 0.15;
+                    case ATTACK -> 0.30;
+                    case COLLECT -> 0.80;
+                    case DROP -> 0.05;
+                    case BUILD -> 0.25;
+                    case USE -> 0.10;
+                };
+            };
+            return base + Math.max(0.0, scoreGain) * 0.05 - Math.max(0.0, hpChange) * 0.02;
+        }
+
+        private String damageTarget(GameObject actor, GameObject target) {
+            double damage = Math.max(0.0, actor.value("attackDamage"));
+            target.set("hp", Math.max(0.0, target.value("hp") - damage));
+            if (target.value("hp") <= 0.0) {
+                removeObject(target);
+                score += 25;
+                return "INTERACT → ATTACK: " + target.name + " besiegt (+25 Punkte).";
+            }
+            return "INTERACT → ATTACK: " + target.name + " erhält "
+                    + String.format(Locale.ROOT, "%.0f", damage) + " Schaden; HP="
+                    + String.format(Locale.ROOT, "%.0f", target.value("hp")) + ".";
+        }
+
+        private String enemyAttack(GameObject actor, GameObject player) {
+            double damage = Math.max(0.0, actor.value("attackDamage"));
+            player.set("hp", Math.max(0.0, player.value("hp") - damage));
+            if (player.value("hp") <= 0.0) {
+                gameOver = true;
+                won = false;
+                return "INTERACT → ATTACK: " + actor.name + " hat den Spieler besiegt.";
+            }
+            return "INTERACT → ATTACK: " + actor.name + " greift an. Spieler-HP="
+                    + String.format(Locale.ROOT, "%.0f", player.value("hp")) + ".";
+        }
+
+        private String dropIntoStack(GameObject actor, GameObject stack) {
+            if (stack.value("stack") >= 9.0) return "INTERACT → DROP: Ressourcenstapel ist voll (9).";
+            stack.set("stack", stack.value("stack") + 1.0);
+            actor.set("inventoryGems", actor.value("inventoryGems") - 1.0);
+            return "INTERACT → DROP: Ressource zum vorhandenen Stapel gelegt.";
+        }
+
+        private String checkExit(GameObject actor) {
+            if (gemsCollected >= gemsRequired) {
+                gameOver = true;
+                won = true;
+                return "QUEST ERFOLGREICH! Ausgang erreicht – " + score + " Punkte.";
+            }
+            return "Ausgang noch verschlossen: " + gemsCollected + "/" + gemsRequired + " Edelsteine.";
+        }
+
+        private void collectGem(GameObject actor, GameObject gem) {
+            double stack = Math.max(1.0, gem.value("stack"));
+            if (stack > 1.0) gem.set("stack", stack - 1.0);
+            else removeObject(gem);
+            int inventory = (int) actor.value("inventoryGems") + 1;
+            actor.set("inventoryGems", inventory);
+            if ("PLAYER".equals(actor.type)) gemsCollected++;
+            score += 10;
+            actor.set("score", actor.value("score") + 10);
+            actor.set("motivation", clamp(actor.value("motivation") + 2.0, 0, 100));
+        }
+
+        private void removeObject(GameObject object) {
+            object.alive = false;
+            objects.remove(object);
+            queuedActions.remove(object.id);
+        }
+
+        void spawnHunter() {
+            int[] pos = findSpawnNear(width - 3, height - 3);
+            if (pos == null) { message = "Kein freier Platz für einen neuen Gegner."; return; }
+            addObject(object("hunter", "HUNTER", "Hybrid-Verfolger", "◆", new Color(234, 85, 93),
+                    pos[0], pos[1], true, 60, new HybridHunterController(6)));
+            GameObject spawned = objects.get(objects.size() - 1);
+            spawned.decisionAlgorithm = newEnemyAlgorithm(spawned);
+            spawned.set("hp", 3); spawned.set("maxHp", 3);
+            spawned.set("attackable", 1); spawned.set("attackDamage", 20);
+            message = "Neuer Hybrid-Verfolger erzeugt: " + spawned.id;
+        }
+
+        void spawnWanderer() {
+            int[] pos = findSpawnNear(width / 2, height / 2);
+            if (pos == null) { message = "Kein freier Platz für einen Wanderer."; return; }
+            GameObject spawned = object("wanderer", "WANDERER", "Wanderer", "○", new Color(190, 130, 240),
+                    pos[0], pos[1], true, 35, new WanderController(seed + nextId));
+            spawned.decisionAlgorithm = newEnemyAlgorithm(spawned);
+            addObject(spawned);
+            message = "Neuer Wanderer erzeugt.";
+        }
+
+        private int[] findSpawnNear(int centerX, int centerY) {
+            for (int radius = 0; radius < Math.max(width, height); radius++) {
+                for (int y = Math.max(1, centerY - radius); y <= Math.min(height - 2, centerY + radius); y++) {
+                    for (int x = Math.max(1, centerX - radius); x <= Math.min(width - 2, centerX + radius); x++) {
+                        if (isCompletelyEmpty(x, y, "")) return new int[]{x, y};
+                    }
+                }
+            }
+            return null;
+        }
+
+        private static double clamp(double value, double min, double max) {
+            return Math.max(min, Math.min(max, value));
+        }
+
+        private record PlannedAction(String objectId, GameAction action, int priority,
+                                     int startX, int startY, boolean humanOverride) { }
+    }
+
+    // ---------------------------------------------------------------------
+    // 3) Replaceable object behaviours / strategies
+    // ---------------------------------------------------------------------
+
+    /** Converts a current rule-based controller's preference into a numeric score over the 33 options. */
+    static final class ControllerPreferenceEvaluator implements ActionEvaluator {
+        private final GameAction preferred;
+        private final String sourceName;
+
+        ControllerPreferenceEvaluator(ObjectController controller, DecisionContext context) {
+            this.preferred = controller == null ? GameAction.waitAction()
+                    : Objects.requireNonNullElse(controller.chooseAction(context.perception()), GameAction.waitAction());
+            this.sourceName = controller == null ? "DEFAULT_WAIT" : controller.name();
+        }
+
+        @Override public double score(DecisionContext context, GameAction action) {
+            return preferred.equals(action) ? 1.0 : 0.0;
+        }
+        @Override public String name() { return "PREFERENCE(" + sourceName + ")"; }
+    }
+
+    /** Chooses the highest-scoring legal option; ties keep canonical action ordering. */
+    static final class GreedyDecisionAlgorithm implements DecisionAlgorithm {
+        @Override public GameAction chooseAction(DecisionContext context, ActionEvaluator evaluator) {
+            GameAction best = GameAction.waitAction();
+            double bestScore = Double.NEGATIVE_INFINITY;
+            List<GameAction> candidates = context.legalOptions().isEmpty()
+                    ? List.of(GameAction.waitAction()) : context.legalOptions();
+            for (GameAction action : candidates) {
+                double score = evaluator.score(context, action);
+                if (Double.isNaN(score)) continue;
+                if (score > bestScore) {
+                    bestScore = score;
+                    best = action;
+                }
+            }
+            return best;
+        }
+        @Override public String name() { return "GREEDY_POLICY"; }
+    }
+
+    /** Uniform random baseline over currently legal actions, useful as an AI comparison baseline. */
+    static final class RandomLegalDecisionAlgorithm implements DecisionAlgorithm {
+        private final Random random;
+        RandomLegalDecisionAlgorithm(long seed) { random = new Random(seed); }
+
+        @Override public GameAction chooseAction(DecisionContext context, ActionEvaluator evaluator) {
+            List<GameAction> candidates = context.legalOptions().isEmpty()
+                    ? List.of(GameAction.waitAction()) : context.legalOptions();
+            return candidates.get(random.nextInt(candidates.size()));
+        }
+        @Override public String name() { return "RANDOM_LEGAL"; }
+    }
+
+    /** Epsilon-greedy baseline: exploit the evaluator most of the time, otherwise explore a legal option. */
+    static final class EpsilonGreedyDecisionAlgorithm implements DecisionAlgorithm {
+        private final double epsilon;
+        private final Random random;
+        private final GreedyDecisionAlgorithm greedy = new GreedyDecisionAlgorithm();
+        private final RandomLegalDecisionAlgorithm exploratory;
+
+        EpsilonGreedyDecisionAlgorithm(double epsilon, long seed) {
+            if (!Double.isFinite(epsilon) || epsilon < 0.0 || epsilon > 1.0)
+                throw new IllegalArgumentException("epsilon must be between 0 and 1");
+            this.epsilon = epsilon;
+            this.random = new Random(seed);
+            this.exploratory = new RandomLegalDecisionAlgorithm(seed ^ 0x9E3779B97F4A7C15L);
+        }
+
+        @Override public GameAction chooseAction(DecisionContext context, ActionEvaluator evaluator) {
+            return random.nextDouble() < epsilon
+                    ? exploratory.chooseAction(context, evaluator)
+                    : greedy.chooseAction(context, evaluator);
+        }
+        @Override public String name() { return String.format(Locale.ROOT, "EPSILON_GREEDY(%.2f)", epsilon); }
+    }
+
+    /**
+     * Adaptive softmax selector. Controller scores and learned action values form logits.
+     * epsilon reserves a non-zero probability for every currently legal action.
+     */
+    static final class AdaptiveSoftmaxDecisionAlgorithm implements DecisionAlgorithm {
+        private final double epsilon;
+        private final double temperature;
+        private final Random random;
+
+        AdaptiveSoftmaxDecisionAlgorithm(double epsilon, double temperature, long seed) {
+            if (!Double.isFinite(epsilon) || epsilon <= 0.0 || epsilon > 1.0)
+                throw new IllegalArgumentException("epsilon must be in (0,1]");
+            if (!Double.isFinite(temperature) || temperature <= 0.0)
+                throw new IllegalArgumentException("temperature must be positive");
+            this.epsilon = epsilon;
+            this.temperature = temperature;
+            this.random = new Random(seed);
+        }
+
+        Map<GameAction, Double> probabilities(DecisionContext context, ActionEvaluator evaluator) {
+            List<GameAction> candidates = context.legalOptions().isEmpty()
+                    ? List.of(GameAction.waitAction()) : context.legalOptions();
+            double[] logits = new double[candidates.size()];
+            double max = Double.NEGATIVE_INFINITY;
+            for (int i = 0; i < candidates.size(); i++) {
+                GameAction action = candidates.get(i);
+                double preference = evaluator.score(context, action);
+                double learned = context.self().learnedActionValues().getOrDefault(action.key(), 0.0);
+                double logit = (preference + learned) / temperature;
+                if (!Double.isFinite(logit)) logit = -50.0;
+                logits[i] = logit;
+                max = Math.max(max, logit);
+            }
+            double sum = 0.0;
+            double[] softmax = new double[logits.length];
+            for (int i = 0; i < logits.length; i++) {
+                softmax[i] = Math.exp(Math.max(-60.0, logits[i] - max));
+                sum += softmax[i];
+            }
+            Map<GameAction, Double> result = new LinkedHashMap<>();
+            for (int i = 0; i < candidates.size(); i++) {
+                double probability = epsilon / candidates.size() + (1.0 - epsilon) * softmax[i] / sum;
+                result.put(candidates.get(i), probability);
+            }
+            return Collections.unmodifiableMap(result);
+        }
+
+        @Override public GameAction chooseAction(DecisionContext context, ActionEvaluator evaluator) {
+            Map<GameAction, Double> p = probabilities(context, evaluator);
+            double sample = random.nextDouble();
+            double cumulative = 0.0;
+            for (Map.Entry<GameAction, Double> entry : p.entrySet()) {
+                cumulative += entry.getValue();
+                if (sample <= cumulative) return entry.getKey();
+            }
+            return p.keySet().stream().reduce((first, second) -> second).orElse(GameAction.waitAction());
+        }
+        @Override public String name() {
+            return String.format(Locale.ROOT, "ADAPTIVE_SOFTMAX(e=%.2f,T=%.2f)", epsilon, temperature);
+        }
+    }
+
+    static final class IdleController implements ObjectController {
+        @Override public GameAction chooseAction(Perception perception) {
+            return GameAction.waitAction();
+        }
+        @Override public String name() { return "IDLE"; }
+    }
+
+    static final class GravityController implements ObjectController {
+        @Override public GameAction chooseAction(Perception perception) {
+            ObjectView self = perception.self();
+            int belowX = self.x();
+            int belowY = self.y() + 1;
+            for (ObjectView object : perception.at(belowX, belowY)) {
+                if (object.type().equals("PLAYER")) return GameAction.interact(Direction.DOWN, InteractionType.ATTACK);
+            }
+            if (!perception.isBlocked(belowX, belowY, self.id())) return GameAction.move(Direction.DOWN);
+            return GameAction.waitAction();
+        }
+        @Override public String name() { return "GRAVITY_DOWN"; }
+    }
+
+    static final class WanderController implements ObjectController {
+        private final Random random;
+        WanderController(long seed) { random = new Random(seed); }
+        @Override public GameAction chooseAction(Perception perception) {
+            ObjectView self = perception.self();
+            // Adjacent player: select the explicit directional ATTACK interaction.
+            for (Direction direction : Direction.values()) {
+                for (ObjectView target : perception.at(self.x() + direction.dx, self.y() + direction.dy)) {
+                    if (target.type().equals("PLAYER")) return GameAction.interact(direction, InteractionType.ATTACK);
+                }
+            }
+            Direction[] directions = Direction.values();
+            int start = random.nextInt(directions.length);
+            for (int i = 0; i < directions.length; i++) {
+                Direction d = directions[(start + i) % directions.length];
+                if (!perception.isBlocked(self.x() + d.dx, self.y() + d.dy, self.id())) return GameAction.move(d);
+            }
+            return GameAction.waitAction();
+        }
+        @Override public String name() { return "RANDOM_MOVE_THEN_INTERACT_ATTACK"; }
+    }
+
+    /** Patrols until the player enters the detection radius, then chases and attacks. */
+    static final class HybridHunterController implements ObjectController {
+        private final int detectionRadius;
+        private int patrolIndex;
+        private static final Direction[] PATROL = {Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP};
+
+        HybridHunterController(int detectionRadius) { this.detectionRadius = detectionRadius; }
+
+        @Override public GameAction chooseAction(Perception perception) {
+            ObjectView self = perception.self();
+            ObjectView player = null;
+            int bestDistance = Integer.MAX_VALUE;
+            for (ObjectView object : perception.visibleObjects()) {
+                if (!object.alive() || !object.type().equals("PLAYER")) continue;
+                int distance = manhattan(self.x(), self.y(), object.x(), object.y());
+                if (distance < bestDistance) { bestDistance = distance; player = object; }
+            }
+            if (player != null && bestDistance <= detectionRadius) {
+                if (bestDistance == 1) return GameAction.interact(directionTo(self.x(), self.y(), player.x(), player.y()), InteractionType.ATTACK);
+                Direction step = findPathStep(perception, self, player);
+                if (step != null) return GameAction.move(step);
+            }
+            for (int i = 0; i < PATROL.length; i++) {
+                Direction d = PATROL[(patrolIndex + i) % PATROL.length];
+                if (!perception.isBlocked(self.x() + d.dx, self.y() + d.dy, self.id())) {
+                    patrolIndex = (patrolIndex + i + 1) % PATROL.length;
+                    return GameAction.move(d);
+                }
+            }
+            return GameAction.waitAction();
+        }
+
+        private static Direction findPathStep(Perception perception, ObjectView start, ObjectView target) {
+            record Node(int x, int y, Direction first) { }
+            Queue<Node> queue = new ArrayDeque<>();
+            Set<Long> visited = new HashSet<>();
+            queue.add(new Node(start.x(), start.y(), null));
+            visited.add(key(start.x(), start.y()));
+            Direction[] order = {Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT};
+            while (!queue.isEmpty()) {
+                Node node = queue.remove();
+                if (manhattan(node.x(), node.y(), target.x(), target.y()) == 1) return node.first();
+                for (Direction d : order) {
+                    int nx = node.x() + d.dx;
+                    int ny = node.y() + d.dy;
+                    long key = key(nx, ny);
+                    if (visited.contains(key) || !perception.isVisible(nx, ny)
+                            || perception.isBlocked(nx, ny, start.id())) continue;
+                    visited.add(key);
+                    Direction first = node.first() == null ? d : node.first();
+                    queue.add(new Node(nx, ny, first));
+                }
+            }
+            return null;
+        }
+
+        private static long key(int x, int y) { return (((long) x) << 32) ^ (y & 0xffffffffL); }
+        private static int manhattan(int x1, int y1, int x2, int y2) { return Math.abs(x1 - x2) + Math.abs(y1 - y2); }
+        private static Direction directionTo(int x1, int y1, int x2, int y2) {
+            for (Direction d : Direction.values()) if (x1 + d.dx == x2 && y1 + d.dy == y2) return d;
+            return Direction.UP;
+        }
+        @Override public String name() { return "HYBRID_PATROL_CHASE"; }
+    }
+
+    // ---------------------------------------------------------------------
+    // 4) Infinity-style camera and generic object renderer
+    // ---------------------------------------------------------------------
+
+    static final class WorldCanvas extends JPanel {
+        private static final long serialVersionUID = 1L;
+        private static final double MIN_ZOOM = 0.45;
+        private static final double MAX_ZOOM = 180.0;
+        private final transient GameWorld world;
+        private double cameraX;
+        private double cameraY;
+        private double zoom = 28.0;
+        private boolean panning;
+        private boolean paused;
+        private int lastMouseX;
+        private int lastMouseY;
+        private String selectedObjectId = "player";
+        private ActionMode actionMode = ActionMode.MOVE;
+        private boolean playerMode;
+
+        WorldCanvas(GameWorld world) {
+            this.world = world;
+            cameraX = world.width / 2.0;
+            cameraY = world.height / 2.0;
+            setPreferredSize(new Dimension(1120, 700));
+            setBackground(new Color(7, 12, 19));
+            setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+            addMouseListener(new MouseAdapter() {
+                @Override public void mousePressed(MouseEvent e) {
+                    requestFocusInWindow();
+                    if (SwingUtilities.isRightMouseButton(e) || SwingUtilities.isMiddleMouseButton(e)) {
+                        panning = true;
+                        lastMouseX = e.getX();
+                        lastMouseY = e.getY();
+                        setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+                    } else if (SwingUtilities.isLeftMouseButton(e)) {
+                        GameObject object = findObjectAtScreen(e.getX(), e.getY());
+                        if (object != null && !playerMode) {
+                            selectedObjectId = object.id;
+                            thisSelectCallback(object.id);
+                        }
+                    }
+                }
+                @Override public void mouseReleased(MouseEvent e) {
+                    if (SwingUtilities.isRightMouseButton(e) || SwingUtilities.isMiddleMouseButton(e)) {
+                        panning = false;
+                        setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+                    }
+                }
+            });
+            addMouseMotionListener(new MouseMotionAdapter() {
+                @Override public void mouseDragged(MouseEvent e) {
+                    if (!panning) return;
+                    cameraX -= (e.getX() - lastMouseX) / zoom;
+                    cameraY -= (e.getY() - lastMouseY) / zoom;
+                    lastMouseX = e.getX();
+                    lastMouseY = e.getY();
+                    repaint();
+                }
+            });
+            addMouseWheelListener(this::zoomAtCursor);
+        }
+
+        private void thisSelectCallback(String id) {
+            Window window = SwingUtilities.getWindowAncestor(this);
+            if (window instanceof MatrixgameUniversalGridLab_v05 lab) lab.selectObject(id);
+        }
+
+        void setSelectedObjectId(String id) { selectedObjectId = id; }
+        void setPaused(boolean paused) { this.paused = paused; }
+        void setActionMode(ActionMode mode) { actionMode = mode; repaint(); }
+        void setPlayerMode(boolean enabled) { playerMode = enabled; repaint(); }
+
+        void resetCamera() {
+            cameraX = world.width / 2.0;
+            cameraY = world.height / 2.0;
+            zoom = 28.0;
+            repaint();
+        }
+
+        private void zoomAtCursor(MouseWheelEvent e) {
+            double beforeX = screenToWorldX(e.getX());
+            double beforeY = screenToWorldY(e.getY());
+            double factor = Math.pow(1.12, -e.getPreciseWheelRotation());
+            zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom * factor));
+            cameraX = beforeX - (e.getX() - getWidth() / 2.0) / zoom;
+            cameraY = beforeY - (e.getY() - getHeight() / 2.0) / zoom;
+            repaint();
+        }
+
+        private double screenToWorldX(int screenX) {
+            return cameraX + (screenX - getWidth() / 2.0) / zoom;
+        }
+        private double screenToWorldY(int screenY) {
+            return cameraY + (screenY - getHeight() / 2.0) / zoom;
+        }
+        private int worldToScreenX(double worldX) {
+            return (int) Math.round(getWidth() / 2.0 + (worldX - cameraX) * zoom);
+        }
+        private int worldToScreenY(double worldY) {
+            return (int) Math.round(getHeight() / 2.0 + (worldY - cameraY) * zoom);
+        }
+
+        private GameObject findObjectAtScreen(int sx, int sy) {
+            int cellX = (int) Math.floor(screenToWorldX(sx));
+            int cellY = (int) Math.floor(screenToWorldY(sy));
+            List<GameObject> at = world.objectsAt(cellX, cellY);
+            if (at.isEmpty()) return null;
+            // Prefer non-terrain / interactive entities over dirt and boundary tiles.
+            for (int i = at.size() - 1; i >= 0; i--) {
+                GameObject object = at.get(i);
+                if (!object.type.equals("DIRT") && !object.type.equals("WALL")) return object;
+            }
+            return at.get(at.size() - 1);
+        }
+
+        @Override protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            drawGrid(g2);
+            drawWorldObjects(g2);
+            drawOverlay(g2);
+            g2.dispose();
+        }
+
+        private void drawGrid(Graphics2D g2) {
+            int left = (int) Math.floor(screenToWorldX(0)) - 1;
+            int right = (int) Math.ceil(screenToWorldX(getWidth())) + 1;
+            int top = (int) Math.floor(screenToWorldY(0)) - 1;
+            int bottom = (int) Math.ceil(screenToWorldY(getHeight())) + 1;
+            int step = zoom < 2.0 ? 10 : zoom < 7.0 ? 5 : 1;
+            g2.setColor(new Color(28, 40, 53));
+            g2.setStroke(new BasicStroke(1f));
+            for (int x = Math.floorDiv(left, step) * step; x <= right; x += step) {
+                int sx = worldToScreenX(x);
+                g2.drawLine(sx, 0, sx, getHeight());
+            }
+            for (int y = Math.floorDiv(top, step) * step; y <= bottom; y += step) {
+                int sy = worldToScreenY(y);
+                g2.drawLine(0, sy, getWidth(), sy);
+            }
+            g2.setColor(new Color(68, 95, 118));
+            g2.setStroke(new BasicStroke(1.5f));
+            g2.drawLine(worldToScreenX(0), 0, worldToScreenX(0), getHeight());
+            g2.drawLine(0, worldToScreenY(0), getWidth(), worldToScreenY(0));
+        }
+
+        private void drawWorldObjects(Graphics2D g2) {
+            List<GameObject> drawOrder = new ArrayList<>(world.objects);
+            drawOrder.sort(Comparator.comparingInt((GameObject o) -> o.y).thenComparingInt(o -> o.x));
+            for (GameObject object : drawOrder) {
+                if (!object.alive) continue;
+                int sx = worldToScreenX(object.x);
+                int sy = worldToScreenY(object.y);
+                int ex = worldToScreenX(object.x + 1);
+                int ey = worldToScreenY(object.y + 1);
+                int w = Math.max(1, ex - sx);
+                int h = Math.max(1, ey - sy);
+                if (ex < 0 || ey < 0 || sx > getWidth() || sy > getHeight()) continue;
+                drawObject(g2, object, sx, sy, w, h);
+            }
+        }
+
+        private void drawObject(Graphics2D g2, GameObject object, int x, int y, int w, int h) {
+            int inset = Math.max(1, (int) Math.round(zoom * 0.07));
+            int ix = x + inset, iy = y + inset;
+            int iw = Math.max(1, w - inset * 2), ih = Math.max(1, h - inset * 2);
+            if (object.type.equals("DIRT")) {
+                g2.setColor(object.color);
+                g2.fillRect(ix, iy, iw, ih);
+                g2.setColor(new Color(176, 124, 82));
+                if (iw > 9 && ih > 5) g2.drawLine(ix + 2, iy + ih / 2, ix + iw - 2, iy + ih / 2);
+            } else if (object.type.equals("WALL")) {
+                g2.setColor(object.color);
+                g2.fillRect(ix, iy, iw, ih);
+                g2.setColor(new Color(120, 143, 163));
+                if (iw > 8 && ih > 8) g2.drawRect(ix + 2, iy + 2, iw - 4, ih - 4);
+            } else if (object.type.equals("ROCK")) {
+                g2.setColor(object.color);
+                g2.fillOval(ix + 1, iy + 1, Math.max(1, iw - 2), Math.max(1, ih - 2));
+                g2.setColor(new Color(220, 230, 239));
+                if (iw > 9) g2.drawOval(ix + iw / 4, iy + ih / 4, Math.max(2, iw / 2), Math.max(2, ih / 2));
+            } else if (object.type.equals("GEM")) {
+                g2.setColor(object.color);
+                int[] xs = {x + w / 2, x + w * 4 / 5, x + w / 2, x + w / 5};
+                int[] ys = {y + h / 6, y + h / 2, y + h * 5 / 6, y + h / 2};
+                g2.fillPolygon(xs, ys, 4);
+                int stack = (int) object.value("stack");
+                if (stack > 1 && w > 14 && h > 14) {
+                    g2.setColor(Color.WHITE);
+                    g2.setFont(new Font(Font.MONOSPACED, Font.BOLD, Math.max(10, Math.min(16, w / 2))));
+                    g2.drawString(Integer.toString(stack), x + w - 12, y + 13);
+                }
+            } else if (object.type.equals("EXIT")) {
+                g2.setColor(object.color);
+                g2.fillRoundRect(ix, iy, iw, ih, Math.max(3, iw / 4), Math.max(3, ih / 4));
+                g2.setColor(Color.WHITE);
+                if (iw > 9 && ih > 9) g2.drawRect(ix + iw / 4, iy + ih / 6, iw / 2, ih * 2 / 3);
+            } else if (object.type.equals("BUILDING")) {
+                g2.setColor(object.color);
+                g2.fillRect(ix, iy, iw, ih);
+                g2.setColor(new Color(65, 45, 25));
+                if (iw > 12 && ih > 12) {
+                    g2.drawRect(ix + iw / 5, iy + ih / 5, iw * 3 / 5, ih * 3 / 5);
+                    g2.drawLine(ix + iw / 2, iy + ih / 5, ix + iw / 2, iy + ih * 4 / 5);
+                }
+            } else if (object.type.equals("PLAYER")) {
+                g2.setColor(object.color);
+                g2.fillOval(ix + 1, iy + 1, Math.max(1, iw - 2), Math.max(1, ih - 2));
+                g2.setColor(Color.BLACK);
+                if (iw > 10) g2.drawOval(ix + iw / 4, iy + ih / 4, iw / 2, ih / 2);
+            } else if (object.type.equals("HUNTER")) {
+                g2.setColor(object.color);
+                g2.fillOval(ix + 1, iy + 1, Math.max(1, iw - 2), Math.max(1, ih - 2));
+                g2.setColor(Color.WHITE);
+                if (iw > 10) {
+                    g2.fillOval(ix + iw / 4, iy + ih / 3, Math.max(2, iw / 7), Math.max(2, ih / 7));
+                    g2.fillOval(ix + iw * 3 / 5, iy + ih / 3, Math.max(2, iw / 7), Math.max(2, ih / 7));
+                }
+            } else {
+                g2.setColor(object.color);
+                g2.fillOval(ix + 1, iy + 1, Math.max(1, iw - 2), Math.max(1, ih - 2));
+            }
+
+            if (object.id.equals(selectedObjectId)) {
+                g2.setColor(new Color(255, 255, 255, 220));
+                g2.setStroke(new BasicStroke(Math.max(1f, (float) (zoom * 0.04))));
+                g2.drawRect(x + 1, y + 1, Math.max(1, w - 2), Math.max(1, h - 2));
+            }
+        }
+
+        private void drawOverlay(Graphics2D g2) {
+            // Keep the canvas HUD above the playfield so that it never hides GameObjects.
+            g2.setColor(new Color(3, 8, 13, 220));
+            g2.fillRoundRect(10, 5, 690, 30, 9, 9);
+            g2.setColor(new Color(100, 235, 190));
+            g2.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
+            g2.drawString("MATRIXGAME UNIVERSAL GRID LAB", 20, 24);
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 11));
+            g2.drawString(String.format(Locale.ROOT,
+                    "Action: %s | Control: %s | Tick: %d | Objects: %d | Options: 33 | Zoom: %.2fx | Camera: (%.1f, %.1f)%s",
+                    actionMode.label, playerMode ? "PLAYER" : "EDITOR", world.tick,
+                    world.objects.size(), zoom, cameraX, cameraY, paused ? " | PAUSE" : ""), 250, 24);
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // 5) Deterministic headless tests
+    // ---------------------------------------------------------------------
+
+    private static void runSelfTests() {
+        int passed = 0;
+
+        List<GameAction> catalog = GameAction.allActionOptions();
+        check(catalog.size() == 33, "Action catalog must contain 1 WAIT + 4 MOVE + 28 typed interactions"); passed++;
+        check(catalog.contains(GameAction.waitAction())
+                        && catalog.contains(GameAction.move(Direction.UP))
+                        && catalog.contains(GameAction.interact(Direction.LEFT, InteractionType.DIG))
+                        && catalog.contains(GameAction.interact(Direction.DOWN, InteractionType.BUILD)),
+                "Catalog must include WAIT, MOVE and every directional interaction family"); passed++;
+
+        // Direction and MOVE remain exactly one adjacent cell.
+        GameWorld world = emptyWorld(10, 10);
+        GameObject player = world.getObject("player");
+        int startX = player.x, startY = player.y;
+        world.submitAction(player.id, GameAction.move(Direction.RIGHT)); world.tick();
+        check(player.x == startX + 1 && player.y == startY, "MOVE(RIGHT) must change only gridX by one"); passed++;
+
+        // DIG requires both actor capability and a diggable target.
+        world = emptyWorld(10, 10); player = world.getObject("player");
+        GameObject dirt = world.object("dirt", "DIRT", "Dirt", "▪", Color.ORANGE,
+                player.x + 1, player.y, true, 0, new IdleController()); world.addObject(dirt);
+        DecisionContext digContext = world.decisionContext(player, world.snapshot());
+        check(digContext.legalOptions().contains(GameAction.interact(Direction.RIGHT, InteractionType.DIG)),
+                "PLAYER must receive DIG when adjacent to DIGGABLE dirt"); passed++;
+        world.submitAction(player.id, GameAction.interact(Direction.RIGHT, InteractionType.DIG)); world.tick();
+        check(world.getObject(dirt.id) == null, "DIG must remove the targeted dirt object"); passed++;
+
+        // PUSH moves the rock one cell and advances the pusher into its former cell.
+        world = emptyWorld(11, 9); player = world.getObject("player");
+        int px = player.x, py = player.y;
+        GameObject rock = world.object("rock", "ROCK", "Rock", "●", Color.GRAY,
+                px + 1, py, true, 70, new GravityController()); world.addObject(rock);
+        world.submitAction(player.id, GameAction.interact(Direction.RIGHT, InteractionType.PUSH)); world.tick();
+        check(player.x == px + 1 && rock.x == px + 2 && rock.y == py,
+                "PUSH must shift the rock and move the player into the old rock cell"); passed++;
+
+        // Collect, stack, drop and build are separate actions.
+        world = emptyWorld(11, 9); player = world.getObject("player");
+        GameObject gem = world.object("gem", "GEM", "Gem", "◆", Color.CYAN,
+                player.x + 1, player.y, false, 5, new IdleController()); world.addObject(gem);
+        world.submitAction(player.id, GameAction.interact(Direction.RIGHT, InteractionType.COLLECT)); world.tick();
+        check(player.value("inventoryGems") == 1 && world.getObject(gem.id) == null,
+                "COLLECT must transfer one gem to inventory"); passed++;
+
+        // Collect a second gem to fund BUILD.
+        gem = world.object("gem", "GEM", "Gem 2", "◆", Color.CYAN,
+                player.x, player.y - 1, false, 5, new IdleController()); world.addObject(gem);
+        world.submitAction(player.id, GameAction.interact(Direction.UP, InteractionType.COLLECT)); world.tick();
+        check(player.value("inventoryGems") == 2, "COLLECT must support repeated collection"); passed++;
+        gem = world.object("gem", "GEM", "Gem 3", "◆", Color.CYAN,
+                player.x - 1, player.y, false, 5, new IdleController()); world.addObject(gem);
+        world.submitAction(player.id, GameAction.interact(Direction.LEFT, InteractionType.COLLECT)); world.tick();
+        check(player.value("inventoryGems") == 3, "A third collection should fund both DROP and BUILD"); passed++;
+
+        world.submitAction(player.id, GameAction.interact(Direction.RIGHT, InteractionType.DROP)); world.tick();
+        check(player.value("inventoryGems") == 2
+                        && world.objectsAt(player.x + 1, player.y).stream().anyMatch(o -> o.type.equals("GEM")),
+                "DROP must create a gem on an empty adjacent cell"); passed++;
+
+        world.submitAction(player.id, GameAction.interact(Direction.DOWN, InteractionType.BUILD)); world.tick();
+        check(player.value("inventoryGems") == 0
+                        && world.objectsAt(player.x, player.y + 1).stream().anyMatch(o -> o.type.equals("BUILDING")),
+                "BUILD must consume two gems and create a blocking building"); passed++;
+        GameObject boundaryPlayer = world.getObject("player");
+        boundaryPlayer.x = 1; boundaryPlayer.y = 1; boundaryPlayer.syncPosition();
+        DecisionContext boundaryContext = world.decisionContext(boundaryPlayer, world.snapshot());
+        check(!boundaryContext.legalOptions().contains(GameAction.interact(Direction.LEFT, InteractionType.DROP))
+                        && !boundaryContext.legalOptions().contains(GameAction.interact(Direction.UP, InteractionType.BUILD)),
+                "DROP and BUILD must be filtered at world boundaries"); passed++;
+
+        // GEM stack can be incremented up to nine through DROP.
+        world = emptyWorld(11, 9); player = world.getObject("player"); player.set("inventoryGems", 1);
+        gem = world.object("gem", "GEM", "Gem stack", "◆", Color.CYAN,
+                player.x + 1, player.y, false, 5, new IdleController()); gem.set("stack", 3); world.addObject(gem);
+        world.submitAction(player.id, GameAction.interact(Direction.RIGHT, InteractionType.DROP)); world.tick();
+        check(gem.value("stack") == 4 && player.value("inventoryGems") == 0,
+                "DROP into a gem stack must increment stack size and consume one item"); passed++;
+
+        // ATTACK deals damage and removes defeated enemy.
+        world = emptyWorld(10, 10); player = world.getObject("player");
+        GameObject enemy = world.object("hunter", "HUNTER", "Enemy", "◆", Color.RED,
+                player.x + 1, player.y, true, 30, new IdleController());
+        enemy.set("hp", 2); enemy.set("maxHp", 2); player.set("attackDamage", 2); world.addObject(enemy);
+        world.submitAction(player.id, GameAction.interact(Direction.RIGHT, InteractionType.ATTACK)); world.tick();
+        check(world.getObject(enemy.id) == null, "ATTACK must remove a defeated attackable target"); passed++;
+
+        // USE remains an extension point for custom object-pair rules.
+        world = emptyWorld(10, 10); player = world.getObject("player");
+        GameObject switchObject = world.object("switch", "SWITCH", "Switch", "S", Color.GREEN,
+                player.x + 1, player.y, false, 0, new IdleController()); world.addObject(switchObject);
+        final boolean[] triggered = {false};
+        world.registerInteractionRule("PLAYER", "SWITCH", InteractionType.USE,
+                (w, a, t, d) -> { triggered[0] = true; return "Switch activated"; });
+        world.submitAction(player.id, GameAction.interact(Direction.RIGHT, InteractionType.USE)); world.tick();
+        check(triggered[0], "USE must support custom registered interaction rules"); passed++;
+
+        // Capability mask filters illegal actions. A rock cannot DIG, a player can.
+        world = emptyWorld(10, 10); player = world.getObject("player");
+        GameObject capabilityRock = world.object("rock", "ROCK", "Rock", "●", Color.GRAY,
+                2, 2, true, 70, new GravityController()); world.addObject(capabilityRock);
+        DecisionContext rockContext = world.decisionContext(capabilityRock, world.snapshot());
+        check(!rockContext.legalOptions().contains(GameAction.interact(Direction.RIGHT, InteractionType.DIG))
+                        && capabilityRock.has(Capability.FALLS) && capabilityRock.has(Capability.PUSHABLE),
+                "Object capabilities must filter action families"); passed++;
+        GameObject modifiable = world.object("drone", "DRONE", "Configurable object", "D", Color.PINK,
+                2, 3, true, 10, new IdleController());
+        modifiable.grantCapability(Capability.MOVE);
+        modifiable.grantCapability(Capability.DIG);
+        world.addObject(modifiable);
+        GameObject nearbyDirt = world.object("dirt", "DIRT", "Drone dirt", "▪", Color.ORANGE,
+                3, 3, true, 0, new IdleController()); world.addObject(nearbyDirt);
+        DecisionContext configurableContext = world.decisionContext(modifiable, world.snapshot());
+        check(configurableContext.legalOptions().contains(GameAction.move(Direction.DOWN))
+                        && configurableContext.legalOptions().contains(GameAction.interact(Direction.RIGHT, InteractionType.DIG)),
+                "Granting capabilities must add corresponding legal actions to an arbitrary object"); passed++;
+        modifiable.revokeCapability(Capability.DIG);
+        check(!world.decisionContext(modifiable, world.snapshot()).legalOptions()
+                        .contains(GameAction.interact(Direction.RIGHT, InteractionType.DIG)),
+                "Revoking a capability must remove that action from the legal set"); passed++;
+
+        // Gravity and hunter use their typed actions.
+        world = emptyWorld(10, 10); player = world.getObject("player");
+        rock = world.object("rock", "ROCK", "Falling rock", "●", Color.GRAY,
+                4, 2, true, 70, new GravityController()); world.addObject(rock);
+        world.tick();
+        check(rock.y == 3, "Gravity controller must choose MOVE(DOWN) when free"); passed++;
+
+        world = emptyWorld(10, 10); player = world.getObject("player");
+        player.x = 4; player.y = 4; player.syncPosition();
+        enemy = world.object("hunter", "HUNTER", "Hunter", "◆", Color.RED,
+                5, 4, true, 60, new HybridHunterController(8));
+        enemy.decisionAlgorithm = new GreedyDecisionAlgorithm();
+        enemy.set("attackDamage", 7); world.addObject(enemy);
+        world.tick();
+        check(player.value("hp") == 93 && enemy.x == 5 && enemy.y == 4,
+                "Adjacent hunter must choose typed INTERACT(ATTACK) without moving"); passed++;
+
+        // Perception contains a frozen world snapshot and legal actions from the same action vocabulary.
+        world = emptyWorld(10, 10); player = world.getObject("player");
+        DecisionContext context = world.decisionContext(player, world.snapshot());
+        check(context.actionSpace().size() == 33 && context.actionSpace().containsAll(context.legalOptions())
+                        && context.legalOptions().contains(GameAction.waitAction()),
+                "DecisionContext must expose 33 canonical actions and a legal subset"); passed++;
+
+        // Perception is local and configurable rather than an omniscient world dump.
+        GameObject remoteGem = world.object("gem", "GEM", "Remote gem", "◆", Color.CYAN,
+                player.x + 4, player.y, false, 5, new IdleController());
+        world.addObject(remoteGem);
+        player.set("visionRange", 2.0);
+        DecisionContext narrowView = world.decisionContext(player, world.snapshot());
+        check(narrowView.perception().visibleObjects().stream().noneMatch(o -> o.id().equals(remoteGem.id)),
+                "Objects beyond visionRange must not be visible to the controller"); passed++;
+        player.set("visionRange", 6.0);
+        DecisionContext wideView = world.decisionContext(player, world.snapshot());
+        check(wideView.perception().visibleObjects().stream().anyMatch(o -> o.id().equals(remoteGem.id)),
+                "Increasing visionRange must expand the controller perception"); passed++;
+
+        // Adaptive softmax: every legal action keeps a positive probability and total mass is one.
+        AdaptiveSoftmaxDecisionAlgorithm adaptive = new AdaptiveSoftmaxDecisionAlgorithm(0.12, 0.75, 42L);
+        ActionEvaluator neutral = new ActionEvaluator() {
+            @Override public double score(DecisionContext c, GameAction a) { return 0.0; }
+            @Override public String name() { return "NEUTRAL_TEST"; }
+        };
+        Map<GameAction, Double> probabilities = adaptive.probabilities(context, neutral);
+        double probabilitySum = probabilities.values().stream().mapToDouble(Double::doubleValue).sum();
+        check(probabilities.keySet().containsAll(context.legalOptions())
+                        && probabilities.values().stream().allMatch(v -> v > 0.0)
+                        && Math.abs(probabilitySum - 1.0) < 1e-9,
+                "Adaptive softmax must assign positive normalized probability to every legal move"); passed++;
+
+        // Learning update changes Q-values; repeated positive outcomes increase the preference.
+        GameAction learnAction = context.legalOptions().stream().filter(a -> a.kind() == ActionKind.MOVE)
+                .findFirst().orElseThrow();
+        double beforeQ = player.learnedActionValues.getOrDefault(learnAction.key(), 0.0);
+        player.learn(learnAction, 1.0);
+        double afterFirst = player.learnedActionValues.get(learnAction.key());
+        player.learn(learnAction, 1.0);
+        double afterSecond = player.learnedActionValues.get(learnAction.key());
+        check(afterFirst > beforeQ && afterSecond > afterFirst,
+                "Positive action feedback must gradually increase learned action value"); passed++;
+
+        // A positively reinforced legal action becomes more probable than before learning.
+        DecisionContext beforeLearningContext = world.decisionContext(player, world.snapshot());
+        GameAction reinforced = beforeLearningContext.legalOptions().stream()
+                .filter(a -> a.kind() == ActionKind.MOVE).findFirst().orElseThrow();
+        double probabilityBefore = adaptive.probabilities(beforeLearningContext, neutral).get(reinforced);
+        player.learn(reinforced, 2.0);
+        player.learn(reinforced, 2.0);
+        DecisionContext afterLearningContext = world.decisionContext(player, world.snapshot());
+        double probabilityAfter = adaptive.probabilities(afterLearningContext, neutral).get(reinforced);
+        check(probabilityAfter > probabilityBefore,
+                "A positive reward must increase the selected action's future probability"); passed++;
+
+        // The adaptive selector respects the legal subset across repeated choices.
+        context = world.decisionContext(player, world.snapshot());
+        for (int i = 0; i < 100; i++) {
+            GameAction selected = adaptive.chooseAction(context, neutral);
+            check(context.legalOptions().contains(selected), "Adaptive selector must never choose an illegal action");
+        }
+        passed++;
+
+        // Epsilon-greedy and random baselines still operate on the legal subset.
+        RandomLegalDecisionAlgorithm randomA = new RandomLegalDecisionAlgorithm(90210L);
+        RandomLegalDecisionAlgorithm randomB = new RandomLegalDecisionAlgorithm(90210L);
+        EpsilonGreedyDecisionAlgorithm epsilon = new EpsilonGreedyDecisionAlgorithm(0.30, 123L);
+        for (int i = 0; i < 50; i++) {
+            GameAction a = randomA.chooseAction(context, neutral);
+            GameAction b = randomB.chooseAction(context, neutral);
+            check(context.legalOptions().contains(a) && a.equals(b), "Seeded random baseline must be reproducible and legal");
+            check(context.legalOptions().contains(epsilon.chooseAction(context, neutral)), "Epsilon-greedy must choose legal actions");
+        }
+        passed++;
+
+        // Every object receives at most one effective action in a tick even when displaced by PUSH.
+        world = emptyWorld(12, 9); player = world.getObject("player");
+        int actorX = player.x, actorY = player.y;
+        rock = world.object("rock", "ROCK", "Push then stale plan", "●", Color.GRAY,
+                actorX + 1, actorY, true, 80, new GravityController()); world.addObject(rock);
+        GameObject rockBelow = world.object("rock", "ROCK", "Lower rock", "●", Color.GRAY,
+                actorX + 2, actorY + 1, true, 70, new IdleController()); world.addObject(rockBelow);
+        world.submitAction(player.id, GameAction.interact(Direction.RIGHT, InteractionType.PUSH));
+        int beforeTick = world.tick;
+        world.tick();
+        check(world.tick == beforeTick + 1 && player.x == actorX + 1 && rock.x == actorX + 2,
+                "PUSH resolution must commit only one player action and invalidate stale displaced-object intents"); passed++;
+
+        // Reproducible long run and object invariants.
+        world = GameWorld.createBoulderScenario(77123L, 24, 18);
+        Random commands = new Random(77123L);
+        for (int i = 0; i < 180 && !world.gameOver; i++) {
+            Direction direction = Direction.values()[commands.nextInt(Direction.values().length)];
+            ActionMode mode = ActionMode.values()[commands.nextInt(ActionMode.values().length)];
+            world.submitAction("player", GameAction.fromMode(mode, direction));
+            world.tick();
+            Set<Long> occupiedBlockingCells = new HashSet<>();
+            for (GameObject object : world.objects) {
+                check(world.inside(object.x, object.y), "Every object must remain within world bounds: " + object.id);
+                check(object.value("gridX") == object.x && object.value("gridY") == object.y,
+                        "Grid variables must track object position: " + object.id);
+                if (object.blocksMovement) {
+                    long posKey = (((long) object.x) << 32) ^ (object.y & 0xffffffffL);
+                    check(occupiedBlockingCells.add(posKey), "Blocking objects may not overlap: " + object.id);
+                }
+            }
+        }
+        passed++;
+
+        System.out.println("Matrixgame Universal Grid Lab v0.5 self-test: " + passed + " checks passed.");
+        System.out.println("PASS: 33-action catalog, typed actions, capabilities, DIG/PUSH/ATTACK/COLLECT/DROP/BUILD/USE, adaptive softmax, positive exploration probabilities, reward updates, AI controllers and 180-tick world invariants.");
+    }
+
+    private static GameWorld emptyWorld(int width, int height) {
+        GameWorld world = new GameWorld(1L, width, height);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (x == 0 || y == 0 || x == width - 1 || y == height - 1) {
+                    world.addObject(world.object("wall", "WALL", "Boundary", "■", Color.GRAY,
+                            x, y, true, 0, new IdleController()));
+                }
+            }
+        }
+        world.addObject(world.objectWithStats("player", "PLAYER", "Player", "●", Color.YELLOW,
+                width / 2, height / 2, true, 100, new IdleController(), 100, 100));
+        return world;
+    }
+
+    private static void check(boolean condition, String message) {
+        if (!condition) throw new AssertionError("SELF-TEST FAILED: " + message);
+    }
+}
