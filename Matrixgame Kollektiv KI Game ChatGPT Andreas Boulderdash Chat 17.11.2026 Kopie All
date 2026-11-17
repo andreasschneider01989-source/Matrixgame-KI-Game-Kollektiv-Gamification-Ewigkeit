@@ -1,0 +1,227 @@
+Also ich habe jetzt eben noch gar keine Veränderung bei den verschiedenen Levels, die ich downloaden konnte, bemerkt. Es kann mir so vor, als wäre die ganze Zeit das Level relativ luckauf, die gleiche Art und Weise spielbar gewesen. Und ich weiß nicht, ob du wir den Minmax zuerst machen sollten oder ob wir zuerst versuchen sollten, die verschiedenen weiteren Unit-Eigenschaften für die Interagierbarkeit zu wählen oder die Interaktionsmöglichkeiten nochmal zu variieren, sodass es nicht nur Bewegen in alle Richtungen und Interagieren in alle Richtungen gibt, sondern dass es dann verschiedene Formen der Interaktion gibt. Dass es eine Möglichkeit Attackieren gibt und eine Möglichkeit Schieben gibt und eine Möglichkeit Sammeln gibt und eine Möglichkeit Item Ablegen und eine Möglichkeit Gebäude bauen, und dass wir darauf basierend dann im späteren in der späteren Programmierung Input-Operation-Output-Modell für alle Game Units integrieren, sodass die Game Units eine Form der Wahrnehmung haben und eine Form der Entscheidungsfindung und dann darauf basierend eine der möglichen Züge aus allen Zügen, die für Protik zur Verfügung stehen, auswählen und dass wir dementsprechend weitermachen. Ich würde sagen, der Minmax-Algorithmus oder der Monte-Carlo-Algorithmus oder der Ennartsmax-Algorithmus, da gehen wir dann nochmal später drauf ein, weil mich interessiert eigentlich auch die Entscheidungsfindung durch die künstlichen neuronalen Netze oder durch das Anpassen von einem Wert oder durch das Anpassen von einem Random-Mechanismus, sodass alle Züge möglich sind, aber die Züge, die gut sind, halt wahrscheinlicher werden. Ja, ich bin mal gespannt, was du daraus machst. Versuch das zu machen, wo du denkst, dass es funktioniert, und generell gerne eine komplett zusammenhängende Code-Klasse, die so in einer Art und Weise hier teilst, dass ich die direkt copy-pasten kann. Das wäre sinnvoll für mich. Dankeschön.
+…
+
+7m 57s nachgedacht
+Ich glaube, diesmal sind wir an einem ziemlich wichtigen Punkt angekommen. Und ich habe deine Kritik an den kaum unterscheidbaren Versionen berücksichtigt: Version 0.5 verändert tatsächlich die Aktions- und Entscheidungsarchitektur, nicht nur die Levelgestaltung.
+
+Matrixgame Universal Grid Lab 0.5
+30/30 Selbsttests bestanden Java-Kompilierung ohne Warnungen
+
+1. Was jetzt neu ist
+Gladiabots - Lutris
+
+Jedes Objekt besitzt denselben Aktionsraum:
+
+∣
+A
+∣
+=
+1
++
+4
++
+7
+⋅
+4
+=
+33
+∣A∣=1+4+7⋅4= 
+33
+​
+ 
+Aktionsfamilie
+
+Anzahl
+
+WAIT
+
+1
+
+MOVE
+
+4
+
+DIG
+
+4
+
+PUSH
+
+4
+
+ATTACK
+
+4
+
+COLLECT
+
+4
+
+DROP
+
+4
+
+BUILD
+
+4
+
+USE
+
+4
+
+Gesamt
+
+33
+
+Wichtig: Das sind 33 grundsätzlich definierte Möglichkeiten. Welche davon tatsächlich legal sind, hängt von Fähigkeiten, Nachbarobjekten und Spielzustand ab.
+
+2. Input – Operation – Output
+Die neue Architektur trennt vier Schritte:
+
+INPUT – Wahrnehmung
+
+Objektposition, sichtbare Nachbarn, Eigenschaften, Fähigkeiten und erlaubte Aktionen.
+
+OPERATION – Entscheidungsfindung
+
+Controller, Bewertungsfunktion und austauschbarer Entscheidungsalgorithmus.
+
+OUTPUT – Aktion
+
+Genau eine ausgewählte GameAction.
+
+FEEDBACK – Lernen
+
+Spielzustand verändern, Erfolg bewerten und Aktionswert aktualisieren.
+
+3. Die erste adaptive Entscheidungsfindung
+Hier ist deine Idee bereits umgesetzt.
+
+Der Algorithmus AdaptiveSoftmaxDecisionAlgorithm kombiniert eine Controller-Empfehlung mit gelernten Aktionswerten.
+
+Eine vereinfachte Lernregel lautet:
+
+Q
+t
++
+1
+(
+a
+)
+=
+Q
+t
+(
+a
+)
++
+0,2
+ 
+[
+r
+t
+−
+Q
+t
+(
+a
+)
+]
+Q 
+t+1
+​
+ (a)=Q 
+t
+​
+ (a)+0,2[r 
+t
+​
+ −Q 
+t
+​
+ (a)]
+Dabei ist 
+r
+t
+r 
+t
+​
+  die Rückmeldung für die ausgeführte Aktion.
+
+Anschließend werden die Aktionswerte über eine Softmax-Verteilung in Auswahlwahrscheinlichkeiten übersetzt.
+
+Eine zusätzliche Exploration von 12 % sorgt dafür, dass jede aktuell legale Aktion eine positive Auswahlwahrscheinlichkeit behält.
+
+Das bedeutet: Gute Aktionen werden wahrscheinlicher, aber alternative Möglichkeiten verschwinden nicht vollständig.
+
+Das ist zunächst tabellarisches, schrittweises Lernen und noch kein neuronales Netz. Die Werte werden aktuell pro Objekt und Aktionsart beziehungsweise Richtung gespeichert, noch nicht für jede unterschiedliche Spielsituation separat.
+
+4. Die sichtbaren Änderungen
+In der neuen Oberfläche findest du:
+
+Q / E: acht Aktionsfamilien durchschalten.
+
+Pfeiltasten / WASD: ausgewählte Aktion ausführen.
+
+Objektfähigkeiten und gelernte Züge im Statusbereich.
+
+Intelligentere und zufällige Gegner als Vergleich.
+
+Einstellbare Wahrnehmungsreichweite.
+
+Weiterhin Infinity-Zoom und Kamera-Verschiebung.
+
+Programmoberfläche von Version 0.5 ansehen
+
+5. Dein vollständiger Java-Code
+Hauptdatei – vollständig
+MatrixgameUniversalGridLab_v05.java
+
+Java-Datei öffnen und kopieren
+
+Eine zusammenhängende Java-Klasse mit der gesamten Engine und Benutzeroberfläche.
+
+Komplettpaket
+
+Version 0.5 als ZIP
+
+Anleitung
+
+README – Installation, Steuerung und Tests
+
+Für Eclipse: Package matrixgame.universal anlegen und die vollständige Java-Datei dort einfügen. Die Klasse heißt MatrixgameUniversalGridLab_v05.
+
+6. Was wir bewusst noch nicht machen
+Minimax, Monte-Carlo und N-Max-Max bleiben zunächst zurückgestellt.
+
+Die nächste sinnvolle Entwicklung wäre:
+
+Zustandsabhängige Bewertungsfunktionen: Eine Aktion wird abhängig von der konkreten Spielsituation bewertet.
+
+Mehrdimensionale Aktionswerte: beispielsweise Erfolg beim Sammeln, Überleben, Angreifen und Kooperieren.
+
+Kleine künstliche neuronale Netze, die Wahrnehmungen in Aktionsbewertungen übersetzen.
+
+Vergleichsexperimente zwischen Random, adaptiver Auswahl und neuronalen Entscheidungsmodellen.
+
+Damit können wir später unterschiedliche Algorithmen unter identischen Spielbedingungen vergleichen.
+
+Mein wichtigster Vorschlag: Als nächsten Schritt sollten wir die bisherige Aktionswert-Tabelle um eine situationsabhängige Wahrnehmung erweitern. Dann lernt eine Einheit nicht nur, dass Sammeln grundsätzlich erfolgreich sein kann, sondern beispielsweise, wann Sammeln sinnvoller ist als Angreifen oder Fliehen.
+
+Das wäre ein echter Fortschritt in Richtung deiner universellen Matrixgame-Engine. Und wir behalten dabei die wichtigste Regel bei: Ein gemeinsamer Aktionsraum, ein gemeinsamer Tick-Resolver und beliebig austauschbare Entscheidungsmodelle.
+
+Let's Play.
+
+
+MatrixgameUniversalGridLab_v05_preview.png
+Bild
+
+README_MatrixgameUniversalGridLab_v05.txt
+Dokument
+
+MatrixgameUniversalGridLab_v05.java
+Code
+
+
+
+
