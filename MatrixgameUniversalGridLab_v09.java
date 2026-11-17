@@ -3074,4 +3074,51 @@ public final class MatrixgameUniversalGridLab_v09 extends JFrame {
         // Expanded world baseline: dimensions, resource field and camera-independent world bounds.
         world = GameWorld.createEvolutionScenario(20261116L, 120, 80);
         check(world.width == 120 && world.height == 80 && world.countType("FOOD") == 180,
-                "Expanded 120x80 evolution world must initialize with a proportionate food field"); passed++;
+                "Expanded 120x80 evolution world must initialize with a proportionate food field"); passed++;        check(world.objects.stream().anyMatch(o -> o.type.equals("WALL") && o.x == 119)
+                        && world.objects.stream().anyMatch(o -> o.type.equals("WALL") && o.y == 79),
+                "Expanded simulation boundary must cover the full 120x80 area"); passed++;
+        WorldSnapshot indexed = world.snapshot();
+        GameObject foodProbe = world.objects.stream().filter(o -> o.type.equals("FOOD")).findFirst().orElseThrow();
+        check(indexed.at(foodProbe.x, foodProbe.y).stream().anyMatch(v -> v.id().equals(foodProbe.id))
+                        && !indexed.isBlocked(foodProbe.x, foodProbe.y, ""),
+                "Snapshot spatial index must return the exact objects at a cell and preserve non-blocking resources"); passed++;
+
+        // Bounded ecosystem run: validate that spontaneous evolution really occurs over time.
+        world = GameWorld.createEvolutionScenario(20261116L, 60, 40);
+        int initialPopulation = world.creatureCount();
+        for (int i = 0; i < 120; i++) world.tick();
+        check(world.tick == 120 && world.births > 0 && world.creatureCount() > 0
+                        && world.populationHistory.size() == 121,
+                "A reproducible 120-tick ecosystem run must produce offspring and population history"); passed++;
+        check(initialPopulation + world.births == world.creatureCount() + world.deaths
+                        && world.deaths == world.starvationDeaths + world.predationKills,
+                "Population accounting must balance births, living cells and all registered death causes"); passed++;
+        check(world.objects.stream().filter(o -> o.type.equals("CREATURE"))
+                        .allMatch(o -> o.genome != null && o.genome.sensorMode() != null && o.mutationEvents >= 0),
+                "Every living evolved cell must carry an inspectable genome and lineage mutation count"); passed++;
+        check(world.genomePopulationSummary().contains("GENOME n="),
+                "Population-level genetic statistics must be available for live inspection"); passed++;
+
+        System.out.println("Matrixgame Universal Grid Lab v0.8 self-test: " + passed + " checks passed.");
+        System.out.println("PASS: universal action catalog incl. REPRODUCE, capabilities, interaction rules, adaptive softmax, gene-coded sensing, heritable IPO policies, mutation tracking, adaptive selection, food regeneration, cell division, predation, and world invariants.");
+    }
+
+    private static GameWorld emptyWorld(int width, int height) {
+        GameWorld world = new GameWorld(1L, width, height);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (x == 0 || y == 0 || x == width - 1 || y == height - 1) {
+                    world.addObject(world.object("wall", "WALL", "Boundary", "■", Color.GRAY,
+                            x, y, true, 0, new IdleController()));
+                }
+            }
+        }
+        world.addObject(world.objectWithStats("player", "PLAYER", "Player", "●", Color.YELLOW,
+                width / 2, height / 2, true, 100, new IdleController(), 100, 100));
+        return world;
+    }
+
+    private static void check(boolean condition, String message) {
+        if (!condition) throw new AssertionError("SELF-TEST FAILED: " + message);
+    }
+}
