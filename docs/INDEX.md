@@ -12,6 +12,7 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 ## Architektur und Zusammenarbeit
 
 - [Matrixgame Master Roadmap and Continuity](MATRIXGAME_MASTER_ROADMAP_AND_CONTINUITY_2026-11-17.md) — gemeinsame Vision, Status der Module, Architekturverträge, Roadmap und nächste Session.
+- [Session Handoff](MATRIXGAME_SESSION_HANDOFF_2026-11-17.md) — präziser Wiederaufnahme-Punkt, Version, Tests, Grenzen und nächste Aufgabe.
 - [Cross-Project Integration Map](MATRIXGAME_CROSS_PROJECT_INTEGRATION_MAP_2026-11-17.md) — Bestandskarte für Grid Lab, Matrix Core, Gravitation, LUMINI, kollektive KI und Zukunftsszenarien.
 - [Measurement-to-Model Pipeline](MATRIXGAME_MEASUREMENT_TO_MODEL_PIPELINE_2026-11-17.md) — Messdaten, Kalibrierung, Validierung und zukünftiger Compiler.
 - [Universal Grid Lab v0.9 – Experiment Studio](MATRIXGAME_UNIVERSAL_GRID_LAB_V09_EXPERIMENT_STUDIO.md) — Implementierungscheckpoint für Run-Export, Zeitreihen, CSV-Beobachtungen und Parameterkalibrierung.
