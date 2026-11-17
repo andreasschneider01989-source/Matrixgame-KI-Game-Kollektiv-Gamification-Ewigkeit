@@ -1,0 +1,24 @@
+# Matrixgame repository map for language models
+
+This repository is a changing collection of prototypes, proposals, research notes, and historical material, not one completed simulator. Read source files before making claims. See [Start here](00_START_HERE.md), the [documentation index](docs/INDEX.md), and the [AI reading guide](docs/AI_READING_GUIDE.md).
+
+## Entry points
+
+- [README](README.md): project status and direction.
+- [Documentation index](docs/INDEX.md): selected topic map.
+- [Universal Knowledge Engine](docs/UNIVERSAL_KNOWLEDGE_ENGINE.md): proposed knowledge/evidence architecture.
+- [Knowledge Node and Evidence Schema](docs/KNOWLEDGE_NODE_AND_EVIDENCE_SCHEMA.md): structured claim and evidence model.
+- [Collective Improvement Network](docs/COLLECTIVE_IMPROVEMENT_NETWORK.md): collaboration vision and roadmap.
+- [Learning Quests](docs/LEARNING_QUESTS_AND_GAMIFICATION.md): proposed learning mechanics.
+- [Game protocol](matrixgame-protocol/README.md): local prototype and deployment cautions.
+
+## Selected artifacts
+
+- [Java Boulder Dash](MatrixgameBoulderDash.java): standalone grid-game prototype; inspect source for actual behavior.
+- [Python model](modellierung_des_kollektiven_bewusstseins.py): notebook-derived example; assumptions are not automatically validated.
+- [Physics A–Z Atlas](docs/PHYSICS_AZ_ATLAS.md): physics reference structure.
+- [Historical concept and transcript](Matrixgam%20und%20Kollektives%20Bewusstsein%20und%20KI-Game12.11.2026.md): source history, not a canonical specification.
+
+## Handling
+
+Distinguish implementation, tests, proposals, observations, hypotheses, metaphors, and fiction. Do not present game scores or speculative claims as validated findings. Do not repeat personal/contact/payment or sensitive health details from historical files. Keep sharing voluntary; verify scientific and medical claims against reliable sources.
