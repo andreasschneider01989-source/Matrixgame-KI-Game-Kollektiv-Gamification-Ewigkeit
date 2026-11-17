@@ -381,7 +381,9 @@ public final class MatrixgameUniversalGridLab_v08_1 extends JFrame {
     }
 
     private static boolean isControllable(GameObject object) {
-        return object != null && object.alive && object.capabilities.contains(Capability.MOVE);
+        return object != null && object.alive
+                && Set.of("PLAYER", "CREATURE", "HUNTER", "WANDERER").contains(object.type)
+                && object.capabilities.contains(Capability.MOVE);
     }
 
     private void refresh() {
