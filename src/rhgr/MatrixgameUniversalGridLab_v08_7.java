@@ -442,7 +442,7 @@ public final class MatrixgameUniversalGridLab_v08_7 extends JFrame {
                     world.teamPopulationSummary() + " | " + world.blueLineageObjective()));
         } else {
             stateLabel.setText(String.format(Locale.ROOT,
-                    "BOULDER DASH | Tick: %d | GameObjects: %d | 37 Optionen/Objekt | Edelsteine: %d/%d | Inventar: %.0f | Punkte: %d | HP: %.0f | Energie: %.1f",
+                    "BOULDER DASH | Tick: %d | GameObjects: %d | 49 Optionen/Objekt | Edelsteine: %d/%d | Inventar: %.0f | Punkte: %d | HP: %.0f | Energie: %.1f",
                     world.tick, world.objects.size(), world.gemsCollected, world.gemsRequired,
                     player == null ? 0.0 : player.value("inventoryGems"), world.score, hp, energy));
         }
@@ -1171,7 +1171,7 @@ public final class MatrixgameUniversalGridLab_v08_7 extends JFrame {
             initialHunter.set("hp", 3.0);
             initialHunter.set("maxHp", 3.0);
             addObject(initialHunter);
-            message = "Szenario bereit: 49 feste Aktionen je Objekt. Q/E wechseln MOVE, DIG, PUSH, ATTACK, COLLECT, DROP, BUILD, USE und REPRODUCE.";
+            message = "Szenario bereit: 49 feste Aktionen je Objekt. Q/E wechseln die 12 Modi. C=BUILD_DEPOT, X=DEPOSIT, Z=PRODUCE.";
         }
 
         private void resetEvolution() {
@@ -2956,7 +2956,7 @@ public final class MatrixgameUniversalGridLab_v08_7 extends JFrame {
                 "Camera zoom must respect the established minimum"); passed++;
 
         List<GameAction> catalog = GameAction.allActionOptions();
-        check(catalog.size() == 49, "Action catalog must contain 1 WAIT + 4 MOVE + 32 typed interactions"); passed++;
+        check(catalog.size() == 49, "Action catalog must contain 1 WAIT + 4 MOVE + 44 typed interactions"); passed++;
         check(catalog.contains(GameAction.waitAction())
                         && catalog.contains(GameAction.move(Direction.UP))
                         && catalog.contains(GameAction.interact(Direction.LEFT, InteractionType.DIG))
