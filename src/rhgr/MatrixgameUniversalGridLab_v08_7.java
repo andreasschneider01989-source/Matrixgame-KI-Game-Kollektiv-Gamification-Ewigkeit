@@ -2099,6 +2099,7 @@ public final class MatrixgameUniversalGridLab_v08_7 extends JFrame {
             GameObject spawned = object("wanderer", "WANDERER", "Wanderer", "○", new Color(190, 130, 240),
                     pos[0], pos[1], true, 35, new WanderController(seed + nextId));
             spawned.decisionAlgorithm = newEnemyAlgorithm(spawned);
+            spawned.set("team", 1.0);
             addObject(spawned);
             message = "Neuer Wanderer erzeugt.";
         }
@@ -3072,7 +3073,7 @@ public final class MatrixgameUniversalGridLab_v08_7 extends JFrame {
                         && (int) bruiser.value("team") == (int) player.value("team"),
                 "PRODUCE must spend eight stored gems and create a stronger allied unit"); passed++;
         check(GameAction.allActionOptions().size() == 49
-                        && world.decisionContext(bruiser, world.snapshot()).allOptions().size() == 49,
+                        && world.decisionContext(bruiser, world.snapshot()).actionSpace().size() == 49,
                 "Every mobile unit must share the expanded 49-option action vocabulary"); passed++;
 
         // GEM stack can be incremented up to nine through DROP.
