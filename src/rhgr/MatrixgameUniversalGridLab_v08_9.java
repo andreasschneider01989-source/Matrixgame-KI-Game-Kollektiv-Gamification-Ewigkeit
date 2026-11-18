@@ -3122,6 +3122,19 @@ public final class MatrixgameUniversalGridLab_v08_9 extends JFrame {
         check(world.getObject(buildDirt.id) == null && dirtDepot.value("hp") == 70.0
                         && player.value("inventoryGems") == 0.0,
                 "BUILD_DEPOT must replace adjacent ordinary dirt and visibly place the depot"); passed++;
+
+        // Idle standard units must still run the shared infrastructure policy.
+        world = emptyWorld(14, 12);
+        GameObject idleBuilder = world.object("idle-builder", "HUNTER", "Bau-Unit", "◆",
+                Color.ORANGE, 6, 6, true, 10, new IdleController());
+        idleBuilder.set("inventoryGems", 3.0);
+        world.addObject(idleBuilder);
+        world.tick();
+        check(world.objectsAt(6, 5).stream().anyMatch(o -> o.type.equals("DEPOT"))
+                        || world.objectsAt(7, 6).stream().anyMatch(o -> o.type.equals("DEPOT"))
+                        || world.objectsAt(6, 7).stream().anyMatch(o -> o.type.equals("DEPOT"))
+                        || world.objectsAt(5, 6).stream().anyMatch(o -> o.type.equals("DEPOT")),
+                "An idle standard AI unit with three gems must autonomously construct an adjacent depot"); passed++;
         player.set("inventoryGems", 8.0);
         for (int i = 0; i < 8; i++) {
             world.submitAction(player.id, GameAction.interact(Direction.RIGHT, InteractionType.DEPOSIT));
