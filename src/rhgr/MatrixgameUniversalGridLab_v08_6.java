@@ -2753,6 +2753,40 @@ public final class MatrixgameUniversalGridLab_v08_6 extends JFrame {
     private static void runSelfTests() {
         int passed = 0;
 
+        // Camera navigation must not mutate simulation coordinates or entity state.
+        GameWorld cameraWorld = emptyWorld(10, 10);
+        GameObject cameraPlayer = cameraWorld.getObject("player");
+        int entityXBeforeCameraMove = cameraPlayer.x;
+        int entityYBeforeCameraMove = cameraPlayer.y;
+        WorldCanvas cameraProbe = new WorldCanvas(cameraWorld);
+        double cameraXBefore = cameraProbe.cameraX;
+        double cameraYBefore = cameraProbe.cameraY;
+        cameraProbe.panByCells(3.0, -2.0);
+        check(cameraProbe.cameraX == cameraXBefore + 3.0
+                        && cameraProbe.cameraY == cameraYBefore - 2.0
+                        && cameraPlayer.x == entityXBeforeCameraMove
+                        && cameraPlayer.y == entityYBeforeCameraMove,
+                "Camera panning must move only the view, never simulation entities"); passed++;
+
+        double zoomBefore = cameraProbe.zoom;
+        cameraProbe.zoomBy(1.12);
+        check(Math.abs(cameraProbe.zoom - zoomBefore * 1.12) < 1.0e-9,
+                "Keyboard zoom must apply its requested positive factor"); passed++;
+
+        double zoomAfterValidChange = cameraProbe.zoom;
+        double cameraXAfterValidMove = cameraProbe.cameraX;
+        cameraProbe.zoomBy(Double.NaN);
+        cameraProbe.panByCells(Double.POSITIVE_INFINITY, 1.0);
+        check(cameraProbe.zoom == zoomAfterValidChange && cameraProbe.cameraX == cameraXAfterValidMove,
+                "Non-finite camera input must be ignored safely"); passed++;
+
+        cameraProbe.zoomBy(1.0e9);
+        check(cameraProbe.zoom == WorldCanvas.MAX_ZOOM,
+                "Camera zoom must respect the established maximum"); passed++;
+        cameraProbe.zoomBy(1.0e-9);
+        check(cameraProbe.zoom == WorldCanvas.MIN_ZOOM,
+                "Camera zoom must respect the established minimum"); passed++;
+
         List<GameAction> catalog = GameAction.allActionOptions();
         check(catalog.size() == 37, "Action catalog must contain 1 WAIT + 4 MOVE + 32 typed interactions"); passed++;
         check(catalog.contains(GameAction.waitAction())
