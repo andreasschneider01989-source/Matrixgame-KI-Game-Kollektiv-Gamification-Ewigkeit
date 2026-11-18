@@ -139,9 +139,13 @@ public final class MatrixgameUniversalGridLab_v08_9 extends JFrame {
             refresh();
             canvas.requestFocusInWindow();
         });
+        JButton depotBuildButton = new JButton("Depot bauen (C)");
+        depotBuildButton.setToolTipText("Aktiviert Depotbau; danach Richtungstaste oder Richtungsbutton drücken. Kosten: 3 Edelsteine.");
+        depotBuildButton.addActionListener(e -> selectActionMode(ActionMode.BUILD_DEPOT));
         actionRow.add(previousAction);
         actionRow.add(actionLabel);
         actionRow.add(nextAction);
+        actionRow.add(depotBuildButton);
         actionRow.add(playerModeButton);
 
         playRow.add(directionButton("↑ Hoch", Direction.UP));
