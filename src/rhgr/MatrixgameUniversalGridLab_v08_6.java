@@ -27,6 +27,9 @@ import java.util.List;
  *   Left click        : select a GameObject (editor mode)
  *   Right drag        : pan camera
  *   Mouse wheel       : cursor-centred zoom
+ *   Ctrl + arrows     : pan camera by three world cells
+ *   Ctrl + = / -      : zoom in / out
+ *   Ctrl + 0          : reset camera to fit world
  *   Space             : WAIT / advance one tick
  *   H                 : spawn intelligent hunter
  *   N                 : spawn random-moving enemy
@@ -71,7 +74,7 @@ public final class MatrixgameUniversalGridLab_v08_6 extends JFrame {
     private String selectedObjectId = "cell-0001";
 
     public MatrixgameUniversalGridLab_v08_6() {
-        super("Matrixgame – Universal Grid Lab v0.8.5 | Evolution Objectives + Right-Hand Shortcuts");
+        super("Matrixgame – Universal Grid Lab v0.8.6 | Evolution Objectives + Keyboard Camera");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(4, 4));
 
@@ -2729,7 +2732,7 @@ public final class MatrixgameUniversalGridLab_v08_6 extends JFrame {
             g2.fillRoundRect(10, 5, Math.min(getWidth() - 20, 900), 42, 9, 9);
             g2.setColor(new Color(100, 235, 190));
             g2.setFont(new Font(Font.MONOSPACED, Font.BOLD, 11));
-            g2.drawString("MATRIXGAME UNIVERSAL GRID LAB v0.8.5", 20, 21);
+            g2.drawString("MATRIXGAME UNIVERSAL GRID LAB v0.8.6", 20, 21);
             g2.setColor(Color.WHITE);
             g2.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));
             String modeStats = world.evolutionMode
