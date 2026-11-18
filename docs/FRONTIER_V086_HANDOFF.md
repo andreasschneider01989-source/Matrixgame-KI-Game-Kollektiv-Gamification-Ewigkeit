@@ -17,7 +17,7 @@
 - Evolution scenario with genomes, mutation, food regeneration, reproduction, predation, population accounting and a fixed random seed.
 - 120x80 finite grid, spatial snapshot index, mouse selection, right/middle-drag panning and cursor-centred mouse-wheel zoom.
 - Existing BUILD action creates a generic 30-HP blocking building for two gems.
-- Integrated `--self-test` suite (count in source: 67 calls to check()).
+- Integrated `--self-test` suite (v0.8.6: 72 assertions; five new camera invariants).
 
 ## v0.8.6 additive change
 
@@ -54,6 +54,7 @@ Performed before GitHub write:
 - Created a separate class and checked that no v0.8.5 class-name references remain.
 - Checked that the new camera bindings and camera methods exist.
 - Checked that old mouse drag panning and mouse-wheel zoom code remain in the copied source.
+- Added five self-test assertions: camera-only panning, positive zoom factor, rejection of non-finite input, and minimum/maximum zoom bounds.
 - Checked that the self-test label was updated.
 
 Not yet performed:
