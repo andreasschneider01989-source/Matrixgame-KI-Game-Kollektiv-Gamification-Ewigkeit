@@ -1,0 +1,51 @@
+name: LifeOS integrity
+
+on:
+  pull_request:
+    paths:
+      - "lifeos/**"
+      - "docs/MACHX_LUMINI_LIFEOS_FOUNDATION_2026-11-19.md"
+      - ".github/workflows/lifeos-integrity.yml"
+  push:
+    branches: [main]
+    paths:
+      - "lifeos/**"
+      - "docs/MACHX_LUMINI_LIFEOS_FOUNDATION_2026-11-19.md"
+      - ".github/workflows/lifeos-integrity.yml"
+  workflow_dispatch:
+  schedule:
+    - cron: "17 10 * * 2"
+      timezone: "Europe/Berlin"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lifeos-integrity-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sparse checkout of LifeOS files only
+        env:
+          REPOSITORY: ${{ github.repository }}
+          REF: ${{ github.sha }}
+          TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${TOKEN}@github.com/${REPOSITORY}.git"
+          git config core.sparseCheckout true
+          git config core.sparseCheckoutCone false
+          printf '/lifeos/\n' > .git/info/sparse-checkout
+          git fetch --depth=1 origin "${REF}"
+          git checkout --detach FETCH_HEAD
+      - name: Validate public example state
+        run: python3 lifeos/scripts/validate_state.py
+      - name: Report boundary and scope
+        run: |
+          echo "LifeOS schema validation completed."
+          echo "This workflow validates public example data only."
+          echo "It does not access private user data or perform autonomous actions."
