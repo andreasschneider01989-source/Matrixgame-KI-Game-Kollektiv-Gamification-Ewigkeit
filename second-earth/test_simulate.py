@@ -44,7 +44,7 @@ class SecondEarthTests(unittest.TestCase):
 
     def test_invalid_config_is_rejected(self):
         raw = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
-        raw["food_loss_shock_probability"] = 1.5
+        raw["disturbance_probability"] = 1.5
         with self.assertRaises(ValueError):
             WorldConfig.from_dict(raw)
 
