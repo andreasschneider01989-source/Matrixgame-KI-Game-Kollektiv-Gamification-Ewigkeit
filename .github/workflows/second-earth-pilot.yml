@@ -16,9 +16,9 @@ jobs:
     steps:
       - name: Sparse checkout of pilot only
         env:
-          REPOSITORY: \${{ github.repository }}
-          REF: \${{ github.ref }}
-          TOKEN: \${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          REF: ${{ github.ref }}
+          TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           git init .
