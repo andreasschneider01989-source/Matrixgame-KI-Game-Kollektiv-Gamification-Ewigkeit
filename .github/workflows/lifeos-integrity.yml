@@ -31,7 +31,7 @@ jobs:
       - name: Sparse checkout of LifeOS files only
         env:
           REPOSITORY: ${{ github.repository }}
-          REF: ${{ github.sha }}
+          REF: ${{ github.ref }}
           TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
