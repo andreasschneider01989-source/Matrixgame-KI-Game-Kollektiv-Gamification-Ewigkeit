@@ -114,12 +114,12 @@ This branch adds:
 It does **not** implement an LLM agent network, personal data store, calendar integration, autonomous task scheduling, game AI learning or guaranteed notifications. Those require separate reviewed increments.
 
 
-## 14. Second Earth pilot integration
+## 13. Second Earth pilot integration
 The first simulation increment is documented in [MACHX Second Earth Quest 001](MACHX_SECOND_EARTH_QUEST_001_2026-11-20.md) and implemented as the isolated `second-earth/` Python reference pilot. It is intentionally a small synthetic biomass/food model with paired random seeds and transparent policy baselines. It does not replace the existing Gaia Earth Lab water-cycle models, the Java Matrixgame prototypes, or the LUMINI compiler.
 
 The simulator owns canonical state transitions. Future Minecraft Java or Luanti adapters are presentation/control clients only. Scientific reviewers and LLMs may propose hypotheses or policy candidates; deterministic validation and human review remain required before state-changing actions. The dedicated `.github/workflows/second-earth-pilot.yml` workflow tests this module independently.
 
-## 13. Next human quest
+## 14. Next human quest
 1. Review this architecture and the public/private boundary.
 2. Run the validator locally.
 3. Review the generated PR; do not merge until checks pass.
