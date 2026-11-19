@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/blob/main/lifeos/schema/lifeos-state.schema.json",
+  "title": "LUMINI LifeOS State",
+  "description": "Generic, non-sensitive, versioned planning state. Do not store private personal or health data in this public repository.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "updated_at",
+    "mode",
+    "focus",
+    "goals",
+    "next_actions",
+    "automation"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "mode": {
+      "enum": [
+        "STABLE",
+        "EXPLORATORY",
+        "RECOVERY",
+        "PAUSED"
+      ]
+    },
+    "focus": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "goals": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "$ref": "#/$defs/goal"
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+    "automation": {
+      "$ref": "#/$defs/automation"
+    },
+    "notes": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "maxLength": 500
+      }
+    }
+  },
+  "$defs": {
+    "goal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "domain",
+        "status",
+        "horizon"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "domain": {
+          "enum": [
+            "LIFE_QUALITY",
+            "CAREER",
+            "MACHX",
+            "MATRIXGAME",
+            "LEARNING",
+            "COMMUNITY",
+            "RESEARCH"
+          ]
+        },
+        "status": {
+          "enum": [
+            "ACTIVE",
+            "PLANNED",
+            "BLOCKED",
+            "DONE",
+            "PAUSED"
+          ]
+        },
+        "horizon": {
+          "enum": [
+            "WEEK",
+            "MONTH",
+            "QUARTER",
+            "YEAR",
+            "LONG_TERM"
+          ]
+        },
+        "success_signal": {
+          "type": "string",
+          "maxLength": 240
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "domain",
+        "status",
+        "effort_minutes",
+        "priority",
+        "fallback"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "domain": {
+          "enum": [
+            "LIFE_QUALITY",
+            "CAREER",
+            "MACHX",
+            "MATRIXGAME",
+            "LEARNING",
+            "COMMUNITY",
+            "RESEARCH"
+          ]
+        },
+        "status": {
+          "enum": [
+            "READY",
+            "DOING",
+            "BLOCKED",
+            "DONE",
+            "DROPPED"
+          ]
+        },
+        "effort_minutes": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 240
+        },
+        "priority": {
+          "enum": [
+            "LOW",
+            "NORMAL",
+            "HIGH",
+            "TIME_SENSITIVE"
+          ]
+        },
+        "fallback": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "acceptance_test": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "evidence_status": {
+          "enum": [
+            "NOT_RUN",
+            "PASS",
+            "FAIL",
+            "REVIEW_REQUIRED"
+          ]
+        }
+      }
+    },
+    "automation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "human_approval_required",
+        "personal_data_in_public_repo"
+      ],
+      "properties": {
+        "level": {
+          "enum": [
+            "L0_MANUAL",
+            "L1_REMINDER",
+            "L2_READ_ONLY",
+            "L3_PROPOSE_ONLY",
+            "L4_APPROVED_EXECUTION"
+          ]
+        },
+        "human_approval_required": {
+          "const": true
+        },
+        "personal_data_in_public_repo": {
+          "const": false
+        },
+        "digest_enabled": {
+          "type": "boolean"
+        },
+        "digest_cadence": {
+          "enum": [
+            "OFF",
+            "WEEKLY",
+            "MONTHLY",
+            "ON_DEMAND"
+          ]
+        }
+      }
+    }
+  }
+}
