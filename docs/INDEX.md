@@ -22,6 +22,11 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [MACHX × LUMINI LifeOS foundation](MACHX_LUMINI_LIFEOS_FOUNDATION_2026-11-19.md) — versionierte Ziele, Aufgaben, Evidenz, Datenschutz, menschliche Freigabe und Wiederaufnahme-Checkpoints.
 - [MACHX × LUMINI session checkpoint](MACHX_LUMINI_LIFEOS_SESSION_CHECKPOINT_2026-11-19.md) — Branches, offene PRs, Statusgrenzen und nächste Verifikationsschritte.
 
+## Second Earth und Simulation
+
+- [MACHX Second Earth — Quest 001](MACHX_SECOND_EARTH_QUEST_001_2026-11-20.md) — ausführbarer Valley-001-Pilot, reproduzierbare Policy-Vergleiche, Grenzen und nächste 3D-Adapterstufe.
+- [Second Earth Valley 001](../second-earth/README.md) — Python-Referenzsimulation mit synthetischen Annahmen und reproduzierbaren Seeds.
+
 ## Lernen und soziale Gestaltung
 
 - [Learning Quests and Responsible Gamification](LEARNING_QUESTS_AND_GAMIFICATION.md) — Vorschläge für freiwillige Lernmechaniken.
