@@ -17,6 +17,11 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [LUMINI Compiler and Simulation](LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md) — Entwurf für typisierte Modelle und reproduzierbare Simulationen.
 - [Matrixgame Protocol](../matrixgame-protocol/README.md) — lokaler Prototyp, kein öffentlicher Multiplayer-Dienst.
 
+## Persönliche Entwicklung und Kontinuität
+
+- [MACHX × LUMINI LifeOS foundation](MACHX_LUMINI_LIFEOS_FOUNDATION_2026-11-19.md) — versionierte Ziele, Aufgaben, Evidenz, Datenschutz, menschliche Freigabe und Wiederaufnahme-Checkpoints.
+- [MACHX × LUMINI session checkpoint](MACHX_LUMINI_LIFEOS_SESSION_CHECKPOINT_2026-11-19.md) — Branches, offene PRs, Statusgrenzen und nächste Verifikationsschritte.
+
 ## Lernen und soziale Gestaltung
 
 - [Learning Quests and Responsible Gamification](LEARNING_QUESTS_AND_GAMIFICATION.md) — Vorschläge für freiwillige Lernmechaniken.
