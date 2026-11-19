@@ -1,0 +1,14 @@
+{
+  "model_version": "second-earth-toy-0.1.0",
+  "steps": 100,
+  "initial_biomass": 80,
+  "carrying_capacity": 100,
+  "regrowth_rate": 0.08,
+  "initial_food": 12,
+  "population": 10,
+  "food_need_per_person": 0.8,
+  "food_yield_per_biomass": 8,
+  "food_loss_shock_probability": 0.05,
+  "food_loss_shock_fraction": 0.2,
+  "seed": 42
+}
