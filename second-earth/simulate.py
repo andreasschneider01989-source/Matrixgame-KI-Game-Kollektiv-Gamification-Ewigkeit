@@ -23,8 +23,8 @@ class WorldConfig:
     population: int
     food_need_per_person: float
     food_yield_per_biomass: float
-    food_loss_shock_probability: float
-    food_loss_shock_fraction: float
+    disturbance_probability: float
+    disturbance_loss_fraction: float
     seed: int
 
     @classmethod
@@ -41,9 +41,9 @@ class WorldConfig:
             raise ValueError("initial_biomass cannot exceed carrying_capacity")
         if not math.isfinite(config.initial_food) or config.initial_food < 0:
             raise ValueError("initial_food must be finite and non-negative")
-        if not 0 <= config.food_loss_shock_probability <= 1:
+        if not 0 <= config.disturbance_probability <= 1:
             raise ValueError("shock probability must be between 0 and 1")
-        if not 0 <= config.food_loss_shock_fraction <= 1:
+        if not 0 <= config.disturbance_loss_fraction <= 1:
             raise ValueError("shock fraction must be between 0 and 1")
         return config
 
@@ -76,8 +76,8 @@ def simulate(config: WorldConfig, policy: Policy, seed: int) -> dict[str, Any]:
                       (1.0 - biomass / config.carrying_capacity))
         biomass = min(config.carrying_capacity, biomass + regrowth)
 
-        shock = rng.random() < config.food_loss_shock_probability
-        biomass_shock_loss = biomass * config.food_loss_shock_fraction if shock else 0.0
+        shock = rng.random() < config.disturbance_probability
+        biomass_shock_loss = biomass * config.disturbance_loss_fraction if shock else 0.0
         biomass -= biomass_shock_loss
 
         harvest = min(biomass, regrowth * policy.harvest_pressure)
@@ -86,7 +86,7 @@ def simulate(config: WorldConfig, policy: Policy, seed: int) -> dict[str, Any]:
 
         routine_loss = food * policy.routine_food_loss
         food -= routine_loss
-        food_shock_loss = food * config.food_loss_shock_fraction if shock else 0.0
+        food_shock_loss = food * config.disturbance_loss_fraction if shock else 0.0
         food -= food_shock_loss
 
         served = min(food, demand)
