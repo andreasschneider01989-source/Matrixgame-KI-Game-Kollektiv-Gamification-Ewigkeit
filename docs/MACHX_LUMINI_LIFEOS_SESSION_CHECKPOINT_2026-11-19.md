@@ -10,6 +10,13 @@ Create a persistent, evidence-aware, positive-didactic development loop connecti
 - Existing open game PRs: #41 (v0.8.7 resource outposts), #42 (v0.8.8 depot terrain fix), #43 (v0.8.9 depot reliability).
 - Existing architectural/documentation PRs include #36 (master roadmap and human flourishing), #37 (Smart Events), #31 (LUMINI idea pipeline), #23 (LUMINI compiler MVP), #4 (Evolution Forge bridge).
 
+## Second Earth Quest 001 checkpoint
+- Added `second-earth/README.md`, `config/valley-001.json`, `simulate.py`, and `test_simulate.py`.
+- Added `.github/workflows/second-earth-pilot.yml` for isolated Python tests and a 30-seed run.
+- Added `docs/MACHX_SECOND_EARTH_QUEST_001_2026-11-20.md` and indexed it in `docs/INDEX.md`.
+- Added LifeOS architecture cross-reference; no existing Java simulator or stable game source changed.
+- Policies are transparent rules, not LLMs or trained neural networks. Parameters are synthetic; CI remains pending until a visible run result is confirmed.
+
 ## Review checkpoint
 - Draft PR: #44 — https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/pull/44
 - Latest known branch commit at checkpoint update: 6cb90508759c6db720f610120cb88049df50fdf0
