@@ -10,6 +10,9 @@ Entscheidung jeder Evolution-Unit pro Tick.
 
 - **Nahrung zuerst:** Liegt Nahrung direkt neben einer Zelle, wird sie gesammelt.
   Bei niedrigem Energievorrat plant die Zelle einen Weg zur nächsten sichtbaren Nahrung.
+- **Zitadellen-Gründung:** Fehlt eine eigene Zitadelle in der Nähe und besitzt
+  eine Zelle genügend Energie für Baukosten und Sicherheitsreserve, gründet sie
+  gezielt einen Team-Stützpunkt – auch mit Biomasse im Inventar.
 - **Teamlogistik:** Eine ausreichend versorgte Zelle mit Biomasse im Inventar
   bewegt sich zur nächsten sichtbaren, eigenen und nicht vollen Zitadelle.
   Direkt angrenzende Ressourcen werden dort eingelagert.
