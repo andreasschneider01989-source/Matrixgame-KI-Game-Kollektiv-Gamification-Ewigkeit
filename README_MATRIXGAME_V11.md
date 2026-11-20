@@ -93,6 +93,15 @@ grafisches Fenster.
    `src/rhgr/MatrixgameUniversalGridLab_v11_0.java` öffnen.
 5. **Run As → Java Application** auswählen.
 
+## Zusammenarbeit mehrerer KI-Agenten
+
+- `AGENTS.md` enthält die gemeinsamen Regeln für alle Coding-Agenten.
+- `.github/copilot-instructions.md` ergänzt die Hinweise für GitHub Copilot.
+- `docs/AI_COLLABORATION_PROTOCOL.md` beschreibt Aufgabenübergabe, getrennte Branches,
+  unabhängiges Review und nachvollziehbare Testergebnisse.
+- Mistral Vibe, Copilot und weitere Werkzeuge sollen dieselbe Repository-Dokumentation
+  verwenden und Änderungen über eigene Branches und Pull Requests einreichen.
+
 ## Technischer Aufbau
 
 - Paket: `rhgr`
