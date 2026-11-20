@@ -99,6 +99,8 @@ grafisches Fenster.
 - `.github/copilot-instructions.md` ergänzt die Hinweise für GitHub Copilot.
 - `docs/AI_COLLABORATION_PROTOCOL.md` beschreibt Aufgabenübergabe, getrennte Branches,
   unabhängiges Review und nachvollziehbare Testergebnisse.
+- `docs/AI_TOOL_SETUP.md` erklärt die Verbindung von GitHub Actions, Mistral Vibe lokal/Web
+  und GitHub Copilot sowie die Grenzen der jeweiligen Laufzeitumgebung.
 - Mistral Vibe, Copilot und weitere Werkzeuge sollen dieselbe Repository-Dokumentation
   verwenden und Änderungen über eigene Branches und Pull Requests einreichen.
 
