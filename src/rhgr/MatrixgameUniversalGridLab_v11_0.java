@@ -4165,6 +4165,13 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
         // Regression for the exact interactive seed and world dimensions from the failed Tick-306 run.
         world = GameWorld.createEvolutionScenario(SEED, DEFAULT_WORLD_WIDTH, DEFAULT_WORLD_HEIGHT);
         for (int i = 0; i < 306 && !world.gameOver; i++) world.tick();
+        int regressionLevel2 = (int) world.objects.stream()
+                .filter(o -> o.type.equals("CREATURE") && o.value("unitLevel") >= 2.0).count();
+        int regressionBuildings = world.countType("BUILDING");
+        System.out.printf(Locale.ROOT,
+                "REGRESSION 306: tick=%d | %s | population=%d | births=%d | deaths=%d | food=%d | buildings=%d | level2=%d%n",
+                world.tick, world.teamPopulationSummary(), world.creatureCount(), world.births,
+                world.deaths, world.foodCollected, regressionBuildings, regressionLevel2);
         check(world.teamPopulationCount(0) > 0 && world.creatureCount() > 0
                         && world.births > 0 && world.foodCollected > 0,
                 "The default 160x100 seed must retain the blue lineage, collect food and reproduce through Tick 306"); passed++;
