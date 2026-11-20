@@ -17,6 +17,15 @@ Create a persistent, evidence-aware, positive-didactic development loop connecti
 - Added LifeOS architecture cross-reference; no existing Java simulator or stable game source changed.
 - Policies are transparent rules, not LLMs or trained neural networks. Parameters are synthetic; CI remains pending; no workflow run is visible through the current GitHub run lookup.
 
+
+## Second Earth Quest 002 checkpoint
+- Added a standalone astronomy submodule at `second-earth/astronomy/`.
+- Implemented approximate solar declination, equation of time, apparent solar time conversion, solar elevation/azimuth, and vertical-gnomon shadow geometry.
+- Added seven astronomy regression tests and a generic example observation record (explicitly not a real measurement and not a user location).
+- Added Quest 002 research notes covering image/video-to-3D reconstruction, persistent world state, video-vs-simulation distinctions, AI roles, water-clock caveats, and source/license boundaries.
+- Updated the documentation index. Existing Gaia Earth Lab hydrology and Java game code remain unchanged.
+- Test status: NOT_RUN in this chat; GitHub Actions result must be checked before claiming success.
+
 ## Review checkpoint
 - PR #44 title: `[Draft] Add LifeOS foundation and Second Earth simulation pilot`.
 - PR #44 remains open, draft, and unmerged.
