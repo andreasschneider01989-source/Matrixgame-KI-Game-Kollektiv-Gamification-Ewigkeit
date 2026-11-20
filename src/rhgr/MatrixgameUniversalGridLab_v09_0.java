@@ -3178,7 +3178,7 @@ public final class MatrixgameUniversalGridLab_v09_0 extends JFrame {
         // Evolution cells build with energy in all four cardinal directions.
         world = emptyWorld(15, 13);
         GameObject cellBuilder = world.object("cell-builder", "CREATURE", "Baumeister-Zelle",
-                "●", Color.BLUE, 7, 6, true, 40, new IdleController());
+                "●", Color.BLUE, 5, 5, true, 40, new IdleController());
         cellBuilder.set("energy", 24.0);
         cellBuilder.set("reproductionThreshold", 12.0);
         cellBuilder.set("team", 0.0);
