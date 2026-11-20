@@ -38,6 +38,12 @@ class PersistentWorldTests(unittest.TestCase):
         self.assertEqual(result["rejected_observation_ids"], ["obs-1"])
         self.assertFalse(world.objects)
 
+    def test_zero_confidence_proposal_is_rejected_even_with_zero_threshold(self):
+        world = WorldState("second-earth-001")
+        result = collective_update(world, [obs(confidence=0.0)], min_confidence=0.0)
+        self.assertEqual(result["rejected_observation_ids"], ["obs-1"])
+        self.assertFalse(world.objects)
+
     def test_inconsistent_agent_proposals_are_not_averaged(self):
         world = WorldState("second-earth-001")
         result = collective_update(world, [
