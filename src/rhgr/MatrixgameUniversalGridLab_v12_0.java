@@ -644,6 +644,8 @@ public final class MatrixgameUniversalGridLab_v12_0 extends JFrame {
                     world.deaths, world.foodCollected, world.countType("BUILDING"), teamsWithCitadel,
                     level2, world.level2UnitsProduced);
             System.out.println("TEAM_POPULATION " + world.teamPopulationSummary());
+            System.out.println(world.ecologyRoleSummary());
+            System.out.println("TEAM_DIPLOMACY " + world.teamDiplomacySummary());
             System.out.println("REPORT_HTML " + output.toAbsolutePath());
         } catch (Exception exception) {
             System.err.println("MATRIXGAME_SIMULATION_ERROR: " + exception.getMessage());
@@ -2942,7 +2944,8 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
                     .min(Comparator.comparingInt(o -> manhattan(self.x(), self.y(), o.x(), o.y())))
                     .orElse(null);
             this.nearestEnemy = context.perception().visibleObjects().stream()
-                    .filter(o -> o.type().equals("CREATURE") && o.value("team") != self.value("team"))
+                    .filter(o -> o.type().equals("CREATURE") && o.value("team") != self.value("team")
+                            && o.value("relationToObserver") < 0.45)
                     .min(Comparator.comparingInt(o -> manhattan(self.x(), self.y(), o.x(), o.y())))
                     .orElse(null);
             this.nearestBuilding = context.perception().visibleObjects().stream()
@@ -2956,6 +2959,11 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
             double threshold = Math.max(1.0, self.value("reproductionThreshold"));
             double hunger = 1.0 - Math.min(1.0, energy / threshold);
             double selfPower = self.hp() + self.value("attackDamage") * 1.5 + energy * 0.03;
+            int role = Math.max(0, Math.min(4, (int) Math.round(self.value("ecologyRole"))));
+            double foodRoleMultiplier = role == 0 || role == 1 ? 1.20
+                    : role == 3 ? 0.78 : role == 4 ? 0.92 : 1.0;
+            double preyRoleMultiplier = role == 3 ? 1.45
+                    : role == 1 ? 0.48 : role == 4 ? 0.82 : 1.0;
             double score = 0.0;
 
             if (action.kind() == ActionKind.WAIT) {
@@ -2970,7 +2978,8 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
                 if (nearestFood != null) {
                     int before = manhattan(self.x(), self.y(), nearestFood.x(), nearestFood.y());
                     int after = manhattan(nx, ny, nearestFood.x(), nearestFood.y());
-                    score += (before - after) * genes.foodSeek() * (0.22 + 0.72 * hunger);
+                    score += (before - after) * genes.foodSeek() * (0.22 + 0.72 * hunger)
+                            * foodRoleMultiplier;
                 }
                 if (self.value("inventoryResources") > 0.0 && nearestBuilding != null) {
                     int before = manhattan(self.x(), self.y(), nearestBuilding.x(), nearestBuilding.y());
@@ -2985,7 +2994,9 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
                     double enemyPower = nearestEnemy.hp() + nearestEnemy.value("attackDamage") * 1.5
                             + nearestEnemy.value("energy") * 0.03;
                     if (selfPower >= enemyPower * 1.08) {
-                        score += (before - after) * genes.preySeek() * 0.16;
+                        double hostility = Math.max(0.0, -nearestEnemy.value("relationToObserver"));
+                        score += (before - after) * genes.preySeek() * 0.16
+                                * preyRoleMultiplier * (1.0 + hostility);
                     } else {
                         score += (after - before) * genes.threatAvoid() * 0.20;
                     }
@@ -2999,7 +3010,8 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
             switch (action.interactionType()) {
                 case COLLECT -> {
                     if (target != null && target.type().equals("FOOD"))
-                        score = 1.15 + genes.foodSeek() * self.value("foodEfficiency") * (0.65 + 1.05 * hunger);
+                        score = 1.15 + genes.foodSeek() * self.value("foodEfficiency")
+                                * (0.65 + 1.05 * hunger) * foodRoleMultiplier;
                 }
                 case DEPOSIT -> {
                     if (target != null && target.type().equals("BUILDING")
@@ -3010,11 +3022,14 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
                 }
                 case ATTACK -> {
                     if (target != null && target.type().equals("CREATURE")
-                            && target.value("team") != self.value("team")) {
+                            && target.value("team") != self.value("team")
+                            && target.value("relationToObserver") < 0.45) {
                         double targetPower = target.hp() + target.value("attackDamage") * 1.5
                                 + target.value("energy") * 0.03;
                         double relative = selfPower - targetPower;
-                        score = genes.preySeek() * (0.35 + self.value("aggression") * 0.55);
+                        double hostility = Math.max(0.0, -target.value("relationToObserver"));
+                        score = genes.preySeek() * (0.35 + self.value("aggression") * 0.55)
+                                * preyRoleMultiplier * (1.0 + hostility);
                         if (relative >= 0.0) score += 0.55 + Math.min(0.8, relative * 0.08);
                         else score -= genes.threatAvoid() * Math.min(1.0, Math.abs(relative) * 0.08);
                         if (target.hp() <= self.value("attackDamage")) score += 0.75;
@@ -3487,11 +3502,61 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            drawInfiniteFrontier(g2);
             drawGrid(g2);
             drawWorldObjects(g2);
             drawOverlay(g2);
             if (world.evolutionMode) drawEvolutionChart(g2);
             g2.dispose();
+        }
+
+        static int frontierBiomeIndex(long seed, int chunkX, int chunkY) {
+            long z = seed ^ ((long) chunkX * 0x9E3779B97F4A7C15L)
+                    ^ ((long) chunkY * 0xC2B2AE3D27D4EB4FL);
+            z ^= z >>> 30; z *= 0xBF58476D1CE4E5B9L; z ^= z >>> 27;
+            z *= 0x94D049BB133111EBL; z ^= z >>> 31;
+            return (int) Math.floorMod(z, 5L);
+        }
+
+        private void fillFrontierRect(Graphics2D g2, int left, int top, int right, int bottom, Color color) {
+            if (right <= left || bottom <= top) return;
+            int sx = worldToScreenX(left), sy = worldToScreenY(top);
+            int ex = worldToScreenX(right), ey = worldToScreenY(bottom);
+            g2.setColor(color);
+            g2.fillRect(Math.min(sx, ex), Math.min(sy, ey),
+                    Math.max(1, Math.abs(ex - sx)), Math.max(1, Math.abs(ey - sy)));
+        }
+
+        /** Infinite visual frontier: chunks are generated on demand; entity simulation remains bounded. */
+        private void drawInfiniteFrontier(Graphics2D g2) {
+            int left = (int) Math.floor(screenToWorldX(0));
+            int right = (int) Math.ceil(screenToWorldX(getWidth()));
+            int top = (int) Math.floor(screenToWorldY(0));
+            int bottom = (int) Math.ceil(screenToWorldY(getHeight()));
+            int firstX = Math.floorDiv(left, INFINITY_CHUNK_SIZE), lastX = Math.floorDiv(right, INFINITY_CHUNK_SIZE);
+            int firstY = Math.floorDiv(top, INFINITY_CHUNK_SIZE), lastY = Math.floorDiv(bottom, INFINITY_CHUNK_SIZE);
+            Color[] biomes = {new Color(9,25,34), new Color(13,30,27), new Color(34,27,20),
+                    new Color(24,26,39), new Color(17,27,42)};
+            for (int cy = firstY; cy <= lastY; cy++) for (int cx = firstX; cx <= lastX; cx++) {
+                int x0 = cx * INFINITY_CHUNK_SIZE, y0 = cy * INFINITY_CHUNK_SIZE;
+                int x1 = x0 + INFINITY_CHUNK_SIZE, y1 = y0 + INFINITY_CHUNK_SIZE;
+                Color biome = biomes[frontierBiomeIndex(world.seed, cx, cy)];
+                int ix0 = Math.max(x0, 0), ix1 = Math.min(x1, world.width);
+                int iy0 = Math.max(y0, 0), iy1 = Math.min(y1, world.height);
+                if (ix0 >= ix1 || iy0 >= iy1) fillFrontierRect(g2, x0, y0, x1, y1, biome);
+                else {
+                    fillFrontierRect(g2, x0, y0, x1, iy0, biome);
+                    fillFrontierRect(g2, x0, iy1, x1, y1, biome);
+                    fillFrontierRect(g2, x0, iy0, ix0, iy1, biome);
+                    fillFrontierRect(g2, ix1, iy0, x1, iy1, biome);
+                }
+                if (zoom >= 2.0) {
+                    g2.setColor(new Color(120,160,185,45));
+                    g2.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 9));
+                    g2.drawString("CHUNK " + cx + ":" + cy,
+                            worldToScreenX(x0) + 4, worldToScreenY(y0) + 12);
+                }
+            }
         }
 
         private void drawGrid(Graphics2D g2) {
@@ -3511,9 +3576,11 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
                 g2.drawLine(0, sy, getWidth(), sy);
             }
             g2.setColor(new Color(68, 95, 118));
-            g2.setStroke(new BasicStroke(1.5f));
-            g2.drawLine(worldToScreenX(0), 0, worldToScreenX(0), getHeight());
-            g2.drawLine(0, worldToScreenY(0), getWidth(), worldToScreenY(0));
+            g2.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
+                    10.0f, new float[]{8.0f, 5.0f}, 0.0f));
+            int ax = worldToScreenX(0), ay = worldToScreenY(0);
+            int ar = worldToScreenX(world.width), ab = worldToScreenY(world.height);
+            g2.drawRect(Math.min(ax, ar), Math.min(ay, ab), Math.abs(ar - ax), Math.abs(ab - ay));
         }
 
         private void drawWorldObjects(Graphics2D g2) {
@@ -3658,8 +3725,18 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
                 g2.setColor(Color.BLACK);
                 if (iw > 10) g2.drawOval(ix + iw / 4, iy + ih / 4, iw / 2, ih / 2);
             } else if (object.type.equals("CREATURE")) {
+                int role = Math.max(0, Math.min(4, (int) Math.round(object.value("ecologyRole"))));
                 g2.setColor(object.color);
-                g2.fillOval(ix + 1, iy + 1, Math.max(1, iw - 2), Math.max(1, ih - 2));
+                if (role == 1) g2.fillRect(ix + 2, iy + 2, Math.max(1, iw - 4), Math.max(1, ih - 4));
+                else if (role == 3) {
+                    int cx = ix + iw / 2, cy = iy + ih / 2, radius = Math.max(2, Math.min(iw, ih) / 2 - 2);
+                    g2.fillPolygon(new int[]{cx, cx + radius, cx, cx - radius},
+                            new int[]{cy - radius, cy, cy + radius, cy}, 4);
+                } else if (role == 4) {
+                    int cx = ix + iw / 2;
+                    g2.fillPolygon(new int[]{cx, ix + iw - 2, ix + 2},
+                            new int[]{iy + 2, iy + ih - 2, iy + ih - 2}, 3);
+                } else g2.fillOval(ix + 1, iy + 1, Math.max(1, iw - 2), Math.max(1, ih - 2));
                 if (object.value("unitLevel") >= 2.0) {
                     g2.setColor(new Color(255, 238, 150));
                     g2.setStroke(new BasicStroke(Math.max(1.2f, (float) (zoom * 0.09))));
@@ -3675,6 +3752,11 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
                     g2.setFont(new Font(Font.MONOSPACED, Font.BOLD, 9));
                     String label = object.value("unitLevel") >= 2.0 ? "L2" : "G" + (int) object.value("generation");
                     g2.drawString(label, ix + 2, iy + ih - 3);
+                } else if (iw > 12 && ih > 12) {
+                    g2.setColor(new Color(8, 15, 22));
+                    g2.setFont(new Font(Font.MONOSPACED, Font.BOLD, Math.max(8, Math.min(11, iw / 2))));
+                    g2.drawString(new String[]{"G", "H", "O", "C", "S"}[role],
+                            ix + Math.max(1, iw / 3), iy + ih - Math.max(2, ih / 5));
                 }
             } else if (object.type.equals("HUNTER")) {
                 g2.setColor(object.color);
@@ -3699,10 +3781,10 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
         private void drawOverlay(Graphics2D g2) {
             // Keep the canvas HUD above the playfield so that it never hides GameObjects.
             g2.setColor(new Color(3, 8, 13, 225));
-            g2.fillRoundRect(10, 5, Math.min(getWidth() - 20, 1050), 58, 9, 9);
+            g2.fillRoundRect(10, 5, Math.min(getWidth() - 20, 1100), 76, 9, 9);
             g2.setColor(new Color(100, 235, 190));
             g2.setFont(new Font(Font.MONOSPACED, Font.BOLD, 11));
-            g2.drawString("MATRIXGAME UNIVERSAL GRID LAB v0.12.0", 20, 21);
+            g2.drawString("MATRIXGAME UNIVERSAL GRID LAB v0.12.0 | INFINITY FRONTIER", 20, 21);
             g2.setColor(Color.WHITE);
             g2.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));
             String modeStats = world.evolutionMode
@@ -3714,8 +3796,11 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
                     actionMode.label, world.tick, modeStats, world.width, world.height, zoom, cameraX, cameraY,
                     paused ? " | PAUSE" : ""), 20, 38);
             g2.setColor(new Color(190, 205, 218));
-            g2.drawString("Y BUILD | C BUILD_DEPOT | X DEPOSIT | Z PRODUCE | Gebäude sind unbeweglich",
-                    20, 53);
+            g2.drawString("Y BUILD | C BUILD_DEPOT | X DEPOSIT | Z PRODUCE | Chunk " + INFINITY_CHUNK_SIZE
+                    + " | gestrichelt = aktive Simulation", 20, 53);
+            g2.setColor(new Color(155, 195, 220));
+            g2.drawString("TEAMS: 1 AZUR  2 KORALLE  3 JADE  4 VIOLETT  5 AMBER  6 CYAN"
+                    + " | Rollen: G Gatherer H Herbivore O Omnivore C Carnivore S Scout", 20, 68);
         }
     }
 
