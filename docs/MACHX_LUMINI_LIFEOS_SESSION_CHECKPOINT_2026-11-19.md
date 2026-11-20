@@ -82,6 +82,14 @@ Create a persistent, evidence-aware, positive-didactic development loop connecti
 - The Python application workflow has a separate legacy checkout failure; this does not affect the isolated Second Earth pilot workflow.
 - House benchmark remains synthetic: no real photo ingestion, learned vision, game adapter or structural-safety validation yet.
 
+
+## Second Earth Quest 006 checkpoint
+- Dedicated branch: feature/machx-second-earth-quest-006-persistent-world.
+- Added persistent hybrid world state: stable object IDs, metric transforms, material ID, voxel cells, external mesh asset reference, confidence, provenance, observation history and deterministic JSON serialization.
+- Added proposer/critic/integrator protocol with confidence gating, spatial conflict rejection, stale-observation rejection and idempotent observation IDs.
+- Added 13 dependency-free tests; GitHub Actions verification is pending.
+- Scientific boundary: deterministic synthetic fusion rule, not calibrated Bayesian inference; no image reconstruction, mesh rendering, physics engine or Minecraft/Luanti adapter yet.
+
 ## Review checkpoint
 - PR #44 title: `[Draft] Add LifeOS foundation and Second Earth simulation pilot`.
 - PR #44 remains open, draft, and unmerged.
