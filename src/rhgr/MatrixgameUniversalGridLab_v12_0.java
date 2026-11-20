@@ -1592,7 +1592,7 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
             cell.set("team", team);
             cell.set("teamColorR", color.getRed()); cell.set("teamColorG", color.getGreen());
             cell.set("teamColorB", color.getBlue()); cell.set("teamNameCode", team);
-            cell.set("dietPreference", between(random, -0.72, 0.72));
+            cell.set("dietPreference", random.nextDouble() * 1.44 - 0.72);
             cell.set("plantIntake", 0.05); cell.set("preyIntake", 0.05);
             cell.set("generation", generation);
             cell.set("energy", energy);
@@ -1729,6 +1729,7 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
             parent.set("energy", parent.value("energy") - transfer);
             parent.set("food", parent.value("energy"));
             Random mutationRandom = environmentRandom;
+            double mutationRate = clamp(parent.value("mutationRate"), 0.0, 1.0);
             GameObject child = object("cell", "CREATURE", parent.name + " – Nachkomme", "●", parent.color,
                     x, y, true, 40, new EvolutionController());
             child.parentId = parent.id;
@@ -1751,7 +1752,6 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
             child.set("age", 0.0);
             child.set("kills", 0.0);
             child.set("mutationRate", parent.value("mutationRate"));
-            double mutationRate = clamp(parent.value("mutationRate"), 0.0, 1.0);
             Genome parentGenome = parent.genome == null ? Genome.defaults() : parent.genome;
             GenomeMutation genomeMutation = parentGenome.mutate(mutationRandom, mutationPressure);
             child.genome = genomeMutation.genome();
