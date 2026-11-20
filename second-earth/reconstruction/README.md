@@ -31,6 +31,9 @@ From repository root:
 python -m unittest discover -s second-earth -p "test_*.py" -v
 ```
 
+## Quest 005 — House benchmark
+See [QUEST_005_AGENTS.md](QUEST_005_AGENTS.md), [house-001-reference.json](house-001-reference.json), and the executable fixture in house.py. The deterministic reference is a 6 × 7 × 5 voxel house with stone foundation, wood perimeter walls/openings, and a brick gable roof. Two evidence conditions are defined: front-only and five orthographic projections (front/rear/left/right/top). The evaluator keeps ground truth separate from the evidence supplied to a reconstruction agent. The current projections are mathematical occupancy projections, not rendered photos. The build planner reports per-material inventory and three construction stages using a declared blocks/minute rate; this is a transparent baseline estimate, not measured construction time.
+
 ## Planned pipeline (not yet implemented)
 1. Photo(s) + camera/view metadata.
 2. Vision model: segmentation, edges, object labels and confidence.
