@@ -4023,13 +4023,13 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
         // Unfunded creatures cannot spend their survival reserve on random construction.
         world = emptyWorld(16, 12);
         world.evolutionMode = true;
-        GameObject reserveTestUnit = world.object("poor-builder", "CREATURE", "Hungrige Zelle",
+        GameObject hungryReserveFixture = world.object("poor-builder", "CREATURE", "Hungrige Zelle",
                 "●", Color.CYAN, 5, 5, true, 40, new EvolutionController());
-        reserveTestUnit.set("team", 0.0);
-        reserveTestUnit.set("energy", 8.0);
-        reserveTestUnit.set("reproductionThreshold", 12.0);
-        world.addObject(reserveTestUnit);
-        DecisionContext poorBuildContext = world.decisionContext(reserveTestUnit, world.snapshot());
+        hungryReserveFixture.set("team", 0.0);
+        hungryReserveFixture.set("energy", 8.0);
+        hungryReserveFixture.set("reproductionThreshold", 12.0);
+        world.addObject(hungryReserveFixture);
+        DecisionContext poorBuildContext = world.decisionContext(hungryReserveFixture, world.snapshot());
         check(!poorBuildContext.legalOptions().contains(
                         GameAction.interact(Direction.RIGHT, InteractionType.BUILD)),
                 "A hungry cell cannot legally build before preserving its safety reserve"); passed++;
@@ -4038,8 +4038,8 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
         GameAction divideAction = GameAction.interact(Direction.RIGHT, InteractionType.REPRODUCE);
         check(!poorBuildContext.legalOptions().contains(divideAction),
                 "A cell at its basic reproduction threshold cannot divide yet"); passed++;
-        reserveTestUnit.set("energy", 20.0);
-        DecisionContext fundedContext = world.decisionContext(reserveTestUnit, world.snapshot());
+        hungryReserveFixture.set("energy", 20.0);
+        DecisionContext fundedContext = world.decisionContext(hungryReserveFixture, world.snapshot());
         check(fundedContext.legalOptions().contains(divideAction),
                 "A cell with 1.6x threshold energy may divide when a free neighbour exists"); passed++;
 
