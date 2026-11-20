@@ -74,6 +74,14 @@ Create a persistent, evidence-aware, positive-didactic development loop connecti
 - Explicit boundary: projections are geometry proxies, not photographs; no learned photo perception, real house dataset, Minecraft/Luanti builder or structural safety model is implemented.
 - Dedicated Second Earth workflow must complete before Quest 005 is marked verified.
 
+
+## Quest 005 verification update
+- Second Earth pilot workflow run 44695625694: SUCCESS.
+- All 41 tests passed: 7 astronomy, 10 materials, 18 reconstruction (7 Quest 004 + 11 Quest 005), and 6 Valley 001.
+- Reproducible 30-seed Valley 001 experiment completed in the same workflow.
+- The Python application workflow has a separate legacy checkout failure; this does not affect the isolated Second Earth pilot workflow.
+- House benchmark remains synthetic: no real photo ingestion, learned vision, game adapter or structural-safety validation yet.
+
 ## Review checkpoint
 - PR #44 title: `[Draft] Add LifeOS foundation and Second Earth simulation pilot`.
 - PR #44 remains open, draft, and unmerged.
