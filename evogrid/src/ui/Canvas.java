@@ -14,9 +14,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
 /**
- * Zeichnet die Welt auf ein JPanel - Viewer + Maus-Editor auf denselben Daten.
- * Links=Futter, Rechts=loeschen, Shift+Links=Wand, Strg+Links=Erde,
- * Mitte=Unit spawnen, Rad=Zoom.
+ * Zeichnet die Welt auf ein JPanel - reiner Viewer + Maus-Editor auf denselben Daten.
+ *
+ * Maus:
+ *   Linke Taste / ziehen        -> Futter setzen
+ *   Rechte Taste / ziehen       -> Zelle leeren (loeschen)
+ *   Umschalt + Linke Taste      -> Wand setzen
+ *   Strg + Linke Taste          -> Erde/Dirt setzen (grabbbar, Boulder-Dash)
+ *   Mittelklick                 -> Unit mit zufaelligem Gehirn spawen
+ *   Mausrad                     -> Zoom (6..60)
  */
 public final class Canvas extends JPanel {
     private final World world;
@@ -40,7 +46,7 @@ public final class Canvas extends JPanel {
             }
 
             @Override public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON2) {
+                if (e.getButton() == MouseEvent.BUTTON2) {           // Mittelklick: neue Unit
                     int x = cellX(e), y = cellY(e);
                     if (world.inBounds(x, y) && world.get(x, y) == Tile.EMPTY && world.unitAt(x, y) == null) {
                         world.units.add(new sim.Unit(x, y, 0, sim.World.teamColor(0),
@@ -59,11 +65,11 @@ public final class Canvas extends JPanel {
     private void paintAt(MouseEvent e) {
         int x = cellX(e), y = cellY(e);
         if (!world.inBounds(x, y)) return;
+        if (e.isShiftDown()) world.set(x, y, Tile.WALL);            // Wand
+        else if (e.isControlDown()) world.set(x, y, Tile.DIRT);     // Erde
         boolean left  = (e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) != 0;
         boolean right = (e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) != 0;
-        if (e.isShiftDown()) world.set(x, y, Tile.WALL);
-        else if (e.isControlDown()) world.set(x, y, Tile.DIRT);
-        else if (left) {
+        if (left && !e.isShiftDown() && !e.isControlDown()) {
             if (world.get(x, y) == Tile.EMPTY) world.set(x, y, Tile.FOOD);
         } else if (right) {
             world.set(x, y, Tile.EMPTY);
@@ -92,6 +98,12 @@ public final class Canvas extends JPanel {
                 }
             }
         for (Unit u : world.units) {
+            // Pheromon-Schleier hinter der Unit zeichnen (Kommunikation sichtbar)
+            double sc = world.scent[u.y * world.cfg.width + u.x];
+            if (sc > 0.05) {
+                g2.setColor(new Color(0, 1f, 1f, Math.min(0.35f, (float) (sc / 3.0))));
+                g2.fillRect(u.x * z, u.y * z, z, z);
+            }
             g2.setColor(new Color(u.displayColor()));
             int pad = Math.max(1, z / 6);
             g2.fillOval(u.x * z + pad, u.y * z + pad, z - 2 * pad, z - 2 * pad);

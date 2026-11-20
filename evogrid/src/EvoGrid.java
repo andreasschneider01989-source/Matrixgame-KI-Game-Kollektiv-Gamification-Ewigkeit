@@ -1,4 +1,5 @@
 import editor.Config;
+import sim.Brain;
 import sim.Rng;
 import sim.Tile;
 import sim.Unit;
@@ -15,8 +16,12 @@ import java.io.File;
 
 /**
  * EvoGrid - Einstiegspunkt.
+ *
  *   GUI:      java -cp out EvoGrid
  *   Headless: java -cp out EvoGrid --headless --ticks 5000 --snapshots 50 --out snapshots
+ *
+ * Headless laeuft ohne Fenster: fuer Auswertung, Batch-Evolution und
+ * Ansteuerung durch andere Programme/Agenten (Input -> Simulation -> Output).
  */
 public final class EvoGrid {
     public static void main(String[] args) throws Exception {
@@ -28,6 +33,7 @@ public final class EvoGrid {
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
                 case "--headless" -> headless = true;
+                case "--experiment" -> { runExperiment(ticks); return; }
                 case "--ticks" -> ticks = Integer.parseInt(args[++i]);
                 case "--snapshots" -> snapshots = Integer.parseInt(args[++i]);
                 case "--out" -> outDir = args[++i];
@@ -51,6 +57,39 @@ public final class EvoGrid {
         timer.start();
     }
 
+    /**
+     * Automatisches Experiment (Auto-Improve): mehrere Mutation-Raten unter
+     * identischen Bedingungen (gleicher Seed), Bewertung nach maxGen*avgFitness,
+     * Ausgabe der Bestwahl. Energieerhaltung-drift wird mitgeprueft.
+     */
+    private static void runExperiment(int ticksPerRun) {
+        double[] rates = {0.02, 0.05, 0.10, 0.20};
+        double[] wilds = {0.0, 0.5};
+        System.out.println("=== EXPERIMENT: " + ticksPerRun + " Ticks pro Lauf, seed=7 ===");
+        double bestScore = -1; String best = "?";
+        for (double wild : wilds)
+            for (double rate : rates) {
+                Config cfg = new Config();
+                cfg.seed = 7;
+                cfg.mutationRate = rate;
+                cfg.wildness = wild;
+                cfg.autoBalance = true;
+                World w = new World(cfg);
+                w.build();
+                long maxGen;
+                for (int t = 0; t < ticksPerRun; t++) w.tick();
+                maxGen = 0;
+                for (Unit u : w.units) maxGen = Math.max(maxGen, u.generation);
+                double score = maxGen * (w.units.isEmpty() ? 0 : w.totalEnergy());
+                for (Unit u : w.units) if (u.generation == maxGen) { score = maxGen * u.fitness(); break; }
+                System.out.printf("mutation=%.2f wild=%.1f -> %s  energyTotal=%s%n",
+                        rate, wild, w.stats(), String.format("%.1f", w.totalEnergy()));
+                if (score > bestScore) { bestScore = score; best = "mutation=" + rate + " wild=" + wild; }
+            }
+        System.out.println("BESTE WAHL: " + best);
+    }
+
+    // --------- Headless: beweist, dass die Simulation ohne GUI lebt & lernt ---------
     private static void runHeadless(Config cfg, World world, int ticks, int snapshots, String outDir) throws Exception {
         new File(outDir).mkdirs();
         long start = System.currentTimeMillis();
@@ -65,8 +104,7 @@ public final class EvoGrid {
             if (t % 250 == 0) System.out.println(world.stats());
         }
         Unit best = world.bestAlive();
-        System.out.println("");
-        System.out.println("=== ERGEBNIS ===");
+        System.out.println("\n=== ERGEBNIS nach " + ticks + " Ticks ===");
         System.out.println(world.stats());
         if (best != null)
             System.out.printf("Beste Unit: gen=%d fitness=%.1f food=%d kills=%d kids=%d age=%d%n",

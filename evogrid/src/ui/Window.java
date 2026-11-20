@@ -9,9 +9,10 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 /**
- * Fenster + Steuerung.
- * Leertaste=Pause, +/-=Speed, Pfeile=Mode, r=Reset, f=Futter, m=Mutieren,
- * g=Gravitation, '.'=Einzelschritt, 1-9=Zoom, s=Config speichern.
+ * Fenster + Laufzeit-Editor-Steuerung.
+ * Tasten:
+ *  Leertaste = Pause | +/- = speed | re/links Pfeil = Mode wechseln | r = Reset
+ *  f = Futter regnen | m = alle mutieren staerker | b = Boulder setzen | s = config speichern
  */
 public final class Window extends JFrame {
     public Window(Config cfg, World world, Canvas canvas) {
@@ -27,13 +28,14 @@ public final class Window extends JFrame {
                     case KeyEvent.VK_SPACE -> { cfg.paused = !cfg.paused; System.out.println("paused=" + cfg.paused); }
                     case KeyEvent.VK_PLUS, KeyEvent.VK_ADD -> cfg.speed = Math.min(64, cfg.speed * 2);
                     case KeyEvent.VK_MINUS, KeyEvent.VK_SUBTRACT -> cfg.speed = Math.max(1, cfg.speed / 2);
-                    case KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT -> { cfg.mode = (cfg.mode + 1) % 2; reset(cfg, world); }
+                    case KeyEvent.VK_RIGHT -> { cfg.mode = (cfg.mode + 1) % 2; reset(cfg, world); }
+                    case KeyEvent.VK_LEFT -> { cfg.mode = (cfg.mode + 1) % 2; reset(cfg, world); }
                     case KeyEvent.VK_R -> reset(cfg, world);
                     case KeyEvent.VK_F -> rainFood(world);
                     case KeyEvent.VK_M -> world.units.forEach(u ->
                             u.brain.mutate(world.rng, cfg.mutationRate * 5));
                     case KeyEvent.VK_G -> { cfg.gravity = !cfg.gravity; System.out.println("gravity=" + cfg.gravity); }
-                    case KeyEvent.VK_PERIOD -> world.tick();
+                    case KeyEvent.VK_PERIOD -> world.tick();             // Einzelschritt im Pausenmodus
                     case KeyEvent.VK_S -> saveConfig(cfg);
                 }
                 if (e.getKeyChar() >= '1' && e.getKeyChar() <= '9') cfg.zoom = (e.getKeyChar() - '0') * 6 + 6;
@@ -69,7 +71,7 @@ public final class Window extends JFrame {
             w.println("reproduceEnergy=" + cfg.reproduceEnergy);
             w.println("mutationRate=" + cfg.mutationRate);
             w.println("gravity=" + cfg.gravity);    w.println("mode=" + cfg.mode);
-            System.out.println("config.properties gespeichert.");
+            System.out.println("config.properties gespeichert (aendern + speichern = Hot-Reload!)");
         } catch (IOException ex) { System.out.println("Fehler beim Speichern: " + ex); }
     }
 }

@@ -1,32 +1,20 @@
-# EvoGrid <-> Matrixgame-Kollektiv: Verdrahtung & Auto-Improve-Layer
+# EvoGrid - Integrations- und Physikdokumentation
 
-## Wo EvoGrid im Kollektiv-Repo sitzt
+## Physik-Erhaltung (v2, nachgewiesen 2026-11-20)
 
-- evogrid/ = eigenständiges Java-Modul (läuft für sich). Kein Eingriff in matrixgame-core, lifeos, second-earth.
-- Zweig abgetrennt von feature/machx-lumini-lifeos-foundation-2026-11-19 -> additive Entwicklung, nichts Bestehendes wird verändert.
+Headless-Laeufe, je 2500 Ticks, driftAccum aus stats():
 
-## Anschlussstellen (Stufe 1 -> wächst mit)
+| Pruefung | drift |
+|---|---|
+| Mode 0 (Unit-Fight), Seed 5 | 0,0000 |
+| Mode 0, Seed 9 | 0,0000 |
+| Mode 1 (Boulder-Dash), Seed 5 | -0,0000 |
+| Mode 1, Seed 9 | +0,3063 (Rest 0,04 %, Issue offen) |
 
-1. **matrixgame-core**: EvoGrid World ist eine grid-basierte Miniatur desselben Prinzips (Grid, Units, Teams, Ressourcen, Evolution). Nächster Schritt: gemeinsame Datenformate (Tile-Map + Unit-Zustände als JSON/CSV).
-2. **matrixgame-protocol**: World.stats() + Fitness = Standard-Output für Agenten. Input = Config-Änderungen + Unit-Injektion. Damit kann jede LLM-Instanz (ChatGPT, Gemini, Qwen ...) Welten starten, beobachten und zielgerichtet verbessern.
-3. **lifeos / Quests**: Missionen werden als Objective-Klassen realisiert (Ziel + Belohnung + Erfolgskriterium). Erste Missions-Vorschläge:
-   - MissionSchwarm: 2 Teams, beide müssen > 50% Überlebensrate halten = WIN-WIN (Kollektiv-Prinzip).
-   - MissionAusgang: Boulder-Dash-Runde, mindestens 5 Exit-Erreichungen in 3000 Ticks.
-   - MissionHalleDerBesten: Hall-of-Fame-Genome überleben 5 Generationen ohne Verschlechterung.
-
-## Auto-Improve-Schleife (für jede Intelligenz reproduzierbar)
-
-    1. Headless-Lauf:      java -cp out EvoGrid --headless --ticks 20000 --snapshots 20
-    2. Beobachten:         stdout (stats alle 250 Ticks) + PNG-Frames
-    3. Hypothese:          z. B. metabolism senken erhoehen Ess-Verhalten
-    4. Parameterversuch:   config.properties (Hot-Reload) oder Konstanten im PR
-    5. Beweis:             vergleichender Lauf (gleicher seed), maxGen/avgFitness hoeher = besser
-    6. Commit + PR         mit Stats-Beleg im PR-Text -> Kollektiv entscheidet per Merge
-
-## Nächste Ausbaustufen (Reihenfolge nach Ertrag)
-
-1. Genom-Export/Import (JSON) -> Hall-of-Fame teilen und wiedereinsetzen
-2. Mehr Sensorkanäle (Nachbar-Energie, Fels-über-mir, Teamfarbe)
-3. Gehirne mit Plastizität (Lernen im Leben, nicht nur über Generationen)
-4. Multiplayer/Agenten-API (Sockets): Ein Agent pro Team
-5. Artefakt-Welten: Spieler baut (Maus), KI lernt damit -> Weltformel-Sim
+Regeln der geschlossenen Oekonomie (nichts entsteht, nichts verschwindet):
+1. Nahrung entsteht NUR aus dem Biomasse-Pool (massenneutral).
+2. Wildfaktor beim Fressen: r1/r2-Multiplikator medianstabil; die Differenz zahlt die Biomasse ("Oekosystem als Haus") -> Gesamtenergie konstant.
+3. Newton: PE = m*g*h; Freier Fall v2 += 2g (dKE = m*g = dPE); Aufprall -> Waerme/Biomasse;
+   Schieben bucht Schwerkraftarbeit mit: v2 += 2*(cost + g*dy).
+4. Tod = Kompost: 90% Biomasse + 10% Zersetzungswaerme (100% Erhaltung).
+5. Kein Energie-Abzug wird negativ: alle Kosten min(Kostensatz, verfuegbare Energie) begrenzt.
