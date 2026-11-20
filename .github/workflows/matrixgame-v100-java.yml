@@ -1,3 +1,4 @@
+# Re-run validation when either the candidate Java source or this workflow changes.
 name: Matrixgame Universal Grid Lab v0.10.0
 
 on:
