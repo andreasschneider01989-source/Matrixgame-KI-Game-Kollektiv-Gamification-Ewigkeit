@@ -24,6 +24,8 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 
 ## Second Earth und Simulation
 
+- [MACHX Second Earth — Quest 002](MACHX_SECOND_EARTH_QUEST_002_2026-11-20.md) — Bild-/Video-Wahrnehmung, persistente 3D-Weltmodelle und astronomisches Schattenexperiment.
+- [Second Earth Astronomy Lab](../second-earth/astronomy/README.md) — ausführbares Sonnenstands- und Gnomonmodell mit Tests und Beobachtungsprotokoll.
 - [MACHX Second Earth — Quest 001](MACHX_SECOND_EARTH_QUEST_001_2026-11-20.md) — ausführbarer Valley-001-Pilot, reproduzierbare Policy-Vergleiche, Grenzen und nächste 3D-Adapterstufe.
 - [Second Earth Valley 001](../second-earth/README.md) — Python-Referenzsimulation mit synthetischen Annahmen und reproduzierbaren Seeds.
 
