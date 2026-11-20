@@ -1289,7 +1289,8 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
                             Math.max(1, zones[team][1] - 3), Math.min(height - 2, zones[team][1] + 3));
                     if (pos == null) continue;
                     GameObject cell = createCreature("cell", "CREATURE", "Zelle Team " + (team + 1),
-                            teamColors[team], pos[0], pos[1], team, 0, "", random, 10.0);
+                            teamColors[team], pos[0], pos[1], team, 0, "", random,
+                            i == 0 ? 30.0 : 10.0); // one reserve-funded founding specialist per team
                     addObject(cell);
                 }
             }
