@@ -26,6 +26,14 @@ Create a persistent, evidence-aware, positive-didactic development loop connecti
 - Updated the documentation index. Existing Gaia Earth Lab hydrology and Java game code remain unchanged.
 - Test status: NOT_RUN in this chat; GitHub Actions result must be checked before claiming success.
 
+
+## Quest 002 verification update
+- Dedicated GitHub Actions run: Second Earth pilot, run 44665571399 — SUCCESS.
+- Repository-level test discovery executed 13 tests: 7 astronomy tests and 6 Valley 001 tests; all passed.
+- Reproducible 30-seed Valley 001 run completed successfully. Means: GROWTH biomass 2.78 / food coverage 0.822; REGENERATION 62.84 / 0.892; COOPERATION 37.92 / 0.999. These are synthetic MODEL results, not empirical ecological findings.
+- The separate legacy Python application workflow still fails during full-repository checkout because some pre-existing filenames exceed the runner filesystem's filename limit; its Python test steps are skipped. This is separate from the isolated Second Earth workflow, which now passes.
+- Local privacy review is still needed: the failed full-checkout log surfaced legacy repository filenames that appear to contain personal contact/location information. No such details were copied into the new Second Earth files. Review public file names and repository history before further broad sharing.
+
 ## Review checkpoint
 - PR #44 title: `[Draft] Add LifeOS foundation and Second Earth simulation pilot`.
 - PR #44 remains open, draft, and unmerged.
