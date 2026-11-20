@@ -21,9 +21,9 @@ import java.util.List;
  *
  * Controls:
  *   Every GameObject has the same universal action vocabulary per tick:
- *       WAIT + MOVE(4 directions) + DIG/PUSH/ATTACK/COLLECT/DROP/BUILD/USE/REPRODUCE(4 directions).
+ *       WAIT + MOVE(4 directions) + 11 typed interactions in each direction.
  *   Arrow keys / WASD : execute the selected mode in that direction
- *   J / K             : cycle action modes left / right (right-hand shortcuts); Q / E unused
+ *   Q / E             : cycle action modes; Y selects BUILD; C selects BUILD_DEPOT
  *   Left click        : select a GameObject (editor mode)
  *   Right drag        : pan camera
  *   Mouse wheel       : cursor-centred zoom
@@ -3179,7 +3179,7 @@ public final class MatrixgameUniversalGridLab_v09_0 extends JFrame {
         world = emptyWorld(15, 13);
         GameObject cellBuilder = world.object("cell-builder", "CREATURE", "Baumeister-Zelle",
                 "●", Color.BLUE, 7, 6, true, 40, new IdleController());
-        cellBuilder.set("energy", 30.0);
+        cellBuilder.set("energy", 24.0);
         cellBuilder.set("reproductionThreshold", 12.0);
         cellBuilder.set("team", 0.0);
         world.addObject(cellBuilder);
