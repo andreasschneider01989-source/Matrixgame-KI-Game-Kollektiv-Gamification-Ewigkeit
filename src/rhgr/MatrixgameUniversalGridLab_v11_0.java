@@ -1041,6 +1041,7 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
         final Random environmentRandom;
         boolean evolutionMode;
         int births;
+        int level2UnitsProduced;
         int deaths;
         int starvationDeaths;
         int foodCollected;
@@ -1191,7 +1192,7 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
             populationHistory.clear();
             eventLog.clear();
             environmentRandom.setSeed(seed ^ 0x51A7E5L);
-            births = deaths = starvationDeaths = foodCollected = foodSpawned = predationKills = 0;
+            births = level2UnitsProduced = deaths = starvationDeaths = foodCollected = foodSpawned = predationKills = 0;
             tick = 0;
             score = 0;
             gemsCollected = 0;
@@ -1251,7 +1252,7 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
             populationHistory.clear();
             eventLog.clear();
             environmentRandom.setSeed(seed ^ 0x51A7E5L);
-            tick = score = gemsCollected = births = deaths = starvationDeaths = foodCollected = foodSpawned = predationKills = 0;
+            tick = score = gemsCollected = births = level2UnitsProduced = deaths = starvationDeaths = foodCollected = foodSpawned = predationKills = 0;
             gameOver = false;
             won = false;
             randomEnemyDecision = false;
@@ -2087,6 +2088,7 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
             unit.decisionAlgorithm = new AdaptiveSoftmaxDecisionAlgorithm(0.04, 0.55,
                     seed ^ unit.id.hashCode() ^ tick);
             addObject(unit);
+            level2UnitsProduced++;
             building.set("eliteUnitsProduced", building.value("eliteUnitsProduced") + 1.0);
             return "LEVEL-UP: Team " + ((int) building.value("team") + 1)
                     + " erzeugt Level 2 (9 HP, 3 Schaden; 12 Ressourcen).";
@@ -4184,9 +4186,10 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
         check(world.tick == 120 && world.births > 0 && world.creatureCount() > 0
                         && world.populationHistory.size() == 121,
                 "A reproducible 120-tick ecosystem run must produce offspring and population history"); passed++;
-        check(initialPopulation + world.births == world.creatureCount() + world.deaths
+        check(initialPopulation + world.births + world.level2UnitsProduced
+                        == world.creatureCount() + world.deaths
                         && world.deaths == world.starvationDeaths + world.predationKills,
-                "Population accounting must balance births, living cells and all registered death causes"); passed++;
+                "Population accounting must include cell births, citadel-produced Level-2 units and all registered death causes"); passed++;
         check(world.objects.stream().filter(o -> o.type.equals("CREATURE"))
                         .allMatch(o -> o.genome != null && o.genome.sensorMode() != null && o.mutationEvents >= 0),
                 "Every living evolved cell must carry an inspectable genome and lineage mutation count"); passed++;
@@ -4207,8 +4210,9 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
                         && world.births > 0 && world.foodCollected > 0,
                 "The default 160x100 seed must retain the blue lineage, collect food and reproduce through Tick 306"); passed++;
         check(world.deaths == world.starvationDeaths + world.predationKills
-                        && world.creatureCount() + world.deaths >= 24 + world.births,
-                "The 306-tick run must preserve death accounting and include all tracked births"); passed++;
+                        && world.creatureCount() + world.deaths
+                                == 24 + world.births + world.level2UnitsProduced,
+                "The 306-tick run must balance initial cells, cell births, factory production and deaths"); passed++;
 
         System.out.println("Matrixgame Universal Grid Lab v0.11.0 self-test: " + passed + " checks passed.");
         System.out.println("PASS: six-team food patches, survival routing, safe construction, protected citadels, reserve-based division, biomass logistics, Level-2 production, mutation, predation, 306-tick regression and world invariants.");
