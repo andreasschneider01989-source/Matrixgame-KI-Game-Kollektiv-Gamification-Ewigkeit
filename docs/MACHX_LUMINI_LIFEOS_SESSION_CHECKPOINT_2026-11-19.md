@@ -34,6 +34,15 @@ Create a persistent, evidence-aware, positive-didactic development loop connecti
 - The separate legacy Python application workflow still fails during full-repository checkout because some pre-existing filenames exceed the runner filesystem's filename limit; its Python test steps are skipped. This is separate from the isolated Second Earth workflow, which now passes.
 - Local privacy review is still needed: the failed full-checkout log surfaced legacy repository filenames that appear to contain personal contact/location information. No such details were copied into the new Second Earth files. Review public file names and repository history before further broad sharing.
 
+
+## Second Earth Quest 003 checkpoint
+- Added `second-earth/materials/`: a standard-library reference model for material density, cubic block volume, mass, weight force, force-to-mass inference and known-mass-to-gravity inference.
+- Added nominal near-20°C reference materials: gold 19,320; silver 10,490; copper 8,960; iron 7,870; water 1,000 kg/m³.
+- Added 10 unit tests and a materials-lab README; added Quest 003 research documentation and index entry.
+- Physics distinction: a force sensor measures newtons. It can infer mass only when local gravity is known, or infer gravity when a known calibration mass is supplied. One force reading cannot identify both unknowns.
+- This is a REFERENCE_MODEL with fully dense homogeneous voxels, not an empirical measurement and not yet connected to the renderer or collision solver.
+- New files trigger the dedicated Second Earth Actions workflow. CI status must be checked before claiming tests pass.
+
 ## Review checkpoint
 - PR #44 title: `[Draft] Add LifeOS foundation and Second Earth simulation pilot`.
 - PR #44 remains open, draft, and unmerged.
