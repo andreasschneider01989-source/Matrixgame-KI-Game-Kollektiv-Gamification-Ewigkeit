@@ -3897,6 +3897,7 @@ public final class MatrixgameUniversalGridLab_v10_0 extends JFrame {
         starving.set("metabolism", 0.05);
         String starvingId = starving.id;
         int deathsBeforeStarvation = world.deaths;
+        world.evolutionMode = true; // Enable the evolution life-cycle/upkeep during this isolated starvation test.
         world.submitAction(starvingId, GameAction.waitAction());
         world.tick();
         check(world.getObject(starvingId) == null && world.deaths == deathsBeforeStarvation + 1,
