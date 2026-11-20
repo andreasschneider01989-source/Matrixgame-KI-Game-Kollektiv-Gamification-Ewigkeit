@@ -3460,6 +3460,7 @@ public final class MatrixgameUniversalGridLab_v10_0 extends JFrame {
                         || world.objectsAt(6, 7).stream().anyMatch(o -> o.type.equals("DEPOT"))
                         || world.objectsAt(5, 6).stream().anyMatch(o -> o.type.equals("DEPOT")),
                 "An idle standard AI unit with three gems must autonomously construct an adjacent depot"); passed++;
+        player = world.getObject("player"); // Rebind to the newly created test world.
         player.set("inventoryGems", 8.0);
         for (int i = 0; i < 8; i++) {
             world.submitAction(player.id, GameAction.interact(Direction.RIGHT, InteractionType.DEPOSIT));
