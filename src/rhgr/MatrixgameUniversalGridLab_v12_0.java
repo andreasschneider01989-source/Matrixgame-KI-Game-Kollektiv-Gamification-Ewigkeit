@@ -1342,7 +1342,7 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
                 Arrays.fill(teamRelations[a], 0.0);
                 teamRelations[a][a] = 1.0;
             }
-            setTeamRelation(0, 1, -0.28); setTeamRelation(2, 3, -0.28); setTeamRelation(4, 5, -0.28);
+            setTeamRelation(0, 1, -0.48); setTeamRelation(2, 3, -0.48); setTeamRelation(4, 5, -0.48);
             setTeamRelation(0, 3, 0.18); setTeamRelation(1, 4, 0.18); setTeamRelation(2, 5, 0.18);
         }
         private void setTeamRelation(int a, int b, double value) {
@@ -1572,6 +1572,9 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
                     GameObject cell = createCreature("cell", "CREATURE", "Zelle Team " + (team + 1),
                             teamColors[team], pos[0], pos[1], team, 0, "", random,
                             i == 0 ? 30.0 : 10.0); // one reserve-funded founding specialist per team
+                    if (i == 1) cell.set("dietPreference", 0.62); // a deliberate founding carnivore
+                    else if (i == 2) cell.set("dietPreference", -0.48); // a plant specialist
+                    cell.set("ecologyRole", initialEcologyRole(cell));
                     addObject(cell);
                 }
             }
@@ -1660,7 +1663,7 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
         private int initialEcologyRole(GameObject cell) {
             double diet = cell.value("dietPreference");
             Genome genes = cell.genome == null ? Genome.defaults() : cell.genome;
-            if (diet <= -0.30) return 1;
+            if (diet <= -0.55) return 1;
             if (diet >= 0.30) return 3;
             if (genes.exploration() > Math.max(genes.foodSeek(), genes.preySeek()) + 0.15) return 4;
             if (genes.foodSeek() >= genes.preySeek()) return 0;
@@ -4575,7 +4578,7 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
                 "Rivalry must adapt symmetrically as conflict accumulates"); passed++;
 
         // A unit perceives the relationship class and will not attack an allied team member.
-        world.adjustTeamRelation(0, 1, 1.00);
+        world.adjustTeamRelation(0, 1, 1.20);
         DecisionContext allyContext = world.decisionContext(observer, world.snapshot());
         check(!allyContext.legalOptions().contains(
                         GameAction.interact(Direction.RIGHT, InteractionType.ATTACK)),
