@@ -50,6 +50,14 @@ Create a persistent, evidence-aware, positive-didactic development loop connecti
 - Reproducible 30-seed Valley 001 simulation also completed successfully.
 - Materials model remains a reference model with ideal homogeneous blocks; no physical field calibration or renderer/collision integration has occurred.
 
+
+## Second Earth Quest 004 checkpoint
+- Added `second-earth/reconstruction/`: typed integer-coordinate voxel blueprints, validation, geometry/material scoring, and a seven-block synthetic arch fixture.
+- Added 7 deterministic unit tests covering exact reconstruction, missing/extra blocks, material mismatch, duplicate coordinates and invalid voxel scale.
+- Added Quest 004 research note and documentation index entries.
+- The existing Second Earth workflow already runs unittest discovery across all `second-earth/**` files; Quest 004 CI must complete before this increment is marked verified.
+- Explicit boundary: no photograph ingestion, camera/depth estimation, vision model, Minecraft/Luanti adapter or automatic build planner is implemented yet. Those are separate next increments.
+
 ## Review checkpoint
 - PR #44 title: `[Draft] Add LifeOS foundation and Second Earth simulation pilot`.
 - PR #44 remains open, draft, and unmerged.
