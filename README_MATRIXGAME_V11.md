@@ -43,6 +43,34 @@ einen Regressionstest mit demselben Seed und derselben Weltgröße wie der
 beobachtete Lauf bis Tick 306. Der Test muss belegen, dass die blaue Linie
 überlebt, Nahrung aufgenommen und mindestens eine Geburt erreicht wird.
 
+## Headless-Simulation und Browser-Canvas
+
+Die Simulation kann ohne Swing-Fenster laufen und ein eigenständiges HTML5-Dashboard erzeugen.
+
+Kommandozeile im Projektordner:
+
+`java -Djava.awt.headless=true -cp out rhgr.MatrixgameUniversalGridLab_v11_0 --simulate 306 20261116 160 100 matrixgame-report.html`
+
+Parameter: Tick-Anzahl, Seed, Weltbreite, Welthöhe und HTML-Zieldatei.
+
+Das erzeugte `matrixgame-report.html` enthält die Weltkarte als Browser-Canvas, Teamfilter,
+Zoom, Objekt-Tooltips sowie die Populationsentwicklung. Es braucht keinen lokalen Server und
+keine externen JavaScript-Bibliotheken.
+
+Unter Windows kann `RUN_MATRIXGAME_V11_SIMULATION.bat` diese Simulation starten und
+das Ergebnis anschließend im Standardbrowser öffnen. Optional lässt sich die Tick-Anzahl
+als erstes Argument übergeben.
+
+## GitHub-Run-Schaltfläche
+
+Im Repository unter **Actions → Matrixgame Lab — Run simulation and Canvas report → Run workflow**
+kann der manuelle Workflow gestartet werden. Er kompiliert den ausgewählten Quellstand,
+führt die Selbsttests aus, berechnet eine Simulation und lädt HTML-Bericht plus Textprotokoll
+als Workflow-Artefakt hoch. Die Workflow-Datei liegt im Standard-Branch, damit GitHub den
+manuellen Run-Workflow anbietet.
+
+Direktlink: https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/actions/workflows/matrixgame-lab-run.yml
+
 ## Start unter Windows
 
 Voraussetzung: JDK 17 oder neuer (nicht nur eine JRE).
