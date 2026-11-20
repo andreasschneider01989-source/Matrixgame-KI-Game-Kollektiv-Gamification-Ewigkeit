@@ -24,6 +24,8 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 
 ## Second Earth und Simulation
 
+- [MACHX Second Earth — Quest 005](MACHX_SECOND_EARTH_QUEST_005_2026-11-20.md) — synthetisches Haus, Einzel-/Mehrbild-Evidenz, Agentenrollen und Bauplanbewertung.
+- [Quest 005 Agent Protocol](../second-earth/reconstruction/QUEST_005_AGENTS.md) — Rollen, Ground-Truth-Trennung und Evaluationsprotokoll.
 - [MACHX Second Earth — Quest 004](MACHX_SECOND_EARTH_QUEST_004_2026-11-20.md) — Foto-zu-Voxel-Rekonstruktion, Blueprint-Validierung und getrennte Geometrie-/Materialmetriken.
 - [Second Earth Reconstruction Lab](../second-earth/reconstruction/README.md) — ausführbarer Voxel-Blueprint-Evaluator und synthetische Testarchitektur.
 - [MACHX Second Earth — Quest 003](MACHX_SECOND_EARTH_QUEST_003_2026-11-20.md) — Materialdichte, Masse, Gewichtskraft und experimentelle Waagen.
