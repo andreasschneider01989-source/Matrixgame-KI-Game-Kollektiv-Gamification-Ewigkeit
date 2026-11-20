@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0.0",
+  "world_id": "second-earth-001",
+  "status": "SYNTHETIC_REFERENCE_MODEL",
+  "units": {"position": "metre", "scale": "metre", "voxel_cell": "integer grid coordinate"},
+  "representation": {
+    "voxel_cells": "explicit integer occupancy coordinates",
+    "mesh_asset_id": "external stable asset reference; mesh bytes are not stored in this JSON state"
+  },
+  "identity_policy": "Object IDs are stable across observations; observations never create a new identity implicitly.",
+  "fusion_policy": {
+    "minimum_confidence": 0.5,
+    "maximum_position_delta_m": 2.0,
+    "position": "confidence-weighted mean",
+    "confidence": "1 - product(1 - observation_confidence)",
+    "conflicts": "logged and rejected, never silently overwritten",
+    "duplicates": "observation IDs are idempotent",
+    "stale_observations": "rejected when observation step is older than world step"
+  },
+  "agent_roles": ["Perception/Proposer", "Independent Critic", "World Integrator"],
+  "caveat": "Confidence fusion is a transparent toy rule, not a calibrated Bayesian estimator or learned multi-agent system. Thresholds are synthetic defaults and require empirical calibration."
+}

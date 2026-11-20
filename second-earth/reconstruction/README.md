@@ -34,6 +34,9 @@ python -m unittest discover -s second-earth -p "test_*.py" -v
 ## Quest 005 — House benchmark
 See [QUEST_005_AGENTS.md](QUEST_005_AGENTS.md), [house-001-reference.json](house-001-reference.json), and the executable fixture in house.py. The deterministic reference is a 6 × 7 × 5 voxel house with stone foundation, wood perimeter walls/openings, and a brick gable roof. Two evidence conditions are defined: front-only and five orthographic projections (front/rear/left/right/top). The evaluator keeps ground truth separate from the evidence supplied to a reconstruction agent. The current projections are mathematical occupancy projections, not rendered photos. The build planner reports per-material inventory and three construction stages using a declared blocks/minute rate; this is a transparent baseline estimate, not measured construction time.
 
+## Quest 006 — Persistent hybrid world state
+See [world_state.py](world_state.py), [test_world_state.py](test_world_state.py), and [world-state-001.json](world-state-001.json). This dependency-free reference model stores stable object IDs, metric transforms, material IDs, voxel cells, external mesh references, confidence, provenance and observation history. A proposer/critic/integrator protocol fuses spatially consistent observations, rejects stale/low-confidence/conflicting evidence, and serializes the world deterministically. This is a transparent synthetic fusion rule, not calibrated Bayesian inference or a learned multi-agent model.
+
 ## Planned pipeline (not yet implemented)
 1. Photo(s) + camera/view metadata.
 2. Vision model: segmentation, edges, object labels and confidence.
