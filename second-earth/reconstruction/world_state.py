@@ -137,7 +137,7 @@ def collective_update(
             rejected.append(obs.observation_id)
             state.events.append({"type": "stale_rejected", "observation_id": obs.observation_id,
                                  "object_id": obs.object_id, "step": obs.step})
-        elif obs.confidence < min_confidence:
+        elif obs.confidence <= 0.0 or obs.confidence < min_confidence:
             rejected.append(obs.observation_id)
             state.events.append({"type": "low_confidence_rejected",
                                  "observation_id": obs.observation_id,
