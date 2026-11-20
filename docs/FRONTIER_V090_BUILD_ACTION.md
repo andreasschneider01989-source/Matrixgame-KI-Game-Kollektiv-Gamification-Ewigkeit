@@ -46,3 +46,7 @@ The dedicated workflow compiles with Java 17, `-Xlint:all -Werror`, then runs th
 
 ## Known boundaries
 This is the existing 2D grid game. Buildings occupy one grid cell; no multi-cell footprint, construction animation, structural engineering, save/load, or 3D rendering is introduced in this increment.
+
+
+## CI workflow location
+The dedicated workflow is also present in the repository default branch so GitHub can discover it for pull-request validation. It uses sparse checkout and therefore does not traverse unrelated historical root-level files.
