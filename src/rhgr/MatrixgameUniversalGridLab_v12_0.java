@@ -4537,6 +4537,76 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
         check(deliveryPlan != null && deliveryPlan.equals(GameAction.move(Direction.RIGHT)),
                 "A fed courier routes biomass toward the nearest visible same-team citadel"); passed++;
 
+        // Team identity, colour and observer-relative diplomacy are part of perception INPUT.
+        world = GameWorld.createEvolutionScenario(778811L, 48, 32);
+        GameObject observer = world.objects.stream().filter(o -> o.type.equals("CREATURE")
+                && (int) o.value("team") == 0).findFirst().orElseThrow();
+        observer.genome = new Genome(1.0, 0.0, 0.0, 8.0, 1.0, 0.0,
+                1.0, 1.0, 1.0, 1.0, 0.5, 0.10);
+        GameObject rivalProbe = world.object("rival-probe", "CREATURE", "Rivalprobe", "●",
+                TEAM_PALETTE[1], observer.x + 1, observer.y, true, 40, new EvolutionController());
+        rivalProbe.set("team", 1.0);
+        world.addObject(rivalProbe);
+        DecisionContext identityContext = world.decisionContext(observer, world.snapshot());
+        ObjectView sensedRival = identityContext.perception().visibleObjects().stream()
+                .filter(o -> o.id().equals(rivalProbe.id)).findFirst().orElseThrow();
+        check(sensedRival.value("teamNameCode") == 1.0
+                        && sensedRival.value("teamColorR") == TEAM_PALETTE[1].getRed()
+                        && sensedRival.value("teamColorG") == TEAM_PALETTE[1].getGreen()
+                        && sensedRival.value("teamColorB") == TEAM_PALETTE[1].getBlue()
+                        && sensedRival.value("relationToObserver") == world.teamRelation(0, 1),
+                "INPUT must expose team identity, RGB colour and observer-relative diplomacy"); passed++;
+        double relationBefore = world.teamRelation(0, 1);
+        world.adjustTeamRelation(0, 1, -0.20);
+        check(world.teamRelation(0, 1) < relationBefore
+                        && world.teamRelation(1, 0) == world.teamRelation(0, 1),
+                "Rivalry must adapt symmetrically as conflict accumulates"); passed++;
+
+        // A unit perceives the relationship class and will not attack an allied team member.
+        world.adjustTeamRelation(0, 1, 0.90);
+        DecisionContext allyContext = world.decisionContext(observer, world.snapshot());
+        check(!allyContext.legalOptions().contains(
+                        GameAction.interact(Direction.RIGHT, InteractionType.ATTACK)),
+                "A positive team alliance must remove attacks against allied creatures from legal INPUT"); passed++;
+
+        // Ecological roles change from a rolling, heritable food/prey intake trace.
+        GameObject ecologyProbe = world.object("ecology-probe", "CREATURE", "Ökologietest",
+                "●", TEAM_PALETTE[0], 10, 10, true, 40, new EvolutionController());
+        ecologyProbe.set("team", 0.0);
+        ecologyProbe.genome = Genome.defaults();
+        ecologyProbe.set("dietPreference", -0.95);
+        ecologyProbe.set("plantIntake", 8.0);
+        world.adaptEcologicalRole(ecologyProbe);
+        check((int) ecologyProbe.value("ecologyRole") == 1
+                        && ecologyProbe.value("dietPreference") >= -1.0
+                        && ecologyProbe.value("dietPreference") <= 1.0,
+                "Plant intake must adapt an individual into a bounded herbivore role"); passed++;
+        ecologyProbe.set("dietPreference", 0.95);
+        ecologyProbe.set("preyIntake", 8.0);
+        ecologyProbe.set("plantIntake", 0.0);
+        world.adaptEcologicalRole(ecologyProbe);
+        check((int) ecologyProbe.value("ecologyRole") == 3,
+                "Predation intake must adapt an individual into a carnivore role"); passed++;
+        ecologyProbe.genome = new Genome(0.5, 4, 4, 6, 0.8, 0.02,
+                0.2, 0.2, 0.8, 0.5, 1.4, 0.10);
+        ecologyProbe.set("dietPreference", 0.0);
+        ecologyProbe.set("plantIntake", 1.0);
+        ecologyProbe.set("preyIntake", 1.0);
+        world.adaptEcologicalRole(ecologyProbe);
+        check((int) ecologyProbe.value("ecologyRole") == 4,
+                "Exploration-dominant neutral diet must form a scout role"); passed++;
+
+        // Procedural Infinity chunks are deterministic for negative and positive coordinates.
+        int biomeA = WorldCanvas.frontierBiomeIndex(9911L, -4, 7);
+        int biomeB = WorldCanvas.frontierBiomeIndex(9911L, -4, 7);
+        int biomeC = WorldCanvas.frontierBiomeIndex(9911L, 4, -7);
+        check(biomeA == biomeB && biomeA >= 0 && biomeA < 5 && biomeC >= 0 && biomeC < 5,
+                "Procedural frontier biomes must be deterministic on both sides of world origin"); passed++;
+        WorldCanvas infinityProbe = new WorldCanvas(world);
+        infinityProbe.panByCells(-50_000.0, 75_000.0);
+        check(infinityProbe.cameraX < 0 && infinityProbe.cameraY > world.height,
+                "Infinity camera must pan far beyond the active simulation region without clamping"); passed++;
+
         // Mutation probability is a trait and can be tested independently with a forced mutation rate.
         double forcedMutation = world.mutate(0.5, 0.2, 0.0, 1.0, 1.0, new Random(1122L));
         check(forcedMutation != 0.5 && forcedMutation >= 0.0 && forcedMutation <= 1.0,
@@ -4660,7 +4730,7 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
                 "The 306-tick run must balance initial cells, cell births, factory production and deaths"); passed++;
 
         System.out.println("Matrixgame Universal Grid Lab v0.12.0 self-test: " + passed + " checks passed.");
-        System.out.println("PASS: six-team food patches, survival routing, safe construction, protected citadels, reserve-based division, biomass logistics, Level-2 production, mutation, predation, 306-tick regression and world invariants.");
+        System.out.println("PASS: team RGB identity, observer-relative diplomacy, adaptive ecology roles, rivalry updates, procedural infinity frontier, survival logistics, citadels, Level-2 production, mutation and 306-tick regression.");
     }
 
     private static GameWorld emptyWorld(int width, int height) {
