@@ -4714,7 +4714,7 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
         check(world.genomePopulationSummary().contains("GENOME n="),
                 "Population-level genetic statistics must be available for live inspection"); passed++;
 
-        // Regression for the exact interactive seed and world dimensions from the failed Tick-306 run.
+        // Regression for the enlarged 320x200 interactive seed and Tick-306 run.
         world = GameWorld.createEvolutionScenario(SEED, DEFAULT_WORLD_WIDTH, DEFAULT_WORLD_HEIGHT);
         for (int i = 0; i < 306 && !world.gameOver; i++) world.tick();
         int regressionLevel2 = (int) world.objects.stream()
@@ -4738,7 +4738,7 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
         check(world.teamPopulationCount(0) > 0 && world.creatureCount() > 0
                         && world.births > 0 && world.foodCollected > 0
                         && teamsWithCitadel == TEAM_COUNT && world.level2UnitsProduced > 0,
-                "The default 160x100 seed must retain the blue lineage, collect food and reproduce through Tick 306"); passed++;
+                "The default 320x200 seed must retain the blue lineage, collect food and reproduce through Tick 306"); passed++;
         check(world.deaths == world.starvationDeaths + world.predationKills
                         && world.creatureCount() + world.deaths
                                 == 24 + world.births + world.level2UnitsProduced,
