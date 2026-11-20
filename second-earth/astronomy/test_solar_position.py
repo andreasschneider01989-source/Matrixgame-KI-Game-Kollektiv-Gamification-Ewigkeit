@@ -2,7 +2,7 @@ import math
 import unittest
 from datetime import date
 
-from solar_position import (
+from astronomy.solar_position import (
     apparent_solar_time_hours,
     equation_of_time_minutes,
     solar_declination,
