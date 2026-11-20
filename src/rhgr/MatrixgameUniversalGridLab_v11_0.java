@@ -3524,11 +3524,11 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
                         && cellBuilder.value("structuresBuilt") == 4.0,
                 "Four evolution builds must consume exactly 24 energy and no gems"); passed++;
         world = emptyWorld(12, 10);
-        GameObject poorBuilder = world.object("poor-builder", "CREATURE", "Energiearme Zelle",
+        GameObject reserveTestUnit = world.object("poor-builder", "CREATURE", "Energiearme Zelle",
                 "●", Color.CYAN, 8, 5, true, 40, new IdleController());
-        poorBuilder.set("energy", CREATURE_BUILD_ENERGY_COST - 0.1);
-        world.addObject(poorBuilder);
-        check(world.buildFailure(poorBuilder, Direction.UP).contains("Energie"),
+        reserveTestUnit.set("energy", CREATURE_BUILD_ENERGY_COST - 0.1);
+        world.addObject(reserveTestUnit);
+        check(world.buildFailure(reserveTestUnit, Direction.UP).contains("Energie"),
                 "BUILD must explain insufficient evolution energy before accepting an action"); passed++;
 
         GameObject boundaryPlayer = world.getObject("player");
@@ -4023,13 +4023,13 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
         // Unfunded creatures cannot spend their survival reserve on random construction.
         world = emptyWorld(16, 12);
         world.evolutionMode = true;
-        GameObject poorBuilder = world.object("poor-builder", "CREATURE", "Hungrige Zelle",
+        GameObject reserveTestUnit = world.object("poor-builder", "CREATURE", "Hungrige Zelle",
                 "●", Color.CYAN, 5, 5, true, 40, new EvolutionController());
-        poorBuilder.set("team", 0.0);
-        poorBuilder.set("energy", 8.0);
-        poorBuilder.set("reproductionThreshold", 12.0);
-        world.addObject(poorBuilder);
-        DecisionContext poorBuildContext = world.decisionContext(poorBuilder, world.snapshot());
+        reserveTestUnit.set("team", 0.0);
+        reserveTestUnit.set("energy", 8.0);
+        reserveTestUnit.set("reproductionThreshold", 12.0);
+        world.addObject(reserveTestUnit);
+        DecisionContext poorBuildContext = world.decisionContext(reserveTestUnit, world.snapshot());
         check(!poorBuildContext.legalOptions().contains(
                         GameAction.interact(Direction.RIGHT, InteractionType.BUILD)),
                 "A hungry cell cannot legally build before preserving its safety reserve"); passed++;
@@ -4038,8 +4038,8 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
         GameAction divideAction = GameAction.interact(Direction.RIGHT, InteractionType.REPRODUCE);
         check(!poorBuildContext.legalOptions().contains(divideAction),
                 "A cell at its basic reproduction threshold cannot divide yet"); passed++;
-        poorBuilder.set("energy", 20.0);
-        DecisionContext fundedContext = world.decisionContext(poorBuilder, world.snapshot());
+        reserveTestUnit.set("energy", 20.0);
+        DecisionContext fundedContext = world.decisionContext(reserveTestUnit, world.snapshot());
         check(fundedContext.legalOptions().contains(divideAction),
                 "A cell with 1.6x threshold energy may divide when a free neighbour exists"); passed++;
 
