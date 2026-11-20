@@ -1,7 +1,7 @@
 # MACHX Second Earth — Quest 006: Persistent Hybrid World State
 
 **User choices:** project=world; representation=hybrid; agents=collective; first success=balanced.  
-**Status:** implementation committed on a dedicated feature branch; automated verification pending.
+**Status:** implementation committed on a dedicated feature branch; Second Earth pilot CI PASS (54 tests); LifeOS integrity PASS; separate legacy Python application checkout fails because historical repository filenames exceed the Linux filename-length limit.
 
 ## Objective
 Build the smallest reusable foundation for a world that survives across simulation steps and can be inspected, edited, serialized and reused by later agents.
