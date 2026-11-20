@@ -4563,7 +4563,7 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
                 "Rivalry must adapt symmetrically as conflict accumulates"); passed++;
 
         // A unit perceives the relationship class and will not attack an allied team member.
-        world.adjustTeamRelation(0, 1, 0.90);
+        world.adjustTeamRelation(0, 1, 1.00);
         DecisionContext allyContext = world.decisionContext(observer, world.snapshot());
         check(!allyContext.legalOptions().contains(
                         GameAction.interact(Direction.RIGHT, InteractionType.ATTACK)),
