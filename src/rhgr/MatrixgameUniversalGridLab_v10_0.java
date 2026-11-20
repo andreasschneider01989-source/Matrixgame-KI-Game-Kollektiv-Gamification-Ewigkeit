@@ -1385,7 +1385,7 @@ public final class MatrixgameUniversalGridLab_v10_0 extends JFrame {
 
         private String divide(GameObject parent, Direction direction) {
             if (!evolutionMode || !parent.type.equals("CREATURE")) return "REPRODUCE: Nur Zellen können sich teilen.";
-            if (creatureCount() >= 200) return "REPRODUCE: Populationslimit von 200 erreicht.";
+            if (creatureCount() >= MAX_EVOLUTION_POPULATION) return "REPRODUCE: Populationslimit von " + MAX_EVOLUTION_POPULATION + " erreicht.";
             double threshold = parent.value("reproductionThreshold");
             if (parent.value("energy") < threshold) return "REPRODUCE: Energievorrat unter Teilungsschwelle.";
             int x = parent.x + direction.dx;
@@ -2217,6 +2217,8 @@ public final class MatrixgameUniversalGridLab_v10_0 extends JFrame {
             registerInteractionRule("*", "DIRT", InteractionType.BUILD_DEPOT,
                     (w, actor, target, direction) -> w.buildDepot(actor, direction));
             registerInteractionRule("*", "DEPOT", InteractionType.DEPOSIT,
+                    (w, actor, target, direction) -> w.depositResource(actor, target));
+            registerInteractionRule("*", "BUILDING", InteractionType.DEPOSIT,
                     (w, actor, target, direction) -> w.depositResource(actor, target));
             registerInteractionRule("*", "DEPOT", InteractionType.PRODUCE,
                     (w, actor, target, direction) -> w.produceBruiser(actor, target));
@@ -3937,9 +3939,9 @@ public final class MatrixgameUniversalGridLab_v10_0 extends JFrame {
         check(world.width == 160 && world.height == 100 && world.creatureCount() == 24
                         && world.countType("FOOD") == 300,
                 "Expanded 160x100 evolution world must initialize six teams and a larger food field"); passed++;
-        check(world.objects.stream().anyMatch(o -> o.type.equals("WALL") && o.x == 119)
-                        && world.objects.stream().anyMatch(o -> o.type.equals("WALL") && o.y == 79),
-                "Expanded simulation boundary must cover the full 120x80 area"); passed++;
+        check(world.objects.stream().anyMatch(o -> o.type.equals("WALL") && o.x == 159)
+                        && world.objects.stream().anyMatch(o -> o.type.equals("WALL") && o.y == 99),
+                "Expanded simulation boundary must cover the full 160x100 area"); passed++;
         WorldSnapshot indexed = world.snapshot();
         GameObject foodProbe = world.objects.stream().filter(o -> o.type.equals("FOOD")).findFirst().orElseThrow();
         check(indexed.at(foodProbe.x, foodProbe.y).stream().anyMatch(v -> v.id().equals(foodProbe.id))
