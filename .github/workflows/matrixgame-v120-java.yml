@@ -1,0 +1,65 @@
+name: Matrixgame Universal Grid Lab v0.12.0
+
+on:
+  pull_request:
+    branches:
+      - main
+      - feature/matrixgame-v0110-survival-logistics
+    paths:
+      - "src/rhgr/MatrixgameUniversalGridLab_v12_0.java"
+      - ".github/workflows/matrixgame-v120-java.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compile-and-self-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout v0.12.0 source
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            src/rhgr/MatrixgameUniversalGridLab_v12_0.java
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Compile
+        run: |
+          mkdir -p out
+          javac -encoding UTF-8 -d out src/rhgr/MatrixgameUniversalGridLab_v12_0.java
+
+      - name: Run deterministic self-tests
+        run: |
+          java -Djava.awt.headless=true -cp out rhgr.MatrixgameUniversalGridLab_v12_0 --self-test
+
+      - name: Run 306-tick headless simulation
+        run: |
+          java -Djava.awt.headless=true -cp out rhgr.MatrixgameUniversalGridLab_v12_0 --simulate 306 20261116 160 100 matrixgame-v12-report.html | tee matrixgame-v12-run.txt
+          test -s matrixgame-v12-report.html
+          grep -q 'canvas id="world"' matrixgame-v12-report.html
+          {
+            echo "## Matrixgame v0.12.0"
+            echo
+            echo '### Headless simulation result'
+            echo '~~~text'
+            cat matrixgame-v12-run.txt
+            echo '~~~'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload HTML Canvas report
+        uses: actions/upload-artifact@v4
+        with:
+          name: matrixgame-v12-ecology-infinity-report
+          path: |
+            matrixgame-v12-report.html
+            matrixgame-v12-run.txt
+          if-no-files-found: error
+          retention-days: 30
