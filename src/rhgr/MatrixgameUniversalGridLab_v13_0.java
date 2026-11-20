@@ -4250,26 +4250,16 @@ document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i clas
         GameObject parent = world.objects.stream().filter(o -> o.type.equals("CREATURE")).findFirst().orElseThrow();
         parent.set("energy", 30.0);
         parent.set("reproductionThreshold", 10.0);
+        // Isolate the reproduction unit from the deliberately dense ecosystem.
+        // This keeps the regression about the reproduction rule, not spawn density.
+        world.objects.removeIf(object -> object != parent);
+        parent.x = world.width / 2;
+        parent.y = world.height / 2;
         int initialPop = world.creatureCount();
-        int parentX = parent.x, parentY = parent.y;
-        Direction reproduceDirection = null;
-        // The ecological seed is deliberately dense. Place the test parent into
-        // a deterministic empty two-cell pocket instead of assuming its spawn
-        // location has a free neighbour.
-        searchReproductionPocket:
-        for (int y = 1; y < world.height - 1; y++) {
-            for (int x = 1; x < world.width - 1; x++) {
-                if (world.isCompletelyEmpty(x, y, parent.id)
-                        && world.isCompletelyEmpty(x + 1, y, parent.id)) {
-                    parent.x = x;
-                    parent.y = y;
-                    reproduceDirection = Direction.RIGHT;
-                    break searchReproductionPocket;
-                }
-            }
-        }
-        if (reproduceDirection == null)
-            throw new AssertionError("Reproduction test needs a deterministic empty two-cell pocket");
+        Direction reproduceDirection = Direction.RIGHT;
+        if (!world.isCompletelyEmpty(parent.x + reproduceDirection.dx,
+                parent.y + reproduceDirection.dy, parent.id))
+            throw new AssertionError("Isolated reproduction test must have an empty adjacent cell");
         world.submitAction(parent.id, GameAction.interact(reproduceDirection, InteractionType.REPRODUCE));
         world.tick();
         check(world.creatureCount() == initialPop + 1 && world.births == 1,
