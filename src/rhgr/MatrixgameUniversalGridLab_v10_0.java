@@ -3783,24 +3783,20 @@ public final class MatrixgameUniversalGridLab_v10_0 extends JFrame {
                         && forcedGenomeMutation.genome().sensorNoise() <= 0.45,
                 "Genome mutation must alter and clamp inherited sensor and operation genes"); passed++;
 
-        // A cell can collect nearby food and convert it into energy.
-        world = GameWorld.createEvolutionScenario(444221L, 24, 18);
-        GameObject feeder = world.objects.stream().filter(o -> o.type.equals("CREATURE")).findFirst().orElseThrow();
-        Direction foodDirection = null;
-        for (Direction candidate : Direction.values()) {
-            if (world.isCompletelyEmpty(feeder.x + candidate.dx, feeder.y + candidate.dy, feeder.id)) {
-                foodDirection = candidate;
-                break;
-            }
-        }
-        if (foodDirection == null) throw new AssertionError("Food test requires an empty neighbouring cell");
-        int foodX = feeder.x + foodDirection.dx, foodY = feeder.y + foodDirection.dy;
-        GameObject foodItem = world.object("food", "FOOD", "Food test", "✦", new Color(90, 220, 110),
-                foodX, foodY, false, 1, new IdleController());
+        // A cell can collect nearby food and convert it into energy and biomass cargo.
+        // Use an isolated deterministic fixture instead of a crowded six-team start state.
+        world = emptyWorld(24, 18);
+        GameObject feeder = world.object("food-feeder", "CREATURE", "Testzelle", "●",
+                Color.CYAN, 8, 8, true, 40, new EvolutionController());
+        feeder.set("energy", 10.0);
+        feeder.set("team", 0.0);
+        world.addObject(feeder);
+        GameObject foodItem = world.object("food", "FOOD", "Food test", "✦",
+                new Color(90, 220, 110), 8, 7, false, 1, new IdleController());
         foodItem.set("foodValue", 5.0);
         world.addObject(foodItem);
         double energyBeforeFood = feeder.value("energy");
-        world.submitAction(feeder.id, GameAction.interact(foodDirection, InteractionType.COLLECT));
+        world.submitAction(feeder.id, GameAction.interact(Direction.UP, InteractionType.COLLECT));
         world.tick();
         check(world.getObject(foodItem.id) == null && feeder.value("energy") > energyBeforeFood
                         && feeder.value("inventoryResources") == 1.0,
