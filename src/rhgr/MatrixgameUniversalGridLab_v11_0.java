@@ -4203,12 +4203,24 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
         int regressionLevel2 = (int) world.objects.stream()
                 .filter(o -> o.type.equals("CREATURE") && o.value("unitLevel") >= 2.0).count();
         int regressionBuildings = world.countType("BUILDING");
+        int teamsWithCitadel = 0;
+        List<String> citadelsByTeam = new ArrayList<>();
+        for (int team = 0; team < TEAM_COUNT; team++) {
+            final int teamId = team;
+            long count = world.objects.stream()
+                    .filter(object -> object.type.equals("BUILDING")
+                            && (int) object.value("team") == teamId).count();
+            if (count > 0) teamsWithCitadel++;
+            citadelsByTeam.add("T" + (team + 1) + ":" + count);
+        }
         System.out.printf(Locale.ROOT,
-                "REGRESSION 306: tick=%d | %s | population=%d | births=%d | deaths=%d | food=%d | buildings=%d | level2=%d%n",
+                "REGRESSION 306: tick=%d | %s | population=%d | births=%d | deaths=%d | food=%d | buildings=%d | teamsWithCitadel=%d | %s | level2Live=%d | level2Produced=%d%n",
                 world.tick, world.teamPopulationSummary(), world.creatureCount(), world.births,
-                world.deaths, world.foodCollected, regressionBuildings, regressionLevel2);
+                world.deaths, world.foodCollected, regressionBuildings, teamsWithCitadel,
+                String.join(" ", citadelsByTeam), regressionLevel2, world.level2UnitsProduced);
         check(world.teamPopulationCount(0) > 0 && world.creatureCount() > 0
-                        && world.births > 0 && world.foodCollected > 0,
+                        && world.births > 0 && world.foodCollected > 0
+                        && teamsWithCitadel == TEAM_COUNT && world.level2UnitsProduced > 0,
                 "The default 160x100 seed must retain the blue lineage, collect food and reproduce through Tick 306"); passed++;
         check(world.deaths == world.starvationDeaths + world.predationKills
                         && world.creatureCount() + world.deaths
