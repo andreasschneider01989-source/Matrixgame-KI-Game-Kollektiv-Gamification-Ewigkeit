@@ -37,3 +37,19 @@ jobs:
       - name: Run deterministic self-tests
         run: |
           java -Djava.awt.headless=true -cp out rhgr.MatrixgameUniversalGridLab_v11_0 --self-test
+
+      - name: Run the 306-tick headless Canvas simulation
+        run: |
+          java -Djava.awt.headless=true -cp out rhgr.MatrixgameUniversalGridLab_v11_0 --simulate 306 20261116 160 100 matrixgame-report.html | tee matrixgame-run.txt
+          test -s matrixgame-report.html
+          grep -q 'canvas id="world"' matrixgame-report.html
+
+      - name: Upload interactive simulation report
+        uses: actions/upload-artifact@v4
+        with:
+          name: matrixgame-v11-browser-canvas-report
+          path: |
+            matrixgame-report.html
+            matrixgame-run.txt
+          if-no-files-found: error
+          retention-days: 30
