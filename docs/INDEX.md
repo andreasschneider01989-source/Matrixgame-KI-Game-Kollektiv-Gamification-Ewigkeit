@@ -17,6 +17,24 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [LUMINI Compiler and Simulation](LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md) — Entwurf für typisierte Modelle und reproduzierbare Simulationen.
 - [Matrixgame Protocol](../matrixgame-protocol/README.md) — lokaler Prototyp, kein öffentlicher Multiplayer-Dienst.
 
+## Persönliche Entwicklung und Kontinuität
+
+- [MACHX × LUMINI LifeOS foundation](MACHX_LUMINI_LIFEOS_FOUNDATION_2026-11-19.md) — versionierte Ziele, Aufgaben, Evidenz, Datenschutz, menschliche Freigabe und Wiederaufnahme-Checkpoints.
+- [MACHX × LUMINI session checkpoint](MACHX_LUMINI_LIFEOS_SESSION_CHECKPOINT_2026-11-19.md) — Branches, offene PRs, Statusgrenzen und nächste Verifikationsschritte.
+
+## Second Earth und Simulation
+
+- [MACHX Second Earth — Quest 005](MACHX_SECOND_EARTH_QUEST_005_2026-11-20.md) — synthetisches Haus, Einzel-/Mehrbild-Evidenz, Agentenrollen und Bauplanbewertung.
+- [Quest 005 Agent Protocol](../second-earth/reconstruction/QUEST_005_AGENTS.md) — Rollen, Ground-Truth-Trennung und Evaluationsprotokoll.
+- [MACHX Second Earth — Quest 004](MACHX_SECOND_EARTH_QUEST_004_2026-11-20.md) — Foto-zu-Voxel-Rekonstruktion, Blueprint-Validierung und getrennte Geometrie-/Materialmetriken.
+- [Second Earth Reconstruction Lab](../second-earth/reconstruction/README.md) — ausführbarer Voxel-Blueprint-Evaluator und synthetische Testarchitektur.
+- [MACHX Second Earth — Quest 003](MACHX_SECOND_EARTH_QUEST_003_2026-11-20.md) — Materialdichte, Masse, Gewichtskraft und experimentelle Waagen.
+- [Second Earth Materials Lab](../second-earth/materials/README.md) — ausführbares Materialphysik-Referenzmodell mit Einheiten und Tests.
+- [MACHX Second Earth — Quest 002](MACHX_SECOND_EARTH_QUEST_002_2026-11-20.md) — Bild-/Video-Wahrnehmung, persistente 3D-Weltmodelle und astronomisches Schattenexperiment.
+- [Second Earth Astronomy Lab](../second-earth/astronomy/README.md) — ausführbares Sonnenstands- und Gnomonmodell mit Tests und Beobachtungsprotokoll.
+- [MACHX Second Earth — Quest 001](MACHX_SECOND_EARTH_QUEST_001_2026-11-20.md) — ausführbarer Valley-001-Pilot, reproduzierbare Policy-Vergleiche, Grenzen und nächste 3D-Adapterstufe.
+- [Second Earth Valley 001](../second-earth/README.md) — Python-Referenzsimulation mit synthetischen Annahmen und reproduzierbaren Seeds.
+
 ## Lernen und soziale Gestaltung
 
 - [Learning Quests and Responsible Gamification](LEARNING_QUESTS_AND_GAMIFICATION.md) — Vorschläge für freiwillige Lernmechaniken.

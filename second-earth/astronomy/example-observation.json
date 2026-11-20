@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "record_type": "ASTRONOMY_OBSERVATION_EXAMPLE",
+  "experiment_id": "gnomon-shadow-pilot-001",
+  "observation_id": "example-not-a-field-measurement",
+  "epistemic_status": "EXAMPLE",
+  "date_local": "2026-11-20",
+  "civil_time_local": "12:00",
+  "utc_offset_hours": 1,
+  "location": {
+    "latitude_deg": 50,
+    "longitude_deg": 8,
+    "precision": "GENERIC_EXAMPLE_NOT_USER_LOCATION"
+  },
+  "instrument": {
+    "type": "vertical_gnomon",
+    "height_m": 1,
+    "method": "example_only"
+  },
+  "measured": {
+    "shadow_length_m": null,
+    "shadow_azimuth_deg": null,
+    "uncertainty_m": null
+  },
+  "predicted": {
+    "solar_elevation_deg": null,
+    "solar_azimuth_deg": null,
+    "shadow_length_m": null
+  },
+  "model_version": "second-earth-solar-0.1.0",
+  "provenance": "synthetic example; not an observation",
+  "review_status": "NOT_REVIEWED"
+}
