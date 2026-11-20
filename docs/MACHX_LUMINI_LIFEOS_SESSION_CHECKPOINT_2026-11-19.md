@@ -65,6 +65,15 @@ Create a persistent, evidence-aware, positive-didactic development loop connecti
 - The 30-seed Valley 001 experiment also completed successfully in the same workflow.
 - Reconstruction tests validate deterministic voxel scoring only; no photo-to-3D vision model or game adapter is included yet.
 
+
+## Second Earth Quest 005 checkpoint
+- Added deterministic house-001 synthetic ground truth (1 m voxel edge; dimensions 6 × 7 × 5) with stone foundation, wood perimeter walls/openings and brick gable roof.
+- Added single-front and five-view orthographic evidence tasks; the reference geometry is reserved for evaluation.
+- Added material inventory and transparent three-stage build-plan estimate with explicit blocks/minute assumption.
+- Added 11 deterministic unit tests and agent-role/evidence protocol.
+- Explicit boundary: projections are geometry proxies, not photographs; no learned photo perception, real house dataset, Minecraft/Luanti builder or structural safety model is implemented.
+- Dedicated Second Earth workflow must complete before Quest 005 is marked verified.
+
 ## Review checkpoint
 - PR #44 title: `[Draft] Add LifeOS foundation and Second Earth simulation pilot`.
 - PR #44 remains open, draft, and unmerged.
