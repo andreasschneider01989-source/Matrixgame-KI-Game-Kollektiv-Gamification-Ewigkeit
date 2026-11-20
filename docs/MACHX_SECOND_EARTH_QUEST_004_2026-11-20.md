@@ -1,7 +1,7 @@
 # MACHX Second Earth — Quest 004: Photo-to-voxel reconstruction
 
 **Date:** 2026-11-20  
-**Status:** first executable benchmark/evaluator scaffold; image ingestion and agent perception are future work.
+**Status:** executable benchmark/evaluator scaffold; GitHub Actions PASS (30 tests total, including all 7 reconstruction tests). Image ingestion and agent perception remain future work.
 
 ## Goal
 Train and evaluate agents that reconstruct real structures from photographs into Minecraft/Luanti-style voxel blueprints, estimate resources, plan build order, construct, and independently evaluate results.
