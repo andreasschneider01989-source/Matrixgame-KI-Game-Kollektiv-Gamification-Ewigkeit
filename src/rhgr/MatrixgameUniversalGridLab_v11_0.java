@@ -1682,7 +1682,6 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
                     + CREATURE_BUILD_ENERGY_COST + CREATURE_BUILD_EXTRA_RESERVE;
             return actor.value("energy") >= requiredEnergy
                     && actor.value("structuresBuilt") < 1.0
-                    && actor.value("inventoryResources") < 2.0
                     && !hasNearbyTeamBuilding(snapshot, actor, TEAM_BUILDING_PROTECTION_RADIUS);
         }
 
@@ -1932,8 +1931,6 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
                             requiredEnergy, actor.value("energy"));
                 if (actor.value("structuresBuilt") >= 1.0)
                     return "BUILD NICHT MÖGLICH: Diese Unit hat bereits eine Zitadelle gebaut.";
-                if (actor.value("inventoryResources") >= 2.0)
-                    return "BUILD NICHT MÖGLICH: Erst Biomasse zur Team-Zitadelle liefern.";
                 if (hasNearbyTeamBuilding(actor, TEAM_BUILDING_PROTECTION_RADIUS))
                     return "BUILD NICHT MÖGLICH: Eine eigene Team-Zitadelle ist bereits in der Nähe.";
             } else if (actor.type.equals("CREATURE")) {
@@ -2132,7 +2129,7 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
             DecisionContext context = decisionContext(actor, snapshot);
             ObjectView self = context.self();
             if (evolutionMode && actor.type.equals("CREATURE")) {
-                GameAction ecological = strategicEvolutionAction(context);
+                GameAction ecological = strategicEvolutionAction(context, snapshot);
                 if (ecological != null) return ecological;
             }
             // Evolution workers deliver biomass to an adjacent team citadel before optional actions.
@@ -2192,7 +2189,7 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
             return null;
         }
 
-        private GameAction strategicEvolutionAction(DecisionContext context) {
+        private GameAction strategicEvolutionAction(DecisionContext context, WorldSnapshot snapshot) {
             Perception perception = context.perception();
             ObjectView self = context.self();
 
@@ -2219,7 +2216,21 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
                 if (move != null && context.legalOptions().contains(move)) return move;
             }
 
-            // 3) Once energy is stable, send carried biomass to the nearest visible team citadel.
+            // 3) Found a team citadel when none exists nearby and the cell can afford the
+            // build cost plus both reproduction and safety reserves. The resolver rechecks
+            // the live world, so simultaneous founders cannot all place duplicate nearby sites.
+            if (!hasNearbyTeamBuilding(snapshot, self, TEAM_BUILDING_PROTECTION_RADIUS)
+                    && self.value("structuresBuilt") < 1.0
+                    && context.legalOptions().stream().anyMatch(action ->
+                            action.kind() == ActionKind.INTERACT
+                                    && action.interactionType() == InteractionType.BUILD)) {
+                for (Direction direction : Direction.values()) {
+                    GameAction build = GameAction.interact(direction, InteractionType.BUILD);
+                    if (context.legalOptions().contains(build)) return build;
+                }
+            }
+
+            // 4) Once energy is stable, send carried biomass to the nearest visible team citadel.
             if (self.value("inventoryResources") >= 1.0 && energyRatio >= 0.65) {
                 ObjectView nearestBuilding = perception.visibleObjects().stream()
                         .filter(object -> object.type().equals("BUILDING")
@@ -4042,6 +4053,26 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
         DecisionContext fundedContext = world.decisionContext(hungryReserveFixture, world.snapshot());
         check(fundedContext.legalOptions().contains(divideAction),
                 "A cell with 1.6x threshold energy may divide when a free neighbour exists"); passed++;
+
+        // A well-fed cell establishes the first team citadel, even while carrying biomass.
+        world = emptyWorld(18, 14);
+        world.evolutionMode = true;
+        GameObject founder = world.object("founder", "CREATURE", "Zitadellengründer",
+                "●", Color.BLUE, 5, 5, true, 40, new EvolutionController());
+        founder.set("team", 0.0);
+        founder.set("energy", 30.0);
+        founder.set("reproductionThreshold", 12.0);
+        founder.set("inventoryResources", 2.0);
+        founder.genome = Genome.defaults();
+        world.addObject(founder);
+        GameAction foundingPlan = world.strategicInfrastructureAction(founder, world.snapshot());
+        check(foundingPlan != null && foundingPlan.kind() == ActionKind.INTERACT
+                        && foundingPlan.interactionType() == InteractionType.BUILD,
+                "A funded team cell founds its first citadel before optional exploration"); passed++;
+        world.submitAction(founder.id, foundingPlan);
+        world.tick();
+        check(world.countType("BUILDING") == 1 && founder.value("structuresBuilt") == 1.0,
+                "The first funded team cell successfully establishes one citadel"); passed++;
 
         // Hungry cells use a visible food target instead of spending a turn on optional actions.
         world = emptyWorld(18, 14);
