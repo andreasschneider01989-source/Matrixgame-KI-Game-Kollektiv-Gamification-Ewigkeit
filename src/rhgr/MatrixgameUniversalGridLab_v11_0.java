@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Matrixgame Universal Grid Lab v0.11.0 – keyboard camera controls over the v0.8.5 engine.
@@ -566,7 +569,196 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
             runSelfTests();
             return;
         }
+        if (args.length > 0 && "--simulate".equals(args[0])) {
+            runBatchSimulation(args);
+            return;
+        }
+        if (args.length > 0 && ("--help".equals(args[0]) || "-h".equals(args[0]))) {
+            System.out.println("GUI: java -cp out rhgr.MatrixgameUniversalGridLab_v11_0");
+            System.out.println("Tests: java -Djava.awt.headless=true -cp out rhgr.MatrixgameUniversalGridLab_v11_0 --self-test");
+            System.out.println("Simulation: java -Djava.awt.headless=true -cp out rhgr.MatrixgameUniversalGridLab_v11_0 --simulate [ticks] [seed] [width] [height] [report.html]");
+            return;
+        }
         SwingUtilities.invokeLater(() -> new MatrixgameUniversalGridLab_v11_0().setVisible(true));
+    }
+
+    /** Executes the simulation without Swing and creates an interactive HTML5 Canvas report. */
+    private static void runBatchSimulation(String[] args) {
+        try {
+            int requestedTicks = args.length > 1 ? Integer.parseInt(args[1]) : 306;
+            long seed = args.length > 2 ? Long.parseLong(args[2]) : SEED;
+            int width = args.length > 3 ? Integer.parseInt(args[3]) : DEFAULT_WORLD_WIDTH;
+            int height = args.length > 4 ? Integer.parseInt(args[4]) : DEFAULT_WORLD_HEIGHT;
+            Path output = Path.of(args.length > 5 ? args[5] : "matrixgame-report.html");
+            if (requestedTicks < 1 || requestedTicks > 20_000)
+                throw new IllegalArgumentException("ticks must be between 1 and 20000");
+            if (width < 24 || width > 400 || height < 18 || height > 400)
+                throw new IllegalArgumentException("world dimensions must be within 24..400 x 18..400");
+
+            GameWorld world = GameWorld.createEvolutionScenario(seed, width, height);
+            for (int i = 0; i < requestedTicks && !world.gameOver; i++) world.tick();
+            String html = buildSimulationHtmlReport(world, requestedTicks, seed);
+            Path parent = output.toAbsolutePath().getParent();
+            if (parent != null) Files.createDirectories(parent);
+            Files.writeString(output, html, StandardCharsets.UTF_8);
+
+            int level2 = (int) world.objects.stream().filter(o -> o.alive && o.type.equals("CREATURE")
+                    && o.value("unitLevel") >= 2.0).count();
+            int teamsWithCitadel = 0;
+            for (int team = 0; team < TEAM_COUNT; team++) {
+                final int teamId = team;
+                if (world.objects.stream().anyMatch(o -> o.alive && o.type.equals("BUILDING")
+                        && (int) o.value("team") == teamId)) teamsWithCitadel++;
+            }
+            System.out.printf(Locale.ROOT,
+                    "MATRIXGAME_SIMULATION_COMPLETE tick=%d/%d seed=%d world=%dx%d population=%d births=%d deaths=%d food=%d citadels=%d teamsWithCitadel=%d level2=%d level2Produced=%d%n",
+                    world.tick, requestedTicks, seed, width, height, world.creatureCount(), world.births,
+                    world.deaths, world.foodCollected, world.countType("BUILDING"), teamsWithCitadel,
+                    level2, world.level2UnitsProduced);
+            System.out.println("TEAM_POPULATION " + world.teamPopulationSummary());
+            System.out.println("REPORT_HTML " + output.toAbsolutePath());
+        } catch (Exception exception) {
+            System.err.println("MATRIXGAME_SIMULATION_ERROR: " + exception.getMessage());
+            System.err.println("Usage: --simulate [ticks] [seed] [width] [height] [report.html]");
+            System.exit(2);
+        }
+    }
+
+    private static String buildSimulationHtmlReport(GameWorld world, int requestedTicks, long seed) {
+        StringBuilder entities = new StringBuilder("[");
+        boolean first = true;
+        for (GameObject o : world.objects) {
+            if (!o.alive || o.type.equals("WALL")) continue;
+            if (!first) entities.append(',');
+            first = false;
+            entities.append("{\"id\":").append(jsonString(o.id))
+                    .append(",\"type\":").append(jsonString(o.type))
+                    .append(",\"name\":").append(jsonString(o.name))
+                    .append(",\"x\":").append(o.x).append(",\"y\":").append(o.y)
+                    .append(",\"team\":").append((int) o.value("team") + 1)
+                    .append(",\"level\":").append((int) o.value("unitLevel"))
+                    .append(",\"generation\":").append((int) o.value("generation"))
+                    .append(",\"hp\":").append(String.format(Locale.ROOT, "%.2f", o.value("hp")))
+                    .append(",\"energy\":").append(String.format(Locale.ROOT, "%.2f", o.value("energy")))
+                    .append(",\"stored\":").append(String.format(Locale.ROOT, "%.2f", o.value("storedResources")))
+                    .append(",\"cargo\":").append(String.format(Locale.ROOT, "%.2f", o.value("inventoryResources")))
+                    .append(",\"color\":").append(jsonString(String.format(Locale.ROOT, "#%02x%02x%02x",
+                            o.color.getRed(), o.color.getGreen(), o.color.getBlue())))
+                    .append('}');
+        }
+        entities.append(']');
+
+        StringBuilder history = new StringBuilder("[");
+        for (int i = 0; i < world.populationHistory.size(); i++) {
+            if (i > 0) history.append(',');
+            int[] sample = world.populationHistory.get(i);
+            history.append('[');
+            for (int j = 0; j < sample.length; j++) {
+                if (j > 0) history.append(',');
+                history.append(sample[j]);
+            }
+            history.append(']');
+        }
+        history.append(']');
+
+        int level2 = (int) world.objects.stream().filter(o -> o.alive && o.type.equals("CREATURE")
+                && o.value("unitLevel") >= 2.0).count();
+        int citadels = world.countType("BUILDING");
+        int teamsWithCitadel = 0;
+        for (int team = 0; team < TEAM_COUNT; team++) {
+            final int teamId = team;
+            if (world.objects.stream().anyMatch(o -> o.alive && o.type.equals("BUILDING")
+                    && (int) o.value("team") == teamId)) teamsWithCitadel++;
+        }
+
+        return """
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Matrixgame v0.11.0 – Simulation Report</title>
+<style>
+:root{color-scheme:dark;font-family:Segoe UI,Arial,sans-serif;background:#08111d;color:#e8f0fa}
+body{margin:0;padding:22px;background:linear-gradient(145deg,#0b1727,#060b12)}main{max-width:1500px;margin:auto}
+h1{font-size:24px;margin:0 0 6px}p{color:#9fb0c4;margin:4px 0 18px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:16px 0}
+.metric,.panel{background:#101e2e;border:1px solid #263c52;border-radius:12px;padding:14px}
+.metric b{display:block;font-size:25px;color:#70d6b0}.metric span{font-size:12px;color:#9fb0c4}
+.layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:14px}
+canvas{display:block;width:100%;background:#07101a;border:1px solid #29415a;border-radius:8px}
+#world{height:auto;aspect-ratio:16/9}#population{height:230px}
+.controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:12px 0;color:#b8c7d9;font-size:13px}
+button,select,input{accent-color:#59c5a5}button{background:#1b3047;color:#e8f0fa;border:1px solid #365575;border-radius:6px;padding:7px 12px;cursor:pointer}
+label{display:flex;gap:5px;align-items:center}.legend{display:flex;gap:9px;flex-wrap:wrap;font-size:12px;margin:10px 0;color:#becbda}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}#tip{min-height:34px;color:#a8c7df;font-size:12px;margin-top:8px}
+small{color:#8296ac}@media(max-width:900px){.layout{grid-template-columns:1fr}}
+</style></head><body><main>
+<h1>Matrixgame Universal Grid Lab v0.11.0</h1>
+<p>Interaktiver Browser-Canvas-Bericht · Seed <b>SEED_VALUE</b> · Welt <b>WIDTH_VALUE × HEIGHT_VALUE</b> · Tick <b>TICK_VALUE / REQUESTED_VALUE</b></p>
+<section class="metrics">
+<div class="metric"><b>POP_VALUE</b><span>lebende Units</span></div><div class="metric"><b>BIRTH_VALUE</b><span>Geburten</span></div>
+<div class="metric"><b>DEATH_VALUE</b><span>Todesfälle</span></div><div class="metric"><b>FOOD_VALUE</b><span>gesammelte Nahrung</span></div>
+<div class="metric"><b>BUILDING_VALUE</b><span>Zitadellen</span></div><div class="metric"><b>LEVEL2_VALUE</b><span>lebende Level-2-Units</span></div>
+<div class="metric"><b>TEAM_BUILDING_VALUE/6</b><span>Teams mit Zitadelle</span></div></section>
+<div class="layout"><section class="panel"><h2>Weltkarte</h2>
+<div class="controls"><label>Team <select id="team"><option value="0">Alle Teams</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
+<label><input type="checkbox" id="food" checked> Nahrung</label><label><input type="checkbox" id="units" checked> Units</label>
+<label><input type="checkbox" id="buildings" checked> Zitadellen</label><label>Zoom <input id="zoom" type="range" min="1" max="5" value="1"></label>
+<button id="fit">Ansicht einpassen</button></div>
+<canvas id="world" width="1400" height="790"></canvas><div id="tip">Bewege die Maus über ein Objekt, um Details anzuzeigen.</div>
+<div class="legend" id="legend"></div></section>
+<section class="panel"><h2>Populationsentwicklung</h2><canvas id="population" width="620" height="300"></canvas>
+<div class="legend" id="teamLegend"></div><h2>Simulation</h2>
+<p>Die Karte zeigt den Endzustand. Die Kurve bildet die zuletzt gespeicherten Team-Populationen ab.</p>
+<small>Headless Java-Simulation · keine externen JavaScript-Bibliotheken nötig.</small></section></div>
+</main><script>
+const worldData=ENTITY_DATA,populationData=HISTORY_DATA,worldWidth=WIDTH_VALUE,worldHeight=HEIGHT_VALUE;
+const colors=['#46a5f5','#ee5e66','#56ca87','#be7deb','#f5be41','#41d2cd'];
+const canvas=document.getElementById('world'),ctx=canvas.getContext('2d');let scale=1,offsetX=0,offsetY=0;const cellSize=7;
+function fit(){scale=Math.min((canvas.width-30)/(worldWidth*cellSize),(canvas.height-30)/(worldHeight*cellSize));offsetX=(canvas.width-worldWidth*cellSize*scale)/2;offsetY=(canvas.height-worldHeight*cellSize*scale)/2;drawWorld()}
+function visible(o){const team=+document.getElementById('team').value;if(team&&o.team!==team)return false;if(o.type==='FOOD'&&!document.getElementById('food').checked)return false;if(o.type==='CREATURE'&&!document.getElementById('units').checked)return false;if(o.type==='BUILDING'&&!document.getElementById('buildings').checked)return false;return true}
+function drawWorld(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#050c14';ctx.fillRect(0,0,canvas.width,canvas.height);const w=worldWidth*cellSize,h=worldHeight*cellSize;ctx.save();ctx.translate(offsetX,offsetY);ctx.scale(scale,scale);
+ctx.strokeStyle='#132437';ctx.lineWidth=.45;for(let x=0;x<=worldWidth;x++){ctx.beginPath();ctx.moveTo(x*cellSize,0);ctx.lineTo(x*cellSize,h);ctx.stroke()}for(let y=0;y<=worldHeight;y++){ctx.beginPath();ctx.moveTo(0,y*cellSize);ctx.lineTo(w,y*cellSize);ctx.stroke()}
+for(const o of worldData){if(!visible(o))continue;const x=o.x*cellSize,y=o.y*cellSize;if(o.type==='FOOD'){ctx.fillStyle='#73dc8e';ctx.beginPath();ctx.arc(x+3.5,y+3.5,2.1,0,Math.PI*2);ctx.fill()}else if(o.type==='BUILDING'){ctx.fillStyle=o.color;ctx.fillRect(x+.5,y+.5,6,6);ctx.strokeStyle='#ffe19a';ctx.strokeRect(x+.5,y+.5,6,6)}else if(o.type==='CREATURE'){ctx.fillStyle=o.color;ctx.beginPath();ctx.arc(x+3.5,y+3.5,o.level>=2?3.2:2.6,0,Math.PI*2);ctx.fill();if(o.level>=2){ctx.strokeStyle='#fff1b0';ctx.stroke()}}}ctx.restore()}
+function drawPopulation(){const c=document.getElementById('population'),g=c.getContext('2d'),pad=34;g.clearRect(0,0,c.width,c.height);g.fillStyle='#0a1420';g.fillRect(0,0,c.width,c.height);if(!populationData.length)return;const max=Math.max(5,...populationData.map(a=>Math.max(...a.slice(1))));g.strokeStyle='#294057';g.fillStyle='#9caec2';g.font='11px Segoe UI';for(let i=0;i<=4;i++){const y=pad+(c.height-pad*1.5)*i/4;g.beginPath();g.moveTo(pad,y);g.lineTo(c.width-10,y);g.stroke();g.fillText(String(Math.round(max*(1-i/4))),4,y+4)}for(let team=0;team<6;team++){g.strokeStyle=colors[team];g.lineWidth=2;g.beginPath();populationData.forEach((a,i)=>{const x=pad+(c.width-pad-16)*i/Math.max(1,populationData.length-1),y=c.height-pad-(a[team+1]/max)*(c.height-pad*1.5);if(i===0)g.moveTo(x,y);else g.lineTo(x,y)});g.stroke()}}
+function tipAt(e){const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*canvas.width/r.width,y=(e.clientY-r.top)*canvas.height/r.height,wx=Math.floor((x-offsetX)/(scale*cellSize)),wy=Math.floor((y-offsetY)/(scale*cellSize));const o=worldData.find(v=>v.x===wx&&v.y===wy&&visible(v));document.getElementById('tip').textContent=o?(o.type+' '+o.id+' · Team '+o.team+' · Level '+o.level+' · Gen '+o.generation+' · HP '+o.hp+' · Energie '+o.energy+' · Biomasse '+o.cargo+' · Lager '+o.stored):('Position ('+wx+', '+wy+')')}
+for(const id of ['team','food','units','buildings'])document.getElementById(id).addEventListener('change',drawWorld);
+document.getElementById('zoom').addEventListener('input',e=>{const z=+e.target.value;scale=Math.min((canvas.width-30)/(worldWidth*cellSize),(canvas.height-30)/(worldHeight*cellSize))*z;offsetX=(canvas.width-worldWidth*cellSize*scale)/2;offsetY=(canvas.height-worldHeight*cellSize*scale)/2;drawWorld()});
+document.getElementById('fit').addEventListener('click',()=>{document.getElementById('zoom').value=1;fit()});canvas.addEventListener('mousemove',tipAt);
+document.getElementById('legend').innerHTML='<span>● Unit</span><span>■ Zitadelle</span><span>· Nahrung</span><span>Goldrand = Level 2</span>';
+document.getElementById('teamLegend').innerHTML=colors.map((c,i)=>'<span><i class="dot" style="background:'+c+'"></i>Team '+(i+1)+'</span>').join('');fit();drawPopulation();
+</script></body></html>
+"""
+                .replace("SEED_VALUE", Long.toString(seed))
+                .replace("WIDTH_VALUE", Integer.toString(world.width))
+                .replace("HEIGHT_VALUE", Integer.toString(world.height))
+                .replace("TICK_VALUE", Integer.toString(world.tick))
+                .replace("REQUESTED_VALUE", Integer.toString(requestedTicks))
+                .replace("POP_VALUE", Integer.toString(world.creatureCount()))
+                .replace("BIRTH_VALUE", Integer.toString(world.births))
+                .replace("DEATH_VALUE", Integer.toString(world.deaths))
+                .replace("FOOD_VALUE", Integer.toString(world.foodCollected))
+                .replace("BUILDING_VALUE", Integer.toString(citadels))
+                .replace("LEVEL2_VALUE", Integer.toString(level2))
+                .replace("TEAM_BUILDING_VALUE", Integer.toString(teamsWithCitadel))
+                .replace("ENTITY_DATA", entities.toString())
+                .replace("HISTORY_DATA", history.toString());
+    }
+
+    private static String jsonString(String value) {
+        StringBuilder result = new StringBuilder("\"");
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            switch (c) {
+                case '\\' -> result.append("\\\\");
+                case '"' -> result.append("\\\"");
+                case '\n' -> result.append("\\n");
+                case '\r' -> result.append("\\r");
+                case '<' -> result.append("\\u003c");
+                case '>' -> result.append("\\u003e");
+                case '&' -> result.append("\\u0026");
+                default -> result.append(c);
+            }
+        }
+        return result.append('"').toString();
     }
 
     // ---------------------------------------------------------------------
@@ -4159,6 +4351,16 @@ public final class MatrixgameUniversalGridLab_v11_0 extends JFrame {
         check(world.objects.stream().filter(o -> o.type.equals("CREATURE"))
                         .allMatch(o -> o.value("energy") >= 0.0 && o.value("metabolism") > 0.0),
                 "Surviving cells must retain non-negative energy and positive metabolism"); passed++;
+
+        // The headless HTML report must contain an interactive canvas and embedded population data.
+        GameWorld reportWorld = GameWorld.createEvolutionScenario(4242L, 24, 18);
+        for (int i = 0; i < 3; i++) reportWorld.tick();
+        String reportHtml = buildSimulationHtmlReport(reportWorld, 3, 4242L);
+        check(reportHtml.contains("<canvas id=\"world\"")
+                        && reportHtml.contains("Populationsentwicklung")
+                        && !reportHtml.contains("ENTITY_DATA")
+                        && !reportHtml.contains("HISTORY_DATA"),
+                "Headless report must embed a Canvas map and population history without template placeholders"); passed++;
 
         // The classic Boulder Dash mode remains available on the same universal engine.
         world = GameWorld.createBoulderScenario(54321L, 32, 22);
