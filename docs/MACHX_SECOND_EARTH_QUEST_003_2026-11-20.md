@@ -1,7 +1,7 @@
 # MACHX Second Earth — Quest 003: Material physics and experimental scales
 
 **Date:** 2026-11-20  
-**Status:** first executable material-property model and tests added to the existing Quest 001/002 feature branch.
+**Status:** executable material-property model; GitHub Actions PASS (23 total Second Earth tests, including all 10 Quest 003 tests).
 
 ## User direction
 Extend 1 m³ voxel blocks with material density and mass; let agents construct a scale, measure force, infer mass or gravity when the other is independently known, and propose evidence-backed improvements to simulation physics without degrading useful gameplay or research capabilities.
