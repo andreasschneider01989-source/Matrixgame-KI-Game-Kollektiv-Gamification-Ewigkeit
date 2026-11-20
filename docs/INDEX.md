@@ -24,6 +24,8 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 
 ## Second Earth und Simulation
 
+- [MACHX Second Earth — Quest 004](MACHX_SECOND_EARTH_QUEST_004_2026-11-20.md) — Foto-zu-Voxel-Rekonstruktion, Blueprint-Validierung und getrennte Geometrie-/Materialmetriken.
+- [Second Earth Reconstruction Lab](../second-earth/reconstruction/README.md) — ausführbarer Voxel-Blueprint-Evaluator und synthetische Testarchitektur.
 - [MACHX Second Earth — Quest 003](MACHX_SECOND_EARTH_QUEST_003_2026-11-20.md) — Materialdichte, Masse, Gewichtskraft und experimentelle Waagen.
 - [Second Earth Materials Lab](../second-earth/materials/README.md) — ausführbares Materialphysik-Referenzmodell mit Einheiten und Tests.
 - [MACHX Second Earth — Quest 002](MACHX_SECOND_EARTH_QUEST_002_2026-11-20.md) — Bild-/Video-Wahrnehmung, persistente 3D-Weltmodelle und astronomisches Schattenexperiment.
