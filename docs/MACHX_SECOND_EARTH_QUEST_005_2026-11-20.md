@@ -1,7 +1,7 @@
 # MACHX Second Earth — Quest 005: House reconstruction benchmark
 
 **Date:** 2026-11-20  
-**Status:** deterministic synthetic reference, single-/multi-view evidence tasks and build-plan baseline implemented; CI verification pending.
+**Status:** deterministic synthetic reference, single-/multi-view evidence tasks and build-plan baseline implemented; GitHub Actions PASS (41 tests total, including all 11 Quest 005 tests).
 
 ## User choices
 - Object: house.
