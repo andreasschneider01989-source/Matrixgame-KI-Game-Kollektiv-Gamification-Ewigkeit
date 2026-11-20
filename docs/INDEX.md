@@ -23,6 +23,9 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [MACHX × LUMINI session checkpoint](MACHX_LUMINI_LIFEOS_SESSION_CHECKPOINT_2026-11-19.md) — Branches, offene PRs, Statusgrenzen und nächste Verifikationsschritte.
 
 ## Second Earth und Simulation
+- [MACHX Second Earth — Quest 006](MACHX_SECOND_EARTH_QUEST_006_2026-11-20.md) — persistenter hybrider Weltzustand, kollektive Beobachtungsfusion, Konfliktprüfung und JSON-Wiederherstellung.
+- [Quest 006 World State](../second-earth/reconstruction/world_state.py) — ausführbares Referenzmodell mit stabilen Objekt-IDs, Voxelzellen und Mesh-Referenzen.
+
 
 - [MACHX Second Earth — Quest 005](MACHX_SECOND_EARTH_QUEST_005_2026-11-20.md) — synthetisches Haus, Einzel-/Mehrbild-Evidenz, Agentenrollen und Bauplanbewertung.
 - [Quest 005 Agent Protocol](../second-earth/reconstruction/QUEST_005_AGENTS.md) — Rollen, Ground-Truth-Trennung und Evaluationsprotokoll.
