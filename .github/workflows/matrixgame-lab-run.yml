@@ -1,0 +1,89 @@
+name: Matrixgame Lab — Run simulation and Canvas report
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: Branch containing the Java simulator
+        required: true
+        type: choice
+        default: feature/matrixgame-v0110-survival-logistics
+        options:
+          - feature/matrixgame-v0110-survival-logistics
+      ticks:
+        description: Number of simulation ticks (1–20000)
+        required: true
+        type: number
+        default: 306
+      seed:
+        description: Reproducible random seed
+        required: true
+        type: number
+        default: 20261116
+      width:
+        description: World width (24–400)
+        required: true
+        type: number
+        default: 160
+      height:
+        description: World height (18–400)
+        required: true
+        type: number
+        default: 100
+
+permissions:
+  contents: read
+
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout selected Matrixgame source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_ref }}
+          sparse-checkout: |
+            src/rhgr/MatrixgameUniversalGridLab_v11_0.java
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Compile
+        run: |
+          mkdir -p out
+          javac -encoding UTF-8 -d out src/rhgr/MatrixgameUniversalGridLab_v11_0.java
+
+      - name: Run all deterministic self-tests
+        run: |
+          java -Djava.awt.headless=true -cp out rhgr.MatrixgameUniversalGridLab_v11_0 --self-test
+
+      - name: Run selected simulation and render HTML Canvas report
+        run: |
+          java -Djava.awt.headless=true -cp out rhgr.MatrixgameUniversalGridLab_v11_0 --simulate "${{ inputs.ticks }}" "${{ inputs.seed }}" "${{ inputs.width }}" "${{ inputs.height }}" matrixgame-report.html | tee matrixgame-run.txt
+          test -s matrixgame-report.html
+          grep -q 'canvas id="world"' matrixgame-report.html
+          {
+            echo "## Matrixgame simulation completed"
+            echo
+            echo 'Interactive report: included in the workflow artifact **matrixgame-browser-canvas**.'
+            echo
+            echo '### Simulation output'
+            echo '~~~text'
+            cat matrixgame-run.txt
+            echo '~~~'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload browser Canvas report and run log
+        uses: actions/upload-artifact@v4
+        with:
+          name: matrixgame-browser-canvas
+          path: |
+            matrixgame-report.html
+            matrixgame-run.txt
+          if-no-files-found: error
+          retention-days: 30
