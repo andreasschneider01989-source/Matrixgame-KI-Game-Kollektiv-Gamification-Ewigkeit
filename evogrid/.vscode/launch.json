@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "EvoGrid starten (Fenster)",
+            "request": "launch",
+            "mainClass": "EvoGrid",
+            "cwd": "${workspaceFolder}",
+            "classPaths": ["${workspaceFolder}/out"],
+            "console": "integratedTerminal"
+        }
+    ]
+}
