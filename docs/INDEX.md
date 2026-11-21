@@ -9,6 +9,17 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [Leitfaden für Sprachmodelle und andere automatisierte Leser](AI_READING_GUIDE.md)
 - [`llms.txt`](../llms.txt)
 
+## Dauerhaftes Fundament
+
+- [Matrixgame Foundation Charter](MATRIXGAME_FOUNDATION_CHARTER.md) — stabile Projektprinzipien, Evidenz, Datenschutz und Forschungszyklus.
+- [Foundation Change and Release Policy](FOUNDATION_CHANGE_POLICY.md) — Stable/Exploratory-Lanes, Review, Versionierung und Rollback.
+- [Research Artifact Schema](../schemas/research-artifact.schema.json) — maschinenlesbarer, portabler Forschungsdatensatz.
+- [Research Artifact Example](../examples/research-artifact.example.json) — Schema-Beispiel mit ausdrücklich markiertem Platzhalter.
+- [Research Quest Template](../templates/RESEARCH_QUEST_TEMPLATE.md) — wiederverwendbare Vorlage für Experimente.
+- [WORLD MEMORY 001 Forecasting Benchmark](../research/WORLD_MEMORY_001_FORECASTING_BENCHMARK.md) — historisches Nachrichten-Ereignis-Backtesting mit Leakage-Schutz.
+- [WORLD MEMORY Wellbeing and Positive-Impact Outcome Framework](../research/WORLD_MEMORY_WELLBEING_OUTCOME_FRAMEWORK.md) — mehrdimensionale Wirkungsmessung für Lebensqualität und Zukunftsfähigkeit.
+- [WORLD MEMORY Quest 001](../templates/WORLD_MEMORY_QUEST_001.md) — erster reproduzierbarer Experimentauftrag.
+
 ## Architektur und Zusammenarbeit
 
 - [Universal Knowledge Engine](UNIVERSAL_KNOWLEDGE_ENGINE.md) — vorgeschlagene Architektur für Wissensknoten, Belege, Simulationen und Lernquests.
@@ -16,10 +27,12 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [Collective Improvement Network](COLLECTIVE_IMPROVEMENT_NETWORK.md) — Vision und Roadmap für freiwillige Zusammenarbeit.
 - [LUMINI Compiler and Simulation](LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md) — Entwurf für typisierte Modelle und reproduzierbare Simulationen.
 - [Matrixgame Protocol](../matrixgame-protocol/README.md) — lokaler Prototyp, kein öffentlicher Multiplayer-Dienst.
+- [Infinity Canvas — Open Collaborative Platform Architecture](INFINITY_CANVAS_OPEN_COLLABORATIVE_PLATFORM.md) — Canvas-Projektion, semantische Graphen, Simulation, KI-Schnittstelle und Collaboration-Roadmap.
 
 ## Lernen und soziale Gestaltung
 
 - [Learning Quests and Responsible Gamification](LEARNING_QUESTS_AND_GAMIFICATION.md) — Vorschläge für freiwillige Lernmechaniken.
+- [Flexible Game Modes and Learning Telemetry](FLEXIBLE_GAME_MODES_AND_LEARNING_TELEMETRY.md) — konfigurierbare Missionen, Spielmodi und auswertbare Lernergebnisse.
 - [Collective AI Accessibility](COLLECTIVE_AI_ACCESSIBILITY_AND_GLOBAL_PARTICIPATION.md) — Zugänglichkeit und Teilnahme.
 - [Social intelligence](social-intelligence/README.md) — Kommunikation, Zustimmung, Kooperation und Datenschutz.
 - [Consciousness simulator review and plan](CONSCIOUSNESS_SIMULATOR_V014_REVIEW_AND_V015_PLAN.md) — Review und Vorschläge, nicht automatisch implementiert.

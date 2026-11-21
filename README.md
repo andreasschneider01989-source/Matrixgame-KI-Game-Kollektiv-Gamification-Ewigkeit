@@ -36,6 +36,19 @@ This should make it easier to:
 
 The existing code and documentation provide a starting point for this process. The modular architecture described below is a **development plan**, not a claim that all components already exist or work together.
 
+## Durable project foundation — 21 November 2026
+
+The project-wide foundation charter and change policy define how stable interfaces, exploratory research, provenance, privacy, evidence, and reviewed improvements work together. These are governance and documentation artifacts; they do not imply that the full proposed systems are implemented.
+
+- [Matrixgame Foundation Charter](docs/MATRIXGAME_FOUNDATION_CHARTER.md)
+- [Foundation Change and Release Policy](docs/FOUNDATION_CHANGE_POLICY.md)
+- [Portable Research Artifact JSON Schema](schemas/research-artifact.schema.json)
+- [Illustrative Research Artifact](examples/research-artifact.example.json)
+- [Reusable Research Quest Template](templates/RESEARCH_QUEST_TEMPLATE.md)
+- [WORLD MEMORY 001 Forecasting Benchmark](research/WORLD_MEMORY_001_FORECASTING_BENCHMARK.md) — leakage-safe design for historical news-event forecasts.
+- [WORLD MEMORY Wellbeing and Positive-Impact Outcome Framework](research/WORLD_MEMORY_WELLBEING_OUTCOME_FRAMEWORK.md) — evaluates whether later decisions improve life conditions rather than merely forecast news.
+- [WORLD MEMORY Quest 001](templates/WORLD_MEMORY_QUEST_001.md) — reusable first experiment plan.
+
 ## Collective Improvement Network
 
 The broader vision for human–AI collaboration, cross-project improvement quests, evidence-aware knowledge sharing, and responsible automation is documented here:
@@ -52,6 +65,7 @@ The Universal Knowledge Engine documentation connects scientific knowledge, pers
 - [Knowledge Node and Evidence Schema](docs/KNOWLEDGE_NODE_AND_EVIDENCE_SCHEMA.md)
 - [Physics A–Z Atlas](docs/PHYSICS_AZ_ATLAS.md)
 - [Learning Quests and Responsible Gamification](docs/LEARNING_QUESTS_AND_GAMIFICATION.md)
+- [Flexible Game Modes and Learning Telemetry](docs/FLEXIBLE_GAME_MODES_AND_LEARNING_TELEMETRY.md) — configurable missions, solo/co-op/competitive/survival/sandbox modes, and privacy-aware evaluation.
 - [Interplanetary Knowledge Network](docs/INTERPLANETARY_KNOWLEDGE_NETWORK.md)
 - [Proton–electron mass ratio and 2D shell-exchange research](docs/RESEARCH_PROTON_ELECTRON_RATIO_AND_2D_SHELL_EXCHANGE.md)
 - [Planet Earth — Habitability and Evolution Project](docs/PLANET_EARTH_HABITABILITY_AND_EVOLUTION.md)
@@ -94,6 +108,7 @@ A specification for preserving raw ideas, tracing transparent compiler filters, 
 A specification for one shared simulation snapshot with human-readable console output, machine-readable JSONL events and an interactive Infinite Canvas. It defines variable-driven axes, a dynamic scale legend, reproducible RunManifests, agent communication phases, transcript-to-module provenance and testable quality gates. This is a design and acceptance document, not a claim that the full implementation already exists.
 
 - [Infinite Canvas, dual interface and quality model](docs/INFINITE_CANVAS_DUAL_INTERFACE_AND_QUALITY_MODEL_2026-11-11.md)
+- [Infinity Canvas — Open Collaborative Platform Architecture](docs/INFINITY_CANVAS_OPEN_COLLABORATIVE_PLATFORM.md) — local-first canvas, semantic graph, simulation projection, AI gateway and safe multiplayer roadmap.
 
 ## Human flourishing without coercion — birth safety and anti-dystopia research (7 November 2026)
 

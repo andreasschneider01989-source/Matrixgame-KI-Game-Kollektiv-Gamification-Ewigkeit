@@ -5,6 +5,10 @@ This repository is a changing collection of prototypes, proposals, research note
 ## Entry points
 
 - [README](README.md): project status and direction.
+- [Foundation Charter](docs/MATRIXGAME_FOUNDATION_CHARTER.md): stable project invariants, evidence, privacy, reproducibility, and research lifecycle.
+- [Foundation Change Policy](docs/FOUNDATION_CHANGE_POLICY.md): Stable/Exploratory lanes, review gates, versioning, and rollback.
+- [Research Artifact JSON Schema](schemas/research-artifact.schema.json): portable machine-readable research record contract.
+- [Research Quest Template](templates/RESEARCH_QUEST_TEMPLATE.md): reusable experiment and learning task template.
 - [Documentation index](docs/INDEX.md): selected topic map.
 - [Universal Knowledge Engine](docs/UNIVERSAL_KNOWLEDGE_ENGINE.md): proposed knowledge/evidence architecture.
 - [Knowledge Node and Evidence Schema](docs/KNOWLEDGE_NODE_AND_EVIDENCE_SCHEMA.md): structured claim and evidence model.
