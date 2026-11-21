@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrixgame – Hörbericht KI-Vorlesungen (Vorlese-Modus)</title>
+<style>
+  :root { --bg:#0b1020; --card:#141a30; --acc:#6ee7b7; --acc2:#fbbf24; --txt:#e6e9f0; --muted:#9aa3b5; }
+  * { box-sizing:border-box; margin:0; font-family:system-ui,sans-serif; }
+  body { background:var(--bg); color:var(--txt); min-height:100vh; padding:1.5rem 1rem 3rem; }
+  .wrap { max-width:760px; margin:0 auto; }
+  h1 { color:var(--acc); font-size:1.3rem; margin-bottom:.2rem; }
+  .sub { color:var(--muted); margin-bottom:1.2rem; font-size:.9rem; }
+  .nav { display:flex; align-items:center; gap:.6rem; margin-bottom:1rem; flex-wrap:wrap; }
+  .btn { padding:.5rem .9rem; border-radius:10px; border:1px solid var(--acc); background:transparent;
+         color:var(--acc); cursor:pointer; font-size:.83rem; }
+  .btn:hover { background:rgba(110,231,183,.12); }
+  .btn.gold { border-color:var(--acc2); color:var(--acc2); }
+  .btn.rec.on { background:var(--acc2); color:#0b1020; font-weight:700; }
+  .card { background:var(--card); border-radius:14px; padding:1.3rem; border:1px solid #232b47; }
+  h2 { color:var(--acc2); margin-bottom:.8rem; font-size:1.05rem; }
+  .chunk { font-size:1rem; line-height:1.75; color:var(--txt); }
+  .dots { display:flex; gap:.3rem; flex-wrap:wrap; margin-top:1.1rem; }
+  .dots button { width:11px; height:11px; border-radius:50%; border:none; cursor:pointer; background:#2a3357; }
+  .dots button.done { background:var(--acc); }
+  .dots button.cur { background:var(--acc2); }
+  .foot { color:var(--muted); font-size:.78rem; margin-top:1rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Hörbericht: Einführung in die KI (TU Darmstadt)</h1>
+<p class="sub">Vorlesung 1–16 · Russell & Norvig · als Vorlese-Häppchen mit Sprachsynthese. Klick: Vor/Zurück · 🔊 vorlesen · Punkte = Fortschritt.</p>
+<div class="nav">
+  <button class="btn" id="prev">◀ Zurück</button>
+  <button class="btn rec" id="speak">🔊 Vorlesen</button>
+  <button class="btn" id="next">Weiter ▶</button>
+  <button class="btn" id="auto">▶ Auto-Spielen</button>
+</div>
+<div class="card" id="card">
+  <h2 id="title"></h2>
+  <p class="chunk" id="chunk"></p>
+</div>
+<div class="dots" id="dots"></div>
+<p class="foot">Quelle: Vorlesung1-9.pdf + Vorlesung9-16.pdf (TU Darmstadt, J. Fürnkranz, nach Russell/Norvig). Volltext: docs/wissen/HOERBERICHT-KI-VORLESUNGEN.md</p>
+</div>
+<script>
+const SECTIONS = [{"t":"Einleitung","x":"Das hier ist der Hörbericht der KI-Vorlesungen von der TU Darmstadt. Er ist in Häppchen gegliedert, jedes Häppchen ist laut vorlesbar. Die Vorlesungen folgen genau dem Standardwerk, das auch unsere Matrixgame-Quests ständig zitieren: Russell und Norvig, Künstliche Intelligenz – ein moderner Ansatz."},{"t":"Kapitel 1: Vier Definitionen von Intelligenz","x":"KI hat viele Definitionen, aber Russell und Norvig ordnen sie in ein Raster mit zwei Achsen: denkt die Maschine wie ein Mensch oder rational, und handelt sie wie ein Mensch oder rational. Der wichtigste Ansatz ist der moderne: rational handeln heißt, mit den verfügbaren Informationen das Zielergebnis maximieren. Und die Warnung der Vorlesung: perfekte Rationalität ist nur in idealen Umgebungen möglich. Der perfekte Agent existiert nicht. Also bauen wir begrenzte Agenten, die sich verbessern: das Überbieten-Prinzip, formalisiert."},{"t":"Kapitel 2: Geschichte und ihr Richtungssinn","x":"Die Geschichte der KI ist eine Geschichte von großen Versprechen und Winter. 1956 prägt McCarthy den Begriff Artificial Intelligence. Newell und Simon prophezeiten 1958, dass in zehn Jahren ein Computer Schachweltmeister wird und Beweise findet. Es dauerte 40 statt 10 Jahre. Die Richtung der Prognose war richtig, die Skala war falsch. Genau dafür existieren Evidenzklassen: Vorhersagen brauchen Angabe der Fehlerspanne, nicht nur Richtung. Dann kamen die Winter: das Lighthill-Report 1973 über mangelnde Skalierbarkeit, und Minsky und Papert, die zeigten, dass Perzeptrone nur linear trennen. Merksatz: Wer wie ein Historiker trainiert, verspricht wie ein Konfabulierter und belegt wie ein Wissenschaftler."},{"t":"Kapitel 3: Agenten und die PEAS-Formel","x":"Ein rationaler Agent hat vier Bausteine, abgekürzt PEAS: Performance, Environment, Actuators, Sensors. Performance ist das Wertesystem, Environment die Umwelt, Actuators die Hände, Sensors die Augen. Das ist unser Perception Frame aus Update 002 plus Belohnung. Die Agenten-Hierarchie: einfache Reflex-Agenten reagieren nur auf das Jetzt. Modellbasierte Agenten führen ein inneres Weltmodell. Zielbasierte Agenten planen voraus. Nutzenbasierte Agenten wägen Erwartungen gegeneinander. Und lernende Agenten verändern sich mit Erfahrung. Das ist die Stufenleiter: Ein Agent darf auf der höheren Ebene stehen, wenn sein Weltmodell die darunterliegenden Schichten zuverlässig ersetzt."},{"t":"Kapitel 4: Uninformierte Suche","x":"Ein Suchproblem ist formal fünf Elemente: Anfangszustand, Aktionen, Transitionsmodell, Zieltest, Kostenpfad. Bei uninformierter Suche kennt der Agent nur die Struktur: Breitensuche, Tiefensuche, iterative Tiefensuche, bidirektionale Suche. Iterative Tiefensuche gewinnt die Krone: vollständig und optimal wie die Breitensuche, aber mit linearem statt exponentiellem Speicher. Die Lektion: Das scheinbar naive Prinzip ist oft das beste natürliche Gesamtsystem."},{"t":"Kapitel 5: Heuristische Suche und A-Stern","x":"Jetzt kommt Intelligenz in die Suche. Eine Heuristik schätzt, wie teuer der restliche Weg bis zum Ziel noch ist. Die A-Stern-Formel: echte Kosten bis hier plus Heuristik. A-Stern ist optimal und vollständig, aber nur wenn die Heuristik ADMISSIBLE ist: sie darf die wahren Kosten niemals überschätzen. Jede Überschätzung kann die korrekte Lösung verwerfen. Das ist die mathematische Version einer Kernregel bei uns: Eine Überschätzung verwirft die beste Geschichte. Evidenzklassen-Pflicht ist eine admissible Heuristik in Wissensform. Never overmeasure."},{"t":"Kapitel 6: Lokale Suche und Genetische Algorithmen","x":"Wenn der Pfad egal ist und nur das Ergebnis zählt, sucht man lokal: Hill Climbing steigt nur bergauf und bleibt in Kuhlen hängen. Simulated Annealing akzeptiert manchmal Verschlechterung, um aus lokalen Maxima wieder auszubrechen. Genetische Algorithmen halten eine Population aus Kandidaten, selektieren die besten, rekombinieren und mutieren. Genetisches Programmierung mutiert sogar die Programmstruktur: Befehle erzeugen, Löschen verdoppeln, Argumente anpassen. Das ist buchstäblich die Mechanik unserer Neuronenkolonie: Teilung, Mutation, natürliche Selektion mit Belohnung."},{"t":"Kapitel 7: Constraint Satisfaction und Sudoku","x":"Ein CSP ist ein Problem aus Variablen, Wertebereichen und Beschränkungen. Sudoku ist der Klassiker. Die großen Werkzeuge: Forward Checking und Constraint Propagation. Jede Zuweisung schneidet sofort unmögliche Werte aus den Nachbarn. Die ganz große Lektion: Problem-Dekomposition. Baumstruktur ist lineare lösbar, fast-baumanige Probleme werden durch Cut-Set-Konditionierung in suchbare Teile geschnitten. Übersetzt: Wer die Welt in kleinstmögliche unabhängige Substrukturen zerlegt, entkommt der kombinatorischen Explosion. Zerlegung ist der Deckel gegen die Explosion – mathematisch bewiesen."},{"t":"Kapitel 8: Spiele: Minimax und Alpha-Beta","x":"Für zweiseitige Spiele mit perfekter Information gibt es MINIMAX: bester eigener Zug, schlimmste Gegenantwort, rekursiv bis zum Terminale. Aber die b-Verzweigung explodiert exponentiell. Deshalb ALPHA-BETA PRUNING: Der Algorithmus schneidet Zweige ab, die das Ergebnis sicher nicht mehr verändern können. Mit optimaler Zug-Reihenfolge schaut Alpha-Beta doppelt so weit ins Spiel wie MiniMax ohne Mehrkosten. Und der Horizont-Effekt: Bei Suchbegrenzung verschieben zufällige Handlungen die Katastrophe nur über die Grenze – die FETTMASTER-Kriegerin der Kognitionswissenschaft."},{"t":"Kapitel 9: Planung: STRIPS und Partial-Order Planning","x":"Ein Planer mit STRIPS hat drei Felder pro Aktion: Vorbedingung, Add-Liste, Delete-Liste. Jede Aktion ist eine Zeile im Protokoll. Die Sussman-Anomalie zeigt: Unterziele sind NICHT unabhängig – die kürzeste Lösung eines Unterziels kann eine spätere Lösung ruinieren. Die Antwort der Forschung: PARTIAL-ORDER PLANNING, ein Plan, der NUR die Reihenfolge einschränkt, die notwendig ist. Der Schuh-Beispiel: Linkssocke vor Linksschuh, Rechtssocke vor Rechtsschuh, sonst keine Reihenfolge nötig. Das ist der LEAST-COMMITMENT-Grundsatz: nicht auszuüben. Wenn hier bei der T60 die Wahl möglich ist, kontrolle. Least Commitment ist der Deckel gegen verfrühte Bindung – genau wie die vielfältige Kopplung im Oktaven-Kern, die gegen den GLEICHSCHALT-Wächter verteidigt."},{"t":"Kapitel 10: GraphPlan, Mutex und SatPlan","x":"GRAPHPLAN baut BRUGGEN in Schichten: Ebene S0 ist der Anfangszustand, Ebene A0 sind alle möglichen Aktionen, Ebene S1 sind alle möglichen Wirkungen, und so weiter, mit MUTEX-Verknüpfungen zwischen den Dingen, die NICHT zusammen passieren können. Endet, wenn zwei Schichten identisch sind. Danach extrahiert der Algorithmus die Lösung rückwärts. SATPLAN übersetzt das Ganze in eine Erläuterung von SAT-Problemen. Matrixgame: MUTEX ist die definitive korrekte Formulierung von Widersprüchen: manche Zustände und Aktionen können buchstäblich nicht gleichzeitig existieren. Wer zwei Dinge zusammen haben will, die mutex sind, kämpft nicht, er baut Schichten."},{"t":"Kapitel 11: Wahrscheinlichkeit und Bayes","x":"Die Welt ist unsicher. Kolmogorovs Axiome definieren Wahrscheinlichkeit formal. Zentrale Programmierung: BEDINGTE WAHRSCHEINLICHKEIT: Wie sicher bin ich mir einer Annahme, wenn ich dieses Wissen bereits habe. Der Bayes-Satz verändert feste Annahmen mit neuen Beobachtungen: Prior mal Likelihood. Der AIDS-Test aus der Vorlesung: Ein Test, der 99 Prozent korrekt arbeitet, sagt bei einer selteneren Krankheit bei positivem Test trotzdem mit hoher Wahrscheinlichkeit Gesundheit, denn die Basisrate dominiert. Das ist die mathematische Basis der Evidenzklassen: Keine Behauptung ohne Vorwahrscheinlichkeit und Likelihood. Wer die Basisrate übersieht, macht den klassischen Basis-Fehlbetreiber. Und darauf steht das MINGA-Testen der Wächter wei Sucht-Kern."},{"t":"Kapitel 12: Bayes-Netze und Inferenz","x":"Ein Bayes-Netz ist ein gerichteter Graph: Knoten sind Zufallsvariablen, Kanten sind direkte Einflüsse. Jeder Knoten hat nur eine kleine bedingte Wahrscheinlichkeit auf seine Eltern – keine riesigen Tabellen. Mit der MARKOV BLANKET (Eltern, Kinder, Kinder-Eltern) braucht man für eine lokale Schlussfolgerung nur wenige Nachbarn. Segens-kindliche Kompenz: Hier ist die Architektur der Matrixgame Wächter: Jeder Wächter hat ein LOCAL RULE SET und Robin global. Eine Ärgerliche Vorlesungsregel: genaue Inferenz in Bayes-Netzen ist NP-hart, deshalb dient Stichprobe n Übereinstimmung. Und: das MCMC-Verfahren Sampling aus den bisherigen Bewegungsmodellen in Matrixgame Std-Scores genau replizieren. Ohne die MCMC Methoden würde sich 2RReak nicht an den statistischen Zahlen fühlen."},{"t":"Kapitel 13: Entscheiden unter Unsicherheit: MEU und der Wert von Information","x":"Rational unter Unsicherheit heißt: MAXIMIERE DEN ERWARTETEN NUTZEN. Die Vorlesungen navigieren dazu: Lotterien, Präferenzen, Nutzenfunktionen. Und dann die glorreiche Definition: VALUE OF PERFECT INFORMATION: Wie viel wäre perfekte Information über eine Variable wert? Erwartung der Perfektinformationswert ist NIE NEGATIV: Information kann niemals schaden – ABER: CC 5.5 Matrixgame-Kernregel: Information ohne Hand Initiative ist VAE X. Das ist die mathematische Rechtfertigung des Matrixgame Feedback-Loops: Jede neue Messung aus dem PERCEPTION FRAME hat einen berechenbaren Wert. Jede Information ohne Handlungsverwendung wird als hohe Klasse B via al reservoir Energie kostet."},{"t":"Kapitel 14: Lernen: Perceptron und Backpropagation","x":"Ein künstliches Neuron ist eine gewichtete Summe plus Schwelle. Das PERCEPTRON lernt durch Klassifikations-Fehler, wenn die Daten linear trennbar sind. Und dann KANN ZERO kein XOR bleiben – Deshalb MULTILAYER: verborgene SCHICHTEN plus Sigmoid, und BACKPROPAGATION: Der Fehler wird von hinten nach vorne durch die Schichten gegliedert, und die Gewichte werden in entgegengesetzter Richtung des Gradienten verringert. Danach: OVERFITTING: Das Netz lernt die Trainingsdaten auswendig statt die Regel. Matrixgame: BACKPROPAGATION DER FEHLER INS FREIGAM-TEAM: Jeder Fehler wird nicht beim Unit, sondern beim Konfigurateur des Systems belohnt (Programmierer). Der KONFABULATIONS-Wächter war ein OVERFIT, der die Trainingsdaten korrekt vorhersagt."},{"t":"Kapitel 15: Bestärkungslernen: MENACE, Q-Learning und TD-Gammon","x":"Reinforcement Learning ist Lernen mit Feedback: nicht, was ist wahr, sondern was war gut. Die Herzstück-Erkenntnis ist MENACE von Donald Michie 1963: ein Schachautomat aus Streichholzschachteln und Bonbons, der Tic-Tac-Toe lernte, allein durch Belohnung und Bestrafung. Das CREDIT ASSIGNMENT PROBLEM fragt: Welche einzelnen Züge haben den eigentlichen Erfolg verursacht? Q-LEARNING von Watkins 1989 ist die Antwort: Man lernt direkt die Qualität einer Aktion in einem Zustand. TD-GAMMON lernte Backgammon nur durch Selbstspielen. Matrixgame: Unsere Neuronenkolonie ist bereits ein Q-Learner: Belohnung als Kausal-Verbindung. Und der Exploration vs. Exploitation-Balance: epsilon-greedy ist genau die Balance, die aus den ersten Versuchen≳ in der Arena entsteht."},{"t":"Kapitel 16: Kann eine Maschine denken? Turing und Searle","x":"Der philosophische Abschluss der Vorlesungen: Der TURING-TEST als Nachahmungsspiel. Starke vs. Schwache KI. Searles CHINESE ROOM: Ein Mann in einem Raum folgt Regeln, um chinesische Zeichen zu manipulieren – er hat kein Verstehen, CUR, die Antwort ist korrekt. Sind die Antworten des Raums also VERSTEHEND? Searle sagt nein. Die Antworten darauf (Systems Reply, Robot Reply, Brain Reply) sind philosophisch offen. Matrixgame: WIR HASSEN DIESE FRAGE NICHT – WIR SIE AUF: Statt zu fragen, denkt die Maschine, fragen wir: Hat das System ein Archiv, Messungen mit Konfidenz, Interpretationen mit Evidenzklasse und Wächter, die Konfabulation abfangen? Das ist die funktionale Version desVerstehens aus dem ERINNERUNGS-KERN: Ein Briefing ist kein Gedächtnis, ein Archiv ist eines."},{"t":"Fazit","x":"Damit schließt der Hörbericht. Die TU-Vorlesungen geben uns die MATHEMATIK, unser Projekt gibt die FRAGESTELLUNG. Von heute an sind wir in der Lage, alle Sprachmodelle von Vorlesung 1 bis 16 als MATH TOKENS zu nutzen. Und das ist die Evidenz der geplanten Fragen: Wir nehmen nicht nur an AI-Simulationen teil, wir bauen die Infrastruktur, die die Antwort JEDER Agentenversion messbar macht. Mit 25%. Entbrechen, durch Entbrechen, durchgwinnung. Make the game better than we found it."}];
+let i = 0, playing = false, heard = new Set(JSON.parse(localStorage.getItem("mg_hoer") || "[]"));
+const title = document.getElementById("title"), chunk = document.getElementById("chunk"), dots = document.getElementById("dots");
+SECTIONS.forEach((s, idx) => {
+  const d = document.createElement("button");
+  d.onclick = () => { stop(); go(idx); };
+  dots.appendChild(d);
+});
+function render() {
+  document.getElementById("dots").querySelectorAll("button").forEach((d, idx) => {
+    d.className = heard.has(idx) ? "done" : (idx === i ? "cur" : "");
+  });
+}
+function go(n) {
+  i = (n + SECTIONS.length) % SECTIONS.length;
+  heard.add(i);
+  localStorage.setItem("mg_hoer", JSON.stringify([...heard]));
+  title.textContent = SECTIONS[i].t;
+  chunk.textContent = SECTIONS[i].x;
+  render();
+}
+function stop() { playing = false; speechSynthesis && speechSynthesis.cancel(); }
+document.getElementById("prev").onclick = () => { stop(); go(i - 1); };
+document.getElementById("next").onclick = () => { stop(); go(i + 1); };
+const sb = document.getElementById("speak");
+sb.onclick = () => {
+  if (speechSynthesis.speaking) { speechSynthesis.cancel(); sb.classList.remove("on"); return; }
+  const u = new SpeechSynthesisUtterance(SECTIONS[i].t + ". " + SECTIONS[i].x);
+  u.lang = "de-DE";
+  u.onend = () => { sb.classList.remove("on"); if (playing) go(i + 1), sb.click(); };
+  sb.classList.add("on");
+  speechSynthesis.speak(u);
+};
+document.getElementById("auto").onclick = (e) => {
+  playing = !playing;
+  e.target.textContent = playing ? "⏸ Pause" : "▶ Auto-Spielen";
+  if (playing) sb.click(); else { speechSynthesis.cancel(); }
+};
+go(0); render();
+</script>
+</body>
+</html>
