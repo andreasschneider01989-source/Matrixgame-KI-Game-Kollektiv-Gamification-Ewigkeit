@@ -27,6 +27,7 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [Collective Improvement Network](COLLECTIVE_IMPROVEMENT_NETWORK.md) — Vision und Roadmap für freiwillige Zusammenarbeit.
 - [LUMINI Compiler and Simulation](LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md) — Entwurf für typisierte Modelle und reproduzierbare Simulationen.
 - [Matrixgame Protocol](../matrixgame-protocol/README.md) — lokaler Prototyp, kein öffentlicher Multiplayer-Dienst.
+- [Infinity Canvas — Open Collaborative Platform Architecture](INFINITY_CANVAS_OPEN_COLLABORATIVE_PLATFORM.md) — Canvas-Projektion, semantische Graphen, Simulation, KI-Schnittstelle und Collaboration-Roadmap.
 
 ## Lernen und soziale Gestaltung
 
