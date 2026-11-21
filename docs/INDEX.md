@@ -9,6 +9,14 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [Leitfaden für Sprachmodelle und andere automatisierte Leser](AI_READING_GUIDE.md)
 - [`llms.txt`](../llms.txt)
 
+## Dauerhaftes Fundament
+
+- [Matrixgame Foundation Charter](MATRIXGAME_FOUNDATION_CHARTER.md) — stabile Projektprinzipien, Evidenz, Datenschutz und Forschungszyklus.
+- [Foundation Change and Release Policy](FOUNDATION_CHANGE_POLICY.md) — Stable/Exploratory-Lanes, Review, Versionierung und Rollback.
+- [Research Artifact Schema](../schemas/research-artifact.schema.json) — maschinenlesbarer, portabler Forschungsdatensatz.
+- [Research Artifact Example](../examples/research-artifact.example.json) — Schema-Beispiel mit ausdrücklich markiertem Platzhalter.
+- [Research Quest Template](../templates/RESEARCH_QUEST_TEMPLATE.md) — wiederverwendbare Vorlage für Experimente.
+
 ## Architektur und Zusammenarbeit
 
 - [Universal Knowledge Engine](UNIVERSAL_KNOWLEDGE_ENGINE.md) — vorgeschlagene Architektur für Wissensknoten, Belege, Simulationen und Lernquests.
