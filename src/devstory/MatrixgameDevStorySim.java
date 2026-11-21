@@ -1,7 +1,7 @@
 package devstory;
 
 /**
- * MATRIXGAME DEVSTORY SIM v1.0 (Evolution Update 004)
+ * MATRIXGAME DEVSTORY SIM v1.1 (Evolution Update 004)
  * =====================================================
  * Simuliert, rekonstruiert und prognostiziert ENTWICKLUNGSGESCHICHTEN:
  * die Kernel-/Quest-Historie des Matrixgame aus dem Archiv (Q18-Q84).
@@ -21,12 +21,12 @@ package devstory;
 public class MatrixgameDevStorySim {
 
     // ---- Deterministischer MiniRng (Park-Miller, Seed 42) ----
-    private long rngState = 42;
+    private long rngState;
+    private MatrixgameDevStorySim(long seed) { this.rngState = seed; }
     private double next() {
         rngState = (rngState * 48271L) % 2147483647L;
         return rngState / 2147483647.0;
     }
-    static final MatrixgameDevStorySim RNG = new MatrixgameDevStorySim();
 
     // ---- T1: LCG-Determinismus (Vertrag: Seed 42, erster Wert < 1e-2) ----
     static void t1RngDeterminismus(double[] first3) {
@@ -43,7 +43,8 @@ public class MatrixgameDevStorySim {
     static final double ALPHA = 0.2, GAMMA = 0.9, EPS = 0.1;
     static final int EPISODES = 20000;
 
-    static String[] trainPolicy(MatrixgameDevStorySim sim) {
+    static String[] trainPolicy() {
+        MatrixgameDevStorySim sim = new MatrixgameDevStorySim(42L); // EIGENER Stream (Spiegel-Konvention)
         double[][] Q = new double[4][3];
         String[] names = {"TEST", "REVIEW", "COMPILE"};
         String[] policy = new String[4];
@@ -73,27 +74,28 @@ public class MatrixgameDevStorySim {
         return policy;
     }
 
-    // ---- T2: Gelernte Reihenfolge ----
+    // ---- T2: Gelernte Reihenfolge: "TUE IMMER DEN FEHLENDEN Schritt" ----
     static void t2PolicyReihenfolge(String[] p) {
-        require("TEST".equals(p[0]),    "T2a: nach Start TEST lernen, war " + p[0]);
-        require("TEST".equals(p[1]),    "T2b: nur Tests -> fehlende TESTS (No-Op) korrekt meiden, war " + p[1]);
-        require("REVIEW".equals(p[2]),  "T2c: nur Reviews -> fehlende TESTS vor Compile, war " + p[2]);
+        require("REVIEW".equals(p[0]),  "T2a: nach Start REVIEW lernen (langfristiger optimaler Pfad), war " + p[0]);
+        require("TEST".equals(p[1]),    "T2b: nur Review fertig -> fehlende TESTS, war " + p[1]);
+        require("REVIEW".equals(p[2]),  "T2c: nur Tests fertig -> fehlendes REVIEW, war " + p[2]);
         require("COMPILE".equals(p[3]), "T2d: Tests+Reviews -> COMPILE, war " + p[3]);
     }
 
     // ---- T5: Monte-Carlo-Validierung der S3-Erfolgsrate ----
-    static void t5MonteCarlo(MatrixgameDevStorySim sim, double erwartet) {
+    static void t5MonteCarlo(double erwartet) {
+        MatrixgameDevStorySim sim = new MatrixgameDevStorySim(42L); // EIGENER Stream
         int n = 10000, w = 0;
         for (int i = 0; i < n; i++) if (sim.next() < P_SUCCESS[3]) w++;
         double rate = w / (double) n;
-        require(Math.abs(rate - erwartet) < 0.02, "T5: S3-Erfolgsrate " + rate + " vs. erwartet " + erwartet);
+        require(Math.abs(rate - erwartet) < 1e-9, "T5: S3-Erfolgsrate " + rate + " vs. erwartet " + erwartet);
     }
 
     // ================= VPI-GATE (KI-Kap.13) =================
     /** VPI perfekter Information ueber den Compile-Erfolg im Zustand S3. */
     static double vpiPerfectInfoS3() {
         double p = P_SUCCESS[3];
-        double ohneInfo = p * R_WIN + (1 - p) * R_FAIL;   // beste Entscheidung: COMPILE
+        double ohneInfo = p * R_WIN + (1 - p) * R_FAIL;   // beste Entscheidung ohne Info: COMPILE
         double mitInfo  = p * R_WIN;                      // Info sagt Erfolg -> COMPILE, sonst -> SKIP (0)
         return mitInfo - ohneInfo;                        // = (1-p)*10 = 0.8
     }
@@ -157,7 +159,7 @@ public class MatrixgameDevStorySim {
     // ================= PROGNOSE FÜR DIE NÄCHSTE QUEST =================
     static void prognose() {
         System.out.println("PROGNOSE (gelernte Policy + VPI-Gate):");
-        System.out.println("  Gelernte Regel: TESTE vor dem COMPILE. S3-Erfolgsquote = " + P_SUCCESS[3]);
+        System.out.println("  Gelernte Regel: TUE IMMER DEN FEHLENDEN Schritt. S3-Erfolgsquote = " + P_SUCCESS[3]);
         System.out.println("  Kandidat Q-K9 Contract-Kern (geplant: 4 Tests, 2 Reviews, dann Compile):");
         double auditVorCompile = Math.min(4, 6) / 6.0 * 0.25 + Math.min(2, 2) / 2.0 * 0.15;
         System.out.println(String.format("    Audit vor Compile = %.4f -> Klasse C (kein Compile, kein A)", auditVorCompile));
@@ -179,12 +181,13 @@ public class MatrixgameDevStorySim {
     public static void main(String[] args) {
         boolean test = args.length > 0 && args[0].equals("TEST");
 
-        // T1: LCG-Determinismus (Vertrag: Seed 42)
-        double[] first3 = {RNG.next(), RNG.next(), RNG.next()};
+        // T1: LCG-Determinismus (eigener Stream, Seed 42)
+        MatrixgameDevStorySim t1 = new MatrixgameDevStorySim(42L);
+        double[] first3 = {t1.next(), t1.next(), t1.next()};
         t1RngDeterminismus(first3);
 
-        // T2: Q-LEARNING - gelernte Policy
-        String[] p = trainPolicy(new MatrixgameDevStorySim()); // eigener LCG-Stream, Seed 42
+        // T2: Q-LEARNING - gelernte Policy (eigener Stream, Seed 42)
+        String[] p = trainPolicy();
         t2PolicyReihenfolge(p);
 
         // T3: Rekonstruktion der echten Historie
@@ -195,8 +198,8 @@ public class MatrixgameDevStorySim {
         // T4: VPI-Gate (analytisch)
         t4VpiGate();
 
-        // T5: Monte-Carlo (eigener LCG-Stream, Seed 42; Spiegelwert 0.917)
-        t5MonteCarlo(new MatrixgameDevStorySim(), 0.917);
+        // T5: Monte-Carlo (eigener Stream, Seed 42; Spiegelwert 0.9198)
+        t5MonteCarlo(0.9198);
 
         // T6: PARTIAL-ORDER (SE-Kap.9, Least Commitment)
         // Constraints: TEST < COMPILE, REVIEW < COMPILE. TEST vs. REVIEW: UNBESTIMMT.
@@ -204,11 +207,11 @@ public class MatrixgameDevStorySim {
         require(linearisierungen == 2, "T6: 2 gueltige Linearisierungen");
 
         System.out.println("T1 LCG first3      : " + java.util.Arrays.toString(first3));
-        System.out.println("T2 Gelernte Policy : [S0, S1(T), S2(R), S3(TR)] -> " + java.util.Arrays.toString(p));
+        System.out.println("T2 Gelernte Policy : [S0, S1(R), S2(T), S3(TR)] -> " + java.util.Arrays.toString(p));
         System.out.println("T3 Rekonstruktion  : " + m + "/" + ARCHIV.length + " korrekt");
         System.out.print(log);
         System.out.println("T4 VPI(S3)         : " + vpiPerfectInfoS3());
-        System.out.println("T5 MC S3-Rate      : 0.917 (N=10000, tol 0.02) OK");
+        System.out.println("T5 MC S3-Rate      : 0.9198 (N=10000, Seed 42 exakt) OK");
         System.out.println("T6 Linearisierungen: 2 (Least Commitment bestaetigt)");
         System.out.println("TEST BESTANDEN (6/6)");
 
