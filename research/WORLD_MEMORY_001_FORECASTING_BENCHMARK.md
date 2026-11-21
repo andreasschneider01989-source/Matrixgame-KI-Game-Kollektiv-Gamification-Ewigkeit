@@ -24,7 +24,7 @@ The GDELT Project documents the 2.0 event and Global Knowledge Graph streams as 
 - Event 2.0 codebook: https://data.gdeltproject.org/documentation/GDELT-Event_Codebook-V2.0.pdf
 - GDELT 1.0 historical daily data: https://gdeltproject.org/data.html
 
-GDELT 1.0 reaches back to 1979 and is a possible separate long-horizon historical series. Do **not** concatenate 1.0 and 2.0 as if measurement were identical. Treat them as separate dataset eras and require a bridge/overlap study before any combined model.
+GDELT 1.0 reaches back to 1979, but its file granularity and date semantics change over time: the project documents monthly/yearly files through 2013-03-31, then daily files from 2013-04-01. For the later daily files, records are organized by the date the event was found in news media rather than necessarily the date the event occurred. It is therefore a possible separate long-horizon historical series, but not a homogeneous daily panel back to 1979. Do **not** concatenate 1.0 and 2.0 as if measurement were identical. Treat them as separate dataset eras and require a bridge/overlap study before any combined model.
 
 ### Important source limitations
 
