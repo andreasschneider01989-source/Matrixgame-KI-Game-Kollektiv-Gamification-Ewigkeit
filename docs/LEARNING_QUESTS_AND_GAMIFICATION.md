@@ -179,7 +179,13 @@ The cycle allows progress without demanding continuous activity.
 
 **Completion definition:** one learner can complete or pause the density quest, produce a reproducible artifact, and see the next suggested step without exposing private profile data.
 
-## 11. Extended research quest — Two Cores, Four Satellites
+## 11. Flexible game modes and session analytics
+
+The existing quest format remains compatible with the proposed [Flexible Game Modes and Learning Telemetry](FLEXIBLE_GAME_MODES_AND_LEARNING_TELEMETRY.md). Missions, quests, social mode, world rules, difficulty, reward policy, and telemetry are separate configuration dimensions. The design explicitly supports solo, cooperative, team-versus-team, free-for-all, fictional battle-royale simulation, asymmetric roles, evolution, civilization sandbox, observer, and mixed modes.
+
+A game result is not automatically a learning result. Evaluate transfer, explanation, correction, retention where feasible, and participant experience. Use opt-in, minimal telemetry; keep private progress separate from public research artifacts. This is a proposed design, not an implemented system.
+
+## 12. Extended research quest — Two Cores, Four Satellites
 
 **Status:** PLANNED  
 **Research type:** physics model comparison and numerical simulation.
