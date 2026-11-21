@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "id": "mg.example.density-001",
+  "artifact_type": "concept",
+  "title": "Density as mass per unit volume",
+  "language": "en",
+  "summary": "Introductory concept record used to validate the Matrixgame artifact envelope.",
+  "claim_status": "FACT",
+  "evidence_level": "E1_SOURCE_LINKED",
+  "implementation_status": "NOT_APPLICABLE",
+  "scope": {
+    "domain": [
+      "physics",
+      "measurement"
+    ],
+    "validity_domain": "Macroscopic sample with defined mass and volume."
+  },
+  "created_at": "2026-11-21T00:00:00Z",
+  "updated_at": "2026-11-21T00:00:00Z",
+  "sources": [
+    {
+      "id": "source.placeholder",
+      "title": "Replace with a verified primary or authoritative source before publication",
+      "url": "https://example.org/replace-me",
+      "source_type": "other",
+      "accessed_at": "2026-11-21T00:00:00Z",
+      "supports": [
+        "definition"
+      ],
+      "rights_status": "UNKNOWN",
+      "notes": "Illustrative placeholder; not evidence and not a publishable citation."
+    }
+  ],
+  "assumptions": [
+    "Mass and volume refer to the same defined sample."
+  ],
+  "method": {
+    "analysis_type": "not_applicable",
+    "description": "Schema example only; no scientific analysis has been performed."
+  },
+  "findings": [
+    {
+      "statement": "This record demonstrates the required envelope fields only.",
+      "status": "OBSERVED",
+      "uncertainty": "No scientific validation is implied.",
+      "evidence_refs": []
+    }
+  ],
+  "limitations": [
+    "Example only; replace the placeholder source before treating this as a research record."
+  ],
+  "relationships": [],
+  "provenance": {
+    "creator": "Matrixgame project",
+    "created_by": "documentation-example",
+    "revision": 1
+  },
+  "privacy": {
+    "classification": "PUBLIC",
+    "publication_status": "REVIEW_REQUIRED",
+    "contains_personal_data": false
+  },
+  "license": {
+    "rights_status": "UNKNOWN",
+    "notes": "Choose a repository-compatible license after checking the repository license."
+  },
+  "extensions": {}
+}
