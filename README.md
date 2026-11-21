@@ -36,6 +36,16 @@ This should make it easier to:
 
 The existing code and documentation provide a starting point for this process. The modular architecture described below is a **development plan**, not a claim that all components already exist or work together.
 
+## Durable project foundation — 21 November 2026
+
+The project-wide foundation charter and change policy define how stable interfaces, exploratory research, provenance, privacy, evidence, and reviewed improvements work together. These are governance and documentation artifacts; they do not imply that the full proposed systems are implemented.
+
+- [Matrixgame Foundation Charter](docs/MATRIXGAME_FOUNDATION_CHARTER.md)
+- [Foundation Change and Release Policy](docs/FOUNDATION_CHANGE_POLICY.md)
+- [Portable Research Artifact JSON Schema](schemas/research-artifact.schema.json)
+- [Illustrative Research Artifact](examples/research-artifact.example.json)
+- [Reusable Research Quest Template](templates/RESEARCH_QUEST_TEMPLATE.md)
+
 ## Collective Improvement Network
 
 The broader vision for human–AI collaboration, cross-project improvement quests, evidence-aware knowledge sharing, and responsible automation is documented here:
