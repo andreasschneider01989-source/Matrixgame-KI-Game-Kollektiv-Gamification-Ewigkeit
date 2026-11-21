@@ -1,0 +1,432 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/main/schemas/research-artifact.schema.json",
+  "title": "Matrixgame Research Artifact",
+  "description": "Portable, provenance-aware envelope for a research, evidence, experiment, or learning artifact. Domain-specific payloads belong in extensions or linked schemas.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "artifact_type",
+    "title",
+    "claim_status",
+    "evidence_level",
+    "created_at",
+    "updated_at",
+    "provenance",
+    "privacy"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$"
+    },
+    "artifact_type": {
+      "type": "string",
+      "enum": [
+        "question",
+        "claim",
+        "concept",
+        "model",
+        "hypothesis",
+        "experiment",
+        "dataset",
+        "simulation_run",
+        "result",
+        "source",
+        "decision",
+        "quest",
+        "software_component",
+        "fiction_scenario"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "language": {
+      "type": "string",
+      "default": "en",
+      "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$"
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "claim_status": {
+      "enum": [
+        "FACT",
+        "MODEL",
+        "HYPOTHESIS",
+        "OPEN",
+        "FICTION"
+      ]
+    },
+    "evidence_level": {
+      "enum": [
+        "E0_UNASSESSED",
+        "E1_SOURCE_LINKED",
+        "E2_CORROBORATED",
+        "E3_REPRODUCED",
+        "E4_REVIEWED_OR_FORMALIZED"
+      ]
+    },
+    "implementation_status": {
+      "enum": [
+        "PLANNED",
+        "PROTOTYPE",
+        "IMPLEMENTED",
+        "TESTED",
+        "VERIFIED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "domain": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "geography": {
+          "type": "string"
+        },
+        "population_or_system": {
+          "type": "string"
+        },
+        "time_start": {
+          "type": "string",
+          "format": "date"
+        },
+        "time_end": {
+          "type": "string",
+          "format": "date"
+        },
+        "validity_domain": {
+          "type": "string"
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "method": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "analysis_type": {
+          "enum": [
+            "descriptive",
+            "predictive",
+            "causal",
+            "experimental",
+            "formal",
+            "qualitative",
+            "mixed",
+            "not_applicable"
+          ]
+        },
+        "software_version": {
+          "type": "string"
+        },
+        "parameters": {
+          "type": "object"
+        },
+        "random_seed": {
+          "type": [
+            "integer",
+            "string",
+            "null"
+          ]
+        },
+        "environment": {
+          "type": "string"
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "statement",
+          "status"
+        ],
+        "properties": {
+          "statement": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "OBSERVED",
+              "SUPPORTED",
+              "NOT_SUPPORTED",
+              "INCONCLUSIVE",
+              "FICTIONAL"
+            ]
+          },
+          "uncertainty": {
+            "type": "string"
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "target"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "REQUIRES",
+              "DERIVES_FROM",
+              "SUPPORTS",
+              "CHALLENGES",
+              "CONTRADICTS",
+              "MODELS",
+              "TESTS",
+              "IMPLEMENTS",
+              "TEACHES",
+              "RELATED_TO",
+              "SUPERSEDES",
+              "CORRECTS"
+            ]
+          },
+          "target": {
+            "type": "string"
+          },
+          "rationale": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "publication_status"
+      ],
+      "properties": {
+        "classification": {
+          "enum": [
+            "PUBLIC",
+            "INTERNAL",
+            "PRIVATE",
+            "SENSITIVE"
+          ]
+        },
+        "publication_status": {
+          "enum": [
+            "APPROVED",
+            "REVIEW_REQUIRED",
+            "NOT_FOR_PUBLICATION"
+          ]
+        },
+        "contains_personal_data": {
+          "type": "boolean",
+          "default": false
+        },
+        "consent_basis": {
+          "type": "string"
+        }
+      }
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "spdx_id": {
+          "type": "string"
+        },
+        "rights_status": {
+          "enum": [
+            "OPEN_LICENSE",
+            "ALL_RIGHTS_RESERVED",
+            "PERMISSION_REQUIRED",
+            "UNKNOWN",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "description": "Namespaced extension data; extension definitions should be versioned separately.",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "url",
+        "source_type",
+        "accessed_at",
+        "rights_status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "source_type": {
+          "enum": [
+            "primary_research",
+            "review",
+            "official_dataset",
+            "news",
+            "book",
+            "standard",
+            "software",
+            "conversation",
+            "measurement",
+            "other"
+          ]
+        },
+        "published_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "accessed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "supports": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rights_status": {
+          "enum": [
+            "OPEN_LICENSE",
+            "ALL_RIGHTS_RESERVED",
+            "PERMISSION_REQUIRED",
+            "UNKNOWN",
+            "METADATA_ONLY"
+          ]
+        },
+        "license": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "creator",
+        "created_by",
+        "revision"
+      ],
+      "properties": {
+        "creator": {
+          "type": "string"
+        },
+        "created_by": {
+          "type": "string",
+          "description": "Human, organization, or software/agent identifier."
+        },
+        "activity": {
+          "type": "string"
+        },
+        "input_artifact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "repository": {
+          "type": "string",
+          "format": "uri"
+        },
+        "commit": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "derived_from": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
