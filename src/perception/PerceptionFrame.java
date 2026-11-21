@@ -1,68 +1,73 @@
 package perception;
 
+import java.util.Set;
+
 /**
- * MATRIXGAME – PERCEPTION KERN v0.1 (Evolution Update 002+)
+ * MATRIXGAME – Perception core v0.2.
  *
- * Einheitliches Wahrnehmungsdatenformat fuer ALLE Agenten:
- * Menschen, Kameras, Sensoren, simulierte Units.
- *
- * Grundgesetz (Update 002):
- *   MESSUNG und INTERPRETATION werden NIE in einem Feld gemischt.
- *   Eine Waermebildkamera misst Infrarot – sie misst nicht Angst.
- *
- * Start: java perception.PerceptionFrame TEST
- * Evidenzklasse: C (Demo, noch nicht kompiliert) -> Q-Compile-Kandidat
+ * A PerceptionFrame stores a measurement, not an interpretation.
+ * The record is structurally immutable; observation must also be immutable
+ * (or defensively copied by the producer) for deep immutability.
  */
 public record PerceptionFrame(
-        String agentId,        // wer nahm wahr?
-        String modality,       // VISUAL/AUDITORY/SPATIAL/THERMAL/CHEMICAL/INTERNAL/SOCIAL
-        long timestamp,        // wann? (Tick oder Epoch-Millis)
-        Object observation,    // was wurde GEMESSEN (roh, spaeter typisiert)
-        double confidence,     // wie sicher ist die MESSUNG selbst [0..1]
-        String sourceId        // woher stammt der Sensor/Datentraeger
-) {
+        String agentId,
+        String modality,
+        long timestamp,
+        Object observation,
+        double confidence,
+        String sourceId) {
+
+    private static final Set<String> SUPPORTED_MODALITIES = Set.of(
+            "VISUAL", "AUDITORY", "SPATIAL", "THERMAL",
+            "CHEMICAL", "INTERNAL", "SOCIAL");
 
     public PerceptionFrame {
-        if (agentId == null || agentId.isBlank())
-            throw new IllegalArgumentException("IDENTITAETS-WAECHTER: jede Wahrnehmung braucht eine Unit-ID (Q44)");
-        if (confidence < 0.0 || confidence > 1.0)
-            throw new IllegalArgumentException("KALIBRIATIONS-WAECHTER: confidence ausserhalb [0,1]");
+        requireText(agentId, "agentId");
+        requireText(modality, "modality");
+        if (!SUPPORTED_MODALITIES.contains(modality)) {
+            throw new IllegalArgumentException("Unsupported modality: " + modality);
+        }
+        if (timestamp < 0) throw new IllegalArgumentException("timestamp must be >= 0");
+        if (observation == null) throw new IllegalArgumentException("observation must not be null");
+        requireText(sourceId, "sourceId");
+        requireConfidence(confidence, "measurement confidence");
     }
 
-    /** Interpretation ist eine SEPARATE, spaetere Stufe – nie Teil der Messung. */
+    /** Interpretation is deliberately separate from the measurement record. */
     public record Interpretation(
             String interpretiertVon, String claim, double confidence, String evidenceClass) {
+        public Interpretation {
+            requireText(interpretiertVon, "interpretiertVon");
+            requireText(claim, "claim");
+            requireConfidence(confidence, "interpretation confidence");
+            if (evidenceClass == null || !evidenceClass.matches("[ABCDE]")) {
+                throw new IllegalArgumentException("evidenceClass must be one of A, B, C, D, E");
+            }
+        }
     }
 
-    /** STRICT-MODUS (Q30-Prinzip): Interpretation ohne Messung oder falscher Klasse = abgelehnt. */
-    public static Interpretation interpret(Interpretation i, boolean hasUnderlyingMeasurement) {
-        if (!hasUnderlyingMeasurement)
-            throw new IllegalStateException("KONFABULATIONS-WAECHTER: Interpretation ohne Messung (Klasse E)");
-        if (i.evidenceClass() == null || !i.evidenceClass().matches("[ABCDE]"))
-            throw new IllegalStateException("ETIKETT-WAECHTER: jede Interpretation braucht Evidenzklasse A–E");
-        return i;
+    /** Accept an interpretation only when an underlying measurement exists. */
+    public static Interpretation interpret(Interpretation interpretation, boolean hasUnderlyingMeasurement) {
+        if (interpretation == null) throw new IllegalArgumentException("interpretation must not be null");
+        if (!hasUnderlyingMeasurement) {
+            throw new IllegalStateException("KONFABULATIONS-WAECHTER: interpretation without measurement");
+        }
+        return interpretation;
     }
 
-    public static void main(String[] args) {
-        boolean test = args.length > 0 && args[0].equals("TEST");
+    public static Set<String> supportedModalities() {
+        return SUPPORTED_MODALITIES;
+    }
 
-        // T1: Legale Messung (Kamera sieht Bewegung – mehr nicht)
-        PerceptionFrame f1 = new PerceptionFrame("CAMERA_01", "VISUAL", 42L,
-                "Bewegung: Objekt unbestimmter Art, 3m", 0.82, "cam-01");
-        // T2: Saubere Interpretation mit Messung + Klasse
-        Interpretation i1 = interpret(
-                new Interpretation("FORSCHUNGS_UNIT", "moeglicherweise Lebewesen", 0.55, "C"), true);
-        // T3: Konfabulation ("es hat Angst" ohne Messung) wird abgelehnt
-        boolean caught = false;
-        try {
-            interpret(new Interpretation("SOCIAL_UNIT", "es hat Angst", 0.9, "A"), false);
-        } catch (IllegalStateException e) { caught = true; }
-        System.out.println("[T1] Messung ok  : " + f1);
-        System.out.println("[T2] Deutung ok  : " + i1);
-        System.out.println("[T3] Konfabulation abgelehnt: " + caught);
-        if (test) {
-            if (!caught) throw new AssertionError("T3 fehlgeschlagen");
-            System.out.println("TEST BESTANDEN (3/3)");
+    private static void requireText(String value, String field) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(field + " must not be null or blank");
+        }
+    }
+
+    private static void requireConfidence(double value, String field) {
+        if (!Double.isFinite(value) || value < 0.0 || value > 1.0) {
+            throw new IllegalArgumentException(field + " must be finite and within [0,1]");
         }
     }
 }
