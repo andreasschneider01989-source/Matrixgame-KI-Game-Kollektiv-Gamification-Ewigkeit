@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrixgame – Perception Quest 001 – Interaktiv</title>
+<style>
+  :root { --bg:#0b1020; --card:#141a30; --acc:#6ee7b7; --acc2:#fbbf24; --txt:#e6e9f0; --muted:#9aa3b5; }
+  * { box-sizing:border-box; margin:0; font-family:system-ui,sans-serif; }
+  body { background:var(--bg); color:var(--txt); min-height:100vh; padding:2rem 1rem; }
+  .wrap { max-width:760px; margin:0 auto; }
+  h1 { color:var(--acc); font-size:1.4rem; margin-bottom:.25rem; }
+  .sub { color:var(--muted); margin-bottom:1.5rem; }
+  .card { background:var(--card); border-radius:14px; padding:1.25rem; margin-bottom:1.25rem; border:1px solid #232b47; }
+  h2 { color:var(--acc2); margin-bottom:.5rem; font-size:1.02rem; }
+  .layers { display:flex; flex-wrap:wrap; gap:.35rem; margin:.5rem 0 .8rem; }
+  .layers span { background:#1c2545; border-radius:6px; font-size:.7rem; padding:.2rem .5rem; color:var(--acc2); }
+  .rules { font-size:.9rem; color:var(--muted); line-height:1.6; }
+  .btn { display:inline-block; margin:6px 6px 6px 0; padding:.5rem .9rem; border-radius:10px; border:1px solid var(--acc);
+         background:transparent; color:var(--acc); cursor:pointer; font-size:.83rem; }
+  .btn:hover { background:rgba(110,231,183,.12); }
+  .btn.sel { background:var(--acc); color:#0b1020; font-weight:600; }
+  .btn.rec { border-color:var(--acc2); color:var(--acc2); }
+  .btn.rec.on { background:var(--acc2); color:#0b1020; font-weight:700; }
+  pre { background:#0a0f1e; border-radius:10px; padding:.9rem; font-size:.72rem; overflow-x:auto; color:#c3d0ff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Matrixgame – Perception Quest 001</h1>
+<p class="sub">Evolution Update 002+ · Entscheidungen hier klicken, lokal speichern – und dann als Issue-Kommentar ins Repo fixieren. Nichts verschwindet mehr.</p>
+
+<div class="card" id="d1card">
+  <h2>D1 – Wie organisieren wir Wahrnehmung?</h2>
+  <p class="rules">100 Agenten, 7 Sinnes-Ebenen, ein unbekannter Planet.</p>
+  <div id="d1"></div>
+</div>
+<div class="card" id="d2card"><h2>D2 – Welche Perspektiven zuerst?</h2><div id="d2"></div></div>
+<div class="card" id="d3card"><h2>D3 – Lern-Tiefe?</h2><div id="d3"></div></div>
+
+<div class="card">
+  <h2>Die 7 Wahrnehmungs-Ebenen (Perception Protocol)</h2>
+  <div class="layers"><span>VISUAL</span><span>AUDITORY</span><span>SPATIAL</span><span>THERMAL</span><span>CHEMICAL</span><span>INTERNAL</span><span>SOCIAL</span></div>
+  <p class="rules">Grundgesetz: <b>Messung ≠ Interpretation.</b> Eine Wärmebildkamera misst Infrarot, keine Angst. Jede Interpretation braucht eine eigene Quelle + Evidenzklasse A–E. Konfabulation = Wächter-Alarm.</p>
+  <p class="rules">🔊 Vorlese-Häppchen (unter 300 Zeichen):</p>
+  <p class="rules" id="readAloudText">"Ein Agent sieht nur einen Ausschnitt der Welt. Erst der Austausch zwischen allen Perspektiven ergibt das volle Bild. Messung ist nicht Deutung. Jede Deutung trägt eine Quelle und eine Evidenzklasse."</p>
+  <button class="btn rec" id="speakBtn">🔊 Vorlesen</button>
+</div>
+
+<div class="card">
+  <h2>Dein Entscheidungs-Log (localStorage)</h2>
+  <pre id="log">{}</pre>
+  <p class="rules" style="margin-top:.7rem">Deine Antworten aus dem Archiv holen (Snippet vor der Logik). Als Issue-Kommentar im Repo fixieren, dann gehören sie dauerhaft zum Projekt.</p>
+</div>
+</div>
+
+<script>
+const QUESTIONS = [
+  { id: "d1", opts: ["Zentrales Weltmodell", "Dezentral (eigenes Modell pro Agent)", "Hybrid: lokal + gemeinsamer Austausch"] },
+  { id: "d2", opts: ["Menschlich + Empathie", "Sensorisch/technisch", "Biologisch fremd", "Alle verbinden"] },
+  { id: "d3", opts: ["Individuell", "Gemeinsam", "Adaptiv"] },
+];
+const state = JSON.parse(localStorage.getItem("mg_eu2") || "{}");
+const log = document.getElementById("log");
+function save() {
+  state.time = new Date().toISOString();
+  localStorage.setItem("mg_eu2", JSON.stringify(state));
+  log.textContent = JSON.stringify(state, null, 2);
+}
+QUESTIONS.forEach(q => {
+  const box = document.getElementById(q.id);
+  q.opts.forEach(o => {
+    const b = document.createElement("button");
+    b.className = "btn" + (state[q.id] === o ? " sel" : "");
+    b.textContent = "▸ " + o;
+    b.onclick = () => {
+      state[q.id] = o;
+      save();
+      [...box.children].forEach(c => c.classList.remove("sel"));
+      b.classList.add("sel");
+    };
+    box.appendChild(b);
+  });
+});
+
+// ---------- Vorlese-Funktion (Web SpeechSynthesis) ----------
+const speakBtn = document.getElementById("speakBtn");
+speakBtn.onclick = () => {
+  if (!("speechSynthesis" in window)) { alert("Browser unterstützt keine Sprachsynthese."); return; }
+  if (speechSynthesis.speaking) {
+    speechSynthesis.cancel();
+    speakBtn.classList.remove("on");
+    return;
+  }
+  const u = new SpeechSynthesisUtterance(document.getElementById("readAloudText").innerText);
+  u.lang = "de-DE";
+  u.onend = () => speakBtn.classList.remove("on");
+  speakBtn.classList.add("on");
+  speechSynthesis.speak(u);
+};
+
+log.textContent = JSON.stringify(state, null, 2);
+</script>
+</body>
+</html>
