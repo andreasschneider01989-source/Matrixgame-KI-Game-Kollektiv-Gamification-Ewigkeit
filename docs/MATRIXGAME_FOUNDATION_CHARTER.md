@@ -147,6 +147,12 @@ Prefer stable, documented formats:
 
 Use FAIR and FAIR4RS as design guidance: findable, accessible, interoperable, reusable research data and software. Reuse external standards where they solve a real interoperability problem; do not create unnecessary format layers.
 
+Reference standards and guidance:
+- [W3C PROV Overview](https://www.w3.org/TR/prov-overview/) — provenance of entities, activities, and agents; supports traceability, derivation, and reproducibility.
+- [FAIR Principles for Research Software (FAIR4RS)](https://www.rd-alliance.org/wp-content/uploads/2022/03/FAIR4RS20principles20v1.0.pdf) — findability, accessibility, interoperability, and reuse of research software.
+- [OpenSSF Build and Provenance Integrity](https://ossf.github.io/community/problems/build-provenance/) — verifiable origin and build provenance for software artifacts.
+- [NIST Open Source Software Controls](https://www.nist.gov/itl/executive-order-14028-improving-nations-cybersecurity/software-security-supply-chains-open) — supply-chain integrity and open-source component risk management.
+
 ## 9. Safety, privacy, and governance
 
 - Public repository content must be safe to disclose and authorized for publication.
