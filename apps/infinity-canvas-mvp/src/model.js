@@ -28,13 +28,13 @@ export function validateDocument(doc) {
 export function parseDocument(text) {
   const doc = JSON.parse(text);
   const errors = validateDocument(doc);
-  if (errors.length) throw new Error(errors.join("\\n"));
+  if (errors.length) throw new Error(errors.join("\n"));
   return doc;
 }
 
 export function serializeDocument(doc) {
   const errors = validateDocument(doc);
-  if (errors.length) throw new Error(errors.join("\\n"));
+  if (errors.length) throw new Error(errors.join("\n"));
   return JSON.stringify(doc, null, 2);
 }
 
