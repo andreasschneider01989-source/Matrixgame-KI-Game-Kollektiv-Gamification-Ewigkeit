@@ -46,6 +46,7 @@ The project-wide foundation charter and change policy define how stable interfac
 - [Illustrative Research Artifact](examples/research-artifact.example.json)
 - [Reusable Research Quest Template](templates/RESEARCH_QUEST_TEMPLATE.md)
 - [WORLD MEMORY 001 Forecasting Benchmark](research/WORLD_MEMORY_001_FORECASTING_BENCHMARK.md) — leakage-safe design for historical news-event forecasts.
+- [WORLD MEMORY Wellbeing and Positive-Impact Outcome Framework](research/WORLD_MEMORY_WELLBEING_OUTCOME_FRAMEWORK.md) — evaluates whether later decisions improve life conditions rather than merely forecast news.
 - [WORLD MEMORY Quest 001](templates/WORLD_MEMORY_QUEST_001.md) — reusable first experiment plan.
 
 ## Collective Improvement Network
