@@ -1,0 +1,23 @@
+name: Infinity Canvas MVP 0
+
+on:
+  push:
+    branches: [feat/infinity-canvas-mvp-0]
+    paths:
+      - "apps/infinity-canvas-mvp/**"
+      - ".github/workflows/infinity-canvas-mvp.yml"
+  pull_request:
+    paths:
+      - "apps/infinity-canvas-mvp/**"
+      - ".github/workflows/infinity-canvas-mvp.yml"
+  workflow_dispatch:
+
+jobs:
+  model-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test apps/infinity-canvas-mvp/tests/model.test.js
