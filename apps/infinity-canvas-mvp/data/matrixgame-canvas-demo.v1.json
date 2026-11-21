@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "documentId": "matrixgame-infinity-demo",
+  "title": "Matrixgame — Collective Research Playground",
+  "coordinateSpace": "canvas-world",
+  "objects": [
+    {"id":"mission-earth","type":"Mission","title":"SECOND EARTH: Better Futures","x":0,"y":0,"status":"active","description":"Explore evidence-based ways to improve human and ecological wellbeing.","provenance":{"kind":"project","ref":"WORLD_MEMORY_001"}},
+    {"id":"quest-world-memory","type":"Quest","title":"WORLD MEMORY 001","x":330,"y":-150,"status":"planned","description":"Import a small historical event sample and run leakage-aware baselines.","provenance":{"kind":"github-issue","ref":"67"}},
+    {"id":"knowledge-snapshot","type":"KnowledgeNode","title":"One world snapshot, many views","x":-320,"y":-170,"status":"design","description":"The simulation is authoritative; canvas views are projections of immutable snapshots.","provenance":{"kind":"project-doc","ref":"INFINITE_CANVAS_DUAL_INTERFACE_AND_QUALITY_MODEL_2026-11-11.md"}},
+    {"id":"evidence-excalidraw","type":"Evidence","title":"Excalidraw is MIT licensed","x":-330,"y":170,"status":"source","description":"Official repository documents an open-source infinite canvas and MIT license. Verify dependency version before adoption.","provenance":{"kind":"url","ref":"https://github.com/excalidraw/excalidraw"}},
+    {"id":"run-demo","type":"SimulationRun","title":"Demo run · seed 20261121","x":320,"y":170,"status":"illustrative","description":"Illustrative placeholder only; not a measured simulation result.","provenance":{"kind":"fixture","ref":"matrixgame-canvas-demo.v1.json"}},
+    {"id":"agent-reviewer","type":"Agent","title":"Evidence Reviewer","x":0,"y":340,"status":"proposal-only","description":"Read-only agent role: inspect sources, flag uncertainty, and propose changes for human review.","provenance":{"kind":"design-role","ref":"read-only"}}
+  ],
+  "relations": [
+    {"id":"r1","from":"mission-earth","to":"quest-world-memory","label":"contains"},
+    {"id":"r2","from":"mission-earth","to":"knowledge-snapshot","label":"guided by"},
+    {"id":"r3","from":"knowledge-snapshot","to":"evidence-excalidraw","label":"references"},
+    {"id":"r4","from":"quest-world-memory","to":"run-demo","label":"produces"},
+    {"id":"r5","from":"agent-reviewer","to":"knowledge-snapshot","label":"reviews"}
+  ],
+  "extensions": {"x-matrixgame-demo":true}
+}

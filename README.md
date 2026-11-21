@@ -108,7 +108,7 @@ A specification for preserving raw ideas, tracing transparent compiler filters, 
 A specification for one shared simulation snapshot with human-readable console output, machine-readable JSONL events and an interactive Infinite Canvas. It defines variable-driven axes, a dynamic scale legend, reproducible RunManifests, agent communication phases, transcript-to-module provenance and testable quality gates. This is a design and acceptance document, not a claim that the full implementation already exists.
 
 - [Infinite Canvas, dual interface and quality model](docs/INFINITE_CANVAS_DUAL_INTERFACE_AND_QUALITY_MODEL_2026-11-11.md)
-- [Infinity Canvas — Open Collaborative Platform Architecture](docs/INFINITY_CANVAS_OPEN_COLLABORATIVE_PLATFORM.md) — local-first canvas, semantic graph, simulation projection, AI gateway and safe multiplayer roadmap.
+- [Infinity Canvas — Open Collaborative Platform Architecture](docs/INFINITY_CANVAS_OPEN_COLLABORATIVE_PLATFORM.md) — local-first canvas, semantic graph, simulation projection, AI gateway and safe multiplayer roadmap.\n- [Runnable Infinity Canvas MVP 0](apps/infinity-canvas-mvp/README.md) — dependency-free local prototype with typed objects, pan/zoom, inspector, search, and JSON import/export.
 
 ## Human flourishing without coercion — birth safety and anti-dystopia research (7 November 2026)
 
