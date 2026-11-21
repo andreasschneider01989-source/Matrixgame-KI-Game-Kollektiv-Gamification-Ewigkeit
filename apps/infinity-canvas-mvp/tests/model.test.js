@@ -26,7 +26,7 @@ test("invalid duplicate IDs and broken relations are rejected", () => {
 });
 
 test("search filters title, type, and description without mutating the document", () => {
-  assert.equal(searchObjects(fixture, "Evidence").length, 1);
+  assert.equal(searchObjects(fixture, "Excalidraw").length, 1);
   assert.equal(searchObjects(fixture, "snapshot").length, 1);
   assert.equal(searchObjects(fixture, "").length, fixture.objects.length);
 });
