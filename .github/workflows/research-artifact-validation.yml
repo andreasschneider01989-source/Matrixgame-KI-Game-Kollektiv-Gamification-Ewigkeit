@@ -23,7 +23,17 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
+      # Sparse checkout avoids unrelated legacy root files with path names
+      # that exceed Windows/Linux checkout limits. Only validator inputs are needed.
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github/workflows/research-artifact-validation.yml
+            schemas
+            examples
+            scripts
+            requirements-validation.txt
+          sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
