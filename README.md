@@ -65,6 +65,7 @@ The Universal Knowledge Engine documentation connects scientific knowledge, pers
 - [Knowledge Node and Evidence Schema](docs/KNOWLEDGE_NODE_AND_EVIDENCE_SCHEMA.md)
 - [Physics A–Z Atlas](docs/PHYSICS_AZ_ATLAS.md)
 - [Learning Quests and Responsible Gamification](docs/LEARNING_QUESTS_AND_GAMIFICATION.md)
+- [Flexible Game Modes and Learning Telemetry](docs/FLEXIBLE_GAME_MODES_AND_LEARNING_TELEMETRY.md) — configurable missions, solo/co-op/competitive/survival/sandbox modes, and privacy-aware evaluation.
 - [Interplanetary Knowledge Network](docs/INTERPLANETARY_KNOWLEDGE_NETWORK.md)
 - [Proton–electron mass ratio and 2D shell-exchange research](docs/RESEARCH_PROTON_ELECTRON_RATIO_AND_2D_SHELL_EXCHANGE.md)
 - [Planet Earth — Habitability and Evolution Project](docs/PLANET_EARTH_HABITABILITY_AND_EVOLUTION.md)
