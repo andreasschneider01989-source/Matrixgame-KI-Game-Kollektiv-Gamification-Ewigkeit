@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrixgame – Hörbericht Software Engineering (Vorlese-Modus)</title>
+<style>
+  :root { --bg:#0b1020; --card:#141a30; --acc:#6ee7b7; --acc2:#fbbf24; --txt:#e6e9f0; --muted:#9aa3b5; }
+  * { box-sizing:border-box; margin:0; font-family:system-ui,sans-serif; }
+  body { background:var(--bg); color:var(--txt); min-height:100vh; padding:1.5rem 1rem 3rem; }
+  .wrap { max-width:760px; margin:0 auto; }
+  h1 { color:var(--acc); font-size:1.3rem; margin-bottom:.2rem; }
+  .sub { color:var(--muted); margin-bottom:1.2rem; font-size:.9rem; }
+  .nav { display:flex; align-items:center; gap:.6rem; margin-bottom:1rem; flex-wrap:wrap; }
+  .btn { padding:.5rem .9rem; border-radius:10px; border:1px solid var(--acc); background:transparent;
+         color:var(--acc); cursor:pointer; font-size:.83rem; }
+  .btn:hover { background:rgba(110,231,183,.12); }
+  .btn.rec.on { background:var(--acc2); color:#0b1020; font-weight:700; border-color:var(--acc2); }
+  .card { background:var(--card); border-radius:14px; padding:1.3rem; border:1px solid #232b47; }
+  h2 { color:var(--acc2); margin-bottom:.8rem; font-size:1.05rem; }
+  .chunk { font-size:1rem; line-height:1.75; color:var(--txt); }
+  .dots { display:flex; gap:.3rem; flex-wrap:wrap; margin-top:1.1rem; }
+  .dots button { width:11px; height:11px; border-radius:50%; border:none; cursor:pointer; background:#2a3357; }
+  .dots button.done { background:var(--acc); }
+  .dots button.cur { background:var(--acc2); }
+  .foot { color:var(--muted); font-size:.78rem; margin-top:1rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Hörbericht: Software Engineering (TU Darmstadt)</h1>
+<p class="sub">Gesamte Vorlesung · Bubel & Scheurer · als Vorlese-Häppchen mit Sprachsynthese. Steuerung: Vor/Zurück · 🔊 vorlesen · Punkte = Fortschritt.</p>
+<div class="nav">
+  <button class="btn" id="prev">◀ Zurück</button>
+  <button class="btn rec" id="speak">🔊 Vorlesen</button>
+  <button class="btn" id="next">Weiter ▶</button>
+  <button class="btn" id="auto">▶ Auto-Spielen</button>
+</div>
+<div class="card">
+  <h2 id="title"></h2>
+  <p class="chunk" id="chunk"></p>
+</div>
+<div class="dots" id="dots"></div>
+<p class="foot">Quelle: GesammteVorlesung.pdf (TU Darmstadt, R. Bubel & D. Scheurer). Volltext: docs/wissen/HOERBERICHT-SOFTWARE-ENGINEERING.md</p>
+</div>
+<script>
+const SECTIONS = [{"t":"Einleitung","x":"Das hier ist der Hörbericht der Software-Engineering-Vorlesungen von der TU Darmstadt: 445 Folien von Prof. Bubel und Dominic Scheurer. Während die KI-Vorlesungen die Mathematik geliefert haben, liefert diese Vorlesung die Ingenieursdisziplin: Wie man große Programme mit anderen Menschen baut, ohne an der Softwarekrise zu scheitern."},{"t":"Kapitel 1: Was ist Software Engineering?","x":"Software ist nicht nur das Programm. Software ist das Programm plus Dokumentation, Konfigurationsdaten, Installation, Betrieb, Reparatur und Weiterentwicklung. Die Folien zeigen zuerst obfuskierte C-Programme: einen springenden Ball und ein Schachspiel in wenigen Zeilen. Programmieren kann Kunst sein. Aber Software Engineering ist die Ingenieurskunst auf Software, weil es anders seit den sechziger Jahren nicht klappte: die Softwarekrise mit Budgetüberlauf, Zeitüberlauf und zu vielen Fehlern."},{"t":"Kapitel 2: Besonderheiten von Software","x":"Software hat keine physischen Grenzen: Es gibt keine natürliche Trennung von Subsystemen, ein lokaler Fehler kann das ganze System betreffen. Software verschleißt nicht, aber sie muss sich ständig verändern, um neue Anforderungen zu erfüllen. Software ist schwer zu messen: Zeilen Code sind kein Qualitätsmaß. Die berühmten Fehlschläge: London Ambulance, Toll Collect, elektronische Gesundheitskarte. Die Ursachen sind fast immer dieselben: unklare Spezifikation, wandelnde Anforderungen, fehlende Werkzeuge und Management-Probleme."},{"t":"Kapitel 3: Vom Wasserfall zu agilen Prozessen","x":"Das Wasserfall-Modell sortiert die Entwicklung in eine feste Reihenfolge: Anforderungen, Analyse, Design, Implementierung, Test, Wartung. Elegant, aber es ignoriert die Realität: Anforderungen ändern sich, Feedback kommt zu spät. Die Antwort seit 2001: das Agile Manifest. Individuen und Interaktion über Prozesse und Werkzeuge. Funktionierende Software über umfassende Dokumentation. Zusammenarbeit mit dem Kunden über Vertragsverhandlung. Reaktion auf Veränderung über das Befolgen eines Plans. Extreme Programming konkretisiert das: kleine Releases, Paarprogrammierung, Test-First, Refactoring, kontinuierliche Integration."},{"t":"Kapitel 4: Anforderungsanalyse","x":"Wahrscheinlich der wichtigste Teil des ganzen Fachs. Anforderungstypen: User Requirements sind abstrakt, für Stakeholder. System Requirements sind präzise, für Entwickler. Funktionale Anforderungen sagen, was das System tun soll. Nicht-funktionale sagen, unter welchen Umständen es gut genug ist: Performance, Sicherheit, Bedienbarkeit. Domain Requirements kommen aus der Fachwelt. Die Quelle der meisten Fehler ist Mehrdeutigkeit: dieselbe Zeile wird von Nutzern und Entwicklern unterschiedlich gelesen. Deshalb: jede offene Frage wird dokumentiert, statt still entschieden zu werden."},{"t":"Kapitel 5: Use Cases und Domänenmodell","x":"Use Cases beschreiben die Interaktion zwischen Akteuren und System als Szenarien: das Erfolgs-Szenario plus Erweiterungen für alle Was-wäre-wenn-Fälle. Danach das Domänenmodell: das Fachvokabular als konzeptuelles Klassendiagramm. Werkzeug: die Substantiv-Analyse. Substantive aus dem Problemtext sammeln, schlechte rauswerfen, gute als Klassen behalten. Faustfragen: Klasse oder Attribut? Attribut oder Assoziation? Das Domänenmodell beschreibt die Welt der Fachbegriffe, nicht die technische Umsetzung. Und die CRC-Karten: Karteikarten mit Klasse, Verantwortlichkeit und Kooperationspartnern, die im Rollenspiel des Teams entstehen."},{"t":"Kapitel 6: UML: Vier Diagrammtypen","x":"Die Vorlesung nutzt vier UML-Diagrammtypen professionell: Use-Case-Diagramme sind billig, aber unscharf. Klassendiagramme zeigen Struktur. Sequenzdiagramme sind der direkteste Weg: Wer ruft wen mit was in welcher Reihenfolge. Zustandsautomaten zeigen Zustände und Übergänge. Besonders stark: die System-Sequenzdiagramme mit Operation-Contracts. Vor und nach jedem Systemaufruf wird der Zustand exakt notiert: Vorbedingungen und Nachbedingungen. Das ist Design by Contract, der Vorlesungs-Bruder unserer Wächter-Klemmen und der Gültigkeitsprüfung im Genesis-Core."},{"t":"Kapitel 7: Software-Qualität","x":"Externe Qualität spürt der Nutzer: Korrektheit, Robustheit, Erweiterbarkeit, Sicherheit. Interne Qualität spürt der Entwickler: Lesbarkeit, Wartbarkeit, Testbarkeit, Struktur. Interne Qualität ist der Puffer für externe: Wer sie opfert, verliert langfristig beides, das nennt man technische Schulden. Werkzeuge: Metriken wie die zyklomatische Komplexität und LCOM, statische Analyse wie FindBugs, Inspektionen im Team, und formale Verifikation. Code Reviews sind die höchste Rendite pro Zeiteinheit: Vier Augen sehen mehr als zwei. Das ist das Perspektiven-Ensemble in Software-Farben."},{"t":"Kapitel 8: Testing und JUnit","x":"Testing ist systematisch, kein Zufalls-Fummeln: Testplan, Testtreiber, Testsuiten, Automatisierung mit JUnit. Coverage-Kategorien, strenger werdend: Statement Coverage, Branch Coverage, Path Coverage, und schließlich Modified Condition Decision Coverage, der Standard der Luftfahrt. Wichtige Lektion: Hundert Prozent Statement Coverage beweist gar nichts über korrekte Ergebnisse, sie zeigt nur, dass die Zeilen liefen. Tests brauchen korrekte erwartete Ergebnisse. Und die Dijkstra-Regel: Testing zeigt die Anwesenheit von Fehlern, niemals deren Abwesenheit. Deshalb bleibt ein nicht kompilierter Kern Evidenzklasse C, bis der echte Compile ihn zur Klasse A macht."},{"t":"Kapitel 9: Verantwortung, Coupling und Cohesion","x":"Das Herz der Objektorientierung: Verantwortungszuweisung. Für jede Operation fragt man: Welches Objekt weiß das, und wer sollte es tun? Die zwei Fehlerarten: Tight Coupling heißt, jede Klasse kennt jede Klasse, eine Änderung dominoert alle. Low Cohesion heißt, eine Klasse hat wirre unverbundene Aufgaben, die sogenannte God Class. Das zentrale Prinzip: Single Responsibility. Eine Klasse hat eine Verantwortung und damit genau einen Grund, sich zu ändern. Unsere Warner-Module sind das Vorbild: Jeder Wächter hat genau eine Aufgabe, deshalb können sie wachsen, statt zu einer God Class heranzuwachsen."},{"t":"Kapitel 10: Strategy Pattern","x":"Strategy: Definiere eine Familie von Algorithmen, kapsle jeden einzeln, mache sie austauschbar. Statt Unterklassen zu bilden, hält ein Objekt eine Referenz auf eine austauschbare Strategie hinter einem Interface. Merksatz: Programmiere gegen ein Interface, nicht gegen eine Implementierung. Matrixgame-Sicht: Das Verhalten-Interface im Unit-Fight V2 mit Königsjäger, Leibwacht, Artillerie, Nadel und Heiler ist exakt das Strategy Pattern. Die Vorlesung benennt die Struktur, die wir bereits gebaut haben, mit dem technischen Wortschatz der Industrie."},{"t":"Kapitel 11: Observer und MVC","x":"Observer: Ein Subjekt hält eine Liste von Beobachtern und verteilt Updates an alle Angemeldeten. Ziel: Kommunikation ohne Kopplung. Zwei Modi: Push, das Subjekt schickt Daten mit. Und Pull, der Beobachter holt nur, was er braucht. Observer ist die Basis des MVC-Musters: Model, View und Controller getrennt, die Views registrieren sich als Observer am Model. Matrixgame-Sicht: Unser Avatar-Broadcast aus Update 002 ist Observer: Das Wissens-Knoten ist das Subjekt, die Avatare sind Beobachter, und die Datenschutzrichtlinie entscheidet, wer welche Updates empfängt. Die sechs Prüffragen des Broadcasts sind der Push-Pull-Entwurf."},{"t":"Kapitel 12: Factory und Composite","x":"Factory Method: Eine Oberklasse definiert, wie Objekte erzeugt werden, Unterklassen entscheiden das konkrete Objekt, das entsteht. Abstract Factory: Eine Fabrik erzeugt ganze verwandte Objektfamilien, damit sie zusammenpassen. Kernsatz: Vielfalt durch gemeinsame Schnittstelle, nicht durch if-else-Lawinen. Composite: Einzelobjekte und Zusammensetzungen werden gleich behandelt. Die Figur aus der Vorlesung besteht aus Shape-Objekten: Quadrate, Dreiecke, Kreise, Text. Matrixgame-Sicht: Unsere Wächter-Suiten sind eine Fabrik-förmige Sammlung gleich behandelbarer Prüfmodule, und die Perception-Schichten sind Composite, eine Wahrnehmung aus vielen Sensorbausteinen."},{"t":"Kapitel 13: Die große Synthese","x":"Damit schließt der Hörbericht. Die Software-Engineering-Vorlesungen geben die Ingenieursdisziplin, die KI-Vorlesungen die Mathematik, und das Matrixgame gibt die Architektur. Die Brücken: Die Softwarekrise entspricht dem Untergangs-Kern: Projekte fallen an ungedeckelten Bilanzen und unklaren Spezifikationen. Design by Contract entspricht den Wächter-Klemmen. Code Review entspricht dem Perspektiven-Ensemble. Single Responsibility entspricht dem Ein-Aufgabe-Wächter. Observer entspricht dem Avatar-Broadcast. Continuous Integration entspricht unserer Compile-Queue. Neue Quests: Q-K5 das Contract-Kern-Modul, Q-K6 der Coverage-Wächter mit MC-DC, Q-K7 die CRC-Quest für das Zwei-Welten-Spiel mit Anna als Akteur, Q-K8 der SE-Compile als siebzehnter Kandidat der Compile-Queue. Make the game better than we found it. Let\'s be. Let\'s play."}];
+let i = 0, playing = false, heard = new Set(JSON.parse(localStorage.getItem("mg_hoer_se") || "[]"));
+const title = document.getElementById("title"), chunk = document.getElementById("chunk"), dots = document.getElementById("dots");
+SECTIONS.forEach((s, idx) => {
+  const d = document.createElement("button");
+  d.onclick = () => { stop(); go(idx); };
+  dots.appendChild(d);
+});
+function render() {
+  document.getElementById("dots").querySelectorAll("button").forEach((d, idx) => {
+    d.className = heard.has(idx) ? "done" : (idx === i ? "cur" : "");
+  });
+}
+function go(n) {
+  i = (n + SECTIONS.length) % SECTIONS.length;
+  heard.add(i);
+  localStorage.setItem("mg_hoer_se", JSON.stringify([...heard]));
+  title.textContent = SECTIONS[i].t;
+  chunk.textContent = SECTIONS[i].x;
+  render();
+}
+function stop() { playing = false; speechSynthesis && speechSynthesis.cancel(); }
+document.getElementById("prev").onclick = () => { stop(); go(i - 1); };
+document.getElementById("next").onclick = () => { stop(); go(i + 1); };
+const sb = document.getElementById("speak");
+sb.onclick = () => {
+  if (speechSynthesis.speaking) { speechSynthesis.cancel(); sb.classList.remove("on"); return; }
+  const u = new SpeechSynthesisUtterance(SECTIONS[i].t + ". " + SECTIONS[i].x);
+  u.lang = "de-DE";
+  u.onend = () => { sb.classList.remove("on"); if (playing) { go(i + 1); setTimeout(sb.click, 400); } };
+  sb.classList.add("on");
+  speechSynthesis.speak(u);
+};
+document.getElementById("auto").onclick = (e) => {
+  playing = !playing;
+  e.target.textContent = playing ? "⏸ Pause" : "▶ Auto-Spielen";
+  if (playing) sb.click(); else speechSynthesis.cancel();
+};
+go(0); render();
+</script>
+</body>
+</html>
