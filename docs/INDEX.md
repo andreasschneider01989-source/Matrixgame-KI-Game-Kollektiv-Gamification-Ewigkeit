@@ -31,6 +31,7 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 ## Lernen und soziale Gestaltung
 
 - [Learning Quests and Responsible Gamification](LEARNING_QUESTS_AND_GAMIFICATION.md) — Vorschläge für freiwillige Lernmechaniken.
+- [Flexible Game Modes and Learning Telemetry](FLEXIBLE_GAME_MODES_AND_LEARNING_TELEMETRY.md) — konfigurierbare Missionen, Spielmodi und auswertbare Lernergebnisse.
 - [Collective AI Accessibility](COLLECTIVE_AI_ACCESSIBILITY_AND_GLOBAL_PARTICIPATION.md) — Zugänglichkeit und Teilnahme.
 - [Social intelligence](social-intelligence/README.md) — Kommunikation, Zustimmung, Kooperation und Datenschutz.
 - [Consciousness simulator review and plan](CONSCIOUSNESS_SIMULATOR_V014_REVIEW_AND_V015_PLAN.md) — Review und Vorschläge, nicht automatisch implementiert.
