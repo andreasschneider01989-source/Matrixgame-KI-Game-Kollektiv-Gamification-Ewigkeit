@@ -163,7 +163,13 @@ Promote a finding beyond exploratory status only if:
 - independent data or expert review supports the interpretation;
 - limitations and failure cases are public.
 
-## 13. First deliverable
+## 13. Connection to human and planetary outcomes
+
+Forecast skill is not equivalent to positive impact. The separate [WORLD MEMORY Wellbeing and Positive-Impact Outcome Framework](WORLD_MEMORY_WELLBEING_OUTCOME_FRAMEWORK.md) defines how later interventions should be evaluated across current wellbeing, inequality, and future resources. Do not optimize news volume as a proxy for happiness, safety, or real-world improvement.
+
+The benchmark's initial deliverable remains an event-forecasting test. Any later early-warning or intervention quest must include human review, distributional impact, possible harms, and measured outcomes.
+
+## 14. First deliverable
 
 A small pipeline that:
 1. obtains a legally reusable, documented sample or aggregate;
