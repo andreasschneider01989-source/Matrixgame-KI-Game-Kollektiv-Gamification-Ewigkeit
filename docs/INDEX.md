@@ -16,6 +16,8 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [Research Artifact Schema](../schemas/research-artifact.schema.json) — maschinenlesbarer, portabler Forschungsdatensatz.
 - [Research Artifact Example](../examples/research-artifact.example.json) — Schema-Beispiel mit ausdrücklich markiertem Platzhalter.
 - [Research Quest Template](../templates/RESEARCH_QUEST_TEMPLATE.md) — wiederverwendbare Vorlage für Experimente.
+- [WORLD MEMORY 001 Forecasting Benchmark](../research/WORLD_MEMORY_001_FORECASTING_BENCHMARK.md) — historisches Nachrichten-Ereignis-Backtesting mit Leakage-Schutz.
+- [WORLD MEMORY Quest 001](../templates/WORLD_MEMORY_QUEST_001.md) — erster reproduzierbarer Experimentauftrag.
 
 ## Architektur und Zusammenarbeit
 
