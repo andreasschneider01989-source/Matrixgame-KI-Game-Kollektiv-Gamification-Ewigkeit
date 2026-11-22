@@ -1,0 +1,396 @@
+{
+  "schema_version": "1.0.0",
+  "snapshot_id": "matrixgame.global.progress.2026-11-22",
+  "as_of": "2026-11-22",
+  "generated_at": "2026-11-22T17:16:13+01:00",
+  "comparison_window": {
+    "from": "2026-11-15",
+    "to": "2026-11-22",
+    "note": "Only newly checked or still decision-relevant indicators are included; older baselines are explicitly dated."
+  },
+  "records": [
+    {
+      "id": "math.rh.lean_formalization_2026",
+      "label": "Formal verification status of the Riemann Hypothesis Lean proof",
+      "value": "Lean/Mathlib community certified the formal statement and proof as correct",
+      "unit": "status",
+      "period": "2026-11-20/2026-11-21",
+      "evidence_status": "FACT",
+      "source": {
+        "title": "Lean verification of the Riemann Hypothesis",
+        "url": "https://leanprover-community.github.io/blog/posts/riemann-hypothesis/",
+        "published_at": "2026-11-21",
+        "source_type": "joint statement by Lean and Mathlib communities"
+      },
+      "uncertainty_notes": "Scoped to the formalized RiemannHypothesis statement and checked Lean proof. A human-readable exposition and broader mathematical understanding remain pending. Clay still lists the problem as unsolved as of 2026-11-22."
+    },
+    {
+      "id": "math.rh.clay_status_2026",
+      "label": "Clay Mathematics Institute public status of the Riemann Hypothesis",
+      "value": "Unsolved",
+      "unit": "institutional status",
+      "period": "2026-11-22",
+      "evidence_status": "OBSERVATION",
+      "source": {
+        "title": "Riemann Hypothesis — Clay Mathematics Institute",
+        "url": "https://www.claymath.org/millennium/riemann-hypothesis/",
+        "accessed_at": "2026-11-22",
+        "source_type": "official institutional page"
+      },
+      "uncertainty_notes": "Institutional prize status is distinct from formal proof verification. The page may be updated after the briefing date."
+    },
+    {
+      "id": "math.grh_extension_status_2026",
+      "label": "Generalized Riemann Hypothesis extension",
+      "value": "Author claim not separately certified in the inspected joint RH statement",
+      "unit": "review status",
+      "period": "2026-11-22",
+      "evidence_status": "OPEN",
+      "source": {
+        "title": "Lean verification of the Riemann Hypothesis",
+        "url": "https://leanprover-community.github.io/blog/posts/riemann-hypothesis/",
+        "published_at": "2026-11-21",
+        "source_type": "joint community statement"
+      },
+      "uncertainty_notes": "Do not automatically transfer the RH verification to the author's broader GRH claim."
+    },
+    {
+      "id": "ai.openai.research_task_success_2_4h",
+      "label": "OpenAI internal coding-agent success for tasks estimated at 2–4 hours",
+      "value": 46,
+      "unit": "percent",
+      "period": "2026-10",
+      "evidence_status": "OBSERVATION",
+      "comparison": {
+        "previous_value": 23,
+        "previous_period": "2026-03",
+        "change_percentage_points": 23
+      },
+      "source": {
+        "title": "Research acceleration: The jagged frontier",
+        "url": "https://openai.com/index/research-acceleration-jagged-frontier/",
+        "published_at": "2026-11-18",
+        "source_type": "provider internal measurement"
+      },
+      "uncertainty_notes": "Internal OpenAI measurement, not an independent cross-provider benchmark. Task mix and success criteria are provider-defined."
+    },
+    {
+      "id": "ai.openai.research_task_success_4_8h",
+      "label": "OpenAI internal coding-agent success for tasks estimated at 4–8 hours",
+      "value": 35,
+      "unit": "percent",
+      "period": "2026-10",
+      "evidence_status": "OBSERVATION",
+      "comparison": {
+        "previous_value": 13,
+        "previous_period": "2026-03",
+        "change_percentage_points": 22
+      },
+      "source": {
+        "title": "Research acceleration: The jagged frontier",
+        "url": "https://openai.com/index/research-acceleration-jagged-frontier/",
+        "published_at": "2026-11-18",
+        "source_type": "provider internal measurement"
+      },
+      "uncertainty_notes": "Internal OpenAI measurement. Success differs substantially by task category."
+    },
+    {
+      "id": "ai.toolturns.subtask_success_max",
+      "label": "Highest individual request success in ToolTurns",
+      "value": 69.6,
+      "unit": "percent",
+      "period": "2026-11-11",
+      "evidence_status": "OBSERVATION",
+      "source": {
+        "title": "ToolTurns: Benchmarking LLM Agents in Multi-Turn Dialogue",
+        "url": "https://arxiv.org/abs/2611.14925",
+        "published_at": "2026-11-11",
+        "source_type": "arXiv preprint"
+      },
+      "uncertainty_notes": "Nine evaluated models; 2,620 dialogues per model. Some tool responses are cached or LLM-simulated, and LLM judges are used."
+    },
+    {
+      "id": "ai.toolturns.full_dialogue_success_max",
+      "label": "Highest full three-request dialogue completion in ToolTurns",
+      "value": 39.8,
+      "unit": "percent",
+      "period": "2026-11-11",
+      "evidence_status": "OBSERVATION",
+      "source": {
+        "title": "ToolTurns: Benchmarking LLM Agents in Multi-Turn Dialogue",
+        "url": "https://arxiv.org/abs/2611.14925",
+        "published_at": "2026-11-11",
+        "source_type": "arXiv preprint"
+      },
+      "uncertainty_notes": "Full dialogue requires all three requests to pass. Evaluation depends on a simulated user, cached/LLM-simulated tool layer, and LLM judges."
+    },
+    {
+      "id": "ai.genie4.output_video_rate",
+      "label": "Genie 4 model-card output capability",
+      "value": 24,
+      "unit": "frames per second",
+      "period": "2026-11",
+      "evidence_status": "OBSERVATION",
+      "source": {
+        "title": "Genie 4 Model Card",
+        "url": "https://deepmind.google/models/model-cards/genie-4/",
+        "published_at": "2026-11-18",
+        "source_type": "vendor model card"
+      },
+      "uncertainty_notes": "Model-card claim for up to 720p and synchronized audio. Physical interaction fidelity, spatial accuracy, object permanence and long-session consistency remain limitations."
+    },
+    {
+      "id": "cyber.bsi.index_average_2026",
+      "label": "Average BSI Cyber Index",
+      "value": 170,
+      "unit": "index points, 2024=100",
+      "period": "2025-07-01/2026-06-30",
+      "evidence_status": "OBSERVATION",
+      "comparison": {
+        "change_percent_vs_previous_reporting_period": 50
+      },
+      "source": {
+        "title": "BSI Lagebericht 2026 — Cyber Index",
+        "url": "https://bsi-lagebericht.de/node/3",
+        "published_at": "2026-11",
+        "source_type": "official German federal cybersecurity report"
+      },
+      "uncertainty_notes": "Composite normalized index, not an absolute attack count. The report combines attack surface, threat and impact dimensions."
+    },
+    {
+      "id": "cyber.bsi.time_to_exploit_q2_2026",
+      "label": "Average time from disclosure to exploitation in Q2 2026",
+      "value": 8,
+      "unit": "days",
+      "period": "2026-Q2",
+      "evidence_status": "OBSERVATION",
+      "comparison": {
+        "current_reporting_period_average_days": 25,
+        "previous_reporting_period_average_days": 53
+      },
+      "source": {
+        "title": "BSI Lagebericht 2026 — Cyber Index",
+        "url": "https://bsi-lagebericht.de/node/3",
+        "published_at": "2026-11",
+        "source_type": "official German federal cybersecurity report"
+      },
+      "uncertainty_notes": "BSI-reported aggregate; the Q2 value is not a universal time-to-exploit for every vulnerability or software product."
+    },
+    {
+      "id": "climate.cop31.electrification_signatories",
+      "label": "Countries signing the COP31 electrification pledge",
+      "value": ">90",
+      "unit": "countries",
+      "period": "2026-11-22",
+      "evidence_status": "OBSERVATION",
+      "source": {
+        "title": "Countries react as COP31 climate talks collapse",
+        "url": "https://www.reuters.com/sustainability/cop/cop31-climate-deal-balance-after-fractious-talks-2026-11-22/",
+        "published_at": "2026-11-22",
+        "source_type": "Reuters reporting"
+      },
+      "uncertainty_notes": "Signatory count is a political commitment indicator, not evidence that implementation or emissions reductions have already occurred."
+    },
+    {
+      "id": "climate.unep.cooling_support_2026",
+      "label": "New support announced for sustainable cooling and heat resilience",
+      "value": 20,
+      "unit": "million USD, more than",
+      "period": "2026-11-17",
+      "evidence_status": "OBSERVATION",
+      "source": {
+        "title": "At COP31, governments back action on extreme heat and sustainable cooling",
+        "url": "https://www.unep.org/en/news-and-stories/press-release/cop31-governments-back-action-extreme-heat-and-sustainable-cooling",
+        "published_at": "2026-11-17",
+        "source_type": "UN Environment Programme press release"
+      },
+      "uncertainty_notes": "Announced new support, not a verified disbursement total. UNEP scenario estimates nearly 3 billion people may lack adequate cooling by 2050; exclusive AC reliance could create up to 7.2 Gt CO2e."
+    },
+    {
+      "id": "space.voyager1.distance_lightday",
+      "label": "Voyager 1 distance from Earth",
+      "value": 25.9,
+      "unit": "billion kilometres",
+      "period": "2026-11-18",
+      "evidence_status": "OBSERVATION",
+      "source": {
+        "title": "NASA/JPL — Voyager 1 reaches one light-day",
+        "url": "https://www.jpl.nasa.gov/news/nasas-voyager-1-makes-history-reaching-one-light-day-from-earth/",
+        "published_at": "2026-11-19",
+        "event_date": "2026-11-18",
+        "source_type": "NASA/JPL mission report"
+      },
+      "uncertainty_notes": "One-way signal time is approximately 24 hours. NASA/JPL reported no new science or engineering data since 2026-11-14, though a carrier signal remained."
+    },
+    {
+      "id": "space.escapade.mars_arrival",
+      "label": "ESCAPADE planned Mars orbit arrival",
+      "value": "2027-09",
+      "unit": "target month",
+      "period": "mission plan as of 2026-11-09",
+      "evidence_status": "FORECAST",
+      "source": {
+        "title": "NASA — ESCAPADE completes powered Earth flybys",
+        "url": "https://science.nasa.gov/science-research/heliophysics/nasas-escapade-completes-powered-earth-flybys-now-en-route-to-mars/",
+        "published_at": "2026-11-09",
+        "source_type": "NASA mission update"
+      },
+      "uncertainty_notes": "Planned arrival, not an observed result. Mission schedules can change."
+    },
+    {
+      "id": "climate.copernicus.october_anomaly_2026",
+      "label": "Global October 2026 surface air temperature anomaly",
+      "value": 1.75,
+      "unit": "degrees Celsius above 1850–1900",
+      "period": "2026-10",
+      "evidence_status": "OBSERVATION",
+      "source": {
+        "title": "Copernicus — October 2026 temperature",
+        "url": "https://climate.copernicus.eu/copernicus-warmest-october-record-2026-virtually-certain-exceed-15degc",
+        "published_at": "2026-11-05",
+        "source_type": "ERA5/Copernicus observation"
+      },
+      "uncertainty_notes": "Monthly anomaly, not the long-term Paris Agreement warming metric."
+    },
+    {
+      "id": "climate.copernicus.annual_forecast_2026",
+      "label": "Copernicus statistical forecast for 2026 annual temperature anomaly",
+      "value": "1.56–1.61",
+      "unit": "degrees Celsius above 1850–1900",
+      "period": "2026 calendar year, forecast based on ERA5 through October",
+      "evidence_status": "FORECAST",
+      "source": {
+        "title": "Copernicus — October 2026 temperature",
+        "url": "https://climate.copernicus.eu/copernicus-warmest-october-record-2026-virtually-certain-exceed-15degc",
+        "published_at": "2026-11-05",
+        "source_type": "statistical forecast"
+      },
+      "uncertainty_notes": "Not an observed completed annual mean. Different datasets or statistical models may produce different probabilities."
+    },
+    {
+      "id": "demography.un.wpp2024_peak",
+      "label": "UN projected global population peak",
+      "value": 10.3,
+      "unit": "billion people",
+      "period": "mid-2080s",
+      "evidence_status": "FORECAST",
+      "source": {
+        "title": "UN World Population Prospects 2024",
+        "url": "https://www.un.org/en/node/219445",
+        "published_at": "2024-07-11",
+        "source_type": "UN demographic projection"
+      },
+      "uncertainty_notes": "UN central projection; population growth is projected to slow and peak, not continue as a simple exponential."
+    },
+    {
+      "id": "demography.un.life_expectancy_2024",
+      "label": "Global life expectancy at birth",
+      "value": 73.3,
+      "unit": "years",
+      "period": "2024",
+      "evidence_status": "OBSERVATION",
+      "source": {
+        "title": "UN World Population Prospects 2024",
+        "url": "https://www.un.org/en/node/219445",
+        "published_at": "2024-07-11",
+        "source_type": "UN demographic estimate"
+      },
+      "uncertainty_notes": "Global average; large regional and socioeconomic differences remain."
+    },
+    {
+      "id": "social.loneliness.nmp_adjusted_or_2026",
+      "label": "Adjusted odds ratio for loneliness in highest versus lowest quartile of social-media contacts never met in person",
+      "value": 2.33,
+      "unit": "adjusted odds ratio",
+      "period": "survey 2023-07/2023-08; publication 2026-05-06",
+      "evidence_status": "OBSERVATION",
+      "source": {
+        "title": "Closeness of Social Media Contacts and Loneliness Among US Adults",
+        "url": "https://doi.org/10.1177/00333549261443288",
+        "published_at": "2026-05-06",
+        "source_type": "peer-reviewed journal article"
+      },
+      "uncertainty_notes": "95% CI 1.52–3.58; cross-sectional self-report survey of 1,512 US adults aged 30–70; association does not establish causality."
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "career.its.fachinformatiker_ae_2027",
+      "title": "ITS Informationstechnik Service GmbH — Fachinformatiker/in Anwendungsentwicklung",
+      "location": "Darmstadt, Germany",
+      "start_date": "2027-08-01",
+      "salary_eur_monthly_by_year": [
+        1050,
+        1150,
+        1300
+      ],
+      "contract_type": "full-time apprenticeship",
+      "checked_at": "2026-11-22",
+      "status": "listed_online_at_check",
+      "url": "https://www.arbeitsagentur.de/jobsuche/jobdetail/10001-1003747566-S",
+      "uncertainty_notes": "Fachhochschulreife required; salary and role details from BA listing; no application submitted."
+    },
+    {
+      "id": "career.telekom.fachinformatiker_ae_2027",
+      "title": "Deutsche Telekom AG — Fachinformatiker/in Anwendungsentwicklung",
+      "location": "Darmstadt, Germany",
+      "start_date": "2027-09-01",
+      "salary_eur_monthly_by_year": [
+        1384.96,
+        1441.95,
+        1498.94
+      ],
+      "contract_type": "three-year full-time apprenticeship",
+      "checked_at": "2026-11-22",
+      "status": "listed_online_at_check",
+      "url": "https://careers.telekom.com/de/jobs/312509",
+      "uncertainty_notes": "Official career page and BA listing available at check; listing says no deadline while online; no application submitted."
+    }
+  ],
+  "relations": [
+    {
+      "source_id": "math.rh.lean_formalization_2026",
+      "relation": "SUPPORTS",
+      "target_id": "method.formal_proof_verification"
+    },
+    {
+      "source_id": "ai.toolturns.full_dialogue_success_max",
+      "relation": "CHALLENGES",
+      "target_id": "metric.single_turn_success"
+    },
+    {
+      "source_id": "cyber.bsi.index_average_2026",
+      "relation": "CHALLENGES",
+      "target_id": "policy.unrestricted_agent_permissions"
+    },
+    {
+      "source_id": "ai.genie4.output_video_rate",
+      "relation": "INSPIRED_BY",
+      "target_id": "adapter.interactive_world_generation"
+    },
+    {
+      "source_id": "space.escapade.mars_arrival",
+      "relation": "TESTS",
+      "target_id": "physics.powered_flyby_reference"
+    },
+    {
+      "source_id": "space.voyager1.distance_lightday",
+      "relation": "RELATED_TO",
+      "target_id": "network.dtn_store_and_forward"
+    },
+    {
+      "source_id": "demography.un.wpp2024_peak",
+      "relation": "CHALLENGES",
+      "target_id": "scenario.kurzgesagt_last_human_constant_births"
+    }
+  ],
+  "provenance": {
+    "report_version": "1.0.0",
+    "generated_by": "Matrixgame Global Research & KIM Brief",
+    "previous_brief": "2026-11-15",
+    "repository_base": "main",
+    "code_changes": false,
+    "java_builds_executed": false,
+    "note": "JSON syntax is validated before publication. Metrics are scoped to their stated sources, periods, methods and uncertainties."
+  }
+}
