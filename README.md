@@ -1,5 +1,11 @@
 # Matrixgame – Collective AI Game & Simulation Project
 
+## Latest Global Research & KIM Brief — 22 November 2026
+
+- [German research brief](research/MATRIXGAME_GLOBAL_RESEARCH_2026-11-22.md)
+- [Machine-readable progress metrics (JSON)](research/MATRIXGAME_GLOBAL_PROGRESS_METRICS_2026-11-22.json)
+
+
 ## Current Repository Status
 
 This repository is an evolving collection of ideas, experiments, documentation, Java code fragments, simulation concepts, and previous development work related to the Matrixgame and Collective AI Games.
