@@ -109,16 +109,20 @@ Der vorhandene KIM-Interoperabilitätsatlas auf dem Branch feature/gaia-water-cy
 
 ### Jacopist
 
-Ein öffentlicher Drittanbieter-Index ordnet dem Kanalnamen Jacopist eine YouTube-Kanal-ID und ein simulationsartig erzähltes Video zum Thema Alien-Invasion zu. Die direkte YouTube-Seite ließ sich nicht zuverlässig prüfen; ein vollständiger Kanalabgleich, Transkript, Quellcode, Parameter oder reproduzierbarer Simulationslauf liegen hier nicht vor. Der Inhalt ist daher als FICTION/Erzähl-Simulation zu behandeln, nicht als Prognose oder wissenschaftliches Modell. Es wurde keine Verbindung zu einer Person außerhalb der öffentlich sichtbaren Kanalmetadaten hergestellt.
+ChartsList, ein öffentlicher Drittanbieter-Index, zeigte am 22.11.2026 um 09:15 UTC einen Kanal namens Jacopist mit einer YouTube-Kanalverknüpfung und genau einem von ChartsList erfassten Video: „Humanity's Last Stand Against The Alien Invasion“, veröffentlicht am 22.10.2026, mit 403.303 Aufrufen zum Abrufzeitpunkt. „Ein erfasstes Video“ bedeutet nicht, dass der Kanal insgesamt nur ein Video besitzt: ChartsList zählt nur Videos, die in seinen eigenen Charts auftauchen. Die direkte YouTube-Seite ließ sich nicht zuverlässig prüfen; ein vollständiger Kanalabgleich, ein belastbares Transkript, Quellcode, Simulationsparameter oder ein reproduzierbarer Lauf liegen hier nicht vor. Der Inhalt ist daher als FICTION/Erzähl-Simulation zu behandeln, nicht als Prognose oder wissenschaftliches Modell.
+
+- [ChartsList-Kanaleintrag und Video-Snapshot](https://chartslist.com/youtube/channel/jacopist/)
+- [Öffentlicher YouTube-Kanal-Link](https://www.youtube.com/channel/UCOH9G3SPMLaJ0t2MlZTMEhQ)
 
 ### Kurzgesagt — „The Last Human – A Glimpse Into The Far Future“
 
-Das konkrete Video stammt vom 28.06.2022. Die offizielle Quellenliste nennt fachliche Berater und zahlreiche Quellen, weist aber auch darauf hin, dass die Zahlen im Video eigene vereinfachte Berechnungen sind. Für den Bevölkerungsteil wird unter anderem UN World Population Prospects 2019 verwendet. Die heutige UN-WPP-2024-Projektion ist anders: etwa 10,3 Milliarden Menschen Mitte der 2080er, nicht ein bis 2100 fortlaufend exponentiell wachsender Bestand.
+Das konkrete Video wurde am 28.06.2022 veröffentlicht. Die offizielle Quellenliste nennt fachliche Berater und zahlreiche Quellen, weist aber ausdrücklich darauf hin, dass die Zahlen im Video eigene vereinfachte Berechnungen sind. Sie verwendet für die Geburtenzahl unter anderem UN World Population Prospects 2019: rund 125,9 Millionen Geburten pro Jahr in der mittleren Variante 2095–2100. Das Video erklärt selbst, dass diese Rate für das Gedankenexperiment konstant gehalten wird. Die heutige UN-WPP-2024-Projektion ist anders: etwa 10,3 Milliarden Menschen Mitte der 2080er, nicht ein bis 2100 fortlaufend exponentiell wachsender Bestand.
 
-Die im Video gezeigten Größenordnungen von Billionen oder Quadrillionen künftigen Leben beruhen auf bewusst vereinfachten Annahmen wie einer konstanten jährlichen Geburtenzahl über sehr lange Zeiträume und einer angenommenen Überlebensdauer der Menschheit von Millionen Jahren. Das ist ein **FICTION-/Szenario-Rechenexperiment**, keine Demografieprognose. Es eignet sich dennoch als ethischer Denkrahmen für Generationengerechtigkeit, sofern die Annahmen sichtbar bleiben.
+Die im Video gezeigten Größenordnungen von 100 Billionen oder 1,2 Billiarden künftigen Leben entstehen aus der Multiplikation dieser konstant gesetzten Geburtenrate mit angenommenen Überlebenszeiten von einer beziehungsweise zehn Millionen Jahren. Das ist ein **FICTION-/Szenario-Rechenexperiment**, keine Demografieprognose. Auch die angenommene Überlebensdauer einer Säugetierart ist nicht automatisch auf Homo sapiens übertragbar. Das Video eignet sich dennoch als ethischer Denkrahmen für Generationengerechtigkeit, sofern alle Annahmen sichtbar bleiben.
 
 - [Konkretes Kurzgesagt-Video](https://www.youtube.com/watch?v=LEENEFaVUzU)
 - [Offizielle Quellenliste zum Video](https://sites.google.com/view/sources-last-human/)
+- [Episoden-Metadaten und Veröffentlichungsdatum](https://thetvdb.com/series/kurzgesagt-in-a-nutshell/episodes/9236538)
 - [Verfügbares Drittanbieter-Transkript](https://pickscribe.com/v/LEENEFaVUzU)
 - [Aktuelle UN-WPP-2024-Baseline](https://www.un.org/en/node/219445)
 
@@ -249,5 +253,7 @@ Quelle: [Primärpublikation, Public Health Reports](https://doi.org/10.1177/0033
 | SRC-BA-ITS | [BA / ITS apprenticeship](https://www.arbeitsagentur.de/jobsuche/jobdetail/10001-1003747566-S) | geprüft 22.11.2026 | Aktuelle Ausbildungsanzeige |
 | SRC-TELEKOM | [Telekom job 312509](https://careers.telekom.com/de/jobs/312509) | geprüft 22.11.2026 | Offizielle Ausbildungsanzeige |
 | SRC-KIM-ATLAS | [KIM interoperability atlas](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/blob/feature/gaia-water-cycle-mvp-2026-11-08/docs/KIM_INTEROPERABILITY_ATLAS_2026-11-08.md) | 08.11.2026 | Vorhandener Atlas; Live-Playlist-Abgleich offen |
+| SRC-JACOPIST | [ChartsList Jacopist](https://chartslist.com/youtube/channel/jacopist/) | Snapshot 22.11.2026 09:15 UTC | Drittanbieter-Zählung, keine vollständige Kanalinventur |
+| SRC-KURZGESAGT-VIDEO | [The Last Human — episode metadata](https://thetvdb.com/series/kurzgesagt-in-a-nutshell/episodes/9236538) | 28.06.2022 | Sekundärmetadaten zum konkreten Video |
 
 **Repository-Status:** Dieser Bericht ist ein Forschungs- und Designartefakt, keine Implementierungsbehauptung. Es wurden keine Java-Dateien verändert. Für die neue Branch-Basis wurden der aktuelle README-Stand, das Knowledge-Node-Schema, die Universal-Knowledge-Engine-Spezifikation und der Physics-A–Z-Atlas geprüft. Der vorherige Wochenbrief vom 15.11. liegt weiterhin in einem separaten offenen PR und wurde nicht überschrieben. Der aktuelle Hauptbranch meldete zum Abruf keine Commit-Statuschecks; in diesem Lauf wurden keine Java-Build- oder Integrationstests ausgeführt.
