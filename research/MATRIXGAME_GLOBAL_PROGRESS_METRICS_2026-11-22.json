@@ -311,6 +311,65 @@
         "source_type": "peer-reviewed journal article"
       },
       "uncertainty_notes": "95% CI 1.52–3.58; cross-sectional self-report survey of 1,512 US adults aged 30–70; association does not establish causality."
+    },
+    {
+      "id": "kim.atlas.playlist_ids_2026_11_08",
+      "label": "YouTube playlist IDs recorded in the existing KIM interoperability atlas",
+      "value": 13,
+      "unit": "playlist IDs",
+      "period": "2026-11-08",
+      "evidence_status": "OBSERVATION",
+      "source": {
+        "title": "KIM Interoperability Atlas 2026-11-08",
+        "url": "https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/blob/feature/gaia-water-cycle-mvp-2026-11-08/docs/KIM_INTEROPERABILITY_ATLAS_2026-11-08.md",
+        "source_type": "repository artifact"
+      },
+      "uncertainty_notes": "Atlas snapshot count. Direct YouTube playlist pages were throttled or inaccessible in this run; current playlist contents, video counts and transcripts are not revalidated."
+    },
+    {
+      "id": "kim.jacopist.tracked_videos_2026_11_22",
+      "label": "Jacopist videos tracked by ChartsList",
+      "value": 1,
+      "unit": "tracked videos",
+      "period": "2026-11-22T09:15:00Z",
+      "evidence_status": "OBSERVATION",
+      "source": {
+        "title": "Jacopist: YouTube Views & Video Stats",
+        "url": "https://chartslist.com/youtube/channel/jacopist/",
+        "accessed_at": "2026-11-22T09:15:00Z",
+        "source_type": "third-party public channel index"
+      },
+      "uncertainty_notes": "ChartsList counts only videos that have appeared on its own charts; this is not a complete channel inventory. Direct YouTube fetch was not reliable."
+    },
+    {
+      "id": "kim.jacopist.featured_video_views_2026_11_22",
+      "label": "Views on ChartsList-tracked Jacopist video Humanity's Last Stand Against The Alien Invasion",
+      "value": 403303,
+      "unit": "views",
+      "period": "2026-11-22T09:15:00Z",
+      "evidence_status": "OBSERVATION",
+      "source": {
+        "title": "Jacopist: YouTube Views & Video Stats",
+        "url": "https://chartslist.com/youtube/channel/jacopist/",
+        "accessed_at": "2026-11-22T09:15:00Z",
+        "source_type": "third-party public channel index"
+      },
+      "uncertainty_notes": "Aggregator snapshot, not independently fetched from YouTube; view counts change. No transcript, source code, simulation parameters or reproducibility package verified."
+    },
+    {
+      "id": "kim.kurzgesagt.last_human_birth_rate_assumption",
+      "label": "Annual birth-rate assumption used in The Last Human long-term scenario",
+      "value": 125916400,
+      "unit": "births per year",
+      "period": "UN WPP 2019 medium variant 2095–2100, used as a constant scenario parameter",
+      "evidence_status": "MODEL",
+      "source": {
+        "title": "Kurzgesagt — Sources: Last Human",
+        "url": "https://sites.google.com/view/sources-last-human/",
+        "accessed_at": "2026-11-22",
+        "source_type": "official video source list"
+      },
+      "uncertainty_notes": "The video explicitly holds the birth rate constant for a thought experiment. It is not a current demographic forecast; UN WPP 2024 projects a lower, earlier global population peak."
     }
   ],
   "opportunities": [
@@ -391,6 +450,6 @@
     "repository_base": "main",
     "code_changes": false,
     "java_builds_executed": false,
-    "note": "JSON syntax is validated before publication. Metrics are scoped to their stated sources, periods, methods and uncertainties."
+    "note": "JSON syntax is validated before publication. Metrics are scoped to their stated sources, periods, methods and uncertainties. KIM audit includes a third-party Jacopist channel snapshot and a count of playlist IDs from the existing atlas; neither is a complete live YouTube inventory."
   }
 }
