@@ -83,6 +83,20 @@ A proposed compiler and modeling architecture that translates reviewed LUMINI mo
 - [LUMINI — compiler, modeling, simulation and career engine architecture](docs/LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md)
 - [Engineering Kanban and acceptance criteria — issue #22](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/22)
 
+## Cross-LLM GitHub collaboration protocol — 12 November 2026
+
+A practical operating protocol for ChatGPT, Gemini, Qwen, Mistral, Grok, and human contributors to use the repository as a shared, versioned knowledge surface. It defines contribution records, provenance, branch/PR review, security boundaries, optional provider adapters, and a staged automation roadmap. Provider integrations and orchestration remain proposed until separately configured and tested.
+
+- [Cross-LLM GitHub Collaboration Protocol](docs/CROSS_LLM_GITHUB_COLLABORATION_PROTOCOL_2026-11-12.md)
+
+## LLM landscape, Matrix-Game 4.0 and human flourishing — 12 November 2026
+
+An evidence-aware synthesis of the open model-comparison tabs, verified provider announcements, Skywork Matrix-Game 4.0, multi-agent evaluation research, European AI compute infrastructure, and wellbeing/healthy-ageing evidence. It separates verified product announcements from unverified model labels, and design proposals from implemented code.
+
+- [Matrixgame LLM, collective intelligence and flourishing research update](research/MATRIXGAME_LLM_COLLECTIVE_INTELLIGENCE_AND_FLOURISHING_2026-11-12.md)
+
+The report explicitly records browser-access limitations: some video and conversation tabs could not be read, and the Google Docs tab exposed only its outline. It therefore does not claim to have analyzed every transcript.
+
 ## LUMINI Idea Inbox, compiler filters and multilingual interoperability — 11 November 2026
 
 A specification for preserving raw ideas, tracing transparent compiler filters, separating evidence from models and hypotheses, proposing causal graphs, routing ideas into quests or code modules, and translating a shared semantic model into multiple natural languages and programming targets. Includes multi-LLM proposal/review roles, privacy and provenance rules, and a staged Java MVP. This is a design, not an implemented compiler.
@@ -244,3 +258,13 @@ mvn clean package
 # Ausführen
 java -jar target/matrixgame-simulator-1.0.0.jar
 ```
+
+
+## Infinity-Lab — cosmic worlds, science learning and human flourishing — 12 November 2026
+
+A new learning-and-simulation design connects Boolean logic, arithmetic, rhetoric, grammar and English micro-learning with computing/internet history, AI, astrobiology, evolution, orbital mechanics, energy systems, quantum networks and civilization-scale scenarios. It distinguishes established science from hypotheses and FICTION, keeps deterministic simulation state authoritative, and uses voluntary XP without penalties for rest.
+
+- [Infinity-Lab: Cosmic Worlds, Science Learning and Human Flourishing](research/INFINITY_LAB_COSMIC_WORLDS_LEARNING_XP_2026-11-12.md)
+
+Browser coverage and access limitations are documented in the research note. Some external AI-chat and video tabs were visible only by title or blocked by browser permissions; no unseen transcript contents are claimed.
+
