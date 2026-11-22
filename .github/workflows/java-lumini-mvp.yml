@@ -1,0 +1,38 @@
+name: Java LUMINI MVP
+on:
+  push:
+    branches: [ "main", "feat/**" ]
+    paths:
+      - "src/main/java/de/matrixgame/lumini/**"
+      - "src/test/java/de/matrixgame/lumini/**"
+      - ".github/workflows/java-lumini-mvp.yml"
+  pull_request:
+    paths:
+      - "src/main/java/de/matrixgame/lumini/**"
+      - "src/test/java/de/matrixgame/lumini/**"
+      - ".github/workflows/java-lumini-mvp.yml"
+permissions:
+  contents: read
+jobs:
+  compile-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Compile MVP against Java 11 API
+        run: |
+          mkdir -p build/classes build/test-classes
+          javac --release 11 -encoding UTF-8 -Xlint:all -Werror -d build/classes \
+            src/main/java/de/matrixgame/lumini/*.java
+          javac --release 11 -encoding UTF-8 -Xlint:all -Werror -cp build/classes \
+            -d build/test-classes src/test/java/de/matrixgame/lumini/*.java
+      - name: Run regression tests
+        run: java -ea -Dfile.encoding=UTF-8 -cp build/classes:build/test-classes de.matrixgame.lumini.IdeaCompilerPipelineSelfTest
+      - name: Run console demo and validate JSONL
+        run: |
+          java -Dfile.encoding=UTF-8 -cp build/classes de.matrixgame.lumini.LearningRoundDemo --jsonl-only "Matrixgame Java lernen" > build/event.jsonl
+          python3 -c 'import json; json.loads(open("build/event.jsonl", encoding="utf-8").read()); print("JSONL syntax check: PASS")'
