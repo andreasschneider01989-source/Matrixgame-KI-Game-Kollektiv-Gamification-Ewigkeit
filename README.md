@@ -60,6 +60,13 @@ The Universal Knowledge Engine documentation connects scientific knowledge, pers
 
 The initial implementation target is deliberately small: one sourced density knowledge node, its equation and SI units, a dimensional validation test, one linked learning quest, and a reproducible example. Later search, agent collaboration, and DTN-inspired synchronization should build on that verified foundation.
 
+## Weekly research brief — 15 November 2026
+
+- [Global research and KIM brief](research/MATRIXGAME_GLOBAL_RESEARCH_2026-11-15.md)
+- [Machine-readable progress metrics](research/MATRIXGAME_GLOBAL_PROGRESS_METRICS_2026-11-15.json)
+
+The 15 November brief includes an explicit correction to the 6 November AI Index compute/power metric. Use the corrected H100-equivalent and GW values in the newer snapshot.
+
 ## Global research update — 6 November 2026
 
 The following research documents extend the Universal Knowledge Engine with a dated, evidence-aware snapshot of global progress, climate, AI, energy systems, space research, and collective intelligence.
