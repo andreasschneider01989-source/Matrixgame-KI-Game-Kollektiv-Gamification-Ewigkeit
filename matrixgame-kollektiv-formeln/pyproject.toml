@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "matrixgame-kollektiv-formeln"
+version = "1.0.0"
+description = "Matrixgame & kollektive KI-Games: Formeln aus Sprache, Mathematik, Physik, Chemie, Biologie und Psychologie als strukturierte Python-Bibliothek."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [{ name = "Andreas Schneider" }]
+keywords = ["matrixgame", "simulation", "physik", "entropie", "kollektives-bewusstsein", "didaktik"]
+
+[tool.setuptools.packages.find]
+include = ["matrixgame_formeln*"]
