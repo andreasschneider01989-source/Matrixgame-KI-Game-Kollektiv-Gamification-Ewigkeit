@@ -15,6 +15,8 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [Knowledge Node and Evidence Schema](KNOWLEDGE_NODE_AND_EVIDENCE_SCHEMA.md) — strukturierte Darstellung von Aussagen und Evidenzstatus.
 - [Collective Improvement Network](COLLECTIVE_IMPROVEMENT_NETWORK.md) — Vision und Roadmap für freiwillige Zusammenarbeit.
 - [LUMINI Compiler and Simulation](LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md) — Entwurf für typisierte Modelle und reproduzierbare Simulationen.
+- [LUMINI Formula Compiler MVP](LUMINI_FORMULA_COMPILER_MVP_2026-11-23.md) — ausführbarer Formel-Compiler 0.1 mit AST, SI-Dimensionsanalyse, Model IR, CLI, Tests und klaren Grenzen.
+- [LUMINI Model IR schema](../matrixgame-protocol/lumini-model-ir.schema.json) — JSON-Schema-Vertrag für die erste IR-Version.
 - [Cross-disciplinary model architecture and Python MVP](MATRIXGAME_CROSS_DISCIPLINARY_MODEL_ARCHITECTURE.md) — Schichtenmodell von Sprache und Mathematik bis zu kollektiven Entscheidungen; Status und nächste Entwicklungsschritte.
 - [Python package: Matrixgame Science](../matrixgame_science/README.md) — erste ausführbare, getestete Modellbausteine.
 - [Matrixgame Protocol](../matrixgame-protocol/README.md) — lokaler Prototyp, kein öffentlicher Multiplayer-Dienst.
