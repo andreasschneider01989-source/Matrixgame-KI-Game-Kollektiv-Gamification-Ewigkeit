@@ -78,10 +78,20 @@ A new research note integrates social connection, respectful dating and communic
 
 ## LUMINI compiler, simulation and career scenario lab — 7 November 2026
 
-A proposed compiler and modeling architecture that translates reviewed LUMINI model descriptions into typed, unit-checked Model IR, then into reproducible runs through registered simulation engines. The roadmap connects the Java 21 Matrix Core, the older physics simulator, measured datasets, evidence tracking, and privacy-preserving career scenarios. The compiler and DSL are design proposals, not implemented features.
+The broader compiler and simulation architecture remains a staged roadmap. A first executable Python MVP now implements a restricted scalar-formula subset: lexer, parser, AST, SI dimensional analysis, versioned Model IR, and a deterministic `formula.scalar` runner. Physics, agent, dataset, career and natural-language pipelines remain planned, not implemented.
 
 - [LUMINI — compiler, modeling, simulation and career engine architecture](docs/LUMINI_COMPILER_SIMULATION_AND_CAREER_ENGINE_2026-11-07.md)
 - [Engineering Kanban and acceptance criteria — issue #22](https://github.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/issues/22)
+
+## LUMINI formula compiler MVP — 23 November 2026
+
+A working, deliberately limited compiler is now available in `lumini_compiler/`. It converts a safe `.lumini` formula subset into typed Model IR, checks SI dimensions and dependencies, and produces a deterministic Run Manifest. It does not execute arbitrary code and does not claim scientific validation.
+
+- [Executable compiler, DSL reference, tests and roadmap](docs/LUMINI_FORMULA_COMPILER_MVP_2026-11-23.md)
+- [LUMINI Model IR 0.1 JSON Schema](matrixgame-protocol/lumini-model-ir.schema.json)
+- [Runnable Earth-surface-gravity example](examples/lumini/earth_surface_gravity.lumini)
+
+Quick start: `python -m pip install -e .`, then `lumini check examples/lumini/earth_surface_gravity.lumini` and `lumini run examples/lumini/earth_surface_gravity.lumini`.
 
 ## LUMINI Idea Inbox, compiler filters and multilingual interoperability — 11 November 2026
 
