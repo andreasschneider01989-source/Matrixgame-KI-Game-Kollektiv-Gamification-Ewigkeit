@@ -2,7 +2,7 @@
 ## Technische Architektur für Matrixgame, reale Messdaten und berufliche Zukunftsszenarien
 
 **Version:** 0.1 · **Stichtag:** 7. November 2026  
-**Status:** Architektur- und Sprachentwurf · noch kein implementierter LUMINI-Compiler  
+**Status:** Architekturentwurf plus implementierter Formel-Compiler-MVP (Python 0.1); vollständiger Simulationscompiler und die beschriebenen Fach-Engines sind noch nicht implementiert  
 **Zielplattform:** Java 21 als gemeinsamer Ausgangspunkt; ältere Java-11-Komponenten zunächst getrennt weiterführen  
 **Prinzip:** Eine nachvollziehbare Modellbeschreibung → ein typisiertes Zwischenformat → reproduzierbare Ausführung → überprüfbares Ergebnis.
 
@@ -119,7 +119,7 @@ Sie dürfen über stabile IDs verknüpft werden, sollen aber nicht zu einem einz
 
 `docs/UNIVERSAL_KNOWLEDGE_ENGINE.md` und `docs/KNOWLEDGE_NODE_AND_EVIDENCE_SCHEMA.md` definieren bereits Wissensobjekte, Belege, Relationen, Revisionen und Status.
 
-Das gemeinsame Protokoll erwähnt Lumini-Tokens als geplantes Vokabular. In den untersuchten Verzeichnissen ist aber noch keine ausführbare LUMINI-Grammatik, kein Parser und kein Compiler vorhanden. Die folgende Sprache ist deshalb ein neuer Entwurf, kein bereits verfügbares Feature.
+Das gemeinsame Protokoll erwähnt Lumini-Tokens als geplantes Vokabular. Seit dem 23. November 2026 existiert zusätzlich der ausführbare Python-MVP unter `lumini_compiler/`: Er verarbeitet einen eingeschränkten skalaren Formelumfang mit Lexer, Parser, AST, Namensauflösung, SI-Dimensionsprüfung, Model IR und deterministischer `formula.scalar`-Auswertung. Die vollständige Sprache und die übrigen Simulationsblöcke in diesem Architekturpapier bleiben Entwurf. Details und Laufanweisungen stehen in [LUMINI Formel-Compiler – MVP](LUMINI_FORMULA_COMPILER_MVP_2026-11-23.md).
 
 Quellen im Repository:
 - `docs/UNIVERSAL_KNOWLEDGE_ENGINE.md`
@@ -272,7 +272,7 @@ Ein physikalisches Modell kann beispielsweise wissenschaftlich ein MODEL, softwa
 
 ## 4. Beispielsyntax: LUMINI v0.1
 
-**Achtung:** Die folgende Syntax ist ein Designentwurf und noch nicht ausführbar. Sie zeigt, wie eine gemeinsame Modellierungssprache aussehen könnte.
+**Statushinweis:** Die folgenden umfangreichen Beispiele bleiben Sprach- und Architekturentwürfe. Ausführbar ist aktuell nur der ausdrücklich dokumentierte skalare Formel-Teilumfang des [Compiler-MVP](LUMINI_FORMULA_COMPILER_MVP_2026-11-23.md); beispielsweise sind `body`, `world`, `agents`, `experiment` und die genannten Fach-Engines noch nicht implementiert.
 
 ### 4.1 Physikalisches Modell: Kreisbahn im Zentralfeld
 
