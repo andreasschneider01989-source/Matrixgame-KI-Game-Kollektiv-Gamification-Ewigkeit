@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0.0",
+  "updated_at": "2026-11-19T14:00:00+01:00",
+  "mode": "STABLE",
+  "focus": "Build a verified, low-friction development loop for MACHX and Matrixgame",
+  "goals": [
+    {
+      "id": "machx-stable-core",
+      "title": "Protect and verify the current MACHX game baseline",
+      "domain": "MACHX",
+      "status": "ACTIVE",
+      "horizon": "MONTH",
+      "success_signal": "Selected version compiles and documented self-tests pass"
+    },
+    {
+      "id": "lifeos-continuity",
+      "title": "Maintain a reliable project checkpoint and next-action queue",
+      "domain": "MATRIXGAME",
+      "status": "ACTIVE",
+      "horizon": "MONTH",
+      "success_signal": "A new session can resume from one concise checkpoint"
+    },
+    {
+      "id": "career-practice",
+      "title": "Turn programming practice into demonstrable portfolio evidence",
+      "domain": "CAREER",
+      "status": "PLANNED",
+      "horizon": "QUARTER",
+      "success_signal": "One small tested project can be shown and explained"
+    }
+  ],
+  "next_actions": [
+    {
+      "id": "review-pr-41-43",
+      "title": "Review MACHX PRs #41–#43 and identify the safest baseline",
+      "domain": "MACHX",
+      "status": "READY",
+      "effort_minutes": 25,
+      "priority": "HIGH",
+      "fallback": "Read the latest PR summary and record one unresolved test",
+      "acceptance_test": "Current source, compile status and self-test status are recorded separately",
+      "evidence_status": "NOT_RUN"
+    },
+    {
+      "id": "run-lifeos-validator",
+      "title": "Run the LifeOS schema validator",
+      "domain": "MATRIXGAME",
+      "status": "READY",
+      "effort_minutes": 5,
+      "priority": "NORMAL",
+      "fallback": "Inspect the example JSON and confirm the version field",
+      "acceptance_test": "Validator exits successfully on the example state",
+      "evidence_status": "NOT_RUN"
+    }
+  ],
+  "automation": {
+    "level": "L2_READ_ONLY",
+    "human_approval_required": true,
+    "personal_data_in_public_repo": false,
+    "digest_enabled": false,
+    "digest_cadence": "ON_DEMAND"
+  },
+  "notes": [
+    "Generic example only; replace with reviewed project facts, not private personal data.",
+    "Draft branch is not yet the default branch."
+  ]
+}
