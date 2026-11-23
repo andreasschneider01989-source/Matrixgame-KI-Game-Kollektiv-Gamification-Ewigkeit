@@ -1,5 +1,6 @@
 """Decision models for games; not clinical or validated human assessments."""
 from __future__ import annotations
+import math
 from typing import Sequence
 from .mathematics import softmax
 
@@ -26,7 +27,7 @@ def decision_probabilities(
 
 def choose_highest_probability(probabilities: Sequence[float]) -> int:
     values = tuple(map(float, probabilities))
-    if not values or any(value < 0 for value in values):
+    if not values or any(not math.isfinite(value) or value < 0 for value in values):
         raise ValueError("probabilities must be non-empty and non-negative.")
     if abs(sum(values) - 1.0) > 1e-9:
         raise ValueError("probabilities must sum to one.")
