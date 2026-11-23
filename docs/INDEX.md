@@ -22,6 +22,11 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [Matrixgame Protocol](../matrixgame-protocol/README.md) — lokaler Prototyp, kein öffentlicher Multiplayer-Dienst.
 - [Transparent Assistance Protocol](TRANSPARENT_ASSISTANCE_PROTOCOL.md) — Status, Gründe und sichere Alternativen bei vollständiger, teilweiser oder blockierter KI-Hilfe.
 
+## Fragment 6 – Kontinuität und Synthese
+
+- [Fragment 6 – Gesamtsynthese und Zukunftsarchitektur](FRAGMENT_6_SYNTHESIS_AND_FUTURE_ARCHITECTURE_2026-11-23.md) — kuratierte Auswertung des historischen Journals, wissenschaftliche Korrekturen, Governance und Realisierungsplan.
+- [Fragment 6 – kuratiertes Linkregister](FRAGMENT_6_CURATED_LINK_REGISTER_2026-11-23.md) — ausgewählte Primärlinks und Anschlussstellen; keine pauschale Inhaltsbestätigung der externen Ziele.
+
 ## Lernen und soziale Gestaltung
 
 - [Learning Quests and Responsible Gamification](LEARNING_QUESTS_AND_GAMIFICATION.md) — Vorschläge für freiwillige Lernmechaniken.
