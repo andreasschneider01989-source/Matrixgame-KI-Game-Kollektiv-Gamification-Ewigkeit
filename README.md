@@ -36,6 +36,12 @@ This should make it easier to:
 
 The existing code and documentation provide a starting point for this process. The modular architecture described below is a **development plan**, not a claim that all components already exist or work together.
 
+## Integrated research synthesis — 13 November 2026
+
+A cross-domain synthesis and collaboration handoff connecting the Matrix Core, Matrixgame Protocol, LUMINI, tensor/relativity learning, evidence-aware AI collaboration, and next implementation quests. This is a research and roadmap document; proposed work is not presented as already implemented.
+
+- [Integrated research synthesis and collaboration handoff](research/MATRIXGAME_INTEGRATED_SYNTHESIS_2026-11-13.md)
+
 ## Collective Improvement Network
 
 The broader vision for human–AI collaboration, cross-project improvement quests, evidence-aware knowledge sharing, and responsible automation is documented here:
