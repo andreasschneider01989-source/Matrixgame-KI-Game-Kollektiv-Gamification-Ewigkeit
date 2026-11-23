@@ -9,3 +9,8 @@ def test_pareto_frontier_preserves_non_dominated_options():
 def test_pareto_frontier_rejects_ragged_input():
     with pytest.raises(ValueError):
         pareto_frontier(((1.0, 2.0), (1.0,)))
+
+
+def test_pareto_frontier_rejects_non_finite_scores():
+    with pytest.raises(ValueError):
+        pareto_frontier(((1.0, float("nan")),))
