@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "matrixgame-science"
 version = "0.1.0"
-description = "Transparent scientific model primitives for Matrixgame"
+description = "Transparent scientific model primitives and a safe LUMINI formula compiler for Matrixgame"
 readme = "matrixgame_science/README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
