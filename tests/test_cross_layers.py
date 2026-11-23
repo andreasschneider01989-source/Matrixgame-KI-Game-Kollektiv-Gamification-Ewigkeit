@@ -42,3 +42,8 @@ def test_claim_and_parameter_retain_provenance():
     binding = ParameterBinding("rate", 0.5, "s^-1", "explicit test input", EvidenceStatus.HYPOTHESIS)
     assert claim.evidence_status is EvidenceStatus.MODEL
     assert binding.value == 0.5
+
+
+def test_choice_selector_rejects_nan_probabilities():
+    with pytest.raises(ValueError):
+        choose_highest_probability((float("nan"), 1.0))
