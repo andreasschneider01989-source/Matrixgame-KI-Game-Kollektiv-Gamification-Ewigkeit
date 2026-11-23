@@ -76,6 +76,14 @@ A new research note integrates social connection, respectful dating and communic
 
 - [Social connection, wellbeing and safe self-regulation — research and design note](research/MATRIXGAME_CONNECTION_WELLBEING_SAFETY_2026-11-06.md)
 
+## Fragment 6 — historical synthesis and future architecture (23 November 2026)
+
+The long-running Matrixgame Journal / Fragment 6 has been analyzed as a historical source. Its scientific ideas, software sketches, personal notes, links and speculative narratives are separated into a traceable architecture. Sensitive personal material and harmful calls to violence are intentionally excluded from public implementation. The synthesis connects the Genesis registry, evidence provenance, LUMINI compiler, engine registry, reproducible experiments, collective review, Infinity Canvas, learning and Earth systems research.
+
+- [Fragment 6 — complete synthesis and realization roadmap](docs/FRAGMENT_6_SYNTHESIS_AND_FUTURE_ARCHITECTURE_2026-11-23.md)
+- [Fragment 6 — curated link register](docs/FRAGMENT_6_CURATED_LINK_REGISTER_2026-11-23.md)
+- [Original Fragment 6 journal](https://docs.google.com/document/d/1VIEINT69AqQbLZ66iTAUlLH1q5Av51JvDzKioHKTKc4/edit)
+
 ## LUMINI compiler, simulation and career scenario lab — 7 November 2026
 
 The broader compiler and simulation architecture remains a staged roadmap. A first executable Python MVP now implements a restricted scalar-formula subset: lexer, parser, AST, SI dimensional analysis, versioned Model IR, and a deterministic `formula.scalar` runner. Physics, agent, dataset, career and natural-language pipelines remain planned, not implemented.
