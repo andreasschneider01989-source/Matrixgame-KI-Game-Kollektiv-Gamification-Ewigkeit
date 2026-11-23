@@ -22,6 +22,7 @@ jobs:
         sparse-checkout: |
           /modellierung_des_kollektiven_bewusstseins.py
           /matrixgame_science/
+          /lumini_compiler/
           /tests/
           /examples/
           /pyproject.toml
@@ -46,3 +47,7 @@ jobs:
     - name: Run cross-layer demo
       run: |
         python examples/cross_layer_demo.py
+    - name: Check and run LUMINI example
+      run: |
+        lumini check examples/lumini/earth_surface_gravity.lumini
+        lumini run examples/lumini/earth_surface_gravity.lumini --output /tmp/lumini-run.json
