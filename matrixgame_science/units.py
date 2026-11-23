@@ -6,6 +6,7 @@ from typing import Union
 
 Number = Union[int, float]
 
+
 # Exponent order: mass, length, time, current, temperature, amount, luminous intensity.
 @dataclass(frozen=True)
 class Dimension:
