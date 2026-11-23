@@ -1,5 +1,6 @@
 """Multi-objective comparison helpers. No universal value weights are imposed."""
 from __future__ import annotations
+import math
 from typing import Sequence
 
 
@@ -8,6 +9,8 @@ def pareto_frontier(candidates: Sequence[Sequence[float]]) -> tuple[int, ...]:
     rows = tuple(tuple(map(float, row)) for row in candidates)
     if not rows:
         return ()
+    if any(not math.isfinite(value) for row in rows for value in row):
+        raise ValueError("Candidate scores must be finite.")
     width = len(rows[0])
     if width == 0 or any(len(row) != width for row in rows):
         raise ValueError("Candidates must form a non-empty rectangular matrix.")
