@@ -12,8 +12,11 @@ license = {text = "MIT"}
 authors = [{name = "Matrixgame contributors"}]
 dependencies = []
 
+[project.scripts]
+lumini = "lumini_compiler.cli:main"
+
 [tool.setuptools.packages.find]
-include = ["matrixgame_science*"]
+include = ["matrixgame_science*", "lumini_compiler*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
