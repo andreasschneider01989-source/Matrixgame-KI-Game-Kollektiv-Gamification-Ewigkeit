@@ -40,3 +40,8 @@ python examples/cross_layer_demo.py
 - The package does not determine a person's will. Goals, consent, constraints and final decisions remain with the person.
 
 Every future formula should include symbolic form, variable definitions, units, assumptions, source, tests, and evidence/implementation status. See the main architecture document.
+
+
+## LUMINI formula compiler
+
+The `lumini_compiler` package uses this library's SI dimensional algebra to compile a restricted, safe formula language into versioned Model IR. See [the compiler guide](../docs/LUMINI_FORMULA_COMPILER_MVP_2026-11-23.md). The compiler verifies syntax, symbol dependencies and dimensional consistency; it does not establish empirical validity.

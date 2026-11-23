@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/main/matrixgame-protocol/lumini-model-ir.schema.json",
+  "title": "LUMINI Model IR 0.1.0",
+  "description": "Typed, provenance-aware intermediate representation emitted by the scalar LUMINI formula compiler MVP.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ir_version", "language", "compiler_version", "model", "definitions", "outputs", "provenance", "validation"],
+  "properties": {
+    "ir_version": {"const": "0.1.0"},
+    "language": {"const": "LUMINI"},
+    "compiler_version": {"type": "string", "minLength": 1},
+    "model": {"$ref": "#/$defs/model"},
+    "definitions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/definition"}},
+    "outputs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "validation": {"$ref": "#/$defs/validation"}
+  },
+  "$defs": {
+    "evidenceStatus": {"enum": ["FACT", "MODEL", "HYPOTHESIS", "OPEN", "FICTION"]},
+    "dimension": {"type": "array", "minItems": 7, "maxItems": 7, "items": {"type": "integer"}},
+    "model": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "version", "epistemic_status", "implementation_status", "engine_id", "description"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "epistemic_status": {"$ref": "#/$defs/evidenceStatus"},
+        "implementation_status": {"type": "string"},
+        "engine_id": {"type": "string", "minLength": 1},
+        "description": {"type": "string"}
+      }
+    },
+    "definition": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "kind", "expression", "ast", "source", "evidence_status", "line", "value_si", "dimension"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["parameter", "constant", "formula"]},
+        "expression": {"type": "string"},
+        "ast": {"$ref": "#/$defs/expression"},
+        "source": {"type": ["string", "null"]},
+        "evidence_status": {"oneOf": [{"$ref": "#/$defs/evidenceStatus"}, {"type": "null"}]},
+        "line": {"type": "integer", "minimum": 1},
+        "value_si": {"type": "number"},
+        "dimension": {"$ref": "#/$defs/dimension"},
+        "expected_unit_ast": {"$ref": "#/$defs/expression"},
+        "expected_dimension": {"$ref": "#/$defs/dimension"}
+      }
+    },
+    "expression": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["node", "value"], "properties": {"node": {"const": "number"}, "value": {"type": "number"}}},
+        {"type": "object", "additionalProperties": false, "required": ["node", "name"], "properties": {"node": {"const": "name"}, "name": {"type": "string"}}},
+        {"type": "object", "additionalProperties": false, "required": ["node", "operator", "operand"], "properties": {"node": {"const": "unary"}, "operator": {"enum": ["+", "-"]}, "operand": {"$ref": "#/$defs/expression"}}},
+        {"type": "object", "additionalProperties": false, "required": ["node", "operator", "left", "right"], "properties": {"node": {"const": "binary"}, "operator": {"enum": ["+", "-", "*", "/", "^"]}, "left": {"$ref": "#/$defs/expression"}, "right": {"$ref": "#/$defs/expression"}}},
+        {"type": "object", "additionalProperties": false, "required": ["node", "function", "arguments"], "properties": {"node": {"const": "call"}, "function": {"type": "string"}, "arguments": {"type": "array", "items": {"$ref": "#/$defs/expression"}}}}
+      ]
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_name", "source_sha256", "transform"],
+      "properties": {
+        "source_name": {"type": "string"},
+        "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "transform": {"type": "string"}
+      }
+    },
+    "validation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["syntax", "symbol_resolution", "dimensional_analysis", "scientific_validation"],
+      "properties": {
+        "syntax": {"enum": ["PASS", "FAIL"]},
+        "symbol_resolution": {"enum": ["PASS", "FAIL"]},
+        "dimensional_analysis": {"enum": ["PASS", "FAIL"]},
+        "scientific_validation": {"enum": ["NOT_PERFORMED", "PASS", "FAIL", "REVIEW_REQUIRED"]}
+      }
+    }
+  }
+}
