@@ -1,0 +1,18 @@
+// Small, illustrative scalar formula model.
+// Approximate input constants; verify source versions before research use.
+model "earth-surface-gravity-demo" version "0.1" {
+  status MODEL
+  engine "formula.scalar"
+  description "Demonstrates dependency resolution and dimensional checking for Newtonian surface gravity."
+
+  constant gravitational_constant = 6.67430e-11 * m^3 / (kg * s^2) source "Illustrative CODATA-2022 value; verify revision" evidence MODEL
+  parameter earth_mass = 5.9722e24 * kg source "Illustrative reference value" evidence MODEL
+  parameter earth_mean_radius = 6.371e6 * m source "Illustrative reference value" evidence MODEL
+  parameter test_mass = 1 * kg source "Demo input" evidence MODEL
+
+  formula surface_gravity = gravitational_constant * earth_mass / earth_mean_radius^2 : m / s^2
+  formula weight_at_surface = test_mass * surface_gravity : N
+
+  output surface_gravity
+  output weight_at_surface
+}
