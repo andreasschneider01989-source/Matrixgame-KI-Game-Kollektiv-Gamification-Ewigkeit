@@ -19,9 +19,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            matrixgame_science
-            tests
-          sparse-checkout-cone-mode: true
+            /matrixgame_science/
+            /tests/
+          sparse-checkout-cone-mode: false
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
