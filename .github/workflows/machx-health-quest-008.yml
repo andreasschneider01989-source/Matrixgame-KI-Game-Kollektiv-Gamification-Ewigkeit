@@ -1,0 +1,32 @@
+name: MACHX Health Quest 008
+
+on:
+  pull_request:
+    paths:
+      - "matrixgame_science/**"
+      - "tests/test_point_mass_agent.py"
+      - ".github/workflows/machx-health-quest-008.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  point-mass-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out only the Python package and focused test
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            /matrixgame_science/
+            /tests/test_point_mass_agent.py
+          sparse-checkout-cone-mode: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test runner
+        run: python -m pip install --upgrade pytest
+      - name: Run point-mass tests
+        run: python -m pytest -q tests/test_point_mass_agent.py
