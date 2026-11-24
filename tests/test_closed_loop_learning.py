@@ -21,7 +21,7 @@ def test_closed_loop_records_prediction_feedback_and_update():
     for item in result.steps:
         assert item.predicted_next_state == pytest.approx(item.transition.next_state)
         assert -1.0 <= item.transition.reward <= 0.0
-        assert math_is_finite(item.prediction_error)
+        assert math_is_finite(item.td_error)
         assert math_is_finite(item.updated_value)
 
 
