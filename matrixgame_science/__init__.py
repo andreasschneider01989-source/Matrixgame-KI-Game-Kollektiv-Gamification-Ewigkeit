@@ -9,6 +9,7 @@ from .health_network import MaintenanceNetworkConfig, MaintenanceToNetworkAdapte
 from .closed_loop_learning import ClosedLoopLearningEngine, ControlConfig, ControlTransition, EpisodeResult, LearningStep, ScalarTargetEnvironment, TemporalDifferenceController
 from .physics_guided_learning import LinearAngleNeuron, NeuronTrainingResult, reflect_angle_deg, reflect_vector
 from .point_mass_agent import PointMassConfig, PointMassEnvironment, PointMassEpisode, PointMassLearningEngine, PointMassState, PointMassTransition, PointMassQLearner
+from .physics_validation import Trajectory, TrajectoryError, acceleration_from_force, compare_trajectory, integrate_constant_acceleration, momentum, work
 from .physics import constant_acceleration_step, gravitational_acceleration, kinetic_energy, relative_position
 from .psychology import decision_probabilities
 from .units import ACCELERATION, CONCENTRATION, DIMENSIONLESS, ENERGY, FORCE, LENGTH, MASS, TIME, VELOCITY, Dimension, Quantity
@@ -24,6 +25,8 @@ __all__ = [
     "LinearAngleNeuron", "NeuronTrainingResult", "reflect_angle_deg", "reflect_vector",
     "PointMassConfig", "PointMassEnvironment", "PointMassEpisode", "PointMassLearningEngine",
     "PointMassState", "PointMassTransition", "PointMassQLearner",
+    "Trajectory", "TrajectoryError", "acceleration_from_force", "compare_trajectory",
+    "integrate_constant_acceleration", "momentum", "work",
     "constant_acceleration_step", "decision_probabilities",
     "gravitational_acceleration", "kinetic_energy", "michaelis_menten_rate",
     "relative_position", "replicator_step", "shannon_entropy", "softmax",
