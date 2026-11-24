@@ -95,3 +95,14 @@ Add a small closed-loop control experiment: a controller proposes an action,
 a toy environment returns an outcome, and a prediction-error module updates
 the next action. Keep the neuroscience analogy documented separately from
 the tested software behavior.
+
+## Selected scientific references
+
+1. Grossman, C. D. & Cohen, J. Y. (2022). *Neuromodulation and Neurophysiology on the Timescale of Learning and Decision-Making*. Annual Review of Neuroscience 45, 317–337. https://doi.org/10.1146/annurev-neuro-092021-125059
+2. *Embodied Sensorimotor Control: Computational Modeling of the Neural Control of Movement* (Annual Review of Biomedical Engineering, 2025). https://doi.org/10.1146/annurev-bioeng-102723-020454
+3. Roth, R. H. & Ding, J. B. (2024). *Cortico-basal ganglia plasticity in motor learning*. Neuron 112, 2486–2502. https://doi.org/10.1016/j.neuron.2024.06.014
+4. Hofmann, M. et al. (2025). *Concept transfer of synaptic diversity from biological to artificial neural networks*. Nature Communications. https://doi.org/10.1038/s41467-025-60078-9
+5. *Long-term potentiation in the brain: a synaptic memory mechanism* (Physiological Reviews, 2025). https://doi.org/10.1152/physrev.00028.2025
+
+These reviews and studies motivate the research map; they do not validate the
+software bridge or prove that any proposed analogy improves an AI system.
