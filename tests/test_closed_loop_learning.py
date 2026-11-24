@@ -31,13 +31,12 @@ def test_same_seed_and_inputs_are_reproducible():
     assert first == second
 
 
-def test_learning_updates_action_value():
+def test_learning_updates_the_value_of_the_action_taken():
     engine = ClosedLoopLearningEngine(seed=2)
-    before = engine.controller.value(0.4, 1)
-    engine.run_episode(0.4, 1)
-    # The chosen action is recorded; its Q value must have been updated.
-    transition = engine.run_episode(0.4, 1).steps[0].transition
-    assert engine.controller.value(transition.state, transition.action) != before
+    result = engine.run_episode(0.4, 1)
+    step = result.steps[0]
+    assert engine.controller.value(step.transition.state, step.transition.action) == step.updated_value
+    assert step.updated_value != 0.0
 
 
 def test_invalid_inputs_are_rejected():
