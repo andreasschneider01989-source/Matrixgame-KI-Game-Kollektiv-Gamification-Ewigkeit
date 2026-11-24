@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - "matrixgame_science/**"
-      - "tests/test_closed_loop_learning.py"
+      - "tests/**"
       - ".github/workflows/machx-health-quest-006.yml"
   workflow_dispatch:
 
@@ -20,7 +20,7 @@ jobs:
         with:
           sparse-checkout: |
             matrixgame_science
-            tests/test_closed_loop_learning.py
+            tests
           sparse-checkout-cone-mode: true
       - name: Set up Python
         uses: actions/setup-python@v5
