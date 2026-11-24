@@ -28,6 +28,9 @@ it. Keep stable scientific primitives separate from exploratory game logic.
 - Quest 007: ideal optical reflection oracle and a one-neuron approximation.
 - Quest 008: 2D point-mass mechanics and tabular Q-learning over nine force
   directions.
+- Quest 009: constant-acceleration integration validation, trajectory error
+  metrics, and SI dimensional checks for acceleration, momentum, and work
+  (implementation added; focused CI validation pending).
 
 These are small software experiments. They do not yet implement molecular
 forces, chemical reactions, proteins, cells, muscles, or a biological animal.
@@ -36,7 +39,7 @@ forces, chemical reactions, proteins, cells, muscles, or a biological animal.
 
 1. **Quest 009 — physics validation lab:** compare numerical integration against
    analytic constant-acceleration trajectories; add explicit dimensional
-   checks and conservation/error metrics.
+   checks and trajectory-error metrics. (In progress.)
 2. **Quest 010 — pair interactions:** implement a carefully bounded,
    parameterized pair potential. Start with generic attractive/repulsive
    potentials; only then add a Lennard-Jones-style model as a simplified
