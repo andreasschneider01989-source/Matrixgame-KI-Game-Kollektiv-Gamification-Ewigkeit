@@ -1,0 +1,35 @@
+name: MACHX Health Quests 006-007
+
+on:
+  pull_request:
+    paths:
+      - "matrixgame_science/**"
+      - "tests/**"
+      - ".github/workflows/machx-health-quest-006.yml"
+      - ".github/workflows/machx-health-quest-007.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  focused-python-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out only the Python package and tests
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            /matrixgame_science/
+            /tests/
+          sparse-checkout-cone-mode: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test runner
+        run: python -m pip install --upgrade pytest
+      - name: Run closed-loop learning tests
+        run: python -m pytest -q tests/test_closed_loop_learning.py
+      - name: Run physics-guided learning tests
+        run: python -m pytest -q tests/test_physics_guided_learning.py
