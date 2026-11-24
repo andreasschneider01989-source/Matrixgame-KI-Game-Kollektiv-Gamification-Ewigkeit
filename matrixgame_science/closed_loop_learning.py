@@ -56,7 +56,7 @@ class LearningStep:
 
     transition: ControlTransition
     predicted_next_state: float
-    prediction_error: float
+    td_error: float
     updated_value: float
 
 
