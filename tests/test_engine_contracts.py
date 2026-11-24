@@ -3,6 +3,7 @@ import pytest
 from matrixgame_science.cellular_maintenance import CellState
 from matrixgame_science.engine_contracts import EnginePipeline
 from matrixgame_science.health_network import (
+    MaintenanceNetworkConfig,
     MaintenanceToNetworkAdapter,
     RegenerationNetworkPipeline,
 )
@@ -76,7 +77,9 @@ def test_custom_network_learning_rate_reaches_integrated_pipeline():
 def test_adapter_rejects_unknown_topology_endpoint():
     adapter = MaintenanceToNetworkAdapter(
         network_engine=NetworkLearningEngine(),
-        config=type("Config", (), {"edges": (NetworkEdge("missing", "damage_load", 0.5),)})(),
+        config=MaintenanceNetworkConfig(
+            edges=(NetworkEdge("missing", "damage_load", 0.5),)
+        ),
     )
     from matrixgame_science.cellular_maintenance import MaintenanceResult
     with pytest.raises(ValueError, match="existing node"):
