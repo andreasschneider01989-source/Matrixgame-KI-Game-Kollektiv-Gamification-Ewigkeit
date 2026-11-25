@@ -1,0 +1,100 @@
+{
+  "schema_version": "0.1.0",
+  "quest_id": "quest.improvement.first-small-step.001",
+  "quest_type": "improvement",
+  "title": "Make one small thing better",
+  "purpose": {
+    "objective": "Choose and complete one small, observable improvement.",
+    "meaning": "Create a useful result without turning progress into pressure or a measure of personal worth."
+  },
+  "definition_status": "READY",
+  "epistemic_status": "MODEL",
+  "effort_minutes": {
+    "minimum": 3,
+    "maximum": 15
+  },
+  "prerequisites": [],
+  "options": [
+    {
+      "option_id": "organize-one-item",
+      "title": "Organize one item",
+      "description": "Clarify the location or name of one file, note, or project element."
+    },
+    {
+      "option_id": "verify-one-claim",
+      "title": "Verify one claim",
+      "description": "Trace one statement to its source and record what is known and unknown."
+    },
+    {
+      "option_id": "test-one-behavior",
+      "title": "Test one behavior",
+      "description": "Run one small reproducible test and record the actual result."
+    }
+  ],
+  "choice_mode": "choose_one",
+  "steps": [
+    {
+      "step_id": "choose-path",
+      "kind": "choose",
+      "instruction": "Choose one option, change it to fit your circumstances, or pause the quest.",
+      "required": true,
+      "estimated_minutes": 1
+    },
+    {
+      "step_id": "make-change",
+      "kind": "action",
+      "instruction": "Work only on the chosen small improvement. Stop when the defined result is reached or the effort limit feels too high.",
+      "required": true,
+      "estimated_minutes": 10
+    },
+    {
+      "step_id": "record-outcome",
+      "kind": "reflect",
+      "instruction": "Record one of: completed, partly completed, paused, or blocked. Note the useful result or the next smallest step.",
+      "required": true,
+      "estimated_minutes": 2
+    }
+  ],
+  "success_criteria": [
+    "One option was freely selected or adapted.",
+    "The outcome is recorded honestly as completed, partly completed, paused, or blocked.",
+    "No personal score, streak, or public ranking is required."
+  ],
+  "deliverables": [
+    {
+      "kind": "artifact",
+      "description": "One changed file, source note, or passing test result; alternatively a short reflection if no artifact was appropriate."
+    }
+  ],
+  "difficulty": "gentle",
+  "participation": {
+    "mode": "optional_peer",
+    "roles": [
+      "contributor",
+      "reviewer"
+    ]
+  },
+  "feedback": {
+    "timing": "per_step",
+    "method": "Show the selected action, the actual result, and one useful next step. Do not invent success.",
+    "show_evidence": true
+  },
+  "rewards": {
+    "kind": "progress_marker",
+    "description": "A quiet completion marker for the work actually done; no score is assigned to mood or personal worth.",
+    "optional": true
+  },
+  "safeguards": {
+    "pause_allowed": true,
+    "decline_allowed": true,
+    "penalty_for_pause_or_incompletion": false,
+    "streak_pressure": false,
+    "public_personal_ranking": false,
+    "default_privacy": "PRIVATE",
+    "human_confirmation_for_external_actions": true
+  },
+  "source_refs": [
+    "../docs/LEARNING_QUESTS_AND_GAMIFICATION.md",
+    "../docs/RESPONSIBLE_GAMIFICATION_STANDARD.md"
+  ]
+}
