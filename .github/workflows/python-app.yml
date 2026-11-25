@@ -31,6 +31,7 @@ jobs:
           /matrixgame-protocol/artifact-envelope.example.json
           /matrixgame-protocol/quest.schema.json
           /matrixgame-protocol/quest.example.json
+          /matrixgame-protocol/quest.emotion-regulation.example.json
           /research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json
           /research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.json
     - name: Set up Python 3.10
