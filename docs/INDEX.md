@@ -11,6 +11,9 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 
 ## Architektur und Zusammenarbeit
 
+- [Architecture Standard — Integration Contract](ARCHITECTURE_STANDARD.md) — gemeinsame Orientierung für Modulgrenzen, Metadaten, Statusbegriffe und Qualitätsgates; Fachspezifikationen bleiben maßgeblich.
+- [Artifact Envelope schema and example](../matrixgame-protocol/artifact-envelope.schema.json) — gemeinsamer Metadatenvertrag, der Fachschemas referenziert, statt sie zu ersetzen.
+
 - [Universal Knowledge Engine](UNIVERSAL_KNOWLEDGE_ENGINE.md) — vorgeschlagene Architektur für Wissensknoten, Belege, Simulationen und Lernquests.
 - [Knowledge Node and Evidence Schema](KNOWLEDGE_NODE_AND_EVIDENCE_SCHEMA.md) — strukturierte Darstellung von Aussagen und Evidenzstatus.
 - [Collective Improvement Network](COLLECTIVE_IMPROVEMENT_NETWORK.md) — Vision und Roadmap für freiwillige Zusammenarbeit.
