@@ -83,6 +83,23 @@ WHO's *Doing What Matters in Times of Stress* teaches grounding, making room for
 
 No emotion should be automatically classified as "bad". No emotion should automatically be obeyed. Context, intensity, duration and consequences matter.
 
+### Unwanted automatic evaluations: neutral noticing, not mental cancellation
+
+An unwanted insult, self-judgment or abrupt phrase can be treated as an automatic mental event rather than a chosen belief. A useful response may be:
+
+1. Notice it once: "An unwanted thought just appeared."
+2. Do not decide what it says about your identity or worth.
+3. Do not debate it, force a positive replacement, or repeat a counter-phrase until it feels "right".
+4. Return attention gently to the next activity, sensory detail, person or task that you had freely chosen.
+
+This is an attention-shifting option, not a promise that the thought will disappear. Repeating words mentally, asking for reassurance, or performing "neutralising" mental acts can themselves become part of an obsessive-compulsive cycle for some people. Therefore the practice must not become a new ritual or a test of whether the thought has been fully cancelled.
+
+The NHS description of OCD distinguishes intrusive thoughts from compulsions and specifically lists repeating words in one's head and neutralising thoughts among possible mental compulsions. Unwanted thoughts alone do not establish OCD; diagnosis requires assessment of the overall pattern, distress, time cost and impact on life.
+
+Source:
+- NHS, OCD symptoms: https://www.nhs.uk/mental-health/conditions/obsessive-compulsive-disorder-ocd/symptoms/
+
+
 ## 5. Goal alignment: personal aims and shared human aims
 
 A constructive goal system distinguishes:
