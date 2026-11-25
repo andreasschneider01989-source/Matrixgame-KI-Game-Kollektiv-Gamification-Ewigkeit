@@ -33,6 +33,7 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [Fragment 6 – kuratiertes Linkregister](FRAGMENT_6_CURATED_LINK_REGISTER_2026-11-23.md) — ausgewählte Primärlinks und Anschlussstellen; keine pauschale Inhaltsbestätigung der externen Ziele.
 
 ## Soziale Entwicklung und aktuelle Forschung
+- [Human Flourishing — research and implementation framework](HUMAN_FLOURISHING_FRAMEWORK_2026-11-25.md) — six research-aligned domains, WHO/UN/OECD/UNDP frameworks, Beyond GDP status, and a privacy-preserving Matrixgame roadmap.
 
 - [Social connection, violence and relationship trends (25 November 2026)](../research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.md) — Deutschland 2025, Dunkelfeld, globale Einordnung, Partnerschafts- und Haushaltsformen; strikt getrennte Messgrößen.
 - [Structured social connection and safety snapshot](../research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json) — maschinenlesbare Kennzahlen mit Zeitraum, Gebiet, Messmethode und Quellen.
