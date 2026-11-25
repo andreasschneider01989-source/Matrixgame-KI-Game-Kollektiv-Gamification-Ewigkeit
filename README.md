@@ -46,7 +46,17 @@ The repository now has a central integration standard and a shared metadata enve
 
 This first interface slice is reviewable on a feature branch; it is not yet merged into the stable main branch.
 
-## Collective Improvement Network
+## Responsible gamification and portable quests
+
+The existing learning-quest design now has a machine-readable quest-definition contract and a reusable improvement example. The design is grounded in autonomy, achievable competence, optional cooperation, honest feedback, and recovery without punitive streaks.
+
+- [Responsible Gamification Standard](docs/RESPONSIBLE_GAMIFICATION_STANDARD.md)
+- [Quest Definition JSON Schema](matrixgame-protocol/quest.schema.json)
+- [Example improvement quest](matrixgame-protocol/quest.example.json)
+
+This is a quest-definition format and design standard, not yet a persistent quest service or adaptive wellbeing system.
+
+
 
 The broader vision for human–AI collaboration, cross-project improvement quests, evidence-aware knowledge sharing, and responsible automation is documented here:
 
