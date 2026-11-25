@@ -40,6 +40,11 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [Social connection, violence and relationship trends (25 November 2026)](../research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.md) — Deutschland 2025, Dunkelfeld, globale Einordnung, Partnerschafts- und Haushaltsformen; strikt getrennte Messgrößen.
 - [Structured social connection and safety snapshot](../research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json) — maschinenlesbare Kennzahlen mit Zeitraum, Gebiet, Messmethode und Quellen.
 
+## Emotionale Gesundheit und Selbstregulation
+
+- [Emotion Regulation and Goal Alignment](EMOTION_REGULATION_AND_GOAL_ALIGNMENT_2026-11-25.md) — emotions as signals, flexible regulation, personal values, small actions, recovery and privacy safeguards.
+- [Optional emotion-regulation quest](../matrixgame-protocol/quest.emotion-regulation.example.json) — voluntary low-pressure practice using the shared Quest schema.
+
 ## Lernen und soziale Gestaltung
 
 - [Learning Quests and Responsible Gamification](LEARNING_QUESTS_AND_GAMIFICATION.md) — Vorschläge für freiwillige Lernmechaniken.
