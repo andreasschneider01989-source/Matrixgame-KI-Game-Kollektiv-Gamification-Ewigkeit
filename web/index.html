@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07131a">
+  <title>Matrixgame — Infinite Explorer</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07131a;
+      --panel: rgba(13, 29, 37, .94);
+      --panel-2: #10242d;
+      --line: rgba(161, 198, 190, .14);
+      --muted: #91a9a8;
+      --text: #e8f3ed;
+      --mint: #8fe0bd;
+      --mint-2: #46b68e;
+      --cyan: #80cbd4;
+      --amber: #e8bf79;
+      --violet: #b9a3f5;
+      --shadow: 0 18px 60px rgba(0,0,0,.3);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; width: 100%; overflow: hidden; }
+    body {
+      background:
+        radial-gradient(ellipse at 50% -15%, rgba(54,117,100,.22), transparent 45%),
+        radial-gradient(ellipse at 95% 90%, rgba(43,96,109,.16), transparent 36%),
+        var(--bg);
+      color: var(--text);
+      font: 14px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button { font: inherit; }
+    .app { min-height: 100vh; height: 100vh; display: grid; grid-template-rows: 66px 1fr; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 18px;
+      padding: 0 22px; border-bottom: 1px solid var(--line);
+      background: rgba(6, 18, 24, .82); backdrop-filter: blur(18px);
+      position: relative; z-index: 2;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 235px; }
+    .brand-mark {
+      width: 34px; height: 34px; border: 1px solid rgba(143,224,189,.45);
+      border-radius: 11px; display: grid; place-items: center; color: var(--mint);
+      background: linear-gradient(145deg, rgba(143,224,189,.16), rgba(128,203,212,.05));
+      box-shadow: inset 0 0 22px rgba(143,224,189,.08);
+      font-size: 19px;
+    }
+    .brand-name { font-size: 13px; font-weight: 800; letter-spacing: .16em; }
+    .brand-sub { color: var(--muted); font-size: 10px; letter-spacing: .12em; margin-top: 1px; }
+    .top-meta { display: flex; align-items: center; gap: 10px; }
+    .status-pill, .metric-pill {
+      display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px;
+      border: 1px solid var(--line); border-radius: 999px; color: #bbceca;
+      background: rgba(255,255,255,.025); font-size: 11px; white-space: nowrap;
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mint-2); box-shadow: 0 0 12px var(--mint-2); }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .btn {
+      border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px;
+      color: var(--text); background: rgba(255,255,255,.035); cursor: pointer;
+      transition: .16s ease; font-size: 12px; font-weight: 650;
+    }
+    .btn:hover { border-color: rgba(143,224,189,.45); background: rgba(143,224,189,.09); transform: translateY(-1px); }
+    .btn:focus-visible, .layer-btn:focus-visible, .object-btn:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+    .btn.primary { color: #061b16; background: linear-gradient(135deg, #9ce8c2, #61c59c); border-color: transparent; }
+    .btn.primary:hover { background: linear-gradient(135deg, #b0f1d0, #75d7ad); }
+    .workspace { min-height: 0; display: grid; grid-template-columns: 230px minmax(0,1fr) 274px; }
+    .sidebar, .inspector { min-height: 0; background: var(--panel); backdrop-filter: blur(14px); }
+    .sidebar { border-right: 1px solid var(--line); padding: 18px 14px; overflow: auto; }
+    .inspector { border-left: 1px solid var(--line); padding: 18px 15px; overflow: auto; }
+    .section-label { color: #78918e; font-size: 9px; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; margin: 9px 7px 10px; }
+    .layer-list { display: grid; gap: 6px; }
+    .layer-btn {
+      display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+      border: 1px solid transparent; background: transparent; color: #a8bcba;
+      padding: 10px 11px; border-radius: 10px; cursor: pointer; font-size: 12px;
+    }
+    .layer-btn .layer-icon { width: 23px; height: 23px; display: grid; place-items: center; border-radius: 7px; background: rgba(255,255,255,.045); }
+    .layer-btn.active { border-color: rgba(143,224,189,.18); background: rgba(143,224,189,.08); color: var(--mint); }
+    .layer-btn:hover { background: rgba(255,255,255,.045); }
+    .object-list { display: grid; gap: 5px; }
+    .object-btn {
+      width: 100%; display: flex; align-items: center; gap: 9px; text-align: left;
+      border: 1px solid transparent; background: transparent; color: #bbcac6;
+      border-radius: 9px; padding: 8px 9px; cursor: pointer; font-size: 11px;
+    }
+    .object-btn:hover, .object-btn.selected { background: rgba(255,255,255,.045); border-color: var(--line); }
+    .object-swatch { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+    .object-type { display: block; color: #738b88; font-size: 9px; margin-top: 1px; }
+    .sidebar-note {
+      margin: 20px 3px 0; padding: 12px; border-radius: 11px; border: 1px solid var(--line);
+      background: linear-gradient(145deg, rgba(143,224,189,.06), rgba(128,203,212,.025));
+      color: #8fa7a2; font-size: 10px;
+    }
+    .stage { min-width: 0; min-height: 0; display: grid; grid-template-rows: 52px 1fr 49px; position: relative; }
+    .stage-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px; border-bottom: 1px solid var(--line); background: rgba(8,21,28,.55); }
+    .breadcrumb { color: #8fa7a2; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .breadcrumb strong { color: #d5e5dc; font-weight: 700; }
+    .toolbar-controls { display: flex; align-items: center; gap: 6px; }
+    .icon-btn { width: 31px; height: 31px; padding: 0; display: grid; place-items: center; border-radius: 9px; }
+    .canvas-wrap { position: relative; min-height: 0; overflow: hidden; background: #081920; }
+    #worldCanvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
+    #worldCanvas.dragging { cursor: grabbing; }
+    .canvas-hint {
+      position: absolute; left: 16px; bottom: 14px; padding: 8px 11px;
+      border: 1px solid rgba(170,205,194,.13); background: rgba(5,17,23,.72);
+      border-radius: 9px; color: #93aaa5; font-size: 10px; pointer-events: none;
+      backdrop-filter: blur(8px);
+    }
+    .canvas-hint b { color: #d5e9de; font-weight: 650; }
+    .bottom-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      border-top: 1px solid var(--line); background: rgba(8,21,28,.72); padding: 0 16px;
+      color: #819995; font-size: 10px;
+    }
+    .bottom-left, .bottom-right { display: flex; align-items: center; gap: 14px; }
+    .legend-item { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .panel-title { font-size: 12px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: #d8e7df; }
+    .panel-sub { color: var(--muted); font-size: 10px; margin-top: 3px; }
+    .selection-card, .quest-card, .control-card {
+      border: 1px solid var(--line); border-radius: 13px; padding: 13px; margin-top: 13px;
+      background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.012));
+    }
+    .selection-head { display: flex; align-items: center; gap: 10px; }
+    .selection-avatar { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; background: rgba(143,224,189,.12); color: var(--mint); font-size: 16px; }
+    .selection-name { font-size: 13px; font-weight: 750; }
+    .selection-kind { color: var(--muted); font-size: 10px; margin-top: 2px; }
+    .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 14px; }
+    .data-cell { padding: 9px; border-radius: 9px; background: rgba(0,0,0,.14); }
+    .data-label { color: #78918e; font-size: 9px; text-transform: uppercase; letter-spacing: .1em; }
+    .data-value { font-size: 13px; font-weight: 700; color: #deeee4; margin-top: 3px; }
+    .quest-title { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; font-weight: 750; }
+    .quest-copy { color: #8fa7a2; font-size: 10px; margin: 8px 0 11px; }
+    .progress-track { height: 5px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, #54b58d, #a3e9c5); transition: width .25s ease; }
+    .quest-steps { display: grid; gap: 7px; margin-top: 11px; }
+    .quest-step { display: flex; align-items: center; gap: 7px; font-size: 10px; color: #9bb0aa; }
+    .quest-step.done { color: var(--mint); }
+    .quest-check { width: 14px; height: 14px; display: grid; place-items: center; border: 1px solid rgba(143,224,189,.25); border-radius: 50%; font-size: 9px; }
+    .control-list { display: grid; gap: 8px; margin-top: 10px; }
+    .control-row { display: flex; justify-content: space-between; gap: 8px; color: #9ab0ab; font-size: 10px; }
+    kbd { background: rgba(255,255,255,.075); border: 1px solid rgba(255,255,255,.12); border-radius: 5px; padding: 2px 5px; color: #d3e4dc; font: 9px ui-monospace, SFMono-Regular, monospace; }
+    .warning { color: #758e8a; font-size: 9px; line-height: 1.5; margin-top: 13px; }
+    .toast {
+      position: absolute; top: 14px; left: 50%; transform: translate(-50%,-8px);
+      padding: 9px 13px; border: 1px solid rgba(143,224,189,.28); border-radius: 10px;
+      color: #dff6e8; background: rgba(7,27,24,.92); box-shadow: var(--shadow);
+      font-size: 11px; opacity: 0; pointer-events: none; transition: .2s ease; z-index: 1;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%,0); }
+    .empty { color: #78918e; font-size: 10px; padding: 10px 8px; }
+    @media (max-width: 1050px) {
+      .workspace { grid-template-columns: 190px minmax(0,1fr) 230px; }
+      .sidebar { padding-inline: 10px; }
+      .inspector { padding-inline: 11px; }
+      .metric-pill.optional { display: none; }
+    }
+    @media (max-width: 760px) {
+      html, body { overflow: auto; }
+      .app { min-height: 100vh; height: auto; grid-template-rows: 58px minmax(720px,1fr); }
+      .topbar { padding: 0 12px; }
+      .brand { min-width: 0; }
+      .brand-sub, .top-meta { display: none; }
+      .workspace { grid-template-columns: 1fr; grid-template-rows: auto minmax(470px,65vh) auto; }
+      .sidebar { border-right: 0; border-bottom: 1px solid var(--line); padding: 8px 12px; }
+      .sidebar .section-label, .sidebar-note, #objectList { display: none; }
+      .layer-list { display: flex; overflow-x: auto; }
+      .layer-btn { width: auto; white-space: nowrap; }
+      .inspector { border-left: 0; border-top: 1px solid var(--line); }
+      .stage { grid-row: 2; }
+      .bottom-bar { padding: 0 10px; }
+      .bottom-right { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">◇</div>
+        <div>
+          <div class="brand-name">MATRIXGAME</div>
+          <div class="brand-sub">INFINITE EXPLORER · SECOND EARTH SANDBOX</div>
+        </div>
+      </div>
+      <div class="top-meta">
+        <span class="status-pill"><span class="status-dot" id="runDot"></span><span id="runState">SIMULATION LIVE</span></span>
+        <span class="metric-pill">TICK <b id="tickValue">0000</b></span>
+        <span class="metric-pill optional">UNITS <b id="unitCount">03</b></span>
+        <span class="metric-pill optional">ZOOM <b id="zoomValue">100%</b></span>
+      </div>
+      <div class="top-actions">
+        <button class="btn" id="centerBtn" title="Kamera auf den Startbereich setzen">Center view</button>
+        <button class="btn primary" id="runBtn">Ⅱ Pause</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <div class="section-label">World layers</div>
+        <nav class="layer-list" aria-label="World layers">
+          <button class="layer-btn active" data-layer="habitat"><span class="layer-icon">◎</span> Habitat map</button>
+          <button class="layer-btn" data-layer="ecology"><span class="layer-icon">❋</span> Ecology</button>
+          <button class="layer-btn" data-layer="knowledge"><span class="layer-icon">⌘</span> Knowledge</button>
+        </nav>
+        <div class="section-label" style="margin-top:24px">Visible objects</div>
+        <div class="object-list" id="objectList"></div>
+        <div class="sidebar-note">
+          <b style="color:#b7d7ca">A shared world, many perspectives.</b><br>
+          Die Ansicht liest einen gemeinsamen Spielzustand. Kamera und Darstellung verändern nicht die Weltlogik.
+        </div>
+      </aside>
+
+      <section class="stage" aria-label="Interactive Matrixgame world">
+        <div class="stage-toolbar">
+          <div class="breadcrumb"><strong>SECOND EARTH</strong> &nbsp;/&nbsp; <span id="layerName">HABITAT MAP</span> &nbsp;/&nbsp; <span id="selectedCrumb">SCOUT-01</span></div>
+          <div class="toolbar-controls">
+            <button class="btn icon-btn" id="zoomOutBtn" aria-label="Zoom out">−</button>
+            <button class="btn icon-btn" id="zoomInBtn" aria-label="Zoom in">＋</button>
+            <button class="btn" id="spawnBtn">＋ Scout</button>
+          </div>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="worldCanvas" aria-label="Matrixgame world map. Drag to pan, scroll to zoom, click to select, right-click to move a scout."></canvas>
+          <div class="toast" id="toast" role="status" aria-live="polite"></div>
+          <div class="canvas-hint"><b>DRAG</b> pan &nbsp;·&nbsp; <b>WHEEL</b> zoom &nbsp;·&nbsp; <b>CLICK</b> select &nbsp;·&nbsp; <b>RIGHT-CLICK</b> move selected scout</div>
+        </div>
+        <footer class="bottom-bar">
+          <div class="bottom-left">
+            <span class="legend-item"><span class="legend-dot" style="background:#8fe0bd"></span> Habitat</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#80cbd4"></span> Ecology</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#b9a3f5"></span> Knowledge</span>
+          </div>
+          <div class="bottom-right">
+            <span>WORLD COORDINATES</span><b id="coordsValue">0.0 / 0.0</b>
+            <span>·</span><span id="engineLabel">LOCAL DEMO ENGINE</span>
+          </div>
+        </footer>
+      </section>
+
+      <aside class="inspector">
+        <div class="panel-title">Explorer panel</div>
+        <div class="panel-sub">Selected object · live properties</div>
+        <div class="selection-card" id="selectionCard"></div>
+
+        <div class="quest-card">
+          <div class="quest-title"><span>QUEST 001 · FIRST CONTACT</span><span id="questCount">0/2</span></div>
+          <div class="quest-copy">Schicke deinen Scout zu zwei Orten und erkunde den Lebensraum.</div>
+          <div class="progress-track"><div class="progress-fill" id="questProgress"></div></div>
+          <div class="quest-steps" id="questSteps"></div>
+        </div>
+
+        <div class="control-card">
+          <div class="panel-title" style="font-size:10px">Controls</div>
+          <div class="control-list">
+            <div class="control-row"><span>Move selected scout</span><span><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></span></div>
+            <div class="control-row"><span>Move / select</span><span><kbd>Right click</kbd> / <kbd>Click</kbd></span></div>
+            <div class="control-row"><span>Pause / resume</span><kbd>Space</kbd></div>
+            <div class="control-row"><span>Focus selected</span><kbd>F</kbd></div>
+            <div class="control-row"><span>Reset camera</span><kbd>Home</kbd></div>
+          </div>
+        </div>
+        <div class="warning">PROTOTYPE DATA: Orte, Scouts, Ressourcenwerte und Questziele sind illustrative Spielinhalte, keine realen Messdaten oder validierten Ökosystemprognosen.</div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    "use strict";
+
+    const canvas = document.getElementById("worldCanvas");
+    const ctx = canvas.getContext("2d");
+    const ui = {
+      tick: document.getElementById("tickValue"),
+      units: document.getElementById("unitCount"),
+      zoom: document.getElementById("zoomValue"),
+      runState: document.getElementById("runState"),
+      runDot: document.getElementById("runDot"),
+      runBtn: document.getElementById("runBtn"),
+      layerName: document.getElementById("layerName"),
+      selectedCrumb: document.getElementById("selectedCrumb"),
+      objectList: document.getElementById("objectList"),
+      selectionCard: document.getElementById("selectionCard"),
+      questCount: document.getElementById("questCount"),
+      questProgress: document.getElementById("questProgress"),
+      questSteps: document.getElementById("questSteps"),
+      coords: document.getElementById("coordsValue"),
+      toast: document.getElementById("toast")
+    };
+
+    const palette = {
+      habitat: "#8fe0bd",
+      ecology: "#80cbd4",
+      knowledge: "#b9a3f5",
+      amber: "#e8bf79",
+      muted: "#78918e"
+    };
+
+    const nodes = [
+      {id:"hub", name:"Genesis Hub", kind:"habitat", icon:"⌂", x:0, y:0, detail:"Zentraler Ausgangspunkt des Second-Earth-Sandbox.", resource:"Core", value:"Stable"},
+      {id:"forest", name:"Mycelium Forest", kind:"ecology", icon:"❋", x:230, y:-120, detail:"Fiktiver Lebensraum für Pflanzen-, Pilz- und Bodenorganismen.", resource:"Biodiversity", value:"Demo"},
+      {id:"water", name:"Freshwater Basin", kind:"ecology", icon:"≈", x:80, y:225, detail:"Illustrativer Wasser-Knoten für die Habitat-Quest.", resource:"Water", value:"Demo"},
+      {id:"desert", name:"Restoration Zone", kind:"ecology", icon:"✳", x:410, y:205, detail:"Szenariofläche für Bodenregeneration und Begrünung.", resource:"Soil", value:"Open"},
+      {id:"lab", name:"Penicillin Lab", kind:"knowledge", icon:"⚗", x:-255, y:-145, detail:"Wissensknoten zur Geschichte und Wirkweise von Antibiotika.", resource:"Research", value:"Model"},
+      {id:"archive", name:"Knowledge Archive", kind:"knowledge", icon:"⌘", x:-385, y:155, detail:"Speicher für versionierte Erkenntnisse und Quellen.", resource:"Knowledge", value:"Growing"},
+      {id:"observatory", name:"Orbit Observatory", kind:"habitat", icon:"✧", x:60, y:-330, detail:"Beobachtungspunkt für Weltzustand und Simulation.", resource:"Signals", value:"Online"},
+      {id:"symbiosis", name:"Symbiosis Garden", kind:"ecology", icon:"❀", x:315, y:-345, detail:"Spielerischer Ort zur Untersuchung biologischer Kooperation.", resource:"Relations", value:"Demo"}
+    ];
+
+    const links = [
+      ["hub","forest"], ["hub","water"], ["hub","lab"], ["hub","archive"],
+      ["forest","symbiosis"], ["water","desert"], ["lab","archive"],
+      ["observatory","hub"], ["forest","desert"], ["archive","observatory"]
+    ];
+
+    const scouts = [
+      {id:"scout-01", name:"Scout One", x:22, y:18, target:null, speed:58, energy:94, visited:new Set()},
+      {id:"scout-02", name:"Scout Two", x:-26, y:34, target:null, speed:50, energy:88, visited:new Set()},
+      {id:"scout-03", name:"Scout Three", x:12, y:-30, target:null, speed:54, energy:91, visited:new Set()}
+    ];
+
+    const missionTargets = ["forest","water"];
+    const camera = {x:0, y:0, zoom:0.82};
+    let activeLayer = "habitat";
+    let selected = {type:"scout", id:"scout-01"};
+    let running = true;
+    let tick = 0;
+    let nextScout = 4;
+    let lastFrame = 0;
+    let tickAccumulator = 0;
+    let toastTimer = null;
+    let dpr = 1;
+    let viewWidth = 0;
+    let viewHeight = 0;
+    let pointerStart = null;
+    let dragging = false;
+
+    function visibleNodes() {
+      if (activeLayer === "ecology") return nodes.filter(n => n.kind === "ecology" || n.id === "hub");
+      if (activeLayer === "knowledge") return nodes.filter(n => n.kind === "knowledge" || n.id === "hub" || n.id === "observatory");
+      return nodes;
+    }
+
+    function worldToScreen(x, y) {
+      return {x:viewWidth / 2 + (x - camera.x) * camera.zoom, y:viewHeight / 2 + (y - camera.y) * camera.zoom};
+    }
+
+    function screenToWorld(x, y) {
+      return {x:camera.x + (x - viewWidth / 2) / camera.zoom, y:camera.y + (y - viewHeight / 2) / camera.zoom};
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      viewWidth = Math.max(1, rect.width);
+      viewHeight = Math.max(1, rect.height);
+      canvas.width = Math.round(viewWidth * dpr);
+      canvas.height = Math.round(viewHeight * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function showToast(message) {
+      ui.toast.textContent = message;
+      ui.toast.classList.add("show");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => ui.toast.classList.remove("show"), 1900);
+    }
+
+    function getNode(id) { return nodes.find(n => n.id === id) || null; }
+    function getScout(id) { return scouts.find(s => s.id === id) || null; }
+    function getSelectedScout() { return selected.type === "scout" ? getScout(selected.id) : null; }
+
+    function choose(type, id) {
+      selected = {type:type, id:id};
+      renderPanels();
+    }
+
+    function selectedObject() {
+      return selected.type === "scout" ? getScout(selected.id) : getNode(selected.id);
+    }
+
+    function focusSelected() {
+      const object = selectedObject();
+      if (!object) return;
+      camera.x = object.x;
+      camera.y = object.y;
+      showToast("Kamera auf " + object.name + " ausgerichtet");
+    }
+
+    function setScoutTarget(scout, point) {
+      if (!scout) {
+        showToast("Wähle zuerst einen Scout aus");
+        return;
+      }
+      scout.target = {x:point.x, y:point.y};
+      showToast(scout.name + " erhält einen Bewegungsbefehl");
+    }
+
+    function addScout() {
+      const id = "scout-" + String(nextScout++).padStart(2,"0");
+      const offset = scouts.length * 11;
+      scouts.push({id:id, name:"Scout " + id.slice(-2), x:camera.x + offset, y:camera.y + 12, target:null, speed:52, energy:100, visited:new Set()});
+      choose("scout", id);
+      renderPanels();
+      showToast("Neuer Scout bereit");
+    }
+
+    function toggleRun() {
+      running = !running;
+      ui.runBtn.textContent = running ? "Ⅱ Pause" : "▶ Resume";
+      ui.runState.textContent = running ? "SIMULATION LIVE" : "SIMULATION PAUSED";
+      ui.runDot.style.background = running ? "var(--mint-2)" : "var(--amber)";
+      ui.runDot.style.boxShadow = running ? "0 0 12px var(--mint-2)" : "0 0 12px var(--amber)";
+    }
+
+    function completeMissionChecks() {
+      scouts.forEach(scout => {
+        nodes.forEach(node => {
+          const dx = scout.x - node.x;
+          const dy = scout.y - node.y;
+          if (dx * dx + dy * dy < 34 * 34) scout.visited.add(node.id);
+        });
+      });
+      renderQuest();
+    }
+
+    function update(dt) {
+      scouts.forEach(scout => {
+        if (!scout.target) return;
+        const dx = scout.target.x - scout.x;
+        const dy = scout.target.y - scout.y;
+        const distance = Math.hypot(dx,dy);
+        const step = scout.speed * dt;
+        if (distance <= step || distance < 1.5) {
+          scout.x = scout.target.x;
+          scout.y = scout.target.y;
+          scout.target = null;
+          scout.energy = Math.max(0, scout.energy - 2);
+        } else {
+          scout.x += (dx / distance) * step;
+          scout.y += (dy / distance) * step;
+          scout.energy = Math.max(0, scout.energy - dt * 0.45);
+        }
+      });
+      completeMissionChecks();
+    }
+
+    function drawBackground() {
+      const gradient = ctx.createLinearGradient(0,0,viewWidth,viewHeight);
+      gradient.addColorStop(0,"#0b2027");
+      gradient.addColorStop(.55,"#081a22");
+      gradient.addColorStop(1,"#0b2228");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0,0,viewWidth,viewHeight);
+
+      for (let i=0;i<105;i++) {
+        const x = (Math.sin(i * 127.1) * .5 + .5) * viewWidth;
+        const y = (Math.sin(i * 311.7 + 4) * .5 + .5) * viewHeight;
+        ctx.fillStyle = "rgba(190,225,211," + (0.05 + (i % 4) * .018) + ")";
+        ctx.fillRect(x,y,1,1);
+      }
+
+      const spacingWorld = camera.zoom > 1.25 ? 25 : camera.zoom > .55 ? 50 : 100;
+      const spacing = spacingWorld * camera.zoom;
+      const leftWorld = camera.x - viewWidth / (2 * camera.zoom);
+      const rightWorld = camera.x + viewWidth / (2 * camera.zoom);
+      const topWorld = camera.y - viewHeight / (2 * camera.zoom);
+      const bottomWorld = camera.y + viewHeight / (2 * camera.zoom);
+      const startX = Math.floor(leftWorld / spacingWorld) * spacingWorld;
+      const startY = Math.floor(topWorld / spacingWorld) * spacingWorld;
+
+      ctx.lineWidth = 1;
+      for (let x=startX; x<=rightWorld; x+=spacingWorld) {
+        const p = worldToScreen(x,0);
+        ctx.strokeStyle = Math.abs(x % (spacingWorld * 4)) < .001 ? "rgba(143,224,189,.10)" : "rgba(143,190,184,.045)";
+        ctx.beginPath(); ctx.moveTo(p.x,0); ctx.lineTo(p.x,viewHeight); ctx.stroke();
+      }
+      for (let y=startY; y<=bottomWorld; y+=spacingWorld) {
+        const p = worldToScreen(0,y);
+        ctx.strokeStyle = Math.abs(y % (spacingWorld * 4)) < .001 ? "rgba(143,224,189,.10)" : "rgba(143,190,184,.045)";
+        ctx.beginPath(); ctx.moveTo(0,p.y); ctx.lineTo(viewWidth,p.y); ctx.stroke();
+      }
+      const origin = worldToScreen(0,0);
+      ctx.fillStyle = "rgba(143,224,189,.22)";
+      ctx.beginPath(); ctx.arc(origin.x,origin.y,3,0,Math.PI*2); ctx.fill();
+    }
+
+    function drawLinks(visible) {
+      const visibleIds = new Set(visible.map(n => n.id));
+      links.forEach(pair => {
+        if (!visibleIds.has(pair[0]) || !visibleIds.has(pair[1])) return;
+        const a = getNode(pair[0]), b = getNode(pair[1]);
+        const pa = worldToScreen(a.x,a.y), pb = worldToScreen(b.x,b.y);
+        ctx.strokeStyle = activeLayer === "knowledge" ? "rgba(185,163,245,.32)" : "rgba(143,224,189,.18)";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4,7]);
+        ctx.beginPath(); ctx.moveTo(pa.x,pa.y); ctx.lineTo(pb.x,pb.y); ctx.stroke();
+        ctx.setLineDash([]);
+      });
+    }
+
+    function drawNode(node) {
+      const p = worldToScreen(node.x,node.y);
+      if (p.x < -70 || p.x > viewWidth+70 || p.y < -70 || p.y > viewHeight+70) return;
+      const color = palette[node.kind] || palette.habitat;
+      const isSelected = selected.type === "node" && selected.id === node.id;
+      const radius = node.id === "hub" ? 19 : 14;
+      ctx.save();
+      ctx.shadowColor = color;
+      ctx.shadowBlur = isSelected ? 22 : 10;
+      ctx.fillStyle = "rgba(10,29,34,.95)";
+      ctx.strokeStyle = color;
+      ctx.lineWidth = isSelected ? 2.2 : 1.2;
+      ctx.beginPath(); ctx.arc(p.x,p.y,radius + (isSelected ? 3 : 0),0,Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = color;
+      ctx.font = "15px system-ui";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(node.icon,p.x,p.y);
+      ctx.fillStyle = isSelected ? "#effff5" : "#b6cbc3";
+      ctx.font = "600 10px system-ui";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      ctx.fillText(node.name,p.x + radius + 8,p.y - 5);
+      ctx.restore();
+    }
+
+    function drawScout(scout) {
+      const p = worldToScreen(scout.x,scout.y);
+      if (p.x < -40 || p.x > viewWidth+40 || p.y < -40 || p.y > viewHeight+40) return;
+      const isSelected = selected.type === "scout" && selected.id === scout.id;
+      ctx.save();
+      ctx.shadowColor = "#d4f5a4";
+      ctx.shadowBlur = isSelected ? 24 : 11;
+      ctx.fillStyle = isSelected ? "#d6f2ae" : "#8fca9e";
+      ctx.strokeStyle = "#17382d";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(p.x,p.y-9);
+      ctx.lineTo(p.x+8,p.y+7);
+      ctx.lineTo(p.x-8,p.y+7);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      if (isSelected) {
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = "rgba(214,242,174,.55)";
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(p.x,p.y,15,0,Math.PI*2); ctx.stroke();
+      }
+      ctx.fillStyle = "#d8eadf";
+      ctx.font = "600 9px system-ui";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      ctx.shadowBlur = 0;
+      ctx.fillText(scout.id.toUpperCase(),p.x+12,p.y-4);
+      if (scout.target) {
+        const target = worldToScreen(scout.target.x,scout.target.y);
+        ctx.strokeStyle = "rgba(232,191,121,.75)";
+        ctx.setLineDash([3,5]);
+        ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(target.x,target.y); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "rgba(232,191,121,.85)";
+        ctx.beginPath(); ctx.arc(target.x,target.y,4,0,Math.PI*2); ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0,0,viewWidth,viewHeight);
+      drawBackground();
+      const visible = visibleNodes();
+      drawLinks(visible);
+      visible.forEach(drawNode);
+      scouts.forEach(drawScout);
+      const center = worldToScreen(camera.x,camera.y);
+      ctx.strokeStyle = "rgba(143,224,189,.19)";
+      ctx.beginPath(); ctx.arc(center.x,center.y,5,0,Math.PI*2); ctx.stroke();
+      ui.zoom.textContent = Math.round(camera.zoom * 100) + "%";
+      ui.units.textContent = String(scouts.length).padStart(2,"0");
+      ui.coords.textContent = camera.x.toFixed(1) + " / " + camera.y.toFixed(1);
+    }
+
+    function renderObjects() {
+      const visible = visibleNodes();
+      const items = visible.map(node => ({type:"node", id:node.id, name:node.name, kind:node.kind, icon:node.icon}))
+        .concat(scouts.map(scout => ({type:"scout", id:scout.id, name:scout.name, kind:"scout", icon:"▲"})));
+      ui.objectList.innerHTML = "";
+      items.forEach(item => {
+        const button = document.createElement("button");
+        button.className = "object-btn" + (selected.type === item.type && selected.id === item.id ? " selected" : "");
+        button.type = "button";
+        const swatch = document.createElement("span");
+        swatch.className = "object-swatch";
+        swatch.style.background = item.kind === "scout" ? "#d6f2ae" : (palette[item.kind] || palette.habitat);
+        const textWrap = document.createElement("span");
+        textWrap.textContent = item.name;
+        const type = document.createElement("span");
+        type.className = "object-type";
+        type.textContent = item.type === "scout" ? "MOBILE UNIT" : item.kind.toUpperCase() + " NODE";
+        textWrap.appendChild(type);
+        button.appendChild(swatch); button.appendChild(textWrap);
+        button.addEventListener("click", () => { choose(item.type,item.id); focusSelected(); });
+        ui.objectList.appendChild(button);
+      });
+      if (!items.length) {
+        const empty = document.createElement("div"); empty.className = "empty"; empty.textContent = "No visible objects";
+        ui.objectList.appendChild(empty);
+      }
+    }
+
+    function renderQuest() {
+      const visited = new Set();
+      scouts.forEach(s => s.visited.forEach(id => visited.add(id)));
+      const complete = missionTargets.filter(id => visited.has(id)).length;
+      ui.questCount.textContent = complete + "/" + missionTargets.length;
+      ui.questProgress.style.width = (complete / missionTargets.length * 100) + "%";
+      ui.questSteps.innerHTML = "";
+      missionTargets.forEach(id => {
+        const node = getNode(id);
+        const done = visited.has(id);
+        const row = document.createElement("div");
+        row.className = "quest-step" + (done ? " done" : "");
+        const check = document.createElement("span");
+        check.className = "quest-check";
+        check.textContent = done ? "✓" : "·";
+        const label = document.createElement("span");
+        label.textContent = "Explore " + node.name;
+        row.appendChild(check); row.appendChild(label); ui.questSteps.appendChild(row);
+      });
+      if (complete === missionTargets.length) {
+        const done = document.createElement("div");
+        done.className = "quest-step done";
+        done.textContent = "✦ Quest complete — first contact established";
+        ui.questSteps.appendChild(done);
+      }
+    }
+
+    function renderSelection() {
+      const object = selectedObject();
+      if (!object) return;
+      const isScout = selected.type === "scout";
+      const kind = isScout ? "Mobile exploration unit" : object.kind + " world node";
+      const color = isScout ? "#d6f2ae" : (palette[object.kind] || palette.habitat);
+      const icon = isScout ? "▲" : object.icon;
+      const title = isScout ? object.name : object.name;
+      const detail = isScout
+        ? (object.target ? "Moving toward assigned world coordinates." : "Idle and ready for a new exploration command.")
+        : object.detail;
+      const x = object.x.toFixed(1), y = object.y.toFixed(1);
+      ui.selectionCard.innerHTML = "";
+      const head = document.createElement("div"); head.className = "selection-head";
+      const avatar = document.createElement("div"); avatar.className = "selection-avatar";
+      avatar.textContent = icon; avatar.style.color = color;
+      const heading = document.createElement("div");
+      const name = document.createElement("div"); name.className = "selection-name"; name.textContent = title;
+      const sub = document.createElement("div"); sub.className = "selection-kind"; sub.textContent = kind;
+      heading.appendChild(name); heading.appendChild(sub); head.appendChild(avatar); head.appendChild(heading);
+      const copy = document.createElement("div"); copy.className = "quest-copy"; copy.style.marginTop = "12px"; copy.textContent = detail;
+      const grid = document.createElement("div"); grid.className = "data-grid";
+      const cells = isScout
+        ? [["X POSITION",x],["Y POSITION",y],["ENERGY",Math.round(object.energy)+"%"],["STATUS",object.target ? "MOVING" : "IDLE"]]
+        : [["X POSITION",x],["Y POSITION",y],[String(object.resource || "TYPE").toUpperCase(),object.value || "—"],["LAYER",object.kind.toUpperCase()]];
+      cells.forEach(cell => {
+        const box = document.createElement("div"); box.className = "data-cell";
+        const label = document.createElement("div"); label.className = "data-label"; label.textContent = cell[0];
+        const value = document.createElement("div"); value.className = "data-value"; value.textContent = cell[1];
+        box.appendChild(label); box.appendChild(value); grid.appendChild(box);
+      });
+      ui.selectionCard.appendChild(head); ui.selectionCard.appendChild(copy); ui.selectionCard.appendChild(grid);
+      ui.selectedCrumb.textContent = title.toUpperCase();
+    }
+
+    function renderPanels() {
+      const labels = {habitat:"HABITAT MAP",ecology:"ECOLOGY",knowledge:"KNOWLEDGE"};
+      ui.layerName.textContent = labels[activeLayer];
+      document.querySelectorAll(".layer-btn").forEach(button => button.classList.toggle("active",button.dataset.layer === activeLayer));
+      renderObjects();
+      renderSelection();
+      renderQuest();
+    }
+
+    function findObjectAt(point) {
+      let best = null;
+      let bestDistance = Infinity;
+      visibleNodes().forEach(node => {
+        const d = Math.hypot(point.x-node.x,point.y-node.y);
+        if (d < 25 && d < bestDistance) { best = {type:"node",id:node.id}; bestDistance = d; }
+      });
+      scouts.forEach(scout => {
+        const d = Math.hypot(point.x-scout.x,point.y-scout.y);
+        if (d < 18 && d < bestDistance) { best = {type:"scout",id:scout.id}; bestDistance = d; }
+      });
+      return best;
+    }
+
+    function moveSelectedBy(dx,dy) {
+      const scout = getSelectedScout();
+      if (scout) {
+        setScoutTarget(scout,{x:scout.x+dx,y:scout.y+dy});
+      } else {
+        camera.x += dx;
+        camera.y += dy;
+      }
+    }
+
+    canvas.addEventListener("pointerdown",event => {
+      if (event.button !== 0) return;
+      pointerStart = {x:event.clientX,y:event.clientY,cameraX:camera.x,cameraY:camera.y};
+      dragging = false;
+      canvas.setPointerCapture(event.pointerId);
+    });
+
+    canvas.addEventListener("pointermove",event => {
+      const rect = canvas.getBoundingClientRect();
+      const local = {x:event.clientX-rect.left,y:event.clientY-rect.top};
+      const world = screenToWorld(local.x,local.y);
+      ui.coords.textContent = world.x.toFixed(1) + " / " + world.y.toFixed(1);
+      if (!pointerStart || !(event.buttons & 1)) return;
+      const dx = event.clientX-pointerStart.x;
+      const dy = event.clientY-pointerStart.y;
+      if (Math.hypot(dx,dy) > 4) dragging = true;
+      if (dragging) {
+        camera.x = pointerStart.cameraX - dx/camera.zoom;
+        camera.y = pointerStart.cameraY - dy/camera.zoom;
+      }
+    });
+
+    canvas.addEventListener("pointerup",event => {
+      if (!pointerStart) return;
+      const rect = canvas.getBoundingClientRect();
+      const local = {x:event.clientX-rect.left,y:event.clientY-rect.top};
+      if (!dragging) {
+        const point = screenToWorld(local.x,local.y);
+        const hit = findObjectAt(point);
+        if (hit) choose(hit.type,hit.id);
+      }
+      pointerStart = null;
+      dragging = false;
+      canvas.classList.remove("dragging");
+      renderPanels();
+    });
+
+    canvas.addEventListener("pointercancel",() => { pointerStart = null; dragging = false; });
+    canvas.addEventListener("pointermove",() => canvas.classList.toggle("dragging",dragging));
+    canvas.addEventListener("wheel",event => {
+      event.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const before = screenToWorld(event.clientX-rect.left,event.clientY-rect.top);
+      camera.zoom = Math.max(.18,Math.min(4.5,camera.zoom * Math.exp(-event.deltaY*.001)));
+      const after = screenToWorld(event.clientX-rect.left,event.clientY-rect.top);
+      camera.x += before.x-after.x;
+      camera.y += before.y-after.y;
+    },{passive:false});
+
+    canvas.addEventListener("contextmenu",event => {
+      event.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const point = screenToWorld(event.clientX-rect.left,event.clientY-rect.top);
+      const hit = findObjectAt(point);
+      if (hit && hit.type === "scout") {
+        choose("scout",hit.id);
+        showToast("Scout ausgewählt");
+      } else {
+        setScoutTarget(getSelectedScout(),point);
+      }
+      renderPanels();
+    });
+
+    document.addEventListener("keydown",event => {
+      const tag = event.target && event.target.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      const key = event.key.toLowerCase();
+      if (key === " " || key === "spacebar") { event.preventDefault(); toggleRun(); return; }
+      if (key === "f") { focusSelected(); return; }
+      if (key === "home") { camera.x = 0; camera.y = 0; camera.zoom = .82; return; }
+      const step = event.shiftKey ? 90 : 35;
+      if (key === "w" || key === "arrowup") { event.preventDefault(); moveSelectedBy(0,-step); }
+      else if (key === "s" || key === "arrowdown") { event.preventDefault(); moveSelectedBy(0,step); }
+      else if (key === "a" || key === "arrowleft") { event.preventDefault(); moveSelectedBy(-step,0); }
+      else if (key === "d" || key === "arrowright") { event.preventDefault(); moveSelectedBy(step,0); }
+    });
+
+    document.getElementById("runBtn").addEventListener("click",toggleRun);
+    document.getElementById("spawnBtn").addEventListener("click",addScout);
+    document.getElementById("centerBtn").addEventListener("click",() => { camera.x = 0; camera.y = 0; camera.zoom = .82; showToast("Startansicht wiederhergestellt"); });
+    document.getElementById("zoomInBtn").addEventListener("click",() => { camera.zoom = Math.min(4.5,camera.zoom*1.2); });
+    document.getElementById("zoomOutBtn").addEventListener("click",() => { camera.zoom = Math.max(.18,camera.zoom/1.2); });
+    document.querySelectorAll(".layer-btn").forEach(button => {
+      button.addEventListener("click",() => { activeLayer = button.dataset.layer; renderPanels(); });
+    });
+
+    function frame(now) {
+      const delta = Math.min(.05,(now-lastFrame)/1000 || 0);
+      lastFrame = now;
+      if (running) {
+        update(delta);
+        tickAccumulator += delta;
+        if (tickAccumulator >= .5) {
+          tick += Math.floor(tickAccumulator/.5);
+          tickAccumulator %= .5;
+          ui.tick.textContent = String(tick).padStart(4,"0");
+        }
+      }
+      draw();
+      requestAnimationFrame(frame);
+    }
+
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(resizeCanvas).observe(canvas);
+    } else {
+      window.addEventListener("resize",resizeCanvas);
+    }
+    resizeCanvas();
+    renderPanels();
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>
