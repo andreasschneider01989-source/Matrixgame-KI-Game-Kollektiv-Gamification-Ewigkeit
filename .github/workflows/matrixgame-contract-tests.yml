@@ -8,9 +8,11 @@ on:
       - "matrixgame-protocol/quest.schema.json"
       - "matrixgame-protocol/quest.example.json"
       - "research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json"
+      - "research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.json"
       - "tests/test_artifact_envelope_contract.py"
       - "tests/test_quest_contract.py"
       - "tests/test_social_connection_snapshot.py"
+      - "tests/test_energy_resource_snapshot.py"
       - ".github/workflows/matrixgame-contract-tests.yml"
   workflow_dispatch:
 
@@ -31,9 +33,12 @@ jobs:
             matrixgame-protocol/quest.schema.json
             matrixgame-protocol/quest.example.json
             research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json
+            research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.json
             tests/test_artifact_envelope_contract.py
             tests/test_quest_contract.py
             tests/test_social_connection_snapshot.py
+          tests/test_energy_resource_snapshot.py
+            tests/test_energy_resource_snapshot.py
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
         with:
