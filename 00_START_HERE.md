@@ -4,6 +4,8 @@ This repository is an evolving collection of Matrixgame / Collective AI Game con
 
 ## Find your way
 
+- [Architecture Standard](docs/ARCHITECTURE_STANDARD.md): shared module boundaries, artifact metadata, statuses and quality gates.
+
 - [README](README.md): project status and current direction.
 - [Documentation index](docs/INDEX.md): selected topics, files, and short descriptions.
 - [AI reading guide](docs/AI_READING_GUIDE.md): evidence labels, privacy, and summarization guidance.
