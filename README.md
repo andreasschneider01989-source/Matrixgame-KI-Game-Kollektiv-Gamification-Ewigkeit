@@ -96,6 +96,13 @@ The new research synthesis connects the Global Flourishing Study, OECD well-bein
 
 - [Human Flourishing — framework and implementation roadmap](docs/HUMAN_FLOURISHING_FRAMEWORK_2026-11-25.md)
 
+## Energy and Resource Optimization — 25 November 2026
+
+A new source-linked snapshot connects human flourishing with energy access, efficiency, clean supply, grids, storage, resource resilience and ecological boundaries. It separates observations, estimates and scenarios and defines a small Second Earth simulation roadmap.
+
+- [Energy and Resource Optimization — research synthesis](research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.md)
+- [Global energy indicators — structured JSON snapshot](research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.json)
+
 ## Social connection, violence and relationship trends — 25 November 2026
 
 A dated, evidence-aware Germany/global snapshot separates police-recorded violence, under-reporting, global prevalence estimates, marriage/divorce statistics, household structures and relationship surveys. It deliberately avoids inferring one cause from one-year changes and keeps the measures separate for future modeling.
