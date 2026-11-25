@@ -76,6 +76,10 @@ Cross-cutting requirements apply at every boundary: provenance, schema/version c
 
 ## 4. Shared artifact envelope
 
+The envelope can wrap a specialized quest payload. The portable quest-definition contract lives in [`matrixgame-protocol/quest.schema.json`](../matrixgame-protocol/quest.schema.json); its example is [`quest.example.json`](../matrixgame-protocol/quest.example.json). Keep quest definition templates separate from participant-specific quest runs and private reflections. See the [Responsible Gamification Standard](RESPONSIBLE_GAMIFICATION_STANDARD.md) for autonomy, competence, relatedness, recovery, and anti-coercion requirements.
+
+
+
 The envelope in `matrixgame-protocol/artifact-envelope.schema.json` provides common metadata for these artifact types:
 
 - knowledge nodes and evidence records;
