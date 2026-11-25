@@ -90,6 +90,12 @@ The following research documents extend the Universal Knowledge Engine with a da
 
 The report distinguishes observations, estimates, forecasts, models, hypotheses, and fiction. Metrics must be interpreted with their own period, unit, definition, and source. In particular, installed capacity is not electricity generation; target gain is not net fusion-plant output; and a one-year temperature anomaly is not identical to a long-term warming level.
 
+## Human Flourishing — research and implementation framework
+
+The new research synthesis connects the Global Flourishing Study, OECD well-being measures, WHO's global framework, UN social development commitments, and the 2026 Beyond GDP process. It defines a cautious route toward a privacy-preserving Matrixgame module without ranking people or reducing flourishing to one score.
+
+- [Human Flourishing — framework and implementation roadmap](docs/HUMAN_FLOURISHING_FRAMEWORK_2026-11-25.md)
+
 ## Social connection, violence and relationship trends — 25 November 2026
 
 A dated, evidence-aware Germany/global snapshot separates police-recorded violence, under-reporting, global prevalence estimates, marriage/divorce statistics, household structures and relationship surveys. It deliberately avoids inferring one cause from one-year changes and keeps the measures separate for future modeling.
