@@ -27,6 +27,11 @@ jobs:
           /examples/
           /pyproject.toml
           /requirements.txt
+          /matrixgame-protocol/artifact-envelope.schema.json
+          /matrixgame-protocol/artifact-envelope.example.json
+          /matrixgame-protocol/quest.schema.json
+          /matrixgame-protocol/quest.example.json
+          /research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
