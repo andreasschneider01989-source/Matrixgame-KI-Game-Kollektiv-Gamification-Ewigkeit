@@ -179,7 +179,11 @@ The cycle allows progress without demanding continuous activity.
 
 **Completion definition:** one learner can complete or pause the density quest, produce a reproducible artifact, and see the next suggested step without exposing private profile data.
 
-## 11. Extended research quest — Two Cores, Four Satellites
+## 11. Portable quest contract
+
+The machine-readable format is defined in [`matrixgame-protocol/quest.schema.json`](../matrixgame-protocol/quest.schema.json), with a reusable example in [`quest.example.json`](../matrixgame-protocol/quest.example.json). The schema separates a shared quest definition from private per-participant progress and makes choice, pause, decline, success criteria, optional rewards, privacy, and non-punitive safeguards explicit. The broader evidence-aware principles are documented in [Responsible Gamification Standard](RESPONSIBLE_GAMIFICATION_STANDARD.md).
+
+
 
 **Status:** PLANNED  
 **Research type:** physics model comparison and numerical simulation.
