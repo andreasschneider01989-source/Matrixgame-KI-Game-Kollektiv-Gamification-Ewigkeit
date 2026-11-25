@@ -73,6 +73,6 @@ def test_knowledge_status_is_not_conflated_with_implementation_status() -> None:
 
     assert "epistemic_status" in properties
     assert "implementation_status" in properties
-    assert example_value := _load_json(EXAMPLE_PATH)
+    example_value = _load_json(EXAMPLE_PATH)
     assert example_value["epistemic_status"] is None
     assert example_value["implementation_status"] == "IMPLEMENTED"
