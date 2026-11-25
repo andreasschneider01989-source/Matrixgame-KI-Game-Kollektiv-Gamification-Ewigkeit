@@ -90,6 +90,13 @@ The following research documents extend the Universal Knowledge Engine with a da
 
 The report distinguishes observations, estimates, forecasts, models, hypotheses, and fiction. Metrics must be interpreted with their own period, unit, definition, and source. In particular, installed capacity is not electricity generation; target gain is not net fusion-plant output; and a one-year temperature anomaly is not identical to a long-term warming level.
 
+## Social connection, violence and relationship trends — 25 November 2026
+
+A dated, evidence-aware Germany/global snapshot separates police-recorded violence, under-reporting, global prevalence estimates, marriage/divorce statistics, household structures and relationship surveys. It deliberately avoids inferring one cause from one-year changes and keeps the measures separate for future modeling.
+
+- [Social connection and safety — research synthesis](research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.md)
+- [Social connection and safety — structured JSON snapshot](research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json)
+
 ## Social connection, wellbeing and safety — 6 November 2026
 
 A new research note integrates social connection, respectful dating and communication, emotion regulation, recovery-aware safeguards, and non-addictive gamification. It separates evidence from design models and open questions; it is a public concept document, not a clinical guide or an implemented feature.
