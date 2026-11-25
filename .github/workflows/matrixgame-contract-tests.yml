@@ -37,7 +37,6 @@ jobs:
             tests/test_artifact_envelope_contract.py
             tests/test_quest_contract.py
             tests/test_social_connection_snapshot.py
-          tests/test_energy_resource_snapshot.py
             tests/test_energy_resource_snapshot.py
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
@@ -51,3 +50,4 @@ jobs:
           tests/test_artifact_envelope_contract.py
           tests/test_quest_contract.py
           tests/test_social_connection_snapshot.py
+          tests/test_energy_resource_snapshot.py
