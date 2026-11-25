@@ -22,6 +22,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The historical archive contains oversized legacy filenames.
+          # Sparse checkout keeps this focused contract job independent of them.
+          sparse-checkout: |
+            matrixgame-protocol/artifact-envelope.schema.json
+            matrixgame-protocol/artifact-envelope.example.json
+            matrixgame-protocol/quest.schema.json
+            matrixgame-protocol/quest.example.json
+            research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json
+            tests/test_artifact_envelope_contract.py
+            tests/test_quest_contract.py
+            tests/test_social_connection_snapshot.py
+          sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
