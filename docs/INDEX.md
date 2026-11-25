@@ -32,6 +32,11 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [Fragment 6 – Gesamtsynthese und Zukunftsarchitektur](FRAGMENT_6_SYNTHESIS_AND_FUTURE_ARCHITECTURE_2026-11-23.md) — kuratierte Auswertung des historischen Journals, wissenschaftliche Korrekturen, Governance und Realisierungsplan.
 - [Fragment 6 – kuratiertes Linkregister](FRAGMENT_6_CURATED_LINK_REGISTER_2026-11-23.md) — ausgewählte Primärlinks und Anschlussstellen; keine pauschale Inhaltsbestätigung der externen Ziele.
 
+## Soziale Entwicklung und aktuelle Forschung
+
+- [Social connection, violence and relationship trends (25 November 2026)](../research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.md) — Deutschland 2025, Dunkelfeld, globale Einordnung, Partnerschafts- und Haushaltsformen; strikt getrennte Messgrößen.
+- [Structured social connection and safety snapshot](../research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json) — maschinenlesbare Kennzahlen mit Zeitraum, Gebiet, Messmethode und Quellen.
+
 ## Lernen und soziale Gestaltung
 
 - [Learning Quests and Responsible Gamification](LEARNING_QUESTS_AND_GAMIFICATION.md) — Vorschläge für freiwillige Lernmechaniken.
