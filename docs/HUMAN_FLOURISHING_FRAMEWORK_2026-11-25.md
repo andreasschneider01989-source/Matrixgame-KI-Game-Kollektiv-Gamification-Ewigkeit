@@ -100,6 +100,12 @@ Sources:
 - https://www.who.int/about/governance/constitution/
 - https://www.canada.ca/en/public-health/services/health-promotion/population-health/ottawa-charter-health-promotion-international-conference-on-health-promotion.html
 
+### 2.8 Emotion regulation and self-directed goal alignment
+
+Mental well-being includes more than the absence of distress. Matrixgame therefore links the human flourishing model to a separate, opt-in [Emotion Regulation and Goal Alignment framework](EMOTION_REGULATION_AND_GOAL_ALIGNMENT_2026-11-25.md). It focuses on emotional flexibility, separating facts from interpretations, values-consistent action, supportive connection and recovery.
+
+The aim is not to eliminate negative emotions or enforce constant positivity. Emotions can carry useful information; strategies must fit the context, and genuine danger or boundary violations must not be reframed away. Personal reflections remain private and are not part of public indicators.
+
 ## 3. A useful Matrixgame distinction: outcomes, conditions, and agency
 
 Do not collapse every factor into one score. Model at least three connected layers:
