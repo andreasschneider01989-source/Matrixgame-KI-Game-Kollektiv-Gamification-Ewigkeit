@@ -19,6 +19,9 @@ This repository is a changing collection of prototypes, proposals, research note
 
 ## Selected artifacts
 
+- [Social connection and safety research snapshot](research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.md): dated evidence-aware synthesis of violence, under-reporting, relationships and living arrangements.
+- [Structured social connection and safety data](research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json): source-linked metrics; do not merge unlike statistical measures.
+
 - [Java Boulder Dash](MatrixgameBoulderDash.java): standalone grid-game prototype; inspect source for actual behavior.
 - [Python model](modellierung_des_kollektiven_bewusstseins.py): notebook-derived example; assumptions are not automatically validated.
 - [Physics A–Z Atlas](docs/PHYSICS_AZ_ATLAS.md): physics reference structure.
