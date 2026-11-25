@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 
@@ -25,7 +26,8 @@ def test_quest_identifiers_and_types_match_contract() -> None:
     schema = load_json(SCHEMA_PATH)
     quest = load_json(EXAMPLE_PATH)
     assert schema["properties"]["quest_id"]["pattern"]
-    assert quest["quest_id"].startswith("quest.")
+    assert re.fullmatch(schema["properties"]["quest_id"]["pattern"], quest["quest_id"])
+    assert quest["choice_mode"] in schema["properties"]["choice_mode"]["enum"]
     assert quest["quest_type"] in schema["properties"]["quest_type"]["enum"]
     assert quest["definition_status"] in schema["properties"]["definition_status"]["enum"]
 
