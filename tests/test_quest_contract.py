@@ -86,3 +86,5 @@ def test_emotion_regulation_quest_matches_quest_contract_and_safety_rules() -> N
     ).lower()
     assert "do not force a positive interpretation" in all_text
     assert "no emotional disclosure is required" in all_text
+    assert "do not judge or cancel it" in all_text
+    assert "do not repeat a phrase" in all_text
