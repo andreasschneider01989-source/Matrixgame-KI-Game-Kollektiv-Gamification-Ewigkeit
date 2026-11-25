@@ -33,6 +33,10 @@ Implementation intentions are specific if–then plans: “If situation Y occurs
 
 Reference: Gollwitzer, P. M., & Sheeran, P. (2006), *Implementation intentions and goal achievement: A meta-analysis of effects and processes*. https://doi.org/10.1016/S0065-2601(06)38002-1
 
+### Emotion regulation without forced positivity
+
+A related Matrixgame module, [Emotion Regulation and Goal Alignment](EMOTION_REGULATION_AND_GOAL_ALIGNMENT_2026-11-25.md), treats emotions as signals rather than defects or commands. It encourages flexible strategy choice, including grounding, fact-checking, reappraisal, problem-solving, connection and rest. It explicitly rejects emotional suppression as a universal strategy, mandatory positive mood, and public emotional scoring.
+
 ### Stress regulation and recovery
 
 The WHO guide *Doing What Matters in Times of Stress* is informed by evidence and field testing. Its practical tools include grounding, unhooking from difficult thoughts, making room for feelings, acting on values, engaging with the world, and self-kindness. The WHO notes that a few minutes of practice can be useful. These are self-help skills, not a promise to remove distress or a substitute for needed clinical care.
