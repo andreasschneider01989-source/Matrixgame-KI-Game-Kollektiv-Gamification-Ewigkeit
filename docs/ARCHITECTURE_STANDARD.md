@@ -28,6 +28,7 @@ Reuse these files before proposing a replacement:
 | Canvas and snapshots | `docs/INFINITE_CANVAS_DUAL_INTERFACE_AND_QUALITY_MODEL_2026-11-11.md` | Proposed WorldSnapshot / event / view boundaries |
 | Responsible gamification | `docs/LEARNING_QUESTS_AND_GAMIFICATION.md` and related wellbeing research | Voluntary learning and autonomy |
 | Human flourishing | `docs/HUMAN_FLOURISHING_FRAMEWORK_2026-11-25.md` | Research-aligned dimensions, enabling conditions, agency, and privacy-preserving implementation roadmap |
+| Energy and resources | `research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.md` and its JSON snapshot | Energy access, efficiency, clean supply, networks, resilience, ecological boundaries, and source-aware simulation inputs |
 
 The new [Artifact Envelope schema](../matrixgame-protocol/artifact-envelope.schema.json) is a shared metadata wrapper. It does not supersede any specialized schema in this table.
 
