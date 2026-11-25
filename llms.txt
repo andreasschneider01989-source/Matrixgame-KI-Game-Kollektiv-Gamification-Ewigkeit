@@ -19,6 +19,11 @@ This repository is a changing collection of prototypes, proposals, research note
 
 ## Selected artifacts
 
+- [Human Flourishing framework](docs/HUMAN_FLOURISHING_FRAMEWORK_2026-11-25.md): research-aligned domains, agency, enabling conditions, and responsible measurement.
+- [Energy and Resource Optimization](research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.md): global energy transition snapshot, units, access, efficiency, resilience, and Second Earth model path.
+- [Structured global energy snapshot](research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.json): 13 source-linked observations, estimates and scenarios with caveats.
+
+
 - [Social connection and safety research snapshot](research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.md): dated evidence-aware synthesis of violence, under-reporting, relationships and living arrangements.
 - [Structured social connection and safety data](research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json): source-linked metrics; do not merge unlike statistical measures.
 
