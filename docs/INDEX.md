@@ -35,6 +35,8 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 ## Soziale Entwicklung und aktuelle Forschung
 - [Human Flourishing — research and implementation framework](HUMAN_FLOURISHING_FRAMEWORK_2026-11-25.md) — six research-aligned domains, WHO/UN/OECD/UNDP frameworks, Beyond GDP status, and a privacy-preserving Matrixgame roadmap.
 
+- [Energy and Resource Optimization (25 November 2026)](../research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.md) — global energy efficiency, investment, electricity access, resource resilience, ecological boundaries and Second Earth implementation path.
+- [Structured global energy snapshot](../research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.json) — 13 source-linked indicators with status, period, units, methods and caveats.
 - [Social connection, violence and relationship trends (25 November 2026)](../research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.md) — Deutschland 2025, Dunkelfeld, globale Einordnung, Partnerschafts- und Haushaltsformen; strikt getrennte Messgrößen.
 - [Structured social connection and safety snapshot](../research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json) — maschinenlesbare Kennzahlen mit Zeitraum, Gebiet, Messmethode und Quellen.
 
