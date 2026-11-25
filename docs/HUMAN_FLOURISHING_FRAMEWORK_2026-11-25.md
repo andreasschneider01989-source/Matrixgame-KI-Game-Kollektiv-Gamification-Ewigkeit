@@ -88,6 +88,18 @@ UNDP's Human Development Report 2025, *A matter of choice: People and possibilit
 Source:
 - https://hdr.undp.org/content/human-development-report-2025
 
+### 2.7 Energy and resource foundations
+
+The WHO Constitution and Ottawa Charter connect health to basic resources, peace, a stable ecosystem, and sustainable resource use. Energy systems therefore belong in a flourishing architecture as enabling conditions, not as a substitute for the human domains.
+
+Matrixgame adds **Energy and Resource Foundations** as a cross-cutting systems layer. This is not a seventh domain of the six-domain Global Flourishing Study instrument. It is a proposed Matrixgame extension that makes infrastructure, access, efficiency, resilience, ecological boundaries, and intergenerational resource stewardship explicit.
+
+Do not collapse personal vitality, energy in joules, electricity use, ecosystem productivity, and AI compute into one variable. They have different units, mechanisms and boundaries. The associated 25 November 2026 research snapshot and 13 source-linked indicators live in [Energy and Resource Optimization](../research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.md) and its [structured snapshot](../research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.json).
+
+Sources:
+- https://www.who.int/about/governance/constitution/
+- https://www.canada.ca/en/public-health/services/health-promotion/population-health/ottawa-charter-health-promotion-international-conference-on-health-promotion.html
+
 ## 3. A useful Matrixgame distinction: outcomes, conditions, and agency
 
 Do not collapse every factor into one score. Model at least three connected layers:
