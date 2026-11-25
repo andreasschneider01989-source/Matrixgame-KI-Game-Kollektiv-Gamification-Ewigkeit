@@ -14,6 +14,7 @@
     "definition_status",
     "effort_minutes",
     "options",
+    "choice_mode",
     "steps",
     "success_criteria",
     "participation",
