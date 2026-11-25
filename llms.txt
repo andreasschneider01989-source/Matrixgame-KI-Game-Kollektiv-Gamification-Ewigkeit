@@ -4,6 +4,9 @@ This repository is a changing collection of prototypes, proposals, research note
 
 ## Entry points
 
+- [Architecture Standard](docs/ARCHITECTURE_STANDARD.md): module boundaries, artifact metadata, versioning, statuses, and minimum quality gates.
+- [Artifact Envelope schema](matrixgame-protocol/artifact-envelope.schema.json): shared metadata contract; domain-specific payloads retain their own schemas.
+
 - [README](README.md): project status and direction.
 - [Documentation index](docs/INDEX.md): selected topic map.
 - [Universal Knowledge Engine](docs/UNIVERSAL_KNOWLEDGE_ENGINE.md): proposed knowledge/evidence architecture.
