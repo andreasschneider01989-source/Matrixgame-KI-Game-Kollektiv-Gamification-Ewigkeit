@@ -90,6 +90,13 @@ The following research documents extend the Universal Knowledge Engine with a da
 
 The report distinguishes observations, estimates, forecasts, models, hypotheses, and fiction. Metrics must be interpreted with their own period, unit, definition, and source. In particular, installed capacity is not electricity generation; target gain is not net fusion-plant output; and a one-year temperature anomaly is not identical to a long-term warming level.
 
+## Emotion Regulation and Goal Alignment — 25 November 2026
+
+A voluntary, evidence-informed framework treats emotions as signals rather than defects or commands. It connects emotional flexibility, fact/interpretation separation, personally chosen goals, recovery and privacy to the existing Quest contract.
+
+- [Emotion Regulation and Goal Alignment — framework](docs/EMOTION_REGULATION_AND_GOAL_ALIGNMENT_2026-11-25.md)
+- [Optional emotion-regulation quest template](matrixgame-protocol/quest.emotion-regulation.example.json)
+
 ## Human Flourishing — research and implementation framework
 
 The new research synthesis connects the Global Flourishing Study, OECD well-being measures, WHO's global framework, UN social development commitments, and the 2026 Beyond GDP process. It defines a cautious route toward a privacy-preserving Matrixgame module without ranking people or reducing flourishing to one score.
