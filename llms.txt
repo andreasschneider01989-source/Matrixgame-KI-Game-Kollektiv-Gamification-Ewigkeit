@@ -19,6 +19,10 @@ This repository is a changing collection of prototypes, proposals, research note
 
 ## Selected artifacts
 
+- [Emotion Regulation and Goal Alignment](docs/EMOTION_REGULATION_AND_GOAL_ALIGNMENT_2026-11-25.md): evidence-informed self-regulation, flexible response options, values-aligned action, recovery and privacy boundaries.
+- [Optional emotion-regulation quest template](matrixgame-protocol/quest.emotion-regulation.example.json): uses the existing Quest schema; does not require personal emotional data.
+
+
 - [Human Flourishing framework](docs/HUMAN_FLOURISHING_FRAMEWORK_2026-11-25.md): research-aligned domains, agency, enabling conditions, and responsible measurement.
 - [Energy and Resource Optimization](research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.md): global energy transition snapshot, units, access, efficiency, resilience, and Second Earth model path.
 - [Structured global energy snapshot](research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.json): 13 source-linked observations, estimates and scenarios with caveats.
