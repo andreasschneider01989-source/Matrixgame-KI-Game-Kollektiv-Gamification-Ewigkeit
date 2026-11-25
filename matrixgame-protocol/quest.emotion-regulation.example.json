@@ -39,6 +39,11 @@
       "option_id": "recover",
       "title": "Pause and recover",
       "description": "Choose rest, reduce the demand, or postpone the decision when that is the most appropriate response."
+    },
+    {
+      "option_id": "notice-and-return",
+      "title": "Notice once and return",
+      "description": "Name it once as an unwanted automatic thought, do not judge or cancel it, and gently return attention to the activity you chose. Do not repeat a phrase or perform a mental neutralising ritual."
     }
   ],
   "choice_mode": "choose_one",
