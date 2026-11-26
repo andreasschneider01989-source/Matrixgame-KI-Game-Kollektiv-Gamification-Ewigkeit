@@ -101,6 +101,15 @@ A working, deliberately limited compiler is now available in `lumini_compiler/`.
 
 Quick start: `python -m pip install -e .`, then `lumini check examples/lumini/earth_surface_gravity.lumini` and `lumini run examples/lumini/earth_surface_gravity.lumini`.
 
+## Browser Matrixgame Explorer — first playable Infinite Canvas prototype (25 November 2026)
+
+A dependency-free browser prototype adds a navigable 2D Matrixgame world with pan/zoom, selectable Scouts and world nodes, movement commands, Habitat/Ecology/Knowledge layers, and a small exploration quest. It is an isolated prototype and does not yet connect to the Java or LUMINI simulation engines.
+
+- [Open the Web Explorer source](web/index.html)
+- [Prototype scope, controls, manual checks and next increments](docs/MATRIXGAME_WEB_EXPLORER_MVP_2026-11-25.md)
+
+Local run from the repository root: `python -m http.server 8000`, then open `http://localhost:8000/web/`. No external package is required. This prototype is on the feature branch `feature/web-infinite-matrix-explorer`; its manual acceptance checklist has not yet been run in a browser.
+
 ## LUMINI Idea Inbox, compiler filters and multilingual interoperability — 11 November 2026
 
 A specification for preserving raw ideas, tracing transparent compiler filters, separating evidence from models and hypotheses, proposing causal graphs, routing ideas into quests or code modules, and translating a shared semantic model into multiple natural languages and programming targets. Includes multi-LLM proposal/review roles, privacy and provenance rules, and a staged Java MVP. This is a design, not an implemented compiler.
