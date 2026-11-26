@@ -4,6 +4,11 @@ This repository is a changing collection of prototypes, proposals, research note
 
 ## Entry points
 
+- [Architecture Standard](docs/ARCHITECTURE_STANDARD.md): module boundaries, artifact metadata, versioning, statuses, and minimum quality gates.
+- [Artifact Envelope schema](matrixgame-protocol/artifact-envelope.schema.json): shared metadata contract; domain-specific payloads retain their own schemas.
+- [Responsible Gamification Standard](docs/RESPONSIBLE_GAMIFICATION_STANDARD.md): autonomy, competence, relatedness, honest feedback, and recovery without pressure.
+- [Quest schema](matrixgame-protocol/quest.schema.json): versioned, non-coercive quest definition; personal run data stays separate.
+
 - [README](README.md): project status and direction.
 - [Documentation index](docs/INDEX.md): selected topic map.
 - [Universal Knowledge Engine](docs/UNIVERSAL_KNOWLEDGE_ENGINE.md): proposed knowledge/evidence architecture.
@@ -13,6 +18,18 @@ This repository is a changing collection of prototypes, proposals, research note
 - [Game protocol](matrixgame-protocol/README.md): local prototype and deployment cautions.
 
 ## Selected artifacts
+
+- [Emotion Regulation and Goal Alignment](docs/EMOTION_REGULATION_AND_GOAL_ALIGNMENT_2026-11-25.md): evidence-informed self-regulation, flexible response options, values-aligned action, recovery and privacy boundaries.
+- [Optional emotion-regulation quest template](matrixgame-protocol/quest.emotion-regulation.example.json): uses the existing Quest schema; does not require personal emotional data.
+
+
+- [Human Flourishing framework](docs/HUMAN_FLOURISHING_FRAMEWORK_2026-11-25.md): research-aligned domains, agency, enabling conditions, and responsible measurement.
+- [Energy and Resource Optimization](research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.md): global energy transition snapshot, units, access, efficiency, resilience, and Second Earth model path.
+- [Structured global energy snapshot](research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.json): 13 source-linked observations, estimates and scenarios with caveats.
+
+
+- [Social connection and safety research snapshot](research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.md): dated evidence-aware synthesis of violence, under-reporting, relationships and living arrangements.
+- [Structured social connection and safety data](research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json): source-linked metrics; do not merge unlike statistical measures.
 
 - [Java Boulder Dash](MatrixgameBoulderDash.java): standalone grid-game prototype; inspect source for actual behavior.
 - [Python model](modellierung_des_kollektiven_bewusstseins.py): notebook-derived example; assumptions are not automatically validated.

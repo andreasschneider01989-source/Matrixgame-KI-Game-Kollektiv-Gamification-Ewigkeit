@@ -1,0 +1,116 @@
+{
+  "schema_version": "0.1.0",
+  "quest_id": "quest.wellbeing.emotion-signal-to-choice.001",
+  "quest_type": "wellbeing",
+  "title": "From emotional signal to useful next step",
+  "purpose": {
+    "objective": "Practice one short, voluntary emotion-regulation step without suppressing feelings or judging personal worth.",
+    "meaning": "Make it easier to understand an emotional signal and choose a safe action aligned with personal values."
+  },
+  "definition_status": "READY",
+  "epistemic_status": "MODEL",
+  "effort_minutes": {
+    "minimum": 2,
+    "maximum": 10
+  },
+  "prerequisites": [],
+  "options": [
+    {
+      "option_id": "ground",
+      "title": "Ground attention",
+      "description": "Notice the surroundings, relax the body where comfortable, and let the first wave settle."
+    },
+    {
+      "option_id": "clarify",
+      "title": "Separate fact from interpretation",
+      "description": "Write one observable fact, one interpretation, and one thing that remains unknown."
+    },
+    {
+      "option_id": "problem-solve",
+      "title": "Choose one useful action",
+      "description": "Identify one small, safe action that addresses a solvable part of the situation."
+    },
+    {
+      "option_id": "connect",
+      "title": "Connect or communicate",
+      "description": "Consider asking a trusted person a question, requesting support, or stating a respectful boundary."
+    },
+    {
+      "option_id": "recover",
+      "title": "Pause and recover",
+      "description": "Choose rest, reduce the demand, or postpone the decision when that is the most appropriate response."
+    },
+    {
+      "option_id": "notice-and-return",
+      "title": "Notice once and return",
+      "description": "Name it once as an unwanted automatic thought, do not judge or cancel it, and gently return attention to the activity you chose. Do not repeat a phrase or perform a mental neutralising ritual."
+    }
+  ],
+  "choice_mode": "choose_one",
+  "steps": [
+    {
+      "step_id": "choose-response",
+      "kind": "choose",
+      "instruction": "Choose one option, adapt it, or decline the quest. No emotional disclosure is required.",
+      "required": true,
+      "estimated_minutes": 1
+    },
+    {
+      "step_id": "practice-response",
+      "kind": "action",
+      "instruction": "Try the selected response for a few minutes. Do not force a positive interpretation or ignore a real safety concern.",
+      "required": true,
+      "estimated_minutes": 5
+    },
+    {
+      "step_id": "review-response",
+      "kind": "reflect",
+      "instruction": "Optionally note whether the response was useful, neutral, or unhelpful. You do not need to record your emotion or share personal details.",
+      "required": true,
+      "estimated_minutes": 2
+    }
+  ],
+  "success_criteria": [
+    "One response was freely chosen, adapted, or the quest was declined.",
+    "The response respected real-world safety and personal boundaries.",
+    "No positive mood, emotional suppression, personal score, streak, or public disclosure was required."
+  ],
+  "deliverables": [
+    {
+      "kind": "none",
+      "description": "No personal reflection or emotional data needs to be stored or shared."
+    }
+  ],
+  "difficulty": "gentle",
+  "participation": {
+    "mode": "solo",
+    "roles": [
+      "participant"
+    ]
+  },
+  "feedback": {
+    "timing": "user_requested",
+    "method": "Offer a neutral reflection on the chosen strategy and one optional next step. Never infer a diagnosis or claim that the person's mood improved.",
+    "show_evidence": true
+  },
+  "rewards": {
+    "kind": "none",
+    "description": "No reward is necessary; the value is the optional practice and the choice remains with the participant.",
+    "optional": true
+  },
+  "safeguards": {
+    "pause_allowed": true,
+    "decline_allowed": true,
+    "penalty_for_pause_or_incompletion": false,
+    "streak_pressure": false,
+    "public_personal_ranking": false,
+    "default_privacy": "PRIVATE",
+    "human_confirmation_for_external_actions": true
+  },
+  "source_refs": [
+    "../docs/EMOTION_REGULATION_AND_GOAL_ALIGNMENT_2026-11-25.md",
+    "../docs/RESPONSIBLE_GAMIFICATION_STANDARD.md",
+    "https://www.who.int/publications/i/item/9789240003927",
+    "https://www.nature.com/articles/s41562-025-02168-8"
+  ]
+}

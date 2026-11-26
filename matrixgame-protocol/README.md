@@ -4,6 +4,13 @@ This folder contains the first portable interface for Matrixgame and Collective 
 
 ## Files
 
+- `quest.schema.json` — specialized contract for reusable, voluntary quests, steps, options, acceptance criteria, feedback, and safeguards.
+- `quest.example.json` — a general small-improvement quest with three selectable routes.
+- `artifact-envelope.schema.json` — common metadata wrapper for knowledge, models, quests, modules, snapshots and run records.
+- `artifact-envelope.example.json` — example envelope around the existing LUMINI scalar compiler.
+- `lumini-model-ir.schema.json` — specialized output contract for the LUMINI formula compiler.
+- `../docs/ARCHITECTURE_STANDARD.md` — integration rules and module boundaries.
+
 - `UNIVERSAL_COLLECTIVE_GAME_PROMPT.md` – reusable prompt for starting a new game session.
 - `game-state.schema.json` – JSON Schema contract for shared game state.
 - `game-state.example.json` – example state that clients and AI agents can load.

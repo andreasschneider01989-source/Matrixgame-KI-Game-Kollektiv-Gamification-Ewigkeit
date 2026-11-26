@@ -1,0 +1,403 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/andreasschneider01989-source/Matrixgame-KI-Game-Kollektiv-Gamification-Ewigkeit/main/matrixgame-protocol/quest.schema.json",
+  "title": "Matrixgame Responsible Quest Definition 0.1.0",
+  "description": "A portable, non-coercive quest definition. Progress state and personal learner data are stored separately.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "quest_id",
+    "quest_type",
+    "title",
+    "purpose",
+    "definition_status",
+    "effort_minutes",
+    "options",
+    "choice_mode",
+    "steps",
+    "success_criteria",
+    "participation",
+    "feedback",
+    "rewards",
+    "safeguards"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "quest_id": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128,
+      "pattern": "^quest\\.[a-z0-9][a-z0-9._/-]*$"
+    },
+    "quest_type": {
+      "type": "string",
+      "enum": [
+        "improvement",
+        "learning",
+        "research",
+        "build",
+        "creative",
+        "wellbeing",
+        "collective"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "purpose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "objective",
+        "meaning"
+      ],
+      "properties": {
+        "objective": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "meaning": {
+          "type": "string",
+          "maxLength": 500
+        }
+      }
+    },
+    "definition_status": {
+      "type": "string",
+      "enum": [
+        "PROPOSED",
+        "READY",
+        "RETIRED"
+      ]
+    },
+    "epistemic_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "FACT",
+        "MODEL",
+        "HYPOTHESIS",
+        "OPEN",
+        "FICTION",
+        null
+      ]
+    },
+    "effort_minutes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimum",
+        "maximum"
+      ],
+      "properties": {
+        "minimum": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1440
+        },
+        "maximum": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1440
+        }
+      }
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 128
+      },
+      "uniqueItems": true
+    },
+    "options": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "$ref": "#/$defs/option"
+      }
+    },
+    "choice_mode": {
+      "type": "string",
+      "enum": [
+        "choose_one",
+        "choose_any",
+        "fixed_sequence"
+      ]
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/$defs/step"
+      }
+    },
+    "success_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
+    },
+    "deliverables": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/deliverable"
+      }
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "gentle",
+        "moderate",
+        "stretch",
+        "adaptive"
+      ]
+    },
+    "participation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "roles"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "solo",
+            "optional_peer",
+            "cooperative"
+          ]
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "feedback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timing",
+        "method"
+      ],
+      "properties": {
+        "timing": {
+          "type": "string",
+          "enum": [
+            "per_step",
+            "milestone",
+            "completion",
+            "user_requested"
+          ]
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "show_evidence": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "rewards": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "description",
+        "optional"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "none",
+            "progress_marker",
+            "learning_unlock",
+            "celebration",
+            "contribution_credit"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "optional": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "safeguards": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pause_allowed",
+        "decline_allowed",
+        "penalty_for_pause_or_incompletion",
+        "streak_pressure",
+        "public_personal_ranking",
+        "default_privacy",
+        "human_confirmation_for_external_actions"
+      ],
+      "properties": {
+        "pause_allowed": {
+          "type": "boolean",
+          "const": true
+        },
+        "decline_allowed": {
+          "type": "boolean",
+          "const": true
+        },
+        "penalty_for_pause_or_incompletion": {
+          "type": "boolean",
+          "const": false
+        },
+        "streak_pressure": {
+          "type": "boolean",
+          "const": false
+        },
+        "public_personal_ranking": {
+          "type": "boolean",
+          "const": false
+        },
+        "default_privacy": {
+          "type": "string",
+          "enum": [
+            "PRIVATE",
+            "INTERNAL",
+            "PUBLIC"
+          ]
+        },
+        "human_confirmation_for_external_actions": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "source_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri-reference"
+      }
+    }
+  },
+  "$defs": {
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "option_id",
+        "title",
+        "description"
+      ],
+      "properties": {
+        "option_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$",
+          "maxLength": 80
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      }
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_id",
+        "kind",
+        "instruction",
+        "required"
+      ],
+      "properties": {
+        "step_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$",
+          "maxLength": 80
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "choose",
+            "action",
+            "observe",
+            "reflect",
+            "connect",
+            "review",
+            "rest"
+          ]
+        },
+        "instruction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "estimated_minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1440
+        }
+      }
+    },
+    "deliverable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "description"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "artifact",
+            "evidence",
+            "reflection",
+            "conversation",
+            "none"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1.0",
+  "artifact_id": "software.lumini.formula.scalar",
+  "artifact_type": "software_module",
+  "title": "LUMINI scalar formula compiler",
+  "version": "0.1.0",
+  "summary": "Restricted scalar formula DSL with parsing, SI dimensional checks, versioned Model IR and a deterministic formula.scalar runner. Scientific and empirical validation remain separate.",
+  "created_at": "2026-11-25T20:00:00Z",
+  "updated_at": "2026-11-25T20:00:00Z",
+  "epistemic_status": null,
+  "implementation_status": "IMPLEMENTED",
+  "evidence_level": "NOT_APPLICABLE",
+  "privacy_class": "PUBLIC",
+  "provenance": {
+    "created_by": "Matrixgame contributors",
+    "source_refs": [
+      {
+        "source_id": "lumini-mvp-documentation",
+        "uri": "../docs/LUMINI_FORMULA_COMPILER_MVP_2026-11-23.md",
+        "kind": "repository_file"
+      },
+      {
+        "source_id": "lumini-compiler-tests",
+        "uri": "../tests/test_lumini_compiler.py",
+        "kind": "repository_file"
+      }
+    ],
+    "transformation_note": "Illustrative metadata envelope around an existing repository module; not a second copy of the compiler or its Model IR."
+  },
+  "relationships": [
+    {
+      "type": "IMPLEMENTS",
+      "target_id": "protocol.lumini-model-ir",
+      "rationale": "The compiler emits the specialized LUMINI Model IR."
+    }
+  ],
+  "validation": {
+    "status": "NOT_RUN",
+    "checks": []
+  },
+  "payload_ref": {
+    "uri": "../lumini_compiler/",
+    "schema_ref": "lumini-model-ir.schema.json"
+  }
+}

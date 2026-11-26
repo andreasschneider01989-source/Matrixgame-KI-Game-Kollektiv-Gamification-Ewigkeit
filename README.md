@@ -36,7 +36,27 @@ This should make it easier to:
 
 The existing code and documentation provide a starting point for this process. The modular architecture described below is a **development plan**, not a claim that all components already exist or work together.
 
-## Collective Improvement Network
+## Architecture standard and shared contracts
+
+The repository now has a central integration standard and a shared metadata envelope. These connect existing knowledge, LUMINI, game-state and future simulation artifacts without replacing their domain-specific schemas.
+
+- [Architecture Standard — integration contract](docs/ARCHITECTURE_STANDARD.md)
+- [Artifact Envelope JSON Schema](matrixgame-protocol/artifact-envelope.schema.json)
+- [Artifact Envelope example](matrixgame-protocol/artifact-envelope.example.json)
+
+This first interface slice is reviewable on a feature branch; it is not yet merged into the stable main branch.
+
+## Responsible gamification and portable quests
+
+The existing learning-quest design now has a machine-readable quest-definition contract and a reusable improvement example. The design is grounded in autonomy, achievable competence, optional cooperation, honest feedback, and recovery without punitive streaks.
+
+- [Responsible Gamification Standard](docs/RESPONSIBLE_GAMIFICATION_STANDARD.md)
+- [Quest Definition JSON Schema](matrixgame-protocol/quest.schema.json)
+- [Example improvement quest](matrixgame-protocol/quest.example.json)
+
+This is a quest-definition format and design standard, not yet a persistent quest service or adaptive wellbeing system.
+
+
 
 The broader vision for human–AI collaboration, cross-project improvement quests, evidence-aware knowledge sharing, and responsible automation is documented here:
 
@@ -69,6 +89,33 @@ The following research documents extend the Universal Knowledge Engine with a da
 - [Matrixgame Infinity Report v4.0 — archive](research/Matrixgame_Infinity_Report_v4_0_2026-11-06.md)
 
 The report distinguishes observations, estimates, forecasts, models, hypotheses, and fiction. Metrics must be interpreted with their own period, unit, definition, and source. In particular, installed capacity is not electricity generation; target gain is not net fusion-plant output; and a one-year temperature anomaly is not identical to a long-term warming level.
+
+## Emotion Regulation and Goal Alignment — 25 November 2026
+
+A voluntary, evidence-informed framework treats emotions as signals rather than defects or commands. It connects emotional flexibility, fact/interpretation separation, personally chosen goals, recovery and privacy to the existing Quest contract.
+
+- [Emotion Regulation and Goal Alignment — framework](docs/EMOTION_REGULATION_AND_GOAL_ALIGNMENT_2026-11-25.md)
+- [Optional emotion-regulation quest template](matrixgame-protocol/quest.emotion-regulation.example.json)
+
+## Human Flourishing — research and implementation framework
+
+The new research synthesis connects the Global Flourishing Study, OECD well-being measures, WHO's global framework, UN social development commitments, and the 2026 Beyond GDP process. It defines a cautious route toward a privacy-preserving Matrixgame module without ranking people or reducing flourishing to one score.
+
+- [Human Flourishing — framework and implementation roadmap](docs/HUMAN_FLOURISHING_FRAMEWORK_2026-11-25.md)
+
+## Energy and Resource Optimization — 25 November 2026
+
+A new source-linked snapshot connects human flourishing with energy access, efficiency, clean supply, grids, storage, resource resilience and ecological boundaries. It separates observations, estimates and scenarios and defines a small Second Earth simulation roadmap.
+
+- [Energy and Resource Optimization — research synthesis](research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.md)
+- [Global energy indicators — structured JSON snapshot](research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.json)
+
+## Social connection, violence and relationship trends — 25 November 2026
+
+A dated, evidence-aware Germany/global snapshot separates police-recorded violence, under-reporting, global prevalence estimates, marriage/divorce statistics, household structures and relationship surveys. It deliberately avoids inferring one cause from one-year changes and keeps the measures separate for future modeling.
+
+- [Social connection and safety — research synthesis](research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.md)
+- [Social connection and safety — structured JSON snapshot](research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json)
 
 ## Social connection, wellbeing and safety — 6 November 2026
 

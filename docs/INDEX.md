@@ -11,6 +11,11 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 
 ## Architektur und Zusammenarbeit
 
+- [Architecture Standard — Integration Contract](ARCHITECTURE_STANDARD.md) — gemeinsame Orientierung für Modulgrenzen, Metadaten, Statusbegriffe und Qualitätsgates; Fachspezifikationen bleiben maßgeblich.
+- [Artifact Envelope schema and example](../matrixgame-protocol/artifact-envelope.schema.json) — gemeinsamer Metadatenvertrag, der Fachschemas referenziert, statt sie zu ersetzen.
+- [Responsible Gamification Standard](RESPONSIBLE_GAMIFICATION_STANDARD.md) — wissenschaftlich eingeordnete Gestaltungsprinzipien, Autonomie, Kompetenz, Verbindung und Regeneration.
+- [Quest Definition schema and example](../matrixgame-protocol/quest.schema.json) — portable Quest-Vorlage mit Wahlmöglichkeiten, Schritten, Erfolgskriterien und Schutzregeln.
+
 - [Universal Knowledge Engine](UNIVERSAL_KNOWLEDGE_ENGINE.md) — vorgeschlagene Architektur für Wissensknoten, Belege, Simulationen und Lernquests.
 - [Knowledge Node and Evidence Schema](KNOWLEDGE_NODE_AND_EVIDENCE_SCHEMA.md) — strukturierte Darstellung von Aussagen und Evidenzstatus.
 - [Collective Improvement Network](COLLECTIVE_IMPROVEMENT_NETWORK.md) — Vision und Roadmap für freiwillige Zusammenarbeit.
@@ -26,6 +31,19 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 
 - [Fragment 6 – Gesamtsynthese und Zukunftsarchitektur](FRAGMENT_6_SYNTHESIS_AND_FUTURE_ARCHITECTURE_2026-11-23.md) — kuratierte Auswertung des historischen Journals, wissenschaftliche Korrekturen, Governance und Realisierungsplan.
 - [Fragment 6 – kuratiertes Linkregister](FRAGMENT_6_CURATED_LINK_REGISTER_2026-11-23.md) — ausgewählte Primärlinks und Anschlussstellen; keine pauschale Inhaltsbestätigung der externen Ziele.
+
+## Soziale Entwicklung und aktuelle Forschung
+- [Human Flourishing — research and implementation framework](HUMAN_FLOURISHING_FRAMEWORK_2026-11-25.md) — six research-aligned domains, WHO/UN/OECD/UNDP frameworks, Beyond GDP status, and a privacy-preserving Matrixgame roadmap.
+
+- [Energy and Resource Optimization (25 November 2026)](../research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.md) — global energy efficiency, investment, electricity access, resource resilience, ecological boundaries and Second Earth implementation path.
+- [Structured global energy snapshot](../research/MATRIXGAME_ENERGY_AND_RESOURCE_OPTIMIZATION_2026-11-25.json) — 13 source-linked indicators with status, period, units, methods and caveats.
+- [Social connection, violence and relationship trends (25 November 2026)](../research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.md) — Deutschland 2025, Dunkelfeld, globale Einordnung, Partnerschafts- und Haushaltsformen; strikt getrennte Messgrößen.
+- [Structured social connection and safety snapshot](../research/MATRIXGAME_SOCIAL_CONNECTION_AND_SAFETY_2026-11-25.json) — maschinenlesbare Kennzahlen mit Zeitraum, Gebiet, Messmethode und Quellen.
+
+## Emotionale Gesundheit und Selbstregulation
+
+- [Emotion Regulation and Goal Alignment](EMOTION_REGULATION_AND_GOAL_ALIGNMENT_2026-11-25.md) — emotions as signals, flexible regulation, personal values, small actions, recovery and privacy safeguards.
+- [Optional emotion-regulation quest](../matrixgame-protocol/quest.emotion-regulation.example.json) — voluntary low-pressure practice using the shared Quest schema.
 
 ## Lernen und soziale Gestaltung
 
