@@ -64,6 +64,7 @@ The connected browser successfully returned a list of open tabs, including title
 | Wir wissen endlich mehr über die wichtigste Zivilisation | https://www.youtube.com/watch?v=HPjZDlQexeY | Archaeology, ancient DNA, dating, LiDAR and reconstruction from traces |
 | Die 10 erschreckendsten Alien-Zivilisations-Szenarien | https://www.youtube.com/watch?v=lqjNlc9Er7U | Fermi paradox and technosignature hypotheses; scenario is not observation |
 | Weltengänger — science-fiction film | https://www.youtube.com/watch?v=I5QqtIMSv68 | Explicit FICTION; possible narrative inspiration only |
+| BLACK HORIZON: Ancestral — AI film preview | https://www.youtube.com/watch?v=oBE7Z_2X8Z8 | Visual/fiction prompt; exact production and claims uninspected |
 
 ### Risk, security and human–AI relationships
 
