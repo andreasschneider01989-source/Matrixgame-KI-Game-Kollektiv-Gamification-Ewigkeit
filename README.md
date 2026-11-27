@@ -76,6 +76,14 @@ A new research note integrates social connection, respectful dating and communic
 
 - [Social connection, wellbeing and safe self-regulation — research and design note](research/MATRIXGAME_CONNECTION_WELLBEING_SAFETY_2026-11-06.md)
 
+## Second Earth regeneration scenario MVP — 27 November 2026
+
+A small deterministic Python model now provides a reproducible starting point for regenerative Second Earth scenarios. It keeps biodiversity, clean energy, wellbeing, trust and safety as separate normalized dimensions, with a non-compensable safety gate. Its coefficients are illustrative and it is not an empirically validated Earth forecast or a clinical tool.
+
+- [Second Earth MVP — model contract, evidence limits and next milestones](docs/SECOND_EARTH_REGENERATION_MVP_2026-11-27.md)
+- [Runnable example](examples/second_earth_regeneration_demo.py)
+- [Python implementation](matrixgame_science/second_earth.py)
+
 ## Fragment 6 — historical synthesis and future architecture (23 November 2026)
 
 The long-running Matrixgame Journal / Fragment 6 has been analyzed as a historical source. Its scientific ideas, software sketches, personal notes, links and speculative narratives are separated into a traceable architecture. Sensitive personal material and harmful calls to violence are intentionally excluded from public implementation. The synthesis connects the Genesis registry, evidence provenance, LUMINI compiler, engine registry, reproducible experiments, collective review, Infinity Canvas, learning and Earth systems research.
