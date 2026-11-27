@@ -183,6 +183,14 @@
       "url": "https://www.youtube.com/watch?v=I5QqtIMSv68",
       "evidence_status": "TAB_METADATA_ONLY",
       "epistemic_class": "FICTION"
+    },
+    {
+      "id": "yt_black_horizon_ancestral",
+      "category": "fiction_ai_visual_prompt",
+      "title": "Preview of BLACK HORIZON: Ancestral — 2026 | Domain Films A.I",
+      "url": "https://www.youtube.com/watch?v=oBE7Z_2X8Z8",
+      "evidence_status": "TAB_METADATA_ONLY",
+      "epistemic_class": "FICTION_OR_PROMOTIONAL_VISUAL_CONTENT"
     }
   ],
   "external_references": [
