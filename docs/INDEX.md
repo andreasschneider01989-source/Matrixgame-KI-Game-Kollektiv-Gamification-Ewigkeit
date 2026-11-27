@@ -27,6 +27,10 @@ Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten.
 - [Fragment 6 – Gesamtsynthese und Zukunftsarchitektur](FRAGMENT_6_SYNTHESIS_AND_FUTURE_ARCHITECTURE_2026-11-23.md) — kuratierte Auswertung des historischen Journals, wissenschaftliche Korrekturen, Governance und Realisierungsplan.
 - [Fragment 6 – kuratiertes Linkregister](FRAGMENT_6_CURATED_LINK_REGISTER_2026-11-23.md) — ausgewählte Primärlinks und Anschlussstellen; keine pauschale Inhaltsbestätigung der externen Ziele.
 
+## Second Earth und regenerative Systeme
+
+- [Second Earth — Regeneration Scenario MVP](SECOND_EARTH_REGENERATION_MVP_2026-11-27.md) — deterministischer, begrenzter Demonstrator mit fünf getrennten Zustandsdimensionen, eigenem Safety-Gate, Beispiel und Regressionstests; illustrative Koeffizienten, keine empirische Prognose.
+
 ## Lernen und soziale Gestaltung
 
 - [Learning Quests and Responsible Gamification](LEARNING_QUESTS_AND_GAMIFICATION.md) — Vorschläge für freiwillige Lernmechaniken.
