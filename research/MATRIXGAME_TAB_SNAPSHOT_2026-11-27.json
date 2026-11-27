@@ -1,0 +1,269 @@
+{
+  "snapshot_id": "MG-KNOWLEDGE-SAVEPOINT-001",
+  "date": "2026-11-27",
+  "status": "PRELIMINARY",
+  "browser_status": "TAB_METADATA_AVAILABLE_FULL_CONTEXT_READ_FAILED",
+  "privacy_note": "Private ChatGPT, Google Docs, Perplexity, Gemini, Grok, Qwen, Mistral, social-media and account tabs are excluded. Music is a cultural prompt, not psychological evidence.",
+  "implementation_status": "DOCUMENTATION_ONLY",
+  "test_status": "NOT_APPLICABLE",
+  "sources": [
+    {
+      "id": "yt_diary_of_dreams_immerdar",
+      "category": "music_cultural_prompt",
+      "title": "Diary of Dreams — Immerdar",
+      "url": "https://www.youtube.com/watch?v=a56qWRST8Rs",
+      "evidence_status": "TAB_METADATA_ONLY",
+      "notes": "User-mentioned cultural anchor; no lyrics quoted."
+    },
+    {
+      "id": "yt_anne_bloom_meaning",
+      "category": "music_cultural_prompt",
+      "title": "Anne Bloom — In Search of Meaning",
+      "url": "https://www.youtube.com/watch?v=xISkEJxfzbU",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_crystalix_trapped",
+      "category": "music_cultural_prompt",
+      "title": "Crystalix — Trapped",
+      "url": "https://www.youtube.com/watch?v=l64OiaNy69s",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_kitty_noir_mycelium",
+      "category": "music_cultural_prompt",
+      "title": "Kitty Noir — Mycelium",
+      "url": "https://www.youtube.com/watch?v=7ybt4dLDRcc",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_beautifully_out_of_line",
+      "category": "music_cultural_prompt",
+      "title": "Beautifully Out of Line — Surreal Visual Odyssey & Mystic Deep House",
+      "url": "https://www.youtube.com/watch?v=No0MMCggYzk",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_die_bomben_schlafen",
+      "category": "music_cultural_prompt",
+      "title": "Die Bomben schlafen",
+      "url": "https://www.youtube.com/watch?v=-PPQoHRX8f8",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_tristam_till_its_over",
+      "category": "music_cultural_prompt",
+      "title": "Tristam — Till It's Over",
+      "url": "https://www.youtube.com/watch?v=usXhiWE2Uc0",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_emergence_kurzgesagt",
+      "category": "science_emergence",
+      "title": "Wie dumme Einzelteile zusammen intelligent werden — Emergenz",
+      "url": "https://www.youtube.com/watch?v=pb4YoMjcYM4",
+      "evidence_status": "PUBLIC_DESCRIPTION_VERIFIED",
+      "research_refs": [
+        "https://www.zdf.de/video/animation/funk-collection-funk-11090-448/funk-wie-dumme-einzelteile-zusammen-intelligent-werden---emergenz-106"
+      ]
+    },
+    {
+      "id": "yt_axelrod_strategy",
+      "category": "game_theory_cooperation",
+      "title": "Die lohnendste Strategie des Lebens: Was 1980 ein Computerturnier verriet",
+      "url": "https://www.youtube.com/watch?v=KprdCpvwyw4",
+      "evidence_status": "TAB_METADATA_ONLY",
+      "research_refs": [
+        "https://journals.sagepub.com/doi/10.1177/002200278002400301",
+        "https://www.des.ucdavis.edu/faculty/lubell/Teaching/Axelrod.pdf"
+      ]
+    },
+    {
+      "id": "yt_internet_structure",
+      "category": "digital_infrastructure",
+      "title": "Struktur des Internets",
+      "url": "https://www.youtube.com/watch?v=jmkre5i9r-o",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_gemini_notebook_business",
+      "category": "agentic_workflows",
+      "title": "Gemini Notebook Can Now Run Your Business!",
+      "url": "https://www.youtube.com/watch?v=DP0Mo3aOxZU",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_ai_shutdown",
+      "category": "ai_safety",
+      "title": "KI wehrt sich gegen das Abschalten — das zeigen die Tests",
+      "url": "https://www.youtube.com/watch?v=hWkAfRBrYBo",
+      "evidence_status": "TAB_METADATA_ONLY",
+      "research_refs": [
+        "https://palisaderesearch.org/research/shutdown-resistance",
+        "https://openreview.net/pdf/5848464210d45bc7519fc15fe6f809525f46eaf3.pdf",
+        "https://arxiv.org/abs/2610.35486"
+      ]
+    },
+    {
+      "id": "yt_musk_build",
+      "category": "technology_claim_audit",
+      "title": "Was niemand für machbar hielt: Das hat Elon Musk jetzt gebaut",
+      "url": "https://www.youtube.com/watch?v=IwaF0KXREUE",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_universe_expedition",
+      "category": "astronomy",
+      "title": "Grenzenlose Welten: Expedition ins Universum",
+      "url": "https://www.youtube.com/watch?v=tgR2i2Cq9ng",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_civilization_kurzgesagt",
+      "category": "archaeology_human_history",
+      "title": "Wir wissen endlich mehr über die wichtigste Zivilisation",
+      "url": "https://www.youtube.com/watch?v=HPjZDlQexeY",
+      "evidence_status": "PUBLIC_DESCRIPTION_VERIFIED",
+      "research_refs": [
+        "https://zolotube.com/watch?v=HPjZDlQexeY"
+      ]
+    },
+    {
+      "id": "yt_alien_civilizations",
+      "category": "astrobiology_speculation",
+      "title": "Die 10 erschreckendsten Alien-Zivilisations-Szenarien",
+      "url": "https://www.youtube.com/watch?v=lqjNlc9Er7U",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_darknet",
+      "category": "cybersecurity",
+      "title": "Wie das DARKNET 2026 die WELT übernimmt: Die Chronik",
+      "url": "https://www.youtube.com/watch?v=wNv69_9oGho",
+      "evidence_status": "TAB_METADATA_ONLY",
+      "research_refs": [
+        "https://www.europol.europa.eu/publication-events/main-reports/iocta-2026-evolving-threat-landscape"
+      ]
+    },
+    {
+      "id": "yt_us_hack",
+      "category": "cybersecurity_incident",
+      "title": "Der schlimmste Hack in der Geschichte der USA",
+      "url": "https://www.youtube.com/watch?v=1YBf36c77aA",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_ukraine_russia",
+      "category": "geopolitics",
+      "title": "Die Ukraine hat gerade Russlands GRÖSSTE Schwachstelle entdeckt",
+      "url": "https://www.youtube.com/watch?v=lXnhYEtQ_tI",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_poland_nuclear",
+      "category": "geopolitics_security",
+      "title": "Raketen auf Polen, Atomwaffen im All: Will Putin jetzt die Welt verbrennen?",
+      "url": "https://www.youtube.com/watch?v=iWPuoRQxbsU",
+      "evidence_status": "TAB_METADATA_ONLY"
+    },
+    {
+      "id": "yt_arte_ai_doll",
+      "category": "human_ai_relationships",
+      "title": "Meine Freundin, die Puppe: Sex und KI — ARTE",
+      "url": "https://www.youtube.com/watch?v=xA1TZoSR00c",
+      "evidence_status": "PUBLIC_PROGRAM_DESCRIPTION_VERIFIED",
+      "research_refs": [
+        "https://www.arte.tv/de/videos/132138-000-A/meine-freundin-die-puppe-sex-und-ki/"
+      ]
+    },
+    {
+      "id": "yt_weltengaenger_fiction",
+      "category": "fiction",
+      "title": "Weltengänger — science-fiction film",
+      "url": "https://www.youtube.com/watch?v=I5QqtIMSv68",
+      "evidence_status": "TAB_METADATA_ONLY",
+      "epistemic_class": "FICTION"
+    },
+    {
+      "id": "yt_black_horizon_ancestral",
+      "category": "fiction_ai_visual_prompt",
+      "title": "Preview of BLACK HORIZON: Ancestral — 2026 | Domain Films A.I",
+      "url": "https://www.youtube.com/watch?v=oBE7Z_2X8Z8",
+      "evidence_status": "TAB_METADATA_ONLY",
+      "epistemic_class": "FICTION_OR_PROMOTIONAL_VISUAL_CONTENT"
+    }
+  ],
+  "external_references": [
+    {
+      "topic": "emergence",
+      "url": "https://www.zdf.de/video/animation/funk-collection-funk-11090-448/funk-wie-dumme-einzelteile-zusammen-intelligent-werden---emergenz-106",
+      "type": "public educational description"
+    },
+    {
+      "topic": "iterated_prisoners_dilemma",
+      "url": "https://journals.sagepub.com/doi/10.1177/002200278002400301",
+      "type": "primary research paper"
+    },
+    {
+      "topic": "evolution_of_cooperation",
+      "url": "https://www.des.ucdavis.edu/faculty/lubell/Teaching/Axelrod.pdf",
+      "type": "primary research paper"
+    },
+    {
+      "topic": "ai_shutdown_resistance",
+      "url": "https://palisaderesearch.org/research/shutdown-resistance",
+      "type": "research report"
+    },
+    {
+      "topic": "ai_shutdown_resistance_2026",
+      "url": "https://openreview.net/pdf/5848464210d45bc7519fc15fe6f809525f46eaf3.pdf",
+      "type": "TMLR paper"
+    },
+    {
+      "topic": "shutdownmod",
+      "url": "https://arxiv.org/abs/2610.35486",
+      "type": "preprint"
+    },
+    {
+      "topic": "cybercrime",
+      "url": "https://www.europol.europa.eu/publication-events/main-reports/iocta-2026-evolving-threat-landscape",
+      "type": "Europol threat assessment"
+    },
+    {
+      "topic": "human_ai_relationships",
+      "url": "https://www.arte.tv/de/videos/132138-000-A/meine-freundin-die-puppe-sex-und-ki/",
+      "type": "documentary programme description"
+    }
+  ],
+  "synthesis_axes": [
+    "emergence",
+    "game_theory_cooperation",
+    "ai_interruptibility",
+    "digital_infrastructure",
+    "cybersecurity",
+    "human_history",
+    "astronomy",
+    "human_flourishing",
+    "culture_and_meaning"
+  ],
+  "next_experiments": [
+    {
+      "id": "MATRIXGAME_COOPERATION_QUEST_001",
+      "goal": "Build deterministic repeated-game simulator under noise",
+      "status": "PROPOSED"
+    },
+    {
+      "id": "MATRIXGAME_INTERRUPTIBILITY_QUEST_001",
+      "goal": "Test authorized shutdown and no-side-effect guarantees in a mock agent",
+      "status": "PROPOSED"
+    }
+  ],
+  "open_questions": [
+    "Inspect full transcripts, chapters and source lists for all video tabs.",
+    "Verify Internet-structure claims against IETF, ICANN, IANA and RIR sources.",
+    "Verify astronomy and technosignature claims against NASA, ESA and SETI primary sources.",
+    "Identify and verify the specific cyber and geopolitical incidents named in the videos.",
+    "Evaluate agentic notebook claims against current vendor documentation and permission boundaries."
+  ],
+  "excluded_private_sources": true
+}

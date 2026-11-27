@@ -2,6 +2,11 @@
 
 Kuratiertes Inhaltsverzeichnis zu ausgewählten Einstiegs- und Themendokumenten. Keine vollständige Dateiliste und kein Ersatz für die Quellenprüfung. Viele historische Texte sind lang, wiederholen sich und vermischen Vision, Gesprächsverlauf, Hypothesen und Code.
 
+## Aktueller Forschungssavepoint
+
+- [Matrixgame Knowledge Savepoint 001 — Tab-Synthese (27.11.2026)](../research/MATRIXGAME_TAB_SYNTHESIS_2026-11-27.md) — vorläufige, quellenbewusste Synthese der öffentlich sichtbaren YouTube-Tab-Metadaten mit Forschungsankern, Kooperations- und Interruptibility-Experimenten. Vollständige Browserinhalte waren in diesem Durchlauf nicht abrufbar; private Tabs sind ausgeschlossen.
+- [Machine-readable tab snapshot 001](../research/MATRIXGAME_TAB_SNAPSHOT_2026-11-27.json) — öffentliche Videoquellen, Evidenzstatus, Forschungsreferenzen und offene Prüfaufgaben.
+
 ## Einstieg
 
 - [Projektstatus und Entwicklungsrichtung](../README.md)
