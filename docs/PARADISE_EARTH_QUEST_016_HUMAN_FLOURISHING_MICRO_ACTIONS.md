@@ -53,7 +53,7 @@ The planner is deterministic: identical inputs produce identical plans. It store
 From the repository root, with Python 3.10 or newer:
 
 ```bash
-python -m unittest tests.test_flourishing tests.test_micro_actions -v
+python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
 Or run the project's configured test runner if installed:
